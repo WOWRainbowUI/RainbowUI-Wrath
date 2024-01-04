@@ -1,0 +1,266 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="src/bag/bag.lua"/>
+
+    <Frame name="DJBagsBagBarTemplate" inherits="DJBagsBackgroundTemplate" virtual="true" movable="true" enableMouse="true">
+        <Size x="183" y="58" />
+        <Frames>
+            <Button name="$parentBag1" parentKey="bag1" inherits="ItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="10" y="-10" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        DJBagsBagItemLoad(self, 1, C_Container.ContainerIDToInventoryID(1))
+                    </OnLoad>
+                </Scripts>
+            </Button>
+            <Button name="$parentBag2" parentKey="bag2" inherits="ItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentBag1" relativePoint="TOPRIGHT" x="5" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        DJBagsBagItemLoad(self, 2, C_Container.ContainerIDToInventoryID(2))
+                    </OnLoad>
+                </Scripts>
+            </Button>
+            <Button name="$parentBag3" parentKey="bag3" inherits="ItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentBag2" relativePoint="TOPRIGHT" x="5" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        DJBagsBagItemLoad(self, 3, C_Container.ContainerIDToInventoryID(3))
+                    </OnLoad>
+                </Scripts>
+            </Button>
+            <Button name="$parentBag4" parentKey="bag4" inherits="ItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentBag3" relativePoint="TOPRIGHT" x="5" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        DJBagsBagItemLoad(self, 4, C_Container.ContainerIDToInventoryID(4))
+                    </OnLoad>
+                </Scripts>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <Frame name="DJBagsMainBarTemplate" inherits="DJBagsBackgroundTemplate" virtual="true" movable="true" enableMouse="true">
+        <Size x="365" y="33"/>
+        <Frames>
+            <Button name="$parentSettingsBtn">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="RIGHT" relativeTo="$parent" x="-9"/>
+                </Anchors>
+                <NormalTexture file="Interface\Buttons\UI-GuildButton-PublicNote-Disabled"/>
+                <PushedTexture file="Interface\Buttons\UI-GuildButton-OfficerNote-Up"/>
+                <HighlightTexture file="Interface\Buttons\UI-GuildButton-PublicNote-Up" alphaMode="ADD"/>
+                <Scripts>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, 'TOPRIGHT')
+                        GameTooltip:SetText(SETTINGS)
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                    <OnClick>
+                        if self:GetParent():GetParent().settingsMenu:IsVisible() then
+                            self:GetParent():GetParent().settingsMenu:Hide()
+                        else
+                            self:GetParent():GetParent().settingsMenu:Show()
+                        end
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <CheckButton name="$parentBagBtn" inherits="UIRadioButtonTemplate">
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint="LEFT" relativeTo="$parentSettingsBtn" x="-5"/>
+                </Anchors>
+                <Scripts>
+					<OnEnter>
+                        GameTooltip:SetOwner(self, 'TOPRIGHT')
+                        GameTooltip:SetText("更換背包")
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                    <OnClick>
+                        if self:GetParent().bagBar:IsVisible() then
+                            self:GetParent().bagBar:Hide()
+                        else
+                            self:GetParent().bagBar:Show()
+                        end
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+			<Button name="$parentRestackBtn">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeTo="$parentBagBtn" relativePoint="LEFT" x="-3"/>
+                </Anchors>
+                <NormalTexture file="Interface\Containerframe\Keyring-Bag-Icon"/>
+                <PushedTexture file="Interface\Containerframe\Keyring-Bag-Icon"/>
+                <HighlightTexture file="Interface\Containerframe\Keyring-Bag-Icon" alphaMode="ADD"/>
+                <Scripts>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, 'TOPRIGHT')
+                        GameTooltip:SetText("鑰匙圈")
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                    <OnClick>
+                        if CursorHasItem() then
+							PutKeyInKeyRing()
+						else
+							ToggleBag(KEYRING_CONTAINER)
+						end
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentClearButton">
+                <Size x="25" y="25"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeTo="$parentRestackBtn" relativePoint="LEFT" x="-3"/>
+                </Anchors>
+                <NormalTexture file="Interface\Buttons\UI-RotationLeft-Button-Up"/>
+                <PushedTexture file="Interface\Buttons\UI-RotationLeft-Button-Down"/>
+                <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD">
+                    <Size x="22" y="23"/>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0"/>
+                    </Anchors>
+                </HighlightTexture>
+                <Scripts>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, 'TOPRIGHT')
+						GameTooltip:SetText("歸類新物品")
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                    <OnClick>
+                        self:GetParent():GetParent():ClearNewItems()
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <EditBox name="$parentSearchBox" parentKey="search" inherits="BagSearchBoxTemplate" letters="15">
+                <Size x="96" y="18"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeTo="$parentClearButton" relativePoint="LEFT" x="-3"/>
+                </Anchors>
+            </EditBox>
+            <Frame name="$parentMoney" parentKey="moneyFrame" inherits="SmallMoneyFrameTemplate" hidden="false">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeTo="$parentSearchBox" relativePoint="LEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        SmallMoneyFrame_OnLoad(self);
+                        MoneyFrame_SetType(self, "PLAYER");
+                        MoneyFrame_SetMaxDisplayWidth(self, 168);
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentCurrencyDisplay" frameStrata="DIALOG" toplevel="true" frameLevel="10">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentSearchBox" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnEnter>
+                        local cnt = GetCurrencyListSize()
+                        GameTooltip:SetOwner(self, "ANCHOR_NONE")
+                        GameTooltip:SetPoint("BOTTOMLEFT", self, "TOPLEFT")
+                        GameTooltip:SetText(CURRENCY)
+                        for index = 1, cnt do
+                            local name, _, _, _, _, count, texture, _, _, _, _ = GetCurrencyListInfo(index)
+                            if count ~= 0 and texture ~= nil then
+                                GameTooltip:AddDoubleLine(name, count .. " |T" .. texture .. ":16|t", 1, 1, 1, 1, 1, 1)
+                            end
+                        end
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                            GameTooltip:Hide()
+                    </OnLeave>
+                    <OnMouseDown>
+                            MoneyInputFrame_OpenPopup(self:GetParent().moneyFrame);
+                    </OnMouseDown>
+                </Scripts>
+            </Frame>
+            <Frame name="$parentBagBar" parentKey="bagBar" inherits="DJBagsBagBarTemplate" hidden="true">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" y="-5"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+
+    <Frame name="DJBagsBag" inherits="DJBagsBackgroundTemplate" frameStrata="MEDIUM" toplevel="true" movable="true" enableMouse="true"
+           hidden="true" parent="UIParent">
+        <Anchors>
+            <Anchor point="CENTER" />
+        </Anchors>
+        <Frames>
+            <Frame name="$parentMainBar" parentKey="mainBar" inherits="DJBagsMainBarTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+                </Anchors>
+            </Frame>
+            <Button name="$parentClose" parentKey="close" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="CENTER" relativePoint="TOPRIGHT" x="-2" y="-2"/>
+                </Anchors>
+                <NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled" />
+                <Scripts>
+                    <OnLoad>
+                        self:SetAlpha(0.2)
+                    </OnLoad>
+                    <OnEnter>
+                        self:SetAlpha(1)
+                    </OnEnter>
+                    <OnLeave>
+                        self:SetAlpha(0.2)
+                    </OnLeave>
+                </Scripts>
+            </Button>
+            <Frame name="$parentSettings" parentKey="settingsMenu" inherits="DJBagsSettings" hidden="true">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.bag = self:GetParent()
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                DJBagsRegisterBagBagContainer(self, {0, 1, 2, 3, 4})
+            </OnLoad>
+            <OnShow>
+                self:OnShow()
+            </OnShow>
+            <OnHide>
+                self:OnHide()
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+	<Frame name="DJBagsBag2" inhertis="DJBagsBackgroundTemplate" frameStrata="MEDIUM" toplevel="true" movable="true" enableMouse="true"
+           hidden="true" parent="UIParent">
+        <Size x="100" y="100" />
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" />
+        </Anchors>
+    </Frame>
+</Ui>

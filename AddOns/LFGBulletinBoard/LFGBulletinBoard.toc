@@ -1,0 +1,26 @@
+## Interface: 30403
+## Title: LFG Bulletin Board
+## Notes: Sort LFG/LFM Messages
+## Version: 3.11 Fix
+## Author: Vyscî-Whitemane
+## DefaultState: enabled
+## SavedVariables: GroupBulletinBoardDB
+## SavedVariablesPerCharacter: GroupBulletinBoardDBChar
+
+## Title-zhTW: |cffFF7F00[副本]|r 組隊佈告欄
+## Notes-zhTW: LFG Bulletin Board |n|n將尋求組隊訊息依據副本，難度…等規則分類，就像勇者接受委託的佈告欄一樣!|n|n|cffffd200使用方法: |r點小地圖按鈕打開佈告欄。|n|n從Esc>介面>插件>副本-佈告欄，進行設定。
+## X-Category-zhTW: 團隊
+
+LibGPIOptions.lua
+LibGPIMinimapButton.lua
+LibGPIToolBox.lua
+Chat.lua
+Localization.lua
+Dungeons.lua
+Tags.lua
+RequestList.lua
+Options.lua
+GroupList.Lua
+GroupBulletinBoard.lua
+LfgToolList.lua
+GroupBulletinBoard.xml

@@ -1,0 +1,12 @@
+lightweight tag 52689df39e94423a02654b5c297bc29bb201c805 V0.8.2
+Author:	Brandon James Talbot <bjtal91@gmail.com>
+Date:	Mon Aug 6 22:41:24 2018 -0700
+
+commit 52689df39e94423a02654b5c297bc29bb201c805
+Author: Brandon James Talbot <bjtal91@gmail.com>
+Date:   Mon Aug 6 22:41:24 2018 -0700
+
+    Fix bug for users that did not use V0.7.6:
+    
+    - Settings for players only not initialized correctly.
+

@@ -1,0 +1,11 @@
+## Interface: 30403
+## Title: Combuctor Config
+## Author: Tuller and Jaliborc (João Cardoso)
+## Notes: An options menu for Combuctor
+## Title-zhTW: |cffB973CC[背包]|r 分類整合背包-設定選項
+## Notes-zhTW: Combuctor Config |n整合分類背包的設定選項。|n|cffffd200使用方法：|r從Esc>介面>插件>背包，進行設定。
+## DefaultState: disabled
+## Dependencies: Combuctor
+## LoadOnDemand: 1
+
+..\Combuctor\addons\config\config.xml

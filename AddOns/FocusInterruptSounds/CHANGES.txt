@@ -1,0 +1,13 @@
+lightweight tag 213e6275174f6b8eb9d611173e7d5608958d9f70 r144
+Author:	GitHub <noreply@github.com>
+Date:	Sat Jul 15 18:00:58 2023 -0700
+
+commit 213e6275174f6b8eb9d611173e7d5608958d9f70
+Author: corgatag <13686151+corgatag@users.noreply.github.com>
+Date:   Sat Jul 15 18:00:58 2023 -0700
+
+    Update for 10.1.5
+    
+    - Add Dragonflight S2 low-priority spells
+    - Update .toc
+

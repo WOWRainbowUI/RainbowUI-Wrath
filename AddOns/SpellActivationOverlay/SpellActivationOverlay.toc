@@ -1,0 +1,57 @@
+## Interface: 30403
+## Title: SpellActivationOverlay |cffa2f3ff0.9.3|r
+## Notes: Mimic Spell Activation Overlays from Retail
+## Author: Vinny
+## Version: 0.9.3
+## SavedVariables: SpellActivationOverlayDB
+
+## Title-zhTW: |cffFF2D2D[戰鬥]|r 法術警告
+## Notes-zhTW: SpellActivationOverlay |n|n顯示和正式服一樣的法術警告效果，技能觸發時在角色周圍顯示材質圖案，以及快捷列的按鈕發光。|n|n|cffffd200使用方法: |r從Esc>選項>插件>法術警告，進行設定。
+## X-Category-zhTW: 戰鬥
+
+# SpellActivationOverlay.lua, SpellActivationOverlay.xml and all textures
+# were created by Blizzard Entertainment, Inc.
+#
+# World of Warcraft®: Cataclysm®
+# ©2010 Blizzard Entertainment, Inc. All rights reserved. Cataclysm is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
+#
+# World of Warcraft®: Mists of Pandaria®
+# ©2012 Blizzard Entertainment, Inc. All rights reserved. Mists of Pandaria, World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
+#
+# World of Warcraft®: Warlords of Draenor™
+# ©2014 Blizzard Entertainment, Inc. All rights reserved. Warlords of Draenor is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
+
+components\aura.lua
+components\counter.lua
+components\events.lua
+components\glow.lua
+components\overlay.lua
+components\spell.lua
+components\util.lua
+
+textures\texname.lua
+
+classes\common.lua
+classes\deathknight.lua
+classes\druid.lua
+classes\hunter.lua
+classes\mage.lua
+classes\paladin.lua
+classes\priest.lua
+classes\rogue.lua
+classes\shaman.lua
+classes\warlock.lua
+classes\warrior.lua
+
+options\defaults.lua
+options\db.lua
+options\variables.lua
+options\InterfaceOptionsPanels.lua
+options\InterfaceOptionsPanels.xml
+options\classoptions.lua
+options\glowoptions.lua
+options\overlayoptions.lua
+options\variants.lua
+
+SpellActivationOverlay.lua
+SpellActivationOverlay.xml

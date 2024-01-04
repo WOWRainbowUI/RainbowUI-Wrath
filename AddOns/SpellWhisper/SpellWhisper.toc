@@ -1,0 +1,19 @@
+## Interface: 30403
+## Version: 2.3.2
+## Title: SpellWhisper
+## Author: Aoikaze
+## SavedVariables: SpellWhisperDB
+## Notes-zhCN: 法术技能自动通告
+## Notes: Automatic Spell Announcer.
+## Title-zhTW: |cffFF2D2D[戰鬥]|r 技能通報
+## Notes-zhTW: SpellWhisper |n|n所有技能都可以設定監控通報、OT...功能強大的技能通報插件。|n|n|cffffd200使用方法: |r從Esc>介面>插件>技能通報，設定後即可使用。
+## X-Category-zhTW: 戰鬥
+## DefaultState: disabled
+
+Locale.lua
+Core.lua
+Events.lua
+Config.lua
+GUI.lua
+MinimapIcon.lua
+Command.lua

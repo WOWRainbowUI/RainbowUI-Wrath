@@ -1,0 +1,56 @@
+<Bindings>
+	<Binding name="AUTOBAR_CONFIG" header="AUTOBAR_SEP" category="BINDING_HEADER_AUTOBAR_SEP">
+		AutoBarGlobalCodeSpace.ConfigToggle()
+	</Binding>
+	<Binding name="AutoBarButtonHearth_X"  					category="BINDING_HEADER_AUTOBAR_SEP"	header="AutoBarButtonHeader"/>
+	<Binding name="AutoBarButtonMount_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonBandages_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCrafting_X"   				category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonHeal_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonRecovery_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonFood_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonWater_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonFoodBuff_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonFoodCombo_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonBuff_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonBuffWeapon1_X"				category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonDrums_X"				category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCooldownPotionCombat_X"	category="BINDING_HEADER_AUTOBAR_SEP"	header="AutoBarCooldownHeader"/>
+	<Binding name="AutoBarButtonCooldownPotionHealth_X"	category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCooldownStoneHealth_X"		category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCooldownStoneMana_X"		category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCooldownPotionRejuvenation_X"	category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCooldownStoneRejuvenation_X"		category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonCharge_X"						category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarExtras"/>
+	<Binding name="AutoBarButtonClassBuff_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonShields_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonClassPet_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonClassPets2_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonFreeAction_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonER_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonExplosive_X"   				category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonFishing_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonBattleStandards_X"			category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonTrinket1_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonTrinket2_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonPets_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonQuest_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonSpeed_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonStealth_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonSunsongRanch_X"				category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonGarrison_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+
+	<Binding name="AutoBarButtonDebuff_X"						category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarHeader"/>
+	<Binding name="AutoBarButtonBear_X"							category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarDruid"/>
+	<Binding name="AutoBarButtonCat_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonTravel_X"						category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonBoomkinTree_X"				category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonFoodPet_X"						category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarHunter"/>
+	<Binding name="AutoBarButtonTrap_X"							category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonPickLock_X"					category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarRogue"/>
+	<Binding name="AutoBarButtonTotemAir_X"					category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarShaman"/>
+	<Binding name="AutoBarButtonTotemEarth_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonTotemFire_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonTotemWater_X"					category="BINDING_HEADER_AUTOBAR_SEP"/>
+	<Binding name="AutoBarButtonStance_X"						category="BINDING_HEADER_AUTOBAR_SEP" header="AutoBarClassBarWarrior"/>
+</Bindings>

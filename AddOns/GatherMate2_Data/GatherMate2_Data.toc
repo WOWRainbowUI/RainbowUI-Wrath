@@ -1,0 +1,19 @@
+## Interface: 30403
+## Notes: GatherMate2 data fetched from Wowhead
+## Title: GatherMate2Data
+## Author: kagaro, Xinhuan, Spinx, Marrtin
+## Version: v2023-08-31
+## LoadOnDemand: 1
+## Dependencies: GatherMate2
+
+## Title-zhTW: |cffFFFF99[專業]|r 採集助手-資料庫
+## Notes-zhTW: GatherMate2_Data |n|n由 Wowhead 轉存至採集助手的資料庫。|n|n|cffffd200使用方法: |r從Esc>選項>插件>專業-採集>匯入資料>匯入GatherMate2Data，將草礦等各種採集點的資料匯入使用。
+## DefaultState: disabled
+## X-Category-zhTW: 交易
+
+MiningData.lua
+HerbalismData.lua
+FishData.lua
+TreasureData.lua
+GasData.lua
+GatherMateData.lua

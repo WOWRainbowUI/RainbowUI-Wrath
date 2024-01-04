@@ -1,0 +1,62 @@
+## Interface: 11404
+## Title: <BiaoGe> |cff00BFFF金团表格|r
+## Notes: 插件命令：/BiaoGe 或 /GBG
+## Author: 苍穹之霜
+## SavedVariables: BiaoGe
+## SavedVariablesPerCharacter: BiaoGeA 
+# BiaoGeA的数据现在全部合并到BiaoGe里，不再分开每个角色保存了，统一保存在账号文件夹
+
+## Title-zhTW: |cffFF7F00[團隊]|r 金團表格
+## Notes-zhTW: <BiaoGe> |n|n好用的金團記錄表單，可設定願望清單，可以通報帳單流拍或消費及欠款等。|n|n|cffffd200使用方法: |r點小地圖按鈕，從Esc>選項>插件>金團表格，進行設定。
+## X-Category-zhTW: 團隊
+## DefaultState: disabled
+
+Locales\zhCN.lua
+Locales\zhTW.lua
+# Locales\enUS.lua
+
+Libs\embeds.xml
+
+BiaoGe\DB\DB.lua
+BiaoGe\DB\DB_BossName.lua
+BiaoGe\DB\DB_Loot.lua
+
+BiaoGe\function.lua
+
+BiaoGe\FB\FBUIfunction.lua
+BiaoGe\FB\HistoryUIfunction.lua
+BiaoGe\FB\ReceiveUIfunction.lua
+BiaoGe\FB\DuiZhangUIfunction.lua
+
+# BiaoGe\FBUI\ICC.lua
+# BiaoGe\FBUI\TOC.lua
+# BiaoGe\FBUI\ULD.lua
+BiaoGe\FBUI\NAXX.lua
+
+BiaoGe\Module\History.lua
+BiaoGe\Module\Receive.lua
+BiaoGe\Module\Hope.lua
+BiaoGe\Module\DuiZhang.lua
+# BiaoGe\Module\RoleOverview.lua
+
+BiaoGe\TongBao\ZhangDan.lua
+BiaoGe\TongBao\LiuPai.lua
+BiaoGe\TongBao\XiaoFei.lua
+BiaoGe\TongBao\QianKuan.lua
+BiaoGe\TongBao\WCL.lua
+BiaoGe\TongBao\YongShi.lua
+
+BiaoGe\BiaoGe.lua
+
+BiaoGe\Module\Loot.lua
+BiaoGe\Module\Trade.lua
+BiaoGe\Module\AuctionMSG.lua
+BiaoGe\Module\YY.lua
+BiaoGe\Module\MeetingHorn.lua
+
+# BiaoGe\Boss\Boss.lua
+# BiaoGe\Boss\ICC.lua
+
+# BiaoGe\Module\minimap.lua
+
+BiaoGe\Options.lua

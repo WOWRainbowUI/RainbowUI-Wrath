@@ -1,0 +1,27 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Script file="SpellBookAbridged.lua"/>
+
+	<CheckButton name="AutoUpRankButton" inherits="OptionsSmallCheckButtonTemplate" parent="SpellBookFrame" checked="true" movable="true" enableMouse="true" >
+		<Scripts>
+			<OnClick function="AutoUpRankButton_OnClick" />
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPLEFT" >
+				<Offset>
+					<AbsDimension x="74" y="-55" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+	</CheckButton>
+	
+	
+	<!-- Parent Frame for Addon.  This frame will always remain hidden, used to keep some frames hidden while in combat. -->
+	<Frame name="SpellBookFrameAbridged" movable="false" parent="UIParent" hidden="true">
+		<Scripts>
+			<OnLoad function="SpellBookAbridged_OnLoad"/>
+			<OnEvent function="SpellBookAbridged_OnEvent"/>
+		</Scripts>
+	</Frame>
+</Ui>

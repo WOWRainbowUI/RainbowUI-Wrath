@@ -1,0 +1,43 @@
+## Interface: 30403
+## Title: OPie
+## Version: Zeta 1
+## Author: foxlit
+## Notes: Group abilities into rings that appear when you hold down a binding.
+## X-Website: https://www.townlong-yak.com/addons/opie
+## License: All rights reserved. Do not redistribute, in whole or in part, without explicit prior permission from the author.
+## AddonCompartmentFunc: OPie_OpenSettings
+## IconTexture: Interface/AddOns/OPie/gfx/opie_ring_icon
+## Notes-zhCN: 当你按下快捷键时显示一个环形的技能分组.
+## SavedVariables: OneRing_Config, OPie_SavedData
+## SavedVariablesPerCharacter: OPie_SavedDataPC
+## OptionalDeps: TaintLess
+## X-M6-AB: OPie.ActionBook
+
+## Title-zhTW: |cff00CCFF[快捷列]|r 環形
+## Notes-zhTW: OPie |n|n按下快速鍵時顯示圓環形的技能群組，可以做為輔助的快捷列使用，十分方便!|n|n|cffffd200使用方法: |r從Esc>選項>插件>快捷列-環形，進行設定。
+## X-Category-zhTW: 介面
+## DefaultState: disabled
+
+Libs\Evie.lua
+Libs\Niji.lua
+Libs\Mirage.lua
+Libs\TaintLess.xml
+Libs\exui\exui.xml
+Libs\ActionBook\ActionBook.xml
+Libs\ActionBook\ActionBookUI.xml
+Libs\TenSettings.lua
+Libs\TenTip.lua
+Locale.lua
+OPieCore.lua
+OPieUI.lua
+OPieOptions.lua
+OPieBindings.lua
+CustomRings.lua
+CustomRingsConfig.lua
+Meta\StanceBar.lua
+Meta\SpecSet.lua
+Meta\DataBroker.lua
+Meta\PSConfig.lua
+Bundle\QuestItems.lua
+Bundle\Tracking.lua
+Bundle\Editable.lua

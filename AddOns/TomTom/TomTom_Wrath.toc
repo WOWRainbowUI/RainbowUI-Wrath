@@ -1,0 +1,48 @@
+## Interface: 30403
+## Title: TomTom
+## Author: Cladhaire, Ludovicus
+## Version: v3.5.2-release
+## License: All Rights Reserved
+## IconTexture: Interface\AddOns\TomTom\Images\StaticArrow.tga
+## Notes: Acts as your portable navigation assistant
+## Notes-zhCN:一个简单的导航助手。
+## SavedVariables: TomTomDB, TomTomWaypoints, TomTomWaypointsM
+## OptionalDeps: HereBeDragons-2.0
+
+## Title-zhTW: |cff4DFF4D[地圖]|r TomTom 導航箭頭
+## Notes-zhTW: TomTom |n|n一個簡單的導航助手。自行在世界地圖上設定好目的地導航點，或是輸入座標後，會在畫面中間出現指示方向的導航箭頭，跟著跑就對了!|n|n|cffffd200使用方法: |r按住 Ctrl+右鍵點擊世界地圖上的位置，新增導航目的地。|n|n輸入 /way x y 來設定目的地的座標，x和y為座標數值。|n|n從Esc>介面>插件>導航箭頭，進行設定。
+## X-Category-zhTW: 地圖
+
+## X-Localizations: enUS, enGB, deDE, frFR, zhCN, ruRU, zhTW
+## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, zhCN, zhTW, koKR, ruRU
+## X-Curse-Project-ID: 18808
+## X-WoWI-ID: 7032
+## X-Wago-ID: Rn6VaONd
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceConfig-3.0\AceConfig-3.0.xml
+libs\AceEvent-3.0\AceEvent-3.0.xml
+libs\AceDB-3.0\AceDB-3.0.xml
+libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\HereBeDragons\HereBeDragons-2.0.lua
+libs\HereBeDragons\HereBeDragons-Pins-2.0.lua
+libs\LibDropDown\embed.xml
+
+AddonCore.lua
+
+Localization.enUS.lua
+Localization.zhCN.lua
+Localization.zhTW.lua
+
+TomTom.lua
+TomTom_Waypoints.lua
+TomTom_CrazyArrow.lua
+TomTom_Corpse.lua
+TomTom_Config.lua
+TomTom_Paste.lua
+
+TomTom_POIIntegration.lua
+

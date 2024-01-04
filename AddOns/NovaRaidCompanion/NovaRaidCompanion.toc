@@ -1,0 +1,46 @@
+## Interface: 30403
+## Notes: Raid and combat helpers, raid wide cooldown tracking.
+## Title: Nova Raid Companion
+## Title-zhTW: |cffFF7F00[團隊]|r NRC 團隊夥伴
+## Notes-zhTW: Nova Raid Companion |n提供出團時會用到的許多方便功能。像是團隊技能監控、項鍊監控、檢查食物精煉油抗性天賦、增益快照、拾取記錄、交易紀錄...等。|n|cffffd200使用方法：|r點小地圖按鈕。
+## DefaultState: disabled
+## Author: Novaspark-Arugal OCE
+## Version: 1.32
+## SavedVariables: NRCdatabase
+
+embeds.xml
+Locale\Locales.xml
+Media\Templates.xml
+NovaRaidCompanion.lua
+DB\Classic_DB.lua
+DB\Classic_TalentData.lua
+DB\Classic_Cooldowns.lua
+DB\TBC_DB.lua
+DB\TBC_TalentData.lua
+DB\TBC_Cooldowns.lua
+DB\Wrath_DB.lua
+DB\Wrath_TalentData.lua
+DB\Wrath_Cooldowns.lua
+DB\Dragonflight_DB.lua
+DB\Dragonflight_TalentData.lua
+DB\Dragonflight_Cooldowns.lua
+DB\zDB_Tools.lua
+Modules\Tools.lua
+Modules\Frames.lua
+Modules\Options.lua
+Modules\Data.lua
+Modules\Group.lua
+Modules\Auras.lua
+Modules\RaidStatus.lua
+Modules\RaidCooldowns.lua
+Modules\RaidLog.lua
+Modules\ScrollingRaidEvents.lua
+Modules\Classes\Warlock.lua
+Modules\Classes\Hunter.lua
+Modules\Classes\Rogue.lua
+Modules\Encounters.lua
+## Modules\TTK.lua
+Modules\Talents.lua
+Modules\Trades.lua
+Modules\RaidMana.lua
+Modules\Export.lua

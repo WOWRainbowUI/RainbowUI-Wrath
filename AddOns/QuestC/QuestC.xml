@@ -1,0 +1,348 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<Frame name="QuestC" frameStrata="FULLSCREEN_DIALOG" hidden="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="QCBottomPanel" parentKey="bottomPanel">
+					<Anchors>
+						  <Anchor point="BOTTOM"/>
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="questText">
+					<Anchors>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+					<Color r="0.9" g="0.9" b="0.9"/>
+				</FontString>
+			</Layer>
+		</Layers>
+
+		<Frames>
+			<DressUpModel name="QCDressUpModel" scale="1.0" inherits="ModelWithControlsTemplate" hidden="true">
+				<Size x="800" y="640"/>
+				<Anchors>
+					<Anchor point="LEFT" x="-150" y="-75"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						Model_OnLoad(self, MODELFRAME_MAX_PLAYER_ZOOM);
+					</OnLoad>
+				</Scripts>
+			</DressUpModel>
+		</Frames>
+	</Frame>
+	<Button name="QCItemButtonTemplate" hidden="true" inherits="LargeItemButtonTemplate, QuestInfoRewardItemCodeTemplate" virtual="true">
+	
+		<Size x="48" y="48"/>		
+		<Scripts>
+			<OnLoad>
+				self.type = "choice";
+				self.objectType = "item";
+			
+				_G[self:GetName().."NameFrame"]:Hide();
+				_G[self:GetName().."Name"]:Hide();
+	_G[self:GetName().."IconTexture"]:SetTexCoord(0.075,0.925,0.075,0.925);
+	_G[self:GetName().."IconTexture"]:SetSize(38,38);
+	_G[self:GetName().."IconTexture"]:ClearAllPoints();
+	_G[self:GetName().."IconTexture"]:SetPoint("CENTER", self, 0, 0);
+				
+				self.UpdateTooltip = self:GetScript("OnEnter");
+			</OnLoad>
+			
+			<OnEnter>
+				GameTooltip:SetParent(QuestC);
+				GameTooltip:SetFrameStrata("TOOLTIP");
+				
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+				GameTooltip:SetQuestItem(self.type, self:GetID());
+				
+				if(IsShiftKeyDown()) then
+					for i=1,2 do
+						_G["ShoppingTooltip"..i]:SetParent(QuestC);
+						_G["ShoppingTooltip"..i]:SetFrameStrata("TOOLTIP");
+					end
+					QC_GameTooltip_ShowCompareItem(GameTooltip);
+				end
+			</OnEnter>
+			
+			<OnLeave>
+				GameTooltip:SetParent(UIParent);
+				GameTooltip:SetFrameStrata("TOOLTIP");
+				GameTooltip:Hide();
+				for i=1,2 do
+					_G["ShoppingTooltip"..i]:SetParent(UIParent);
+					_G["ShoppingTooltip"..i]:SetFrameStrata("TOOLTIP");
+				end
+				ResetCursor();
+			</OnLeave>
+			
+			<OnClick>
+				if ( IsModifiedClick("DRESSUP") ) then
+					QC_DressUpItemLink(GetQuestItemLink(self.type, self:GetID()));
+				else
+					for i=1, GetNumQuestChoices() do
+						_G["QCChoicePanelItem"..i.."IconTexture"]:SetVertexColor(0.35,0.35,0.35,1);
+					end
+					_G[self:GetName().."IconTexture"]:SetVertexColor(1,1,1,1);
+					QuestInfoItem_OnClick(self);
+				end
+			</OnClick>
+		</Scripts>
+		
+	</Button>
+
+	<Frame name="QCHelpFrame" parent="QuestC" hidden="true">
+		<Size x="320" y="150"/>
+		
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11"/>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32"/>
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32"/>
+			</EdgeSize>
+		</Backdrop>
+		
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="text" justifyH="RIGHT" inherits="GameFontNormal">
+					<Size x="290" y="140"/>
+					
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		
+	</Frame>
+ 
+	<Frame name="QCQuestTitleFrame" parent="QuestC" hidden="true">
+		<Animations>
+			<AnimationGroup parentKey="showAnim">
+				<Alpha fromAlpha="0" toAlpha="1" startDelay="0.5" duration="1.0" order="1"/>
+				<Scripts>
+					<OnFinished>
+						self:GetParent():SetAlpha(1);
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="hideAnim">
+				<Alpha fromAlpha="1" toAlpha="0" duration="1.0" order="1"/>
+				<Scripts>
+					<OnFinished>
+						QCQuestTitleFrame:Hide();
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Size x="418" y="72"/>
+		<Anchors>
+			<Anchor point="TOP" x="0" y="-150"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\LevelUp\LevelUpTex" name="$parentBlackBg">
+					<Animations>
+						<AnimationGroup parentKey="grow">
+							<Scale scaleX="1.0" scaleY="0.001" duration="0.0" startDelay="0.5" order="1">
+								 <Origin point="BOTTOM">
+									<Offset x="0" y="0"/>
+								 </Origin>
+							</Scale>
+							<Scale scaleX="1.0" scaleY="1000.0" duration="0.15" startDelay="0.25" order="2">
+								 <Origin point="BOTTOM">
+									<Offset x="0" y="0"/>
+								 </Origin>
+							</Scale>
+						</AnimationGroup>
+					</Animations>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Size x="346" y="123"/>
+					<TexCoords left="0.00195313" right="0.63867188" top="0.03710938" bottom="0.23828125"/>
+					<Color r="1.0" g="1.0" b="1.0" a="1.0"/>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="2">
+				<Texture file="Interface\LevelUp\LevelUpTex" name="$parentGLine2" parentKey="gLine2">
+					<Animations>
+						<AnimationGroup parentKey="grow">
+							<Scale scaleX="0.001" scaleY="1.0" duration="0.0" startDelay="0.5" order="1"/>
+							<Scale scaleX="1000.0" scaleY="1.0" duration="0.5" order="2"/>
+							<Scripts>
+								<OnPlay>
+									QCQuestTitleFrameBlackBg.grow:Play();
+								</OnPlay>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0"/>
+					</Anchors>
+					<Size x="418" y="7"/>
+				</Texture>
+				<Texture file="Interface\LevelUp\LevelUpTex" name="$parentGLine" parentKey="gLine">
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="0"/>
+					</Anchors>
+					<Size x="418" y="7"/>
+					<Animations>
+						<AnimationGroup parentKey="grow">
+							<Scale scaleX="0.001" scaleY="1.0" duration="0.0" startDelay="0.5" order="1"/>
+							<Scale scaleX="1000.0" scaleY="1.0" duration="0.5" order="2"/>
+							<Scripts>
+								<OnPlay>
+									QCQuestTitleFrameGLine2.grow:Play();
+									QCQuestTitleFrameBlackBg.grow:Play();
+								</OnPlay>
+							</Scripts>
+						</AnimationGroup>
+					</Animations>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentLevelFrame" parentKey="levelFrame" alpha="1">
+				<Animations>
+					<AnimationGroup parentKey="levelUp">
+						<Alpha fromAlpha="0" toAlpha="1" duration="0.7" startDelay="0.5" order="1"/>
+						<Scripts>
+							<OnPlay>
+								QCQuestTitleFrameGLine.grow:Play();
+							</OnPlay>
+							<OnFinished>
+								self:GetParent():SetAlpha(1);
+							</OnFinished>
+						</Scripts>
+					</AnimationGroup>
+				</Animations>
+				<Size x="418" y="72"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" justifyH="CENTER" parentKey="questText">
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<Color r="1.0" g="0.82" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						  self.questText:SetFont(QuestTitleFont:GetFont(), 32, "OUTLINE");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnShow>
+				self:SetAlpha(0);
+				self.gLine:SetTexCoord(0.00195313, 0.81835938, 0.0, 0.01953125);
+				self.gLine2:SetTexCoord(0.1, 0.81835938, 0.0, 0.01953125);
+                      self.gLine:SetVertexColor(1.0, 0.75, 0.0);
+                      self.gLine2:SetVertexColor(1.0, 0.75, 0.0);
+
+				self.levelFrame.questText:SetTextColor(1.0, 0.75, 0.0);
+				self.levelFrame.levelUp:Play();
+				if self.hideAnim:IsPlaying() then
+					self.hideAnim:Stop()
+				end
+				self.showAnim:Play();
+			</OnShow>
+
+			<OnHide>
+				self.levelFrame.levelUp:Stop();
+				QCQuestTitleFrameBlackBg.grow:Stop();
+				QCQuestTitleFrameGLine2.grow:Stop();
+				QCQuestTitleFrameGLine.grow:Stop();
+			</OnHide>
+		</Scripts>
+	</Frame>
+
+		<Frame name="QCChoicePanel" parent="QuestC" parentKey="choicePanel" hidden="true">
+		<Size x="3000" y="100"/>
+		<Anchors>
+			<Anchor point="TOP" relativeTo="QCBottomPanel" x="0" y="87"/>
+		</Anchors>
+
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="textureCenter">
+					<Size x="200" y="100"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<Color r="0" g="0" b="0" a="0"/>
+				</Texture>
+				<Texture parentKey="textureLeft">
+					<Size x="200" y="100"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				<Texture parentKey="textureRight">
+					<Size x="200" y="100"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				
+				
+			</Layer>
+
+			<Layer level="ARTWORK">
+				<FontString parentKey="title">
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-130"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.9"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+<Frame name="QCRewardPanel" parent="QuestC" parentKey="rewardPanel" hidden="true">
+				<Size x="50" y="3000"/>
+		<Anchors>
+			<Anchor point="RIGHT"/>
+		</Anchors>
+
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="background">
+					<Color r="0" g="0" b="0" a="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+							<FontString parentKey="title">
+					<Anchors>
+						<Anchor point="CENTER" x="-600" y="-330"/>
+					</Anchors>
+					<Color r="1" g="1" b="1" a="0.9"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self.background:SetGradient("HORIZONTAL", CreateColor(0, 0, 0, 0), CreateColor(0, 0, 0, 0.5));
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

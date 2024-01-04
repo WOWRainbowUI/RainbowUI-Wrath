@@ -1,0 +1,11 @@
+## Interface: 30403
+## Title: DJBags
+## Author: DarkJaguar91
+## Notes: BagAddon
+## Title-zhTW: |cffB973CC[物品]|r DJ智能分類背包
+## Notes-zhTW: DJBags |n會自動分類物品，也能自訂分類的整合背包。|n|cffffd200使用方法：|r按住 Alt 點物品可自訂分類。按住 Alt 點分類框的背景，或輸入 /背包，或 /dj 開啟設定。|n|cffFF2D2D特別注意：|r分類背包和整合背包選擇其中一種使用即可，請勿同時載入。
+## Version: 3.4.2
+## SavedVariables: DJBags_DB
+## SavedVariablesPerCharacter: DJBags_DB_Char
+
+src/manifest.xml

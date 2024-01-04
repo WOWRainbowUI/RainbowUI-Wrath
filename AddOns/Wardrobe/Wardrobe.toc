@@ -1,0 +1,13 @@
+## Interface: 30403
+## Author: Copperbolts
+## Version: 3.4.1
+## Title: |cffFF7D0AWardrobe|r
+## Notes: Wardrobe assistant for those in need of gear management.
+## Title-zhTW: |cffB973FF[裝備]|r 管理員
+## Notes-zhTW: |cffFF7D0AWardrobe|r |n|n提供建立多套不同裝備的功能，方便快速切換裝備。有一鍵換裝的快速按鈕，也可以建立一鍵換裝巨集拉到快捷列上使用。|n|n|cffffd200使用方法: |r點角色視窗右上角的按鈕。建立新套裝後要記得按下儲存，才會保存套裝。|n|n一鍵換裝巨集：|n/wardrobe equipset-套裝名稱|n|n|cffFF2D2D特別注意: |r使用之前請先將遊戲內建的裝備管理員關閉，在Esc>介面>功能>啟用裝備管理員。
+## X-Category-zhTW: 物品
+## DefaultState: disabled
+## SavedVariables: WardrobeDb
+
+Wardrobe_Db.lua
+Wardrobe.lua

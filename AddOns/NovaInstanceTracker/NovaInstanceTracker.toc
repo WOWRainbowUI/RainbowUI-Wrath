@@ -1,0 +1,18 @@
+## Interface: 30403
+## Notes: Instance lockout tracking with mob count/xp/gold/trade logs, battleground/arena logs, and much more.
+## Title: Nova Instance Tracker
+## Title-zhTW: |cffFF7F00[副本]|r Nova 副本進度追蹤
+## Notes-zhTW: Nova Instance Tracker |n記錄打了哪些副本、打了幾次，以及怪物數量、經驗值、金錢和戰利品拾取記錄。|n|cffffd200使用方法：|r點小地圖按鈕開啟主視窗，從Esc>介面設定>插件>副本-進度，進行設定。
+## DefaultState: disabled
+## Author: Novaspark-Arugal OCE
+## Version: 1.47
+## SavedVariables: NITdatabase
+
+embeds.xml
+Locale\Locales.xml
+NovaInstanceTracker.lua
+Options.lua
+NITHelp.lua
+NITData.lua
+NITCreatures.lua
+NITZones.lua

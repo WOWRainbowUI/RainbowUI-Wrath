@@ -1,0 +1,68 @@
+## Interface: 30403
+## Title: AutoBarWrath
+## Author: MuffinManKen, Toadkiller (Original code)
+## Version: 3.04.1.01 Fix
+## Notes: Dynamic bars with buttons that automatically add potions, water, food and other items you specify into a button for use. Does not use action slots.
+## Notes-zhCN: 一组可配置的按钮，能自动从背包中寻找设定的物品供方便使用。
+## Title-zhTW: |cff00CCFF[快捷列]|r 自動快捷列
+## Notes-zhTW: AutoBarWrath |n自動產生各種分門別類的快捷列以方便使用，例如消耗品、飾品、圖騰、各類技能的快捷列和按鈕。|n|cffffd200使用方法：|r點小地圖按鈕進行設定。
+## DefaultState: disabled
+## X-Category: Action Bars
+## X-Credits: Diablo for teaching us how to guzzle potions. Saien for first enabling guzzling in WoW.  Sayclub (Korean) | PDI175, lostcup (Chinese traditional and simplified) | Teodred, curexx (German), Cinedelle (French), shiftos (Spanish), StingerSoft (Russian)
+## OptionalDeps: Ace3, Ace2, LibKeyBound-1.0, LibPeriodicTable-3.1, LibStickyFrames-2.0, LibDBIcon-1.0, OmniCC, Masque, MuffinLibPTSets
+## X-Embeds: Ace2, LibKeyBound-1.0,  LibPeriodicTable-3.1, LibStickyFrames-2.0, MuffinLibPTSets
+## SavedVariables: AutoBarDB, AutoBarDB2
+
+# Libraries
+embeds.xml
+
+libs/muffin_ui_toolkit.lua
+libs/muffin_whats_new.lua
+
+wrath/MuffinLibPTSets/LibPT-Muffin.Elixirs.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Explosives.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Flasks.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Food.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Gear.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Herbs.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Misc.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Poison.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Potions.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Skill.Fishing.lua
+wrath/MuffinLibPTSets/LibPT-Muffin.Stones.lua
+
+AceGUIWidget-DragLink.lua
+
+AutoBarGlobals.lua
+
+wrath/CachedSpellData_wrath.lua
+wrath/whats_new.lua
+
+# Localization
+locale/Locale-enUS.lua
+locale/Locale-zhCN.lua
+locale/Locale-zhTW.lua
+locale/Locale-default.lua
+
+Bindings.lua
+
+
+Core.lua
+
+
+AutoBarDB.lua
+AutoBarOptions.lua
+AutoBarSearchUtil.lua
+AutoBarSearch.lua
+AutoBarClassBar.lua
+AutoBarClassBasicButton.lua
+AutoBarClassButton.lua
+AutoBarClassPopupButton.lua
+AutoBarButton.lua
+wrath/AutoBarButton.lua
+AutoBarCategory.lua
+
+wrath/ABCategoryData_wrath.lua
+
+AutoBarConfig.lua
+

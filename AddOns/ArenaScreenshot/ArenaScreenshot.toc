@@ -1,0 +1,12 @@
+## Interface: 30403
+## Title: Arena Screenshot
+## Title-zhTW: |cffFF0000[PvP]|r 敵方目標警報
+## Version: 1.2.1
+## Author: Jinsong Zhao
+## Notes: Alerting
+## Notes-zhCN: 功能包括：敌对方小队成员目标报警
+## Notes-zhTW: Arena Screenshot|n|n競技場被集火提示。
+## X-Category-zhTW: PvP
+## DefaultState: disabled
+## SavedVariables: AS_Sound,AS_Focus
+ArenaScreenshot.lua

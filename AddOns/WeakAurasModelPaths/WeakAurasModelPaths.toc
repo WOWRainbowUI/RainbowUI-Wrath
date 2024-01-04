@@ -1,0 +1,17 @@
+## Interface: 100107
+## Title: WeakAuras Model Paths
+## Author: The WeakAuras Team
+## Version: 5.8.2
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
+## Notes: Model paths for WeakAuras
+## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+
+## Title-zhTW: |cffFF9900[進階]|r WA技能提醒-模組路徑
+## Notes-zhTW: WeakAuras Model Paths |n|nWA技能提醒的模組路徑
+## X-Category-zhTW: 進階
+## DefaultState: disabled
+
+ModelPaths.lua

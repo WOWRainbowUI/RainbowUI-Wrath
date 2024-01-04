@@ -1,0 +1,47 @@
+3.2.1
+    - Small fix for lua error on load
+3.2
+    - Added option to hide Multicast button while still being able to select totems for Call of Elements
+3.1.15
+    - Fixed combat cooldown buff timer transparency
+3.1.14
+    - Non-Totem spells set to multicast slots are replaced with totems
+3.1.13
+    - Remove CheckButton border from timer buttons
+3.1.12
+    - Load correct specialization on startup
+    - Several fixes for Ulduar ptr
+3.1.11
+    - Collect more debug info
+3.1.10
+    - Small fix for weapon tracker
+    - Added Chain Lightning to Enhancement cooldowns
+    - Fixed combat cooldowns layout if more than 8 are active
+3.1.9
+    - Fix hiding blizzard totem bar
+3.1.8
+    - Update ranks for totems assigned to multicast spells
+    - When switching/resetting talents, not available totems are replace with first in menu
+3.1.7
+    - Hide multicast button when in vehicle with an override bar
+3.1.6
+    - Added some info about the hidden blizzard totem bar to options
+3.1.5
+    - Maelstrom timer button now casts max rank Lightning Bolt and Chain Lightning
+3.1.4
+    - Fix disabling/enabling a slot for the multicast button
+    - Maelstrom timer lightning bolts will fade out of combat if enabled
+    - Added option for Maelstrom timer to show number instead of lightning bolts
+    - Default totem bar always hides when multicast button is enabled
+3.1.3
+    - Changed scaling for Flameshock and Maelstrom timers
+    - Added stop pulse animations for Flameshock and Maelstrom timers
+3.1.2
+    - Long cooldowns can be moved, hold modifier (shift/ctrl/alt) to not trigger button
+    - Combat cooldowns can be moved without triggering by holding ctrl/alt
+3.1.1
+    - Hide lightning bolt cast button when maelstrom counter is hidden
+3.1
+    - Added timers for longer cooldowns
+    - Fixed weapon tracker double spell buttons, now first click again targets main hand specifically, second click offhand
+

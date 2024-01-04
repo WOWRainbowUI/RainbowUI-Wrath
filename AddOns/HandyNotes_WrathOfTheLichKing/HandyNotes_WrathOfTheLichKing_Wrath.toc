@@ -1,0 +1,23 @@
+## Interface: 30403
+## Title: HandyNotes: Wrath of the Lich King
+## Notes: Where are the interesting things in Northrend?
+## Author: Kemayo
+## Version: v12.1
+## DefaultState: enabled
+## X-Category: Map
+## X-eMail: kemayo @ gmail DOT com
+## X-Curse-Project-ID: 678106
+## X-Wago-ID: xZKxlvKk
+## SavedVariables: HandyNotes_WrathOfTheLichKingDB
+## RequiredDeps: HandyNotes
+## OptionalDeps: !LibUIDropDownMenu
+
+## Title-zhTW: |cff4DFF4D[地圖]|r 地圖標記-巫妖王
+## Notes-zhTW: HandyNotes: Wrath of the Lich King |n|n在地圖上顯示北裂境的稀有怪位置。
+## X-Category-zhTW: 地圖
+
+lib\LibUIDropDownMenu\LibUIDropDownMenu.xml
+
+handler\handler.xml
+
+wrath.lua

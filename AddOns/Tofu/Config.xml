@@ -1,0 +1,189 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Script file="Config.lua"/>
+	
+	<Font name="QC" font="Fonts\FRIZQT__.TTF" virtual="true">
+		<FontHeight>
+			<AbsValue val="18"/>
+		</FontHeight>
+	</Font>
+	
+	<Font name="QCSmall" font="Fonts\FRIZQT__.TTF" virtual="true">
+		<FontHeight>
+			<AbsValue val="18"/>
+		</FontHeight>
+	</Font>
+
+	<Button name="QCConfigMenuButtonTemplate" virtual="true">
+		<Size x="128" y="40"/>
+			
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="text" inherits="QC">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+
+	</Button>
+
+	<CheckButton name="QCConfigCheckButtonTemplate" virtual="true">
+		<Size x="128" y="40"/>
+	
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="text" inherits="QCSmall">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	
+		<Scripts>
+	
+			<OnClick>
+				QCConfigCheckButton_OnClick(self, button);
+			</OnClick>
+			
+			<OnEnter>
+				if ( self.tooltipText ) then
+					GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
+					GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
+				end
+				if ( self.tooltipRequirement ) then
+					GameTooltip:AddLine(self.tooltipRequirement, 1.0, 1.0, 1.0, 1.0);
+					GameTooltip:Show();
+				end
+			</OnEnter>
+			
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		
+		</Scripts>
+	
+	</CheckButton>
+	
+	<Button name="QCConfigButtonTemplate" virtual="true">
+		<Size x="128" y="40"/>
+	
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" parentKey="text" inherits="QCSmall">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	
+		<Scripts>
+			
+			<OnEnter>
+				if ( self.tooltipText ) then
+					GameTooltip:SetOwner(self, self.tooltipOwnerPoint or "ANCHOR_RIGHT");
+					GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
+				end
+				if ( self.tooltipRequirement ) then
+					GameTooltip:AddLine(string.format(self.tooltipRequirement, self.value), 1.0, 1.0, 1.0, 1.0);
+					GameTooltip:Show();
+				end
+			</OnEnter>
+			
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		
+		</Scripts>
+	</Button>
+	
+	<Frame name="QCConfig" hidden="true">
+		<Size x="512" y="512"/>
+		
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentBackground" parentKey="background" file="Interface\AddOns\Tofu\Textures\config.tga">
+					<Size x="350" y="350"/>
+					
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+
+
+							<Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="Close">
+  <Anchors>
+    <Anchor point="CENTER">
+      <Offset x="0" y="-32"/>
+    </Anchor> 
+  </Anchors>
+  <Scripts>
+    <OnClick> self:GetParent():Hide(); </OnClick>
+  </Scripts>
+</Button>
+
+
+			<Frame name="$parentCameraMenu" parentKey="cameraMenu">
+				<Size x="512" y="381"/>
+				
+				<Anchors>
+					<Anchor point="BOTTOM"/>
+				</Anchors>
+				
+				<Frames>
+					<CheckButton name="$parentToggleCamera" parentKey="toggleCamera" inherits="QCConfigCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOP"/>
+						</Anchors>
+						
+
+					</CheckButton>
+				
+					<CheckButton name="$parentToggleActionCam" parentKey="toggleActionCam" inherits="QCConfigCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOP" x="-0.5" y="-96"/>
+						</Anchors>
+					
+						<Scripts>
+							<OnLoad function="QCConfigCameraMenuToggleActionCam_OnLoad"/>
+							
+							<OnEnable>
+								if(QSV[UnitName("player")]["ActionCamEnabled"]) then
+									self.text:SetTextColor(0.4, 1, 0.4);
+								else
+									self.text:SetTextColor(1, 0.4, 0.4);
+								end
+							</OnEnable>
+							
+							<OnDisable>
+								self.text:SetTextColor(0.2, 0.2, 0.2);
+							</OnDisable>
+						</Scripts>
+					</CheckButton>
+				</Frames>
+		
+			</Frame>
+
+		</Frames>
+	
+		<Scripts>
+			<OnLoad function="QCConfig_OnLoad"/>
+			
+			<OnShow>
+				QCConfig_OnShow();
+			</OnShow>
+		</Scripts>
+	
+	</Frame>
+
+</Ui>

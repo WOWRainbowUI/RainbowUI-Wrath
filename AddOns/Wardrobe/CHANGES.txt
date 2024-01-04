@@ -1,0 +1,10 @@
+tag db32881edfb5322812919acbb87db2d08d340020 Wardrobe-1.0.10
+Author:	Samuel Thomas Pain <samuelthomaspain@gmail.com>
+Date:	Sat Oct 5 02:15:52 2019 +0100
+
+commit 567e5d4686bc146c46d0c2fd400eaa2233b2058e
+Author: Samuel Thomas Pain <samuelthomaspain@gmail.com>
+Date:   Sat Oct 5 02:14:12 2019 +0100
+
+    added check to hide quick panel if no sets attached to it
+

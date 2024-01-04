@@ -1,0 +1,10 @@
+tag a6ea6138e7cedb10810f38150211d570cf90a41b v1.10.21
+Author:	Talyrius <contact@talyrius.net>
+Date:	Wed Sep 6 17:54:31 2023 -0700
+
+commit 09c9e004a6cd6cd1707468f150fd718190f81606
+Author: Talyrius <contact@talyrius.net>
+Date:   Wed Sep 6 17:53:42 2023 -0700
+
+    Updated for Patch 10.1.7: Fury Incarnate.
+

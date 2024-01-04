@@ -1,0 +1,10 @@
+## Interface: 30403
+## Title: |TInterface/Addons/BagBrother/Art/Bagnon-Small:16:16|t|TInterface/Addons/BagBrother/Art/Bagnonium-Small:16:16|t BagBrother
+## Notes: Bagnon and Bagnonium's shared engine,|nstorage and everything.|n|cffbbbbbbBy João Cardoso and Jason Greer|r|n|n|TInterface/Addons/BagBrother/Art/Patreon:12:12|t |cff82c5ffpatreon.com/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Discord:12:12:0:-2|t |cff82c5ffbit.ly/discord-jaliborc|r
+## Title-zhTW: |cffB973CC[背包]|r 分類整合背包-其他角色
+## Notes-zhTW: BagBrother |n隨時可以查看其他角色的背包和銀行。|n|cffffd200使用方法：|r點背包視窗左上角的頭像切換角色。
+## DefaultState: disabled
+## Dependencies: Combuctor
+## Author: Jaliborc (João Cardoso)
+## SavedVariables: BrotherBags
+## OptionalDeps: WoWUnit

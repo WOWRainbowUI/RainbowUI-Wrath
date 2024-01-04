@@ -1,0 +1,64 @@
+## Interface: 30403
+## Title: TotemTimers
+## Title-zhTW: |cffFF7373[職業]|r 薩滿圖騰快捷列
+## Notes-zhTW: TotemTimers |n|n能快速施放圖騰的快捷列，並且會顯示圖騰、復生、閃電盾和武器增益效果的時間和提醒。|n|n|cffffd200使用方法: |r從Esc>介面>插件>薩滿圖騰，進行設定。
+## X-Category-zhTW: 職業
+## DefaultState: disabled
+## Author:  Xianghar
+## Version: 3.2.1
+## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
+## OptionalDeps: Masque
+## LoadManagers: AddonLoader
+## X-LoadOn-Class: Shaman
+## X-Curse-Project-ID: 339602
+## X-WoWI-ID: 25223
+## X-Wago-ID: rkGrwANy
+
+embeds.xml
+
+localization\localization.lua
+localization\localization.cn.lua
+localization\localization.tw.lua
+
+XiTimers.lua
+XiTimers.xml
+
+wrath\TotemData.lua
+TotemTimers.xml
+TotemTimers.lua
+
+Spells.lua
+
+Animation.lua
+Bindings.lua
+ToolTips.lua
+TotemSets.xml
+TotemSets.lua
+TTActionBars.lua
+DefaultSettings.lua
+Settings.lua
+SetupTimers.lua
+MultiSpell.lua
+SetupTrackers.lua
+Ankh.lua
+Shield.lua
+EarthShield.lua
+Weapon.lua
+EnhanceCDs.lua
+LongCooldowns.lua
+Warnings.lua
+Masque.lua
+
+GUI\localization.lua
+GUI\localization.tw.lua
+GUI\localization.cn.lua
+GUI\General.lua
+GUI\Timers.lua
+GUI\Trackers.lua
+GUI\EnhanceCDs.lua
+GUI\Messages.lua
+GUI\Totems.lua
+GUI\Sets.lua
+GUI\Profiles.lua
+
+

@@ -1,0 +1,12 @@
+## Interface: 30403
+## Title: ccc
+## Version: v3.0.0
+## Notes: Progress bars for CCs and DRs
+## Title-zhTW: |cffFF2D2D[戰鬥]|r 控場監控
+## Notes-zhTW: ccc |n|n控場監控計時條。|n|n|cffffd200使用方法: |r輸入/ccc 進行設定。
+## X-Category-zhTW: 戰鬥
+## DefaultState: disabled
+## Author: shirsig
+## SavedVariablesPerCharacter: ccc_settings
+constants.lua
+ccc.lua

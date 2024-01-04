@@ -1,0 +1,16 @@
+## Interface: 30403
+## Plain Title: QuestC
+## Title: |cff4682B4Q|cff4682B4u|cffB0C4DEe|cffB0E0E6s|cffB0E0E6t|cffFFFFFFC|r
+## Author: reative
+## Notes: Quest Cinematic 
+## Title-zhTW: |cff00FFFF[任務]|r 對話 (電影風格)
+## Notes-zhTW: |cff4682B4Q|cff4682B4u|cffB0C4DEe|cffB0E0E6s|cffB0E0E6t|cffFFFFFFC|r |n|n像看電影般的享受任務對話和劇情，讓每個任務都像是過場動畫。|n|n|cffffd200使用方法: |r用滑鼠點或按空白鍵接受任務和繼續下一段對話，按Esc取消對話。
+## X-Category-zhTW: 任務
+## Version: 1.6
+## DefaultState: disabled
+## SavedVariables: QuestCSV
+
+Local.lua
+
+QuestC.xml
+QuestC.lua

@@ -1,0 +1,28 @@
+## Interface: 30403
+## Author: Aznamir, Dyaxler, Es, gallantron
+## Title: PallyPower Classic
+## Title-zhTW: |cffFF7373[職業]|r 聖騎威能
+## Version: v1.5.3-classic
+## Notes: Raid/Party Paladin buffs
+## Notes-zhCN: 圣骑士祝福管理
+## Notes-zhTW: PallyPower|n|n能快速施放祝福的快捷列，並且可以分配團隊祝福工作，顯示祝福、光環、正義之怒及聖印的時間跟提醒。|n|n|cffffd200使用方法: |r從小地圖按扭打開設置面板或點及插件定位點。
+## DefaultState: disabled
+## Dependencies:
+## OptionalDeps: Ace3, LibSharedMedia-3.0, SharedMedia
+## X-Category: Paladin
+## X-Embeds: Ace3, LibClassicDurations, LibSharedMedia-3.0, LibUIDropDownMenu
+## X-Curse-Project-ID: 2703
+## SavedVariables: PallyPowerDB, PallyPower_Assignments, PallyPower_NormalAssignments, PallyPower_AuraAssignments, PallyPower_SavedPresets, PallyPower_ChanNames, LCD_Data, LCD_GUIDAccess
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+locale\enUS.lua
+locale\zhCN.lua
+locale\zhTW.lua
+
+PallyPower.lua
+PallyPowerValues.lua
+PallyPowerOptions.lua
+PallyPower_Wrath.xml

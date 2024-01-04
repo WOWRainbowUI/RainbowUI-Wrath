@@ -1,0 +1,19 @@
+## Interface: 30403
+## Version: 3.30
+## Title: LootMonitor
+## Author: Aoikaze
+## SavedVariables: LootMonitorDB
+## Notes: Announce Loots Info
+## Notes-zhCN: 通报Loot情况
+## Title-zhTW: |cffFF7F00[團隊]|r 進本/摸屍體/拾取監控
+## Notes-zhTW: LootMonitor |n|n可以看到誰先進本、誰第一個摸屍體，也會記錄誰拿了什麼裝備。|n|n|cffffd200使用方法: |r點小地圖按鈕。
+## X-Category-zhTW: 團隊
+## DefaultState: disabled
+
+ChatThrottleLib.lua
+Locale.lua
+Data.lua
+LootMonitor.lua
+GUI.lua
+Output.lua
+MinimapIcon.lua

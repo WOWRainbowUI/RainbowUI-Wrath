@@ -1,0 +1,15 @@
+## Interface: 30403
+## Plain Title: Tofu
+## Title: Tofu
+## Author: slipciok
+## Notes: TOFU: /tofu to open config menu
+## Title-zhTW: |cff00FFFF[任務]|r 對話 (FF XIV 風格)
+## Notes-zhTW: Tofu |n與NPC對話、接受/交回任務時，會使用 FINAL FANTASY XIV 風格的對話方式，取代傳統的任務說明。|n|cffffd200使用方法：|r用滑鼠點或按空白鍵接受任務和繼續下一段對話，按Esc取消對話。
+## Version: 2.24 Wrath
+## SavedVariables: TSV
+
+Tofu.lua
+Tofu.xml
+ConfigU.lua
+Config.xml
+Config.lua
