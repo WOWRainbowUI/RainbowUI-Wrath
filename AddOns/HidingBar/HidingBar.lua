@@ -449,7 +449,7 @@ function hb:checkProfile(profile)
 	profile.config.customGrabList = profile.config.customGrabList or {}
 	profile.config.ombGrabQueue = profile.config.ombGrabQueue or {}
 	profile.config.btnSettings = setmetatable(profile.config.btnSettings or {}, btnSettingsMeta)
-	profile.config.mbtnSettings = setmetatable(profile.config.mbtnSettings or {}, btnSettingsMeta)
+	profile.config.mbtnSettings = setmetatable(profile.config.mbtnSettings or {LibDBIcon10_DBM={true}, LibDBIcon10_Krowi_ExtendedVendorUILDB={true}, LibDBIcon10_Leatrix_Maps={true}, MyAddonButton={true}}, btnSettingsMeta) -- 更改預設值profile.config.mbtnSettings or {}, btnSettingsMeta)
 	--[[ BTN SETTINGS OBJECT
 	[1] - is disabled
 	[2] - order
@@ -1388,9 +1388,7 @@ do
 		"SetSize",
 		"SetWidth",
 		"SetHeight",
-		"Disable",
-		"SetEnabled",
-		"HookScript",
+		"SetMotionScriptsWhileDisabled",
 	}
 
 
@@ -1429,14 +1427,23 @@ do
 	local function CreateAnimationGroup(self, ...)
 		local animationGroup = getmetatable(self).__index.CreateAnimationGroup(self, ...)
 		animationGroup.Play = void
+		animationGroup.Restart = void
 		return animationGroup
 	end
 
 
 	local function SetScript(self, event, func, ...)
 		event = event:lower()
-		if func == nil or event ~= "onupdate" and event ~= "ondragstart" and event ~= "ondragstop" then
+		if func == nil or event ~= "ondragstart" and event ~= "ondragstop" then
 			getmetatable(self).__index.SetScript(self, event, func, ...)
+		end
+	end
+
+
+	local function HookScript(self, event, ...)
+		event = event:lower()
+		if event ~= "ondragstart" and event ~= "ondragstop" then
+			getmetatable(self).__index.HookScript(self, event, ...)
 		end
 	end
 
@@ -1470,6 +1477,7 @@ do
 		btn.Hide = Hide
 		btn.IsShown = IsShown
 		btn.SetScript = SetScript
+		btn.HookScript = HookScript
 	end
 
 
@@ -1487,6 +1495,7 @@ do
 		btn.Hide = nil
 		btn.IsShown = nil
 		btn.SetScript = nil
+		btn.HookScript = nil
 	end
 end
 
@@ -1551,6 +1560,12 @@ function hb:setParams(btn, cb)
 	self.SetAlpha(btn, 1)
 	self.SetSize(btn, self.GetSize(btn))
 
+	if self.IsObjectType(btn, "Button") then
+		local m = getmetatable(btn).__index
+		p.motionWhileDisabled = m.GetMotionScriptsWhileDisabled(btn)
+		m.SetMotionScriptsWhileDisabled(btn, true)
+	end
+
 	return p
 end
 
@@ -1568,6 +1583,10 @@ function hb:restoreParams(btn)
 	self.SetFixedFrameStrata(btn, p.fixedFrameStrata)
 	self.SetFixedFrameLevel(btn, p.fixedFrameLevel)
 	self.SetClipsChildren(btn, p.clipped)
+
+	if self.IsObjectType(btn, "Button") then
+		getmetatable(btn).__index.SetMotionScriptsWhileDisabled(btn, p.motionWhileDisabled)
+	end
 
 	self.ClearAllPoints(btn)
 	for i = 1, #p.points do
