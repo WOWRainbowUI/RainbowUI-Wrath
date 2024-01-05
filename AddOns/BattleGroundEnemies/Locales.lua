@@ -127,6 +127,7 @@ Example:
 
 This will target the enemy, cast Polymorph, write a message into the say channel and target your previous target.
 Note that macros can only be 255 characters long (including substitutions).]=]
+L["Data"] = "Data"
 L["debuff"] = "debuff"
 L["DebuffContainer"] = "Debuff container"
 L["DebuffIcon"] = "Debuff icon"
@@ -394,7 +395,7 @@ L["Trinket_Enabled_Desc"] = "When enabled there will be icons for Gladiator's Me
 L["Trinket_Width_Desc"] = "The width of the trinket."
 L["TrinketSettings_Desc"] = "Settings regarding Trinkets"
 L["UpdatePeriod"] = "Update period"
-L["UpdatePeriod_Desc"] = "The time between combat checks, dont put this too low because this can potentially cause performance issues."
+L["UpdatePeriod_Desc"] = "The time between combat checks in seconds, dont put this too low because this can potentially cause performance issues."
 L["Upwards"] = "Upwards"
 L["UseBarHeight"] = "Use bar height"
 L["UseBigDebuffsPriority"] = "Use BigDebuffs priorities"
@@ -882,6 +883,7 @@ L["CustomMacro_Desc"] = [=[這裡可以設定自訂巨集，空白的欄位會�
 這個巨集會將敵人選為目標、施放變形術、輸出一段訊息到說話頻道，然後選取前一個目標為當前目標。
 
 請注意，巨集最長只能使用 255 個字元(包含替換後的敵人名字)。]=]
+L["Data"] = "資料"
 L["debuff"] = "減益效果"
 L["DebuffContainer"] = "減益效果區域"
 L["DebuffIcon"] = "減益效果圖示"
@@ -1147,7 +1149,7 @@ L["Trinket_Enabled_Desc"] = "啟用時會顯示鬥士徽章等飾品圖示。"
 L["Trinket_Width_Desc"] = "飾品的寬度。"
 L["TrinketSettings_Desc"] = "飾品的設定。"
 L["UpdatePeriod"] = "更新間隔"
-L["UpdatePeriod_Desc"] = "多久檢查一次是否在戰鬥中，請不要輸入太低的數值，可能會導致影響遊戲效能問題。"
+L["UpdatePeriod_Desc"] = "多久檢查一次是否在戰鬥中 (以秒為單位)，請不要輸入太低的數值，可能會導致影響遊戲效能問題。"
 L["Upwards"] = "向上"
 L["UseBarHeight"] = "使用橫列高度"
 L["UseBigDebuffsPriority"] = "使用 BigDebuffs 的優先順序"
