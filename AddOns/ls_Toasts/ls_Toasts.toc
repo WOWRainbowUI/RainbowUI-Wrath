@@ -1,6 +1,6 @@
 ## Interface: 30403
 ## Author: lightspark
-## Version: 30402.01
+## Version: 30403.02
 ## Title: LS: |cff00cc99Toasts|r
 ## Notes: Better toasts, cheers!
 ## Title-zhTW: |cff0099FF[介面]|r 通知面板增強
