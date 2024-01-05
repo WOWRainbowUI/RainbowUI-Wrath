@@ -28,7 +28,7 @@
 	
 	
 	<!-- The primary configure layer, all configuration UI descends from this -->
-	<Frame name="BFConfigureLayer" parent="UIParent" frameStrata="LOW" hidden="true">
+	<Frame name="BFConfigureLayer" parent="UIParent" frameStrata="LOW" hidden="true" inherits="SecureHandlerBaseTemplate">
 		<Scripts>
 			<OnShow>
 				BFUILib.ConfigureModeEnabled();
