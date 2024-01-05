@@ -112,7 +112,11 @@ function GBB.GetDungeonNames()
 		["DEBUG"] = "DEBUG INFO",
 		["BAD"] =	"DEBUG BAD WORDS - REJECTED",
 		["BREW"] =  "Brewfest - Coren Direbrew",
-		["HOLLOW"] =  "Hallow's End - Headless Horseman",
+		["HOLLOW"] = "Hallow's End - Headless Horseman",
+
+		["GAMMA"] = "Gamma",
+		["N3"] = 	"New 3",
+		["DAILY"] = "Daily"
 		}
 		
 	local dungeonNamesLocales={ 
@@ -144,12 +148,12 @@ function GBB.GetDungeonNames()
 			["SCH"] = 	"通靈學院",
 			["LBRS"] = 	"黑石塔下層",
 			["UBRS"] = 	"黑石塔上層 (10)",
-			["RAMPS"] = 	"地獄火壁壘",
+			["RAMPS"] = "地獄火壁壘",
 			["BF"] = 	"血熔爐",
 			["SP"] = 	"奴隸監獄",
 			["UB"] = 	"深幽泥沼",
 			["MT"] = 	"法力墓地",
-			["CRYPTS"] = 	"奧奇奈地穴",
+			["CRYPTS"] = "奧奇奈地穴",
 			["SETH"] = 	"塞司克大廳",
 			["OHB"] = 	"希爾斯布萊德丘陵舊址",
 			["MECH"] = 	"麥克納爾",
@@ -194,7 +198,7 @@ function GBB.GetDungeonNames()
 			["SSC"] = 	"毒蛇神殿洞穴 (25)",
 			["EYE"] = 	"風暴要塞 (25)",
 			["ZA"] = 	"祖阿曼 (10)",
-			["HYJAL"] = 	"海加爾山 (25)",
+			["HYJAL"] = "海加爾山 (25)",
 			["BT"] = 	"黑暗神廟 (25)",
 			["SWP"] = 	"太陽之井高地 (25)",
 			["ONY"] = 	"奧妮克希亞的巢穴 (40)",
@@ -211,6 +215,9 @@ function GBB.GetDungeonNames()
 			["ARENA"] = "競技場 (PvP)",
 			["MISC"] = 	"未分類",
 			["TRADE"] =	"交易",
+			["GAMMA"] = "伽瑪系統",
+			["N3"] = 	"新三本",
+			["DAILY"] = "日常",
 		},
 		zhCN ={
 			["UK"] = 	"乌特加德城堡",
@@ -304,6 +311,9 @@ function GBB.GetDungeonNames()
 			["EOTS"] = 	"风暴之眼 (PvP)",
 			["MISC"] = 	"未分類",
 			["TRADE"] =	"交易",
+			["GAMMA"] = "防御系统伽玛",
+			["N3"] = "新三本",
+			["DAILY"] = "日常",
 		},
 	}
 
@@ -377,15 +387,15 @@ GBB.PvpLevels = {
 GBB.WotlkDungeonLevels = {
 	["UK"] =    {68,80},    ["NEX"] =    {69,80},    ["AZN"] =    {70,80},    ["ANK"] =    {71,80},    ["DTK"] =    {72,80},    ["VH"] =    {73,80},    
 	["GD"] =    {74,80},    ["HOS"] =    {75,80},    ["HOL"] =    {76,80},    ["COS"] =    {78,80},    ["OCC"] =    {77,80},    ["UP"] =    {77,80},    
-	["FOS"] =    {80,80},   ["POS"] =    {80,80},    ["HOR"] =    {80,80},    ["CHAMP"] =  {78,80},    ["OS"] =    {80,80},    ["VOA"] =    {80,80},    
-	["EOE"] =    {80,80},   ["ULDAR"] =  {80,80},    ["TOTC"] =     {80,80},    ["RS"] =     {80,80},    ["ICC"] =    {80,80},    ["ONY"] =    {80,80},    
-	["NAXX"] =   {80,80},   ["BREW"] = {65,70},      ["HOLLOW"] = {65,70},
+	["FOS"] =    {80,80},   ["POS"] =    {80,80},    ["HOR"] =    {80,80},    ["CHAMP"] =  {78,80},    ["OS"] =     {80,80},    ["VOA"] =    {80,80},    
+	["EOE"] =    {80,80},   ["ULDAR"] =  {80,80},    ["TOTC"] =     {80,80},  ["RS"] =     {80,80},    ["ICC"] =    {80,80},    ["ONY"] =    {80,80},    
+	["NAXX"] =   {80,80},   ["BREW"] = {65,70},      ["HOLLOW"] = {65,70},    ["GAMMA"] = {80,80}, ["N3"] = {80,80}, ["DAILY"] = {80,80},
 }
 
 GBB.WotlkDungeonNames = {
 	"UK", "NEX", "AZN", "ANK", "DTK", "VH", "GD", "HOS", "HOL", "COS", 
 	"OCC", "UP", "FOS", "POS", "HOR", "CHAMP", "OS", "VOA", "EOE", "ULDAR", 
-	"TOTC", "RS", "ICC", "ONY", "NAXX"
+	"TOTC", "RS", "ICC", "ONY", "NAXX", "GAMMA", "N3", "DAILY",
 }
 
 GBB.TbcDungeonNames = { 
@@ -463,7 +473,7 @@ function GBB.GetDungeonSort()
 		end
     end
 	
-	local dungeonOrder = { GBB.VanillDungeonNames, GBB.TbcDungeonNames, GBB.WotlkDungeonNames, GBB.PvpNames, GBB.Misc, GBB.DebugNames}
+	local dungeonOrder = { GBB.VanillDungeonNames, GBB.PvpNames, GBB.Misc, GBB.TbcDungeonNames, GBB.WotlkDungeonNames, GBB.DebugNames}
 
 	-- Why does Lua not having a fucking size function
 	 local vanillaDungeonSize = 0
@@ -480,17 +490,26 @@ function GBB.GetDungeonSort()
 	for _, _ in pairs(GBB.DebugNames) do
 		debugSize = debugSize+1
 	end
-	
+
+	local pvpSize = 0
+	for _, _ in pairs(GBB.PvpNames) do
+		pvpSize = pvpSize+1
+	end
+
+	local miscSize = 0
+	for _, _ in pairs(GBB.Misc) do
+		miscSize = miscSize+1
+	end
 
 	local tmp_dsort, concatenatedSize = ConcatenateLists(dungeonOrder)
 	local dungeonSort = {}
-	
-	GBB.TBCDUNGEONSTART = vanillaDungeonSize + 1
-	GBB.MAXDUNGEON = vanillaDungeonSize
-	GBB.TBCMAXDUNGEON = vanillaDungeonSize  + tbcDungeonSize
+
+	GBB.MAXDUNGEON = vanillaDungeonSize + pvpSize + miscSize
+	GBB.TBCDUNGEONSTART = GBB.MAXDUNGEON + 1
+	GBB.TBCMAXDUNGEON = GBB.MAXDUNGEON  + tbcDungeonSize
 	GBB.WOTLKDUNGEONSTART = GBB.TBCMAXDUNGEON + 1
 	GBB.WOTLKMAXDUNGEON = concatenatedSize - debugSize - 1
-	
+
 	for dungeon,nb in pairs(tmp_dsort) do
 		dungeonSort[nb]=dungeon
 		dungeonSort[dungeon]=nb
@@ -499,12 +518,12 @@ function GBB.GetDungeonSort()
 	-- Need to do this because I don't know I am too lazy to debug the use of SM2, DM2, and DEADMINES
 	dungeonSort["SM2"] = 10.5
 	dungeonSort["DM2"] = 19.5
-	dungeonSort["DEADMINES"] = 99 
-	
+	dungeonSort["DEADMINES"] = 99
+
 	return dungeonSort
 end
-	
-local function DetermineVanillDungeonRange() 
+
+local function DetermineVanillDungeonRange()
 
 	return GBB.PostTbcDungeonLevels
 

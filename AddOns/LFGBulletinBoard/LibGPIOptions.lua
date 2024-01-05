@@ -656,5 +656,7 @@ function Options.Open(panel)
 	-- InterfaceOptionsFrame_OpenToCategory(Options.Panel[#Options.Panel])
 	-- InterfaceOptionsFrame_OpenToCategory(Options.Panel[#Options.Panel])
 	-- InterfaceOptionsFrame_OpenToCategory(Options.Panel[panel])
-	Settings.OpenToCategory("副本-佈告欄")
+	-- Settings.OpenToCategory("副本-佈告欄")
+	Settings.OpenToCategory(Addon.L["CfgTitle"])
 end
+

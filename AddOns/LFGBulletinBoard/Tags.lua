@@ -210,7 +210,7 @@ GBB.dungeonTagsLoc={
 		["OCC"] = 	"之眼 奧眼",
 		["UP"] = 	"俄顛 俄巔",
 		["FOS"] = 	"fos 熔爐 眾魂",
-		["POS"] = 	"pos 薩倫 薩淵",
+		["POS"] = 	"pos 薩倫 薩輪 薩淵",
 		["HOR"] = 	"hor 倒影",
 		["CHAMP"] = "勇士",
 
@@ -221,7 +221,7 @@ GBB.dungeonTagsLoc={
 		["ULDAR"] = "奧杜亞 ulduar",
 		["TOTC"] = 	"十字軍 totc totc10 totc25 toc10 toc25 togc",
 		["RS"] = 	"晶紅 晶紅龍殿 sanctum hal hal10 hal25",
-		["ICC"] = 	"冰冠 冰冠城塞 citadel",
+		["ICC"] = 	"冰冠 冰冠城塞 citadel icc",
 		["BREW"] =  "啤酒",
 
 		["KARA"] = 	"卡拉 卡啦",
@@ -246,6 +246,9 @@ GBB.dungeonTagsLoc={
 		["EOTS"] = 	"暴風眼 暴風之眼",
 		["ARENA"] =	"競技 22 33 3v3 5v5 2v2 2vs2 3vs3 5vs5",
 		["TRADE"] = 	"買 賣 售 收 代工 出售 附魔 COD", --hlink
+		["GAMMA"] = "伽馬 伽瑪 Y 隨機",
+		["N3"] = "三本 3本",
+		["DAILY"] = "日常 週常 周常 周任 週任",
 	}),
 	zhCN = langSplit({
 		["UK"] = 	"乌特加德城堡 乌堡",
@@ -260,8 +263,8 @@ GBB.dungeonTagsLoc={
 		["COS"] = 	"净化斯坦索姆 stsm STSM",
 		["OCC"] = 	"魔环",
 		["UP"] = 	"乌特加德之巅 乌巅",
-		["FOS"] = 	"灵魂洪炉",
-		["POS"] = 	"萨隆深渊",
+		["FOS"] = 	"灵魂洪炉 熔炉",
+		["POS"] = 	"萨隆深渊 矿坑",
 		["HOR"] = 	"映像大厅",
 		["CHAMP"] = "冠军的试炼",
 		["NAXX"] = 	"naxx NAXX 纳克萨玛斯",
@@ -339,6 +342,9 @@ GBB.dungeonTagsLoc={
 		["EOTS"] = 	"风暴之眼",
 		["ARENA"] =	"竞技 22 33 3v3 5v5 2v2 2vs2 3vs3 5vs5",
 		["TRADE"] = "买 卖 收 代工 出售 附魔",
+		["GAMMA"] = "伽马 伽玛 γ 随机",
+		["N3"] = "三本 3本",
+		["DAILY"] = "日常 周常 周长",
 	}),
 }
 

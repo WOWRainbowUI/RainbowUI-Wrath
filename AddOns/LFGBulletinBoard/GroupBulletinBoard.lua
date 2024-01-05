@@ -377,7 +377,7 @@ function GBB.Popup_Minimap(frame,notminimap)
 
 	GBB.PopupDynamic:AddItem(GBB.L["HeaderSettings"],false, GBB.Options.Open, 1)
 
-	GBB.PopupDynamic:AddItem(GBB.L["WotlkPanelFilter"], false, GBB.Options.Open, 2)
+	-- GBB.PopupDynamic:AddItem(GBB.L["WotlkPanelFilter"], false, GBB.Options.Open, 2) -- 不顯示巫妖王過濾
 
 
 	GBB.PopupDynamic:AddItem(GBB.L["PanelAbout"], false, GBB.Options.Open, 7)
@@ -762,7 +762,7 @@ function GBB.OnUpdate(elapsed)
 		end;
 
 		if GBB.ElapsedSinceLfgUpdate > 18 and GBB.Tool.GetSelectedTab(GroupBulletinBoardFrame)==2 and GroupBulletinBoardFrame:IsVisible() then
-			if LFGBrowseFrameRefreshButton then LFGBrowseFrameRefreshButton:Click() end
+			if LFGBrowseFrameRefreshButton then LFGBrowseFrameRefreshButton:Click() end -- 暫時修正
 			GBB.UpdateLfgTool()
 			GBB.ElapsedSinceLfgUpdate = 0
 		else

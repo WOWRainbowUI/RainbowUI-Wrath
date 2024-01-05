@@ -131,7 +131,7 @@ local function createMenu(DungeonID,req)
 	GBB.PopupDynamic:AddItem("",true)
 	GBB.PopupDynamic:AddItem(GBB.L["HeaderSettings"],false, GBB.Options.Open, 1)
 
-	GBB.PopupDynamic:AddItem(GBB.L["WotlkPanelFilter"], false, GBB.Options.Open, 2)
+	-- GBB.PopupDynamic:AddItem(GBB.L["WotlkPanelFilter"], false, GBB.Options.Open, 2)  -- 不顯示巫妖王過濾
 
 	GBB.PopupDynamic:AddItem(GBB.L["PanelAbout"], false, GBB.Options.Open, 7)
 	GBB.PopupDynamic:AddItem(GBB.L["BtnCancel"],false)
@@ -214,8 +214,8 @@ function GBB.GetLfgList()
 end
 
 function GBB.UpdateLfgTool()
-	if (not LFGBrowseFrame) or (LFGBrowseFrame.CategoryDropDown.selectedValue == 120) then return end -- 暫時修正
-    if  LFGBrowseFrame.CategoryDropDown.selectedValue == nil then  
+    if LFGBrowseFrame and LFGBrowseFrame.CategoryDropDown.selectedValue == 120 then return end
+    if  LFGBrowseFrame and LFGBrowseFrame.CategoryDropDown.selectedValue == nil then  
         LFGBrowseFrame.CategoryDropDown.selectedValue = 2
     end
 
@@ -223,25 +223,25 @@ function GBB.UpdateLfgTool()
     GBB.LfgRequestList = {}
     
     local category = 2
-    if LFGBrowseFrame.CategoryDropDown.selectedValue ~= nil then 
+    if LFGBrowseFrame and LFGBrowseFrame.CategoryDropDown.selectedValue ~= nil then 
         category = LFGBrowseFrame.CategoryDropDown.selectedValue
     end
 
 	local activities = C_LFGList.GetAvailableActivities(category)
 	--C_LFGList.Search(category, activities)
-    if LFGBrowseFrame.searching then return end
+    if LFGBrowseFrame and LFGBrowseFrame.searching then return end
 
 	GBB.GetLfgList()
     GBB.LfgUpdateList()
 end
 
 function GBB.UpdateLfgToolNoSearch()
-    if (not LFGBrowseFrame) or (LFGBrowseFrame.CategoryDropDown.selectedValue == 120) then return end -- 暫時修正
-    if  LFGBrowseFrame.CategoryDropDown.selectedValue == nil then  
+    if LFGBrowseFrame and LFGBrowseFrame.CategoryDropDown.selectedValue == 120 then return end -- 暫時修正
+    if  LFGBrowseFrame and LFGBrowseFrame.CategoryDropDown.selectedValue == nil then  -- 暫時修正
         LFGBrowseFrame.CategoryDropDown.selectedValue = 2
     end
 
-if LFGBrowseFrame.searching then return end
+if LFGBrowseFrame and LFGBrowseFrame.searching then return end -- 暫時修正
 
     GBB.LfgRequestList = {}
     GBB.GetLfgList()

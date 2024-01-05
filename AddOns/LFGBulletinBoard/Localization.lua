@@ -166,7 +166,7 @@ GBB.locales = {
 		-- option panel
 		
 		["HeaderSettings"]="設定",
-		["PanelFilter"]="經典時代過濾",
+		["PanelFilter"]="經典時期過濾",
 		["TBCPanelFilter"]="燃燒遠征過濾",
 		["WotlkPanelFilter"]="巫妖王過濾",
 		["HeaderTags"]="搜尋關鍵字",	
@@ -419,7 +419,7 @@ function GBB.LocalizationInit()
 	end
 	
 	-- 加入按鍵設定的翻譯
-	BINDING_HEADER_GBB = l["Title"]
+	-- BINDING_HEADER_GBB = l["Title"]
 	BINDING_NAME_GBB_TOGGLE_UI = l["ToggleUI"]
 
 	-- Needed to not cause overflow when using english
