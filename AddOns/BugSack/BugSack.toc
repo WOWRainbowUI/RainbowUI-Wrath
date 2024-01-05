@@ -1,5 +1,5 @@
-## Interface: 100107
-## Version: v10.1.8
+## Interface: 100200
+## Version: v10.2.1
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-zhCN: 错误信息收集器。
