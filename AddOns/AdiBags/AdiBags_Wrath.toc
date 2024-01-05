@@ -22,16 +22,16 @@
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: v1.10.21
+## Version: v1.10.23
 ## SavedVariables: AdiBagsDB
-## X-Date: 2023-09-07T0:53:42Z
+## X-Date: 2023-12-04T6:02:26Z
 ## X-License: GPL v3
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, SyLevel
 #@alpha@
 # ## OptionalDeps: AdiDebug, BugSack, Swatter
 #@end-alpha@
 
-## Title-zhTW: |cffB973CC[背包]|r Adi 背包-主程式
+## Title-zhTW: |cffB973CC[背包]|r Adi 分類背包
 ## Notes-zhTW: AdiBags |n|n會自動分類物品的整合背包，預設有多種分類，可以自訂分類，也可以安裝外掛套件增加新的分類。|n|n如果你喜歡一個不分類的大背包，遊戲內建就有了! 打開內建背包>點一下背包左上角的圖示>轉換為合併背包。|n|n如果你想要將 Adi 背包變成一個不分類的大背包，打開背包>在背包視窗內的空白處點右鍵>過濾方式>把每一個分類的 "啟用" 都分別取消打勾即可。|n|n|cffffd200使用方法: |r在背包視窗內的空白處點一下滑鼠右鍵打開設定選項。
 ## X-Category-zhTW: 物品
 ## IconTexture: Interface\Icons\inv_misc_bag_08
