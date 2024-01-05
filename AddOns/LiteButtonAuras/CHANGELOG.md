@@ -1,6 +1,7 @@
 # LiteButtonAuras
 
-## [10.1.7-2](https://github.com/xod-wow/LiteButtonAuras/tree/10.1.7-2) (2023-09-07)
-[Full Changelog](https://github.com/xod-wow/LiteButtonAuras/compare/10.1.7-1...10.1.7-2) [Previous Releases](https://github.com/xod-wow/LiteButtonAuras/releases)
+## [10.2.0-4](https://github.com/xod-wow/LiteButtonAuras/tree/10.2.0-4) (2023-12-08)
+[Full Changelog](https://github.com/xod-wow/LiteButtonAuras/compare/10.2.0-3...10.2.0-4) [Previous Releases](https://github.com/xod-wow/LiteButtonAuras/releases)
 
-- Fix @debug errors causing debug prints on classic and classic\_era  
+- Add support for Button Forge  
+- Update classic ToC for 1.15.0  

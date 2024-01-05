@@ -14,8 +14,13 @@ local _, LBA = ...
 LBA.BarIntegrations = {}
 
 local GetActionInfo = GetActionInfo
+local HasAction = HasAction
 
 -- Generic ---------------------------------------------------------------------
+
+local function GenericGetActionID(overlay)
+    return overlay:GetParent().action
+end
 
 local function GenericGetActionInfo(overlay)
     return GetActionInfo(overlay:GetParent().action)
@@ -27,6 +32,7 @@ end
 
 local function GenericInitButton(actionButton)
     local overlay = LiteButtonAurasController:CreateOverlay(actionButton)
+    overlay.GetActionID = GenericGetActionID
     overlay.GetActionInfo = GenericGetActionInfo
     overlay.HasAction = GenericHasAction
 
@@ -48,6 +54,7 @@ end
 
 local function ClassicInitButton(actionButton)
     local overlay = LiteButtonAurasController:CreateOverlay(actionButton)
+    overlay.GetActionID = GenericGetActionID
     overlay.GetActionInfo = GenericGetActionInfo
     overlay.HasAction = GenericHasAction
 end
@@ -65,7 +72,7 @@ end
 -- Blizzard Retail -------------------------------------------------------------
 
 -- The OverrideActionButtons have the same action (ID) as the main buttons and
--- mess up framesByAction (as well as we don't want to handle them)
+-- we don't want to handle them.
 
 function LBA.BarIntegrations:RetailInit()
     if WOW_PROJECT_ID ~= 1 then return end
@@ -73,6 +80,63 @@ function LBA.BarIntegrations:RetailInit()
         if actionButton:GetName():sub(1,8) ~= 'Override' then
             GenericInitButton(actionButton)
         end
+    end
+end
+
+
+-- Button Forge ----------------------------------------------------------------
+
+-- These are ActionButton but they don't use the action ID they are set up as per
+-- SecureActionButtonTemplate with SetAttribute("type", ...) etc.
+--
+-- The hook here on widget.icon.SetTexture is not exactly kosher but it does work.
+-- Hoping the author will add a BUTTON_UPDATE calback hook or similar.
+
+-- Localize for Minor speedup
+local ButtonForge_API1
+
+local function ButtonForgeGetActionID(overlay)
+    return 0
+end
+
+-- Note that this returns the old-style Blizzard GetActionInfo where macro
+-- never returns a subType and id is always the macro ID. So it doesn't have the
+-- bugs that the new style does with item macros.
+-- See LiteButtonAurasOverlayMixin:SetUpAction() where type == "macro"
+
+local function ButtonForgetGetActionInfo(overlay)
+    local widget = overlay:GetParent()
+    return ButtonForge_API1.GetButtonActionInfo(widget:GetName())
+end
+
+-- The buttons are re-used, but it's ok because CreateOverlay checks for that
+
+local function ButtonForgeInitButton(widget)
+    local overlay = LiteButtonAurasController:CreateOverlay(widget)
+    overlay.GetActionID = ButtonForgeGetActionID
+    overlay.GetActionInfo = ButtonForgetGetActionInfo
+    overlay.HasAction = ButtonForgetGetActionInfo
+    hooksecurefunc(widget.icon, 'SetTexture', function () overlay:Update() end)
+end
+
+local function ButtonForgeCallback(_, event, actionButtonName)
+    if event == "BUTTON_ALLOCATED" then
+        local widget = _G[actionButtonName]
+        ButtonForgeInitButton(widget)
+    --[[
+    -- This would be nicer than hooking .icon.SetTexture if it got implemented.
+    elseif event == "BUTTON_UPDATED" then
+        local widget = _G[actionButtonName]
+        local overlay = LiteButtonAurasController:GetOverlay(widget)
+        if overlay then overlay:Update() end
+    ]]
+    end
+end
+
+function LBA.BarIntegrations:ButtonForgeInit()
+    ButtonForge_API1 = _G.ButtonForge_API1
+    if ButtonForge_API1 then
+        ButtonForge_API1.RegisterCallback(ButtonForgeCallback)
     end
 end
 
@@ -96,6 +160,13 @@ end
 
 -- Covers ElvUI, Bartender. TukUI reuses the Blizzard buttons
 
+local function LABGetActionID(overlay)
+    local actionType, action = overlay:GetParent():GetAction()
+    if actionType == "action" then
+        return action
+    end
+end
+
 local function LABGetActionInfo(overlay)
     local actionType, action = overlay:GetParent():GetAction()
     if actionType == "action" then
@@ -114,6 +185,7 @@ end
 
 local function LABInitButton(event, actionButton)
     local overlay = LiteButtonAurasController:CreateOverlay(actionButton)
+    overlay.GetActionID = LABGetActionID
     overlay.GetActionInfo = LABGetActionInfo
     overlay.HasAction = LABHasAction
     overlay:Update()
@@ -157,5 +229,6 @@ function LBA.BarIntegrations:Initialize()
     self:RetailInit()
     self:ClassicInit()
     self:DominosInit()
+    self:ButtonForgeInit()
     self:LABInit()
 end

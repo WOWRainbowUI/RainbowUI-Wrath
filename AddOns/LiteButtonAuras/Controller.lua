@@ -147,7 +147,7 @@ end
 -- style LBA differently from the ActionButton, but it's the simplest way.
 
 local Masque = LibStub('Masque', true)
-local MasqueGroup = Masque and Masque:Group('快捷列光環時間')
+local MasqueGroup = Masque and Masque:Group('光環時間 (快捷列)')
 
 
 --[[------------------------------------------------------------------------]]--
@@ -193,14 +193,16 @@ function LiteButtonAurasControllerMixin:Initialize()
 
     -- All of these are for the interrupt and player channel detection
     if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_START', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_STOP', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_DELAYED', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_FAILED', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_INTERRUPTED', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_START', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_STOP', 'OnEvent')
-        self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_UPDATE', 'OnEvent')
+        if self.LCC then
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_START', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_STOP', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_DELAYED', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_FAILED', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_INTERRUPTED', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_START', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_STOP', 'OnEvent')
+            self.LCC.RegisterCallback(self, 'UNIT_SPELLCAST_CHANNEL_UPDATE', 'OnEvent')
+        end
     else
         self:RegisterEvent('UNIT_SPELLCAST_START')
         self:RegisterEvent('UNIT_SPELLCAST_STOP')
@@ -251,6 +253,14 @@ function LiteButtonAurasControllerMixin:StyleAllOverlays()
     end
 end
 
+function LiteButtonAurasControllerMixin:DumpAllOverlays()
+    self:UpdateAllOverlays()
+    local sortedOverlays = GetValuesArray(self.overlayFrames)
+    table.sort(sortedOverlays, function (a, b) return a:GetActionID() < b:GetActionID() end)
+    for _, overlay in pairs(sortedOverlays) do
+        overlay:Dump()
+    end
+end
 
 --[[------------------------------------------------------------------------]]--
 

@@ -76,6 +76,7 @@ end
 function LiteButtonAurasOverlayMixin:SetUpAction()
 
     local type, id, subType = self:GetActionInfo()
+
     if type == 'spell' then
         self.name = GetSpellInfo(id)
         self.spellID = id
@@ -88,16 +89,37 @@ function LiteButtonAurasOverlayMixin:SetUpAction()
     end
 
     if type == 'macro' then
-        local itemName = GetMacroItem(id)
-        if itemName then
-            local name, spellID = GetItemSpell(itemName)
-            self.spellID = spellID
-            self.name = name or itemName
-            return
-        else
-            self.spellID = GetMacroSpell(id)
+        if subType == 'spell' then
+            self.spellID = id
             self.name = GetSpellInfo(self.spellID)
             return
+        elseif subType == 'item' then
+            -- 10.2 GetActionInfo() seems bugged for this case. In an ideal
+            -- world id would be the itemID but it seemds to be actionID-1.
+            -- This workaround assumes no two macros have the same name. Maybe
+            -- there's a better way.
+            local actionID = self:GetActionID()
+            if actionID then
+                local macroName = GetActionText(actionID)
+                local macroID = GetMacroIndexByName(macroName or "")
+                if macroID then
+                    local _, itemLink = GetMacroItem(macroID)
+                    self.name, self.spellID = GetItemSpell(itemLink)
+                    return
+                end
+            end
+        elseif not subType then
+            local itemName = GetMacroItem(id)
+            if itemName then
+                local name, spellID = GetItemSpell(itemName)
+                self.spellID = spellID
+                self.name = name or itemName
+                return
+            else
+                self.spellID = GetMacroSpell(id)
+                self.name = GetSpellInfo(self.spellID)
+                return
+            end
         end
     end
 
@@ -425,5 +447,15 @@ function LiteButtonAurasOverlayMixin:ShowTimer(isShown)
     else
         self:SetScript('OnUpdate', nil)
         self.Timer:Hide()
+    end
+end
+
+function LiteButtonAurasOverlayMixin:Dump(force)
+    if self.name or force then
+        print(string.format("%d. %s = %s (%d)",
+                            self:GetActionID(),
+                            self:GetParent():GetName(),
+                            self.name or NONE,
+                            self.spellID or 0))
     end
 end
