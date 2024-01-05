@@ -1,0 +1,1026 @@
+notes for wrath 3.4.3
+
+---------------------------------------------------------------------------------------------------------
+
+-----------------ButtonForge.toc-----------------------
+---- Updated with
+## Interface: 30403
+## Version: 1.0.20-classic-Wrath
+## Author: Massiner of Nathrezim, Albirew, Sunnova
+
+
+
+
+
+
+-----------------Const.lua-----------------------
+* Updated  VersionMinor from 0.19 to 0.20
+
+
+
+
+
+
+
+
+
+-----------------Button.lua-----------------------
+
+
+---- Button:Configure(Parent, ButtonSave, ButtonLocked, TooltipEnabled, MacroText, KeyBindText)
+	---- Replaced
+
+		elseif (Mode == "mount") then
+			creatureID, creatureName, creatureSpellID, icon, issummoned, MountID, CompanionType = Util.GetMountCritter(self.ButtonSave["MountSpellID"])
+			if MCType ~= "" then
+			  self.ButtonSave["MountID"] = MountID -- update index as it may change
+			  ButtonSave["MountID"] = MountID -- update index as it may change
+			  self:SetCommandExplicitCompanion(MountID, CompanionType, ButtonSave["MountSpellID"]);
+			end
+
+	---- With
+		elseif (Mode == "mount") then
+
+			self:SetCommandExplicitCompanion(ButtonSave["MountID"]);
+		
+		elseif (Mode == "battlepet") then
+			self:SetCommandExplicitBattlePet(ButtonSave["BattlePetGUID"], ButtonSave["SpeciesID"], ButtonSave["BattlePetName"]);
+			
+	---- Reason
+		* previously Mode == "mount" coded for both mounts and critters, these are now split out to be separate modes
+		* MountID is now a fixed ID instead of an Index making it stable, so we do not need to search it from MountSpellID anymore
+
+
+
+---- Button:SetCommandFromTriplet(Command, Data, Subvalue, Subsubvalue)
+	---- Replaced
+	
+		elseif (Command == "mount" or Command == "companion") then
+			self:SetCommandCompanion(Data, Subvalue);	-- Data = MountID, Subvalue = type (MOUNT or ??)
+			
+	---- With
+	
+		elseif (Command == "companion" and Subvalue  == "MOUNT") then
+			local MountID = Subsubvalue or Util.GetMountIDFromCompanionIndex(Data)
+			self:SetCommandCompanion(MountID);		-- Data = CompanionIndex, Subvalue = type (MOUNT or ??), Subsubvalue if supplied is the MountID
+		elseif (Command == "companion" and Subvalue == "CRITTER") then
+			if Subsubvalue then
+				self:SetCommandBattlePet(Subsubvalue);
+			elseif type(Data) == "number" and Data ~= 0 then
+				self:SetCommandBattlePet(Util.GetBattlePetGUIDFromCompanionIndex(Data));
+			end	
+			
+	---- Reason
+		* Split out mounts and battletpets to handle them separately
+		* Either GetCursorInfo or BF Button:GetCursor will supply values to this function
+		* GetCursorInfo is still supplying the old CompanionIndex data... Blizz will likely eliminate this in a subsequent patch as they tidy code to the new Journal system... but for now we still need to deal with it
+		* BF Button:GetCursor info will supply the stable ID as Subsubvalue, that should always be preferentially used if available
+		* Decode the Companion Index to an ID using Util funcctions
+		
+
+
+---- Button:SetCommandCompanion(MountID, Type, MountSpellID)
+	---- Replaced
+		
+		function Button:SetCommandCompanion(MountID, Type, MountSpellID)
+			self:SetCommandExplicitCompanion(MountID, Type, MountSpellID);
+			
+	---- With
+		function Button:SetCommandCompanion(MountID)
+			self:SetCommandExplicitCompanion(MountID);
+			
+	---- Reason
+		* This function is now called with just the MountID, but MountID is now an ID not an Index
+		* CommandCompanion now only deals with mounts, it will no longer deal with critters (battlepets)
+		
+		
+		
+---- Added 
+		
+		function Button:SetCommandBattlePet(BattlePetGUID)
+			local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon, petType, creatureID, sourceText, description, isWild, canBattle, tradable, unique = C_PetJournal.GetPetInfoByPetID(BattlePetGUID);
+			self:SetCommandExplicitBattlePet(BattlePetGUID, speciesID, name);
+		end
+		
+	---- Reason
+		* BattlePets (critters) have been separated away from the companion code path
+		* BattlePetGUID is a GUID to uniquely indentify not only a pet, but a specific capture of that pet (i.e. when a player has three of the same pet, they would each have a unique GUID)
+		* SpeciesID represents the type of Pet
+		* customName is not in use yet, but sooner or later players will be able to give the battlepet a custom name
+		
+		
+		
+---- Button:SetCommandExplicitCompanion
+	---- Replaced
+		function Button:SetCommandExplicitCompanion(MountID, Type, MountSpellID)
+			self:SetEnvCompanion(MountID, Type, MountSpellID);
+			
+	---- With
+		function Button:SetCommandExplicitCompanion(MountID)
+			self:SetEnvCompanion(MountID);
+
+
+
+---- Added
+		
+		function Button:SetCommandExplicitBattlePet(BattlePetGUID, SpeciesID, Name)
+			self:SetEnvBattlePet(BattlePetGUID, SpeciesID, Name);
+		end
+		
+	---- Reason
+		* Added for consistency with existing code paths in ButtonForge
+		
+
+
+---- Button:SetEnvCompanion(MountID)
+	---- Changed to 
+		function Button:SetEnvCompanion(MountID)
+			if type(MountID) ~= "number" then
+				return self:ClearCommand();
+			end
+			local MountName, MountSpellID, Texture = C_MountJournal.GetMountInfoByID(MountID)
+			if type(MountName) ~= "string" then
+				return self:ClearCommand();
+			end
+
+			self.Widget:SetAttribute("type", nil);
+			self.Widget:SetAttribute("spell", nil);
+			self.Widget:SetAttribute("item", nil);
+			self.Widget:SetAttribute("macro", nil);
+			self.Widget:SetAttribute("macrotext", nil);
+			self.Widget:SetAttribute("action", nil);
+			self.Widget:SetAttribute("id", nil);
+
+			self.Mode			= "mount";
+			self.MountID		= MountID;
+			self.MountName		= MountName;
+			self.MountSpellID	= MountSpellID;
+
+			self.Widget:SetAttribute("type", "macro");
+			--self.Widget:SetAttribute("macrotext", format("/script if C_PetJournal.IsCurrentlySummoned(%i) then C_PetJournal.DismissSummonedPet(%i) else C_PetJournal.SummonPetByGUID(\"%s\") end", self.SpeciesID, self.SpeciesID, self.BattlePetGUID));	-- This option causes taint in combat, but otherwise works
+			self.Widget:SetAttribute("macrotext", format("/cast %s", Name))							-- This option works in combat, and is probably fine
+			--self.Widget:SetAttribute("macrotext", format( "/summonpet %s" , BattlePetGUID ))		-- This is how it is done in Retail, but is not yet available in classic
+			self.Texture	= Texture;
+
+			self.UpdateTexture 	= Button.Empty;
+			self.UpdateChecked 	= Button.UpdateCheckedCompanion;	
+			self.UpdateEquipped = Button.Empty;
+			self.UpdateCooldown	= Button.UpdateCooldownCompanion;
+			self.UpdateUsable 	= Button.UpdateUsableCompanion;
+			self.UpdateTextCount = Button.Empty;
+			self.UpdateTooltipFunc 	= Button.UpdateTooltipCompanion;
+			self.UpdateRangeTimer = Button.Empty;
+			self.CheckRangeTimer = Button.Empty;
+			self.UpdateFlash	= Button.Empty;
+			self.UpdateFlyout	= Button.Empty;
+			
+			self.GetCursor 		= Button.GetCursorCompanion;
+
+			self.FullRefresh 	= Button.FullRefresh;
+
+			self.Target			= "target";
+			
+			self:ResetAppearance();
+			self:DisplayActive();
+			self:SaveCompanion(MountID, self.MountSpellID, self.MountName);
+		end
+		
+	---- Reason
+		* SetEnvCompanion now only deals with Mounts (it does not handle Critters/BattlePets)
+		* MountID is now a stable ID, and no longer an Index based value
+
+
+
+---- Added
+
+		function Button:SetEnvBattlePet(BattlePetGUID, SpeciesID, Name)
+			if type(BattlePetGUID) ~= "string" or type(SpeciesID) ~= "number" then
+				return self:ClearCommand();
+			end
+			--local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon, petType, creatureID, sourceText, description, isWild, canBattle, tradable, unique = C_PetJournal.GetPetInfoByPetID(BattlePetGUID);
+			local name, icon, petType, creatureID, sourceText, description, isWild, canBattle, tradable, unique, _, displayID = C_PetJournal.GetPetInfoBySpeciesID(SpeciesID);
+			--if type(name) ~= "string" then
+			--	return self:ClearCommand();
+			--end
+
+			self.Widget:SetAttribute("type", nil);
+			self.Widget:SetAttribute("spell", nil);
+			self.Widget:SetAttribute("item", nil);
+			self.Widget:SetAttribute("macro", nil);
+			self.Widget:SetAttribute("macrotext", nil);
+			self.Widget:SetAttribute("action", nil);
+			self.Widget:SetAttribute("id", nil);
+
+			self.Mode			= "battlepet";
+			self.BattlePetGUID	= BattlePetGUID;
+			self.SpeciesID		= SpeciesID;
+			self.BattlePetName	= Name;
+
+			self.Widget:SetAttribute("type", "macro");
+			--self.Widget:SetAttribute("macrotext", format("/script if C_PetJournal.IsCurrentlySummoned(%i) then C_PetJournal.DismissSummonedPet(%i) else C_PetJournal.SummonPetByGUID(\"%s\") end", self.SpeciesID, self.SpeciesID, self.BattlePetGUID));	-- This option causes taint in combat, but otherwise works
+			self.Widget:SetAttribute("macrotext", format("/cast %s", Name))							-- This option works in combat, and is probably fine
+			--self.Widget:SetAttribute("macrotext", format( "/summonpet %s" , BattlePetGUID ))		-- This is how it is done in Retail, but is not yet available in classic
+			self.Texture	= icon;
+
+			self.UpdateTexture 	= Button.Empty;
+			self.UpdateChecked 	= Button.UpdateCheckedBattlePet;	
+			self.UpdateEquipped = Button.Empty;
+			self.UpdateCooldown	= Button.UpdateCooldownBattlePet;
+			self.UpdateUsable 	= Button.UpdateUsableBattlePet;
+			self.UpdateTextCount = Button.Empty;
+			self.UpdateTooltipFunc 	= Button.UpdateTooltipBattlePet;
+			self.UpdateRangeTimer = Button.Empty;
+			self.CheckRangeTimer = Button.Empty;
+			self.UpdateFlash	= Button.Empty;
+			self.UpdateFlyout	= Button.Empty;
+			
+			self.GetCursor 		= Button.GetCursorBattlePet;
+
+			self.FullRefresh 	= Button.FullRefresh;
+
+			self.Target			= "target";
+			
+			self:ResetAppearance();
+			self:DisplayActive();
+			self:SaveBattlePet(BattlePetGUID, self.SpeciesID, self.BattlePetName);
+		end
+		
+	---- Reason
+		* BattlePets have their own set of functions for updating the BF Button
+		* BattlePetGUID is the key info for a button however SpeciesID is needed for a few of the API calls made
+		* At login the player BattlePet data is not fully available, to avoid issue SpeciesID and Name are saved out and passed in instead of queried from the api when the env is set
+			* The code for setting the Button from Cursor will collect that information before calling this SetEnv function as can be seen in changes further up
+			
+
+
+---- Added
+
+		function Button:SaveBattlePet(BattlePetGUID, SpeciesID, BattlePetName)
+			self:SaveClear();
+			self.ButtonSave["Mode"]				= "battlepet";
+			self.ButtonSave["BattlePetGUID"]	= BattlePetGUID;
+			self.ButtonSave["SpeciesID"]		= SpeciesID;
+			self.ButtonSave["BattlePetName"]	= BattlePetName;
+		end
+		
+	---- Reason
+		* This is the BattlePet info that should be saved out
+		* Note that the fields saved out for mount info did not require any name changes (however the MountID is now a different type of value)
+		
+		
+		
+---- function Button:SaveClear()
+
+	---- Added
+			self.ButtonSave["BattlePetGUID"]	= nil;
+			self.ButtonSave["SpeciesID"]		= nil;
+			self.ButtonSave["BattlePetName"]	= nil;
+			
+	---- Reason
+		* Make sure to blank the new BattlePet save fields
+		
+		
+		
+---- function Button:TranslateMacro()
+
+	---- Replaced
+
+		local SpellName, SpellRank, SpellId = GetMacroSpell(self.MacroIndex);
+		if (SpellName) then
+			local CompanionType, CompanionID = Util.LookupCompanion(SpellName);
+			if (CompanionType) then
+				self.CompanionType = CompanionType;
+				self.CompanionIndex = CompanionID;
+			end
+			self.SpellName = SpellName;
+			-- self.SpellNameRank = GetSpellInfo(SpellName); --BFA fix: Cache is indexed by name and the old function returned the ID
+			local Rank = Util.GetSpellRank(SpellId) -- TBC Fix 06/17/2021
+			-- self.SpellNameRank = Util.GetFullSpellName(SpellName, Rank); -- TBC Fix 06/17/2021
+			self.SpellNameRank = SpellName -- rank does not seem to be working in wrath, set NameRank to SpellName 09/02/2022
+			self.SpellId = SpellId;
+
+	---- With
+
+		local SpellId = GetMacroSpell(self.MacroIndex);
+		if (SpellId) then
+			self.SpellName = GetSpellInfo(SpellId)
+			self.SpellId = SpellId		
+	
+	---- Reason
+		* GetMacroSpell appears to now return only the spell id (if applicable)
+		* Only SpellName and SpellID are required for updating the Button display (including if the spell is actually a mount or a companion)
+			
+			
+			
+---- Button:UpdateCheckedMacro()
+	---- Removed
+		elseif (self.MacroMode == "companion") then
+			self:UpdateCheckedCompanion();	
+
+
+
+---- Button:UpdateCheckedCompanion()
+	---- From
+		function Button:UpdateCheckedCompanion()
+			local Active = select(5,  Util.GetCompanionInfo(self.CompanionType, self.MountID, self.MountSpellID));
+			local SpellName = UnitCastingInfo("player");
+			if (Active) then
+				self.Widget:SetChecked(true);
+			else
+				self.Widget:SetChecked(false);
+			end
+		end
+		
+	---- To
+		function Button:UpdateCheckedCompanion()
+			self.Widget:SetChecked(IsCurrentSpell(self.MountSpellID));
+		end
+		
+
+
+---- Added
+		function Button:UpdateCheckedBattlePet()
+		    self.Widget:SetChecked(C_PetJournal.IsCurrentlySummoned(self.BattlePetGUID));
+		end
+		
+		
+		
+---- Button:UpdateCooldownMacro()
+	---- Removed
+			elseif (self.MacroMode == "companion") then
+				self:UpdateCooldownCompanion();	
+				
+			
+			
+---- Added
+		function Button:UpdateCooldownBattlePet()
+			Util.CooldownFrame_SetTimer(self.WCooldown, C_PetJournal.GetPetCooldownByGUID(self.BattlePetGUID));
+		end
+
+
+
+---- Button:UpdateUsableMacro()
+	---- Removed
+		elseif (self.MacroMode == "companion") then
+			self:UpdateUsableCompanion();
+
+
+
+---- Button:UpdateUsableCompanion()
+	---- Replaced 
+		local IsUsable = IsUsableSpell(self.MountSpellID) and not (select(5,  Util.GetCompanionInfo(self.CompanionType, self.MountID, self.MountSpellID)));
+
+
+	---- With
+		local IsUsable = IsUsableSpell(self.MountSpellID) and select(5, C_MountJournal.GetMountInfoByID(self.MountID));
+		
+		
+		
+---- Added
+		function Button:UpdateUsableBattlePet()
+			local IsUsable = C_PetJournal.PetIsSummonable(self.BattlePetGUID);
+			if (IsUsable) then
+				self.WIcon:SetVertexColor(1.0, 1.0, 1.0);
+				self.WNormalTexture:SetVertexColor(1.0, 1.0, 1.0);
+			else
+				self.WIcon:SetVertexColor(0.4, 0.4, 0.4);
+				self.WNormalTexture:SetVertexColor(1.0, 1.0, 1.0);
+			end
+		end
+		
+		
+
+---- Button:UpdateTooltipSpell()
+	---- Replaced
+	
+		GameTooltip:SetSpellByID(self.SpellId);
+	
+	---- With
+	
+		-- GameTooltip:SetSpellByID(SpellID, isPet, showSubtext);
+		GameTooltip:SetSpellByID(self.SpellId, false, true);
+		
+	---- Reason
+		* A few spells e.g. Shaman Hex's use subtext
+		
+		
+	
+---- Button:UpdateTooltipMacro()
+	---- From
+	
+		function Button:UpdateTooltipMacro()
+			self = self.ParentButton or self;	--This is a sneaky cheat incase the widget was used to get here...
+
+		  if string.find(self.MacroBody, "#showtooltip") ~= nil then
+			local _,s=string.find(self.MacroBody, "#showtooltip ")
+			if s ~= nil then
+			  local e,_=string.find(self.MacroBody, "\n")
+			  local sttext = (string.sub(self.MacroBody, s+1, e-1))
+			  GameTooltip:SetText(sttext, 1, 1, 1, 1);
+			else
+			  GameTooltip:SetText(self.MacroName, 1, 1, 1, 1);
+			end
+			elseif (not self.ShowTooltip) then
+				--we just show the name in this case
+				GameTooltip:SetText(self.MacroName, 1, 1, 1, 1);
+			elseif (self.MacroMode == "spell") then
+				local Index, BookType = Util.LookupSpellIndex(self.SpellName);
+				if (Index) then
+					GameTooltip:SetSpellBookItem(Index, BookType);
+				elseif (self.CompanionType == "MOUNT") then
+					GameTooltip_SetDefaultAnchor(GameTooltip, self.Widget);		--It appears that the sethyperlink (specifically this one) requires that the anchor be constantly refreshed!?
+					GameTooltip:SetHyperlink("spell:"..self.SpellName);
+				end
+			elseif (self.MacroMode == "item") then
+				local EquippedSlot = Util.LookupItemNameEquippedSlot(self.ItemId);
+				if (EquippedSlot ~= nil) then
+					GameTooltip:SetInventoryItem("player", EquippedSlot);
+				else
+					local Bag, BagSlot = Util.LookupItemNameBagSlot(self.ItemId);
+					if (Bag ~= nil) then
+						GameTooltip:SetBagItem(Bag, BagSlot);
+					else
+						GameTooltip_SetDefaultAnchor(GameTooltip, self.Widget);		--It appears that the sethyperlink (specifically this one) requires that the anchor be constantly refreshed!?
+						GameTooltip:SetHyperlink(self.ItemLink);
+					end
+				end
+			elseif (self.MacroMode == "companion") then
+				local Id, Name, SpellId =  Util.GetCompanionInfo(self.CompanionType, self.CompanionIndex, self.MountSpellID);
+				GameTooltip:SetHyperlink("spell:"..SpellId);
+			end
+		end
+	
+	---- To
+	
+		function Button:UpdateTooltipMacro()
+			self = self.ParentButton or self;	--This is a sneaky cheat incase the widget was used to get here...
+			if (not self.ShowTooltip) then
+				--we just show the name in this case
+				GameTooltip:SetText(self.MacroName, 1, 1, 1, 1);
+			elseif (self.MacroMode == "spell") then
+				GameTooltip:SetSpellByID(self.SpellId, false, true);
+			elseif (self.MacroMode == "item") then
+				local EquippedSlot = Util.LookupItemNameEquippedSlot(self.ItemId);
+				if (EquippedSlot ~= nil) then
+					GameTooltip:SetInventoryItem("player", EquippedSlot);
+				else
+					local Bag, BagSlot = Util.LookupItemNameBagSlot(self.ItemId);
+					if (Bag ~= nil) then
+						GameTooltip:SetBagItem(Bag, BagSlot);
+					else
+						GameTooltip_SetDefaultAnchor(GameTooltip, self.Widget);		--It appears that the sethyperlink (specifically this one) requires that the anchor be constantly refreshed!?
+						GameTooltip:SetHyperlink(self.ItemLink);
+					end
+				end
+			else
+				--we just show the name in this case
+				GameTooltip:SetText(self.MacroName, 1, 1, 1, 1);
+			end
+		end
+	
+	---- Reason
+	
+		* The test to string.find #showtooltip is removed from here and instead relies on the self.ShowTooltip flag set when the Button:SetEnvMacro() is run
+			* There may have been problems in the past with showing the correct tooltip (both with WoW api and how BF handled things)
+			  but there appear to have been changes over time to how GetMacroSpell() behaves
+			* In current state (WoW 3.4.3) the macro api calls will respond with the info needed to match up to #show or #showtooltip such
+			  that the only consideration ButtonForge needs to make is if the "action" tooltip should be shown, or the name of the macro
+			  as a tooltip should be shown
+			  
+			  
+
+---- Button:UpdateTooltipCompanion()
+	---- Replaced
+		GameTooltip:SetSpellByID(self.MountSpellID);
+			
+	---- With
+		GameTooltip:SetMountBySpellID(self.MountSpellID);
+		
+		
+		
+---- Added
+		function Button:UpdateTooltipBattlePet()
+			self = self.ParentButton or self;	--This is a sneaky cheat incase the widget was used to get here...
+
+			GameTooltip_SetDefaultAnchor(GameTooltip, self.Widget);
+			GameTooltip:SetCompanionPet(self.BattlePetGUID);
+		end
+		
+		
+
+---- Button:GetCursorCompanion()
+	---- Replaced
+		return self.Mode, self.MountSpellID
+		
+	---- With
+		return "companion", nil, "MOUNT", self.MountID
+		
+	---- Reason
+		* When passing the cursor info back for a BF Button we do not actually know the CompanionIndex so that is left nil... Instead the MountID is passed back
+		  , and BF code that makes use of these values will preferentially use the MountID if it is supplied
+		  
+	
+	
+---- Added
+		function Button:GetCursorBattlePet()
+			return "companion", nil, "CRITTER", self.BattlePetGUID
+		end
+		
+	---- Reason
+		* The same approach as used for mounts is used here to supply the BattlePetGUID as the 4th parameter
+		
+		
+
+---- Commented out function Button:RefreshCompanion()
+	---- Reason
+		* This function would reapply the Companion to the button in case the CompanionIndex needed to be updated (since it could change around for a given companion)
+		* Since we can now track stable ID's i.e. MountID and BattlePetGUID, performing a refresh like this should
+		  not be needed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------Util.lua-----------------------
+
+---- Removed
+	Util.MountUselessIndexToIndex = {};
+	
+	---- Reason
+		* Renaming from UselessIndex to CompanionIndex
+		* I've decided "that" index is not 100% useless and have realised it is in fact the semi deprecated CompanionIndex
+		
+---- Added
+	Util.MountCompanionIndexToMountID = {};
+	Util.MountActionSlotToMountSpellID = {};
+	Util.MountNameToMountID = {};
+	Util.BattlePetNameToBattlePetGUID = {};
+	
+	---- Reason
+		* MountCompanionIndexToMountID and MountActionSlotToMountSpellID
+			* These tables cache info needed to translate the mount CompanionIndex to a MountID when a mount is dragged to a BF button
+			
+		* MountNameToMountID
+			* This is only ever used in migration code
+			
+		* BattlePetNameToBattlePetGUID
+			* Caches info needed to translate a critter CompanionIndex to a battlepet GUID when a battlepet is dragged to a BF button
+			* Also used during migration for critters... However due to the way data updates in WoW this is unlikely to cache in time to be useful for migration at login
+			
+			
+			
+---- Util.UpdateSavedData()
+	---- Added
+			-- v1.0.20
+			if ButtonForgeSave["Version"] < 1.0 or (ButtonForgeSave["Version"] == 1.0 and ButtonForgeSave["VersionMinor"] < 0.20) then
+				for i = 1, #ButtonForgeSave.Bars do
+					Util.UpdateCompanionsv1_20(ButtonForgeSave.Bars[i].Buttons);
+				end
+		
+				if (ButtonForgeSave.UndoProfileBars ~= nil) then
+					for i = 1, #ButtonForgeSave.UndoProfileBars do
+						Util.UpdateCompanionsv1_20(ButtonForgeSave.UndoProfileBars[i].Buttons);
+					end
+				end
+				ButtonForgeSave["Version"] = 1.0;
+				ButtonForgeSave["VersionMinor"] = 0.20;
+				DEFAULT_CHAT_FRAME:AddMessage(Util.GetLocaleString("UpgradedChatMsg").."v1.0.20", .5, 1, 0, 1);
+			end
+			
+	---- And
+			-- v1.0.20
+			if ButtonForgeGlobalSettings["Version"] < 1.0 or (ButtonForgeGlobalSettings["Version"] == 1.0 and ButtonForgeGlobalSettings["VersionMinor"] < 0.20) then
+				for k, v in pairs(ButtonForgeGlobalProfiles) do
+					for i = 1, #v.Bars do
+						Util.UpdateCompanionsv1_20(v.Bars[i].Buttons);
+					end
+				end
+				ButtonForgeGlobalSettings["Version"] = 1.0;
+				ButtonForgeGlobalSettings["VersionMinor"] = 0.20;
+			end
+		
+
+
+---- Added
+		function Util.UpdateCompanionsv1_20(Buttons)
+			for j = 1, #Buttons do
+				if (Buttons[j]["Mode"] == "mount") then
+					local Name = Buttons[j]["MountName"];
+					-- Clear the button
+					Buttons[j]["Mode"] = nil;
+					Buttons[j]["MountID"] = nil;
+					Buttons[j]["MountName"] = nil;
+					Buttons[j]["MountSpellID"] = nil;
+		
+					local MountID = Util.GetMountIDFromName(Name);
+					if type(MountID) == "number" then
+						local MountName, MountSpellID, Texture = C_MountJournal.GetMountInfoByID(MountID);
+						if type(MountName) == "string" then
+							-- Is mount and successfully converted to new mount system
+							Buttons[j]["Mode"] = "mount";
+							Buttons[j]["MountID"] = MountID;
+							Buttons[j]["MountName"] = MountName;
+							Buttons[j]["MountSpellID"] = MountSpellID;
+						end
+					else
+						local BattlePetGUID = Util.GetBattlePetGUIDFromName(Name);
+						if type(BattlePetGUID) == "string" then
+							local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon, petType, creatureID, sourceText, description, isWild, canBattle, tradable, unique = C_PetJournal.GetPetInfoByPetID(BattlePetGUID);
+							if type(speciesID) == "number" then
+								-- Is BattlePet and successfully converted
+								Buttons[j]["Mode"] = "battlepet";
+								Buttons[j]["BattlePetGUID"] = BattlePetGUID;
+								Buttons[j]["SpeciesID"] = speciesID;
+								Buttons[j]["BattlePetName"] = name;
+							end
+						end
+					end
+				end
+			end
+		end
+		
+	---- Notes
+		* MountID prior to BF v1.20 was an Index value and covered both mounts and critters
+			* MountID is now MountID for the new C_MountJournal api in WoW
+		* BattlePet info is unlikely to have successfully cached at this point so migration is unlikely to work
+		
+		
+		
+---- Util.LoadProfile(ProfileName)
+	---- Removed
+		Util.RefreshCompanions();
+		
+
+
+---- Util.UndoProfile()
+	---- Removed
+		Util.RefreshCompanions();
+
+
+
+---- Util.SetCursor(Command, Data, Subvalue, Subsubvalue)
+	---- Removed
+		elseif (Command == "mount") then
+			PickupSpell(Data);  -- MountSpellID passed		
+
+	---- Added
+		elseif (Command == "companion" and Subvalue == "MOUNT") then
+			-- To pickup a mount, the mount must pass the current journal filter. so temporarily unset filtering that could impact
+			local collectedFilterSetting = C_MountJournal.GetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED)
+			if not collectedFilterSetting then
+				C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED, true)
+			end
+			C_MountJournal.SetSearch("");
+	
+			-- attempt to pickup the mount
+			local Index = Util.LookupMountIndex(Subsubvalue)
+			if type(Index) == "number" then
+				C_MountJournal.Pickup(Index);
+			end	
+	
+			-- Reapply mount filtering
+			if not collectedFilterSetting then
+				C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED, collectedFilterSetting)
+			end
+			if type(MountJournalSearchBox) == "table" then
+				C_MountJournal.SetSearch(MountJournalSearchBox:GetText());
+			end
+		elseif (Command == "companion" and Subvalue == "CRITTER") then
+			if type(Subsubvalue) == "string" then
+				C_PetJournal.PickupPet(Subsubvalue)
+			end	
+			
+	---- Reason
+		* Align SetCursor with the changes for mounts and battlepets
+		* When picking up a mount a journal index is used (not the MountID :/ )
+			* Even if the player knows the mount, if it has been filtered from the Journal it cannot be picked up using the index
+			* To get around this the Journal is temporarily unfiltered by clearing the search term, and also making sure the "collected" filter flag is set
+			* After picking up the mount the filter is reapplied
+			* This may not work perfectly with addons that enhance the Mount Journal UI... But in principle should not cause an error or negative impact
+		* Unlike mounts, battlepets are picked up using the BattlePetGUID so no filter tweaking is required here
+		
+
+
+---- Util.PostCombatStateUpdate()
+	----Removed
+		if (Util.DelayedRefreshCompanions) then
+			Util.RefreshCompanions();
+			Util.DelayedRefreshCompanions = nil;
+		end
+
+
+
+---- Removed
+	function Util.CacheCompanions()
+	function Util.LookupCompanion(Name)
+	function Util.RefreshCompanions()
+
+
+
+---- Added
+
+		function Util.HookSecureFunc_C_MountJournal_Pickup(Index)
+			local CompanionIndex = select(2, GetCursorInfo());
+			if (Index and CompanionIndex) then
+				Util.MountCompanionIndexToMountID[CompanionIndex] = C_MountJournal.GetDisplayedMountID(Index);
+			end
+		end
+		hooksecurefunc(C_MountJournal, "Pickup", Util.HookSecureFunc_C_MountJournal_Pickup);
+	
+	---- Reason
+		* Needed to know what Mount is reported by GetCursorInfo()
+		* Allows seeing what journal index is used to pickup a mount from the mount journal, and matching it to the CompanionIndex that GetCursorInfo() reports
+		
+
+
+---- Added
+		
+		function Util.HookSecureFunc_GameTooltip_SetAction(_, Slot)
+			if (Slot == nil or Slot < 1 or Slot > 1000) then
+				return;
+			end
+		
+			local Command, MountSpellID, Subdata = GetActionInfo(Slot);
+			if Command == "companion" and Subdata == "MOUNT" then
+				Util.MountActionSlotToMountSpellID[Slot] = MountSpellID
+			end
+		end
+		hooksecurefunc(GameTooltip, "SetAction", Util.HookSecureFunc_GameTooltip_SetAction);
+	
+	---- Reason
+		* When a tooltip for an action slot is displayed capture if it is a mount and what spellid it uses
+		* This is to support HookSecureFunc_PickupAction which will know the slot but not what was in the slot when it triggers
+			* In practice the tooltip will show before the action is removed, so at that moment the mount info is queried
+			* A different approach could be to cache and track the actions in the action slots... this would arguably be a better approach, but it was not the one developed and this is a stop gap measure
+
+
+
+---- Added
+
+		function Util.HookSecureFunc_PickupAction(Slot)
+			if (Slot == nil or Slot < 1 or Slot > 1000) then
+				return;
+			end
+		
+			local Command, CompanionIndex, Subdata = GetCursorInfo();
+			if Command == "companion" and Subdata == "MOUNT" then
+				local MountSpellID = Util.MountActionSlotToMountSpellID[Slot]
+				if MountSpellID then
+					Util.MountCompanionIndexToMountID[CompanionIndex] = C_MountJournal.GetMountFromSpell(MountSpellID);
+				end
+			end
+		end
+
+	---- Reason
+		* A mount could be picked up off a standard action button, this will detect that
+			* From there with the Util.MountActionSlotToMountSpellID cache, a CompanionIndex to MountID mapping can be made
+			
+
+
+---- Added
+
+		function Util.GetMountIDFromCompanionIndex(CompanionIndex)
+			return Util.MountCompanionIndexToMountID[CompanionIndex];
+		end
+			
+		
+
+---- Added
+
+		function Util.CacheMounts()
+			for _, MountID in pairs(C_MountJournal.GetMountIDs()) do
+				local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, mountID, isForDragonriding = C_MountJournal.GetMountInfoByID(MountID)
+				Util.MountNameToMountID[name] = mountID
+			end
+		end
+		
+		function Util.GetMountIDFromName(Name)
+			if type(Name) == "string" then
+				return Util.MountNameToMountID[Name]
+			end
+		end
+
+	---- Reason
+		* Only needed to support migration of mounts to the new MountJournal format
+
+
+
+---- Added
+
+		function Util.CacheBattlePets()
+			if Util.BattlePetsCached then
+				return;
+			end
+			local CollectedFilterValue = C_PetJournal.IsFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED)
+			local NotCollectedFilterValue = C_PetJournal.IsFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED)
+		
+			-- Configure Pet journal filters to only cache known battlepets
+			C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED, true)
+			C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED, false)
+			C_PetJournal.SetSearchFilter("")
+		
+			-- only cache pets that are known
+			for i = 1, C_PetJournal.GetNumPets() do
+				local battlePetGUID, speciesID, isOwned, customName, level, favorite, isRevoked, name, icon, petType, _, _, _, _, canBattle = C_PetJournal.GetPetInfoByIndex(i);
+				if type(name) == "string" then
+					Util.BattlePetNameToBattlePetGUID[name] = battlePetGUID
+				end
+			end
+			Util.BattlePetsCached = true;
+		
+			-- Set the pet journal filters back to how they were
+			C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED, CollectedFilterValue)
+			C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED, NotCollectedFilterValue)
+			if type(PetJournalSearchBox) == "table" then
+				C_PetJournal.SetSearchFilter(PetJournalSearchBox:GetText())
+			end
+		end
+		
+	---- Reason
+		* Needed to know what battlepet is reported by GetCursorInfo()
+		* This approach is different to the one used for mounts since the api supports different values for querying
+			* Unlike mounts, GetCompanionInfo will return info for the critter CompanionIndex
+			* The battle pet name is used from here
+			* The only way to get the BattlePetGUID
+				* is to cache the known battlepets
+				* After they have loaded into game (not available at login)
+				* iterating over the Journal entries using the Journal Index (WoW call this the DisplayIndex)
+				* Iterating requires temporary clearing of filters on the journal
+		* Cache the known battlepets for the player to support
+		
+		
+		
+---- Added
+		function Util.AddBattlePetToCache(BattlePetGUID)
+			local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon, petType, creatureID, sourceText, description, isWild, canBattle, tradable, unique = C_PetJournal.GetPetInfoByPetID(BattlePetGUID);
+			if type(name) == "string" then
+				Util.BattlePetNameToBattlePetGUID[name] = BattlePetGUID
+			end
+		end
+		
+	---- Reason
+		* When the player learns a new pet add the pet to the cache
+		* The event supplies the BattlePetGUID
+		* re running the cache won't help as the new battle pet wont be found via Journal Index yet
+		
+		
+---- Added
+		function Util.GetBattlePetGUIDFromCompanionIndex(CompanionIndex)
+			if not Util.BattlePetsCached then
+				Util.CacheBattlePets()
+			end
+		
+			local _, name = GetCompanionInfo("CRITTER", CompanionIndex)
+			if type(name) == "string" then
+				return Util.BattlePetNameToBattlePetGUID[name];
+			end
+		end
+		
+	---- Reason
+		* Used to get from CompanionIndex to the BattlePetGUID
+		
+		
+		
+---- Added
+		function Util.GetBattlePetGUIDFromName(Name)
+			if not Util.BattlePetsCached then
+				Util.CacheBattlePets()
+			end
+		
+			if type(Name) == "string" then
+				return Util.BattlePetNameToBattlePetGUID[Name];
+			end
+		end
+		
+	---- Reason
+		* Used for migration of critters to battlepets in the Journal (this probably wont work)
+		* There are possible approaches to get it working, but there are potential pitfalls and for a run once migration I don't think it is a good idea to put too much coding behind this
+		
+		
+		
+---- Added
+		function Util.LookupMountIndex(MountID)
+
+			local Num = C_MountJournal.GetNumMounts();
+			if (MountID == SUMMON_RANDOM_FAVORITE_MOUNT_SPELL) then
+				return 0;
+			end
+			for i = 1, Num do
+				if (select(12, C_MountJournal.GetDisplayedMountInfo(i)) == MountID) then
+					return i;
+				end
+			end
+
+		end
+		
+	---- Reason
+		* Used by Util.SetCusor() to know which JournalIndex to use when picking up a mount
+		
+		
+---- Removed
+	function Util.GetCompanionInfo(CompanionType, MountID, spellID)
+	function Util.GetMountCritter(spellID)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+-----------------EventManager.lua-----------------------
+
+---- Removed
+	Misc:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+	
+	---- Reason
+		* Was triggering now removed Util.CacheCompanions()
+		
+
+
+---- Added
+	Misc:RegisterEvent("NEW_PET_ADDED");
+	
+	---- Reason
+		* When a new battlepet is learned the BattelPetGUID is supplied with the event and is added to the cache of battlepet names
+		
+		
+
+---- Added
+	Checked:RegisterEvent("COMPANION_UPDATE");
+	Checked:RegisterEvent("PET_JOURNAL_LIST_UPDATE");
+	
+	---- Reason
+		* COMPANION_UPDATE I think can fire whenever any unit in the area does something with their companions
+			* But this is needed in order to make sure the mount buttons have checked status updated correctly
+		* PET_JOURNAL_LIST_UPDATE fires whenever the battle pet list for the player changes
+			* At login BattlePet info is not available
+			  This event will fire when the BattlePet info becomes available			  
+			  
+			  
+
+---- Added
+	Usable:RegisterEvent("PET_JOURNAL_LIST_UPDATE");
+	
+	---- Reason
+		* At login BattlePet info is not available, as such BattlePets will appear darkened to indicate not usable
+		
+		
+		
+---- Full:InitialOnEvent(Event, Arg1)
+
+	---- Removed
+		Util.CacheCompanions();
+		
+		---- and
+		Util.CacheCompanions()  -- added 12/17/2022
+		Util.RefreshCompanions();
+		
+	---- Added
+		Util.CacheMounts();
+		
+	---- Reason
+		* To distinguish that only mounts are being cached (I have not gone through and fully changed Companion to Mount in all functions, though that would be the intent in a larger tidy up activity)
+		* Cache mounts only needs to run once now, and the C_MountJournal allows caching all mounts that can show up in the mount journal
+		
+		
+		
+---- Misc:OnEvent(Event, ...)
+
+	---- Removed
+		elseif (Event == "COMPANION_LEARNED") then
+			Util.CacheCompanions();
+			Util.RefreshCompanions();
+		
+		---- And
+		elseif (Event == "ZONE_CHANGED_NEW_AREA") then
+			Util.CacheCompanions(); 
+			Util.RefreshCompanions();
+					
+	---- Added
+		elseif (Event == "NEW_PET_ADDED") then
+			Util.AddBattlePetToCache(...);
+			
+	---- Reason
+		* I'm not sure if COMPANION_LEARNED fires anymore, however we now only need to track (cache) when a new battle pet is learned by the player

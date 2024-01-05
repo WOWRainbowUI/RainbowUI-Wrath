@@ -1,0 +1,59 @@
+
+EventManager.lua -----------------------------------------------------------------
+
+changed
+	elseif (Event == "PLAYER_ENTERING_WORLD") then
+		Util.CacheCompanions();
+to
+	elseif (Event == "PLAYER_ENTERING_WORLD") then
+	  Util.CacheSpellBookRanks() -- TBC Fix 06/17/2021
+		Util.CacheCompanions();
+
+
+Util.lua -----------------------------------------------------------------
+new functions added to end of Util.lua -- TBC Fix new functions for ranks 06/17/2021
+new Util.GetSpellInfo() added to Util.lua see code for examples 06/18/2021
+
+changes to functions
+		
+function Util.CacheSpellIndexes()
+changed
+		local Name, Rank, Icon, castTime, minRange, maxRange, spellId = GetSpellInfo(i, BOOKTYPE_SPELL);
+		local NameRank = Util.GetFullSpellName(Name, Rank);
+to
+		-- local Name, Rank, Icon, PowerCost, IsFunnel, PowerType = GetSpellInfo(Id);
+		local Name, Rank, Icon, castTime, minRange, maxRange, spellId = Util.GetSpellInfo(Id); -- TBC Fix 06/18/2021
+		local NameRank = Util.GetFullSpellName(Name, Rank);
+		
+function Util.GetButtonActionInfo2(ButtonName)
+changed
+		local Rank = select(2, GetSpellInfo(Button.SpellId));
+to
+		-- local Rank = select(2, GetSpellInfo(Button.SpellId));
+    local Rank = select(2, Util.GetSpellInfo(Button.SpellId)); -- TBC Fix 06/18/2021
+
+
+Button.lua -----------------------------------------------------------------
+
+function Button:TranslateMacro()
+changed
+			self.SpellNameRank = GetSpellInfo(SpellName); --BFA fix: Cache is indexed by name and the old function returned the ID
+to
+			-- self.SpellNameRank = GetSpellInfo(SpellName); --BFA fix: Cache is indexed by name and the old function returned the ID
+      local Rank = Util.GetSpellRank(SpellId) -- TBC Fix 06/17/2021
+      self.SpellNameRank = Util.GetFullSpellName(SpellName, Rank); -- TBC Fix 06/17/2021
+
+function Button:SetCommandSpell(Id)
+changed
+	local Name, Rank = GetSpellInfo(Id);
+to
+	-- local Name, Rank = GetSpellInfo(Id);
+	local Name, Rank = Util.GetSpellInfo(Id); -- TBC Fix 06/18/2021
+
+function Button:PromoteSpell()
+changed
+		local Name, Rank = GetSpellInfo(self.SpellName);		--This will actually retrieve for the highest rank of the spell
+to
+		-- local Name, Rank = GetSpellInfo(self.SpellName);		--This will actually retrieve for the highest rank of the spell
+    local Name, Rank = Util.GetSpellInfo(self.SpellName) -- TBC Fix 06/18/2021		
+    
