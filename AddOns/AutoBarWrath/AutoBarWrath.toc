@@ -16,6 +16,11 @@
 ## X-Embeds: Ace2, LibKeyBound-1.0,  LibPeriodicTable-3.1, LibStickyFrames-2.0, MuffinLibPTSets
 ## SavedVariables: AutoBarDB, AutoBarDB2
 
+## Title-zhTW: |cff00CCFF[快捷列]|r 自動快捷列
+## Notes-zhTW: AutoBarWrath |n|n自動產生各種分門別類的快捷列以方便使用，例如消耗品、飾品、圖騰、各類技能的快捷列和按鈕。|n|n|cffffd200使用方法: |r點小地圖按鈕進行設定。
+## X-Category-zhTW: 介面
+## DefaultState: disabled
+
 # Libraries
 embeds.xml
 
@@ -43,14 +48,6 @@ wrath/whats_new.lua
 
 # Localization
 locale/Locale-enUS.lua
-locale/Locale-deDE.lua
-locale/Locale-esES.lua
-locale/Locale-esMX.lua
-locale/Locale-frFR.lua
-locale/Locale-itIT.lua
-locale/Locale-koKR.lua
-locale/Locale-ptBR.lua
-locale/Locale-ruRU.lua
 locale/Locale-zhCN.lua
 locale/Locale-zhTW.lua
 locale/Locale-default.lua

@@ -114,15 +114,16 @@ function AutoBarButtonMount.prototype:Refresh(parentBar, buttonDB, updateMount)
 			if (is_collected and not should_hide_on_char) then
 				-- print("Collected mount:", mount_id, name, spell_id, icon, is_favourite)
 
-			local spell_name = GetSpellInfo(spell_id)
-			--print("Name:", name, "SpellName:", spell_name, "SpellID:", spell_id);
-			-- if not spell_name then print("AutoBar Error: Missing spell name for", spell_id, name); end
-			if spell_name then -- 暫時修正
-				spellIconList[spell_name] = icon
-				AutoBarSearch:RegisterSpell(spell_name, spell_id, true)
-				local spellInfo = AutoBarSearch.GetRegisteredSpellInfo(spell_name)
-				spellInfo.spell_link = "spell:" .. spell_id		--TODO: This shouldn't be necessary. Test to see if RegisterSpell isn't giving a good link
-				category.castList[# category.castList + 1] = spell_name
+				local spell_name = GetSpellInfo(spell_id)
+				--print("Name:", name, "SpellName:", spell_name, "SpellID:", spell_id);
+				-- if not spell_name then print("AutoBar Error: Missing spell name for", spell_id, name); end
+				if spell_name then -- 暫時修正
+					spellIconList[spell_name] = icon
+					AutoBarSearch:RegisterSpell(spell_name, spell_id, true)
+					local spellInfo = AutoBarSearch.GetRegisteredSpellInfo(spell_name)
+					spellInfo.spell_link = "spell:" .. spell_id		--TODO: This shouldn't be necessary. Test to see if RegisterSpell isn't giving a good link
+					category.castList[# category.castList + 1] = spell_name
+				end
 			end
 
 		end
