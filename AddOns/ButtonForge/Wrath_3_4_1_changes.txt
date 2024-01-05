@@ -1,0 +1,92 @@
+UILibCreateButton.lua
+
+changed ----------------------------------------------------------------------------
+function UILib.CreateButton(Parent, Width, Height, Point, NormalTexture, PushedTexture, CheckedTexture, HighlightTexture, Tooltip, OnClickScript, OMDScript, OMUScript, AnchorPoint)
+	local Widget = CreateFrame("CHECKBUTTON", nil, Parent);
+	Widget:SetSize(Width, Height);
+	Widget:SetPoint(unpack(Point));
+	Widget:SetNormalTexture(NormalTexture);
+	Widget:SetPushedTexture(PushedTexture);
+	Widget:SetCheckedTexture(CheckedTexture);
+	Widget:SetHighlightTexture(HighlightTexture);
+	Widget.Tooltip = Tooltip;
+	Widget:SetScript("OnClick", OnClickScript);
+	Widget:SetScript("OnMouseDown", OMDScript);
+	Widget:SetScript("OnMouseUp", OMUScript);
+	Widget:SetScript("OnEnter", UILib.OnEnter);
+	Widget:SetScript("OnLeave", UILib.OnLeave);
+	Widget.AnchorPoint = AnchorPoint;
+	return Widget;
+end
+
+to ---------------------------------------------------------------------------------
+
+function UILib.CreateButton(Parent, Width, Height, Point, NormalTexture, PushedTexture, CheckedTexture, HighlightTexture, Tooltip, OnClickScript, OMDScript, OMUScript, AnchorPoint)
+	local Widget = CreateFrame("CHECKBUTTON", nil, Parent);
+	Widget:SetSize(Width, Height);
+	Widget:SetPoint(unpack(Point));
+	Widget:SetNormalTexture(NormalTexture);
+	if (PushedTexture ~= nil) then
+		Widget:SetPushedTexture(PushedTexture);
+	end
+	Widget:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down");
+	if (CheckedTexture ~= nil) then
+		Widget:SetCheckedTexture(CheckedTexture);
+	end
+	Widget:SetHighlightTexture(HighlightTexture);
+	Widget.Tooltip = Tooltip;
+	Widget:SetScript("OnClick", OnClickScript);
+	Widget:SetScript("OnMouseDown", OMDScript);
+	Widget:SetScript("OnMouseUp", OMUScript);
+	Widget:SetScript("OnEnter", UILib.OnEnter);
+	Widget:SetScript("OnLeave", UILib.OnLeave);
+	Widget.AnchorPoint = AnchorPoint;
+	return Widget;
+end
+
+
+Button.lua
+
+changed ----------------------------------------------------------------------------
+function Button:UpdateCooldownItem()
+	Util.CooldownFrame_SetTimer(self.WCooldown, GetItemCooldown(self.ItemId));
+end
+to ---------------------------------------------------------------------------------
+function Button:UpdateCooldownItem()
+  local b, s = Util.LookupItemInvSlot(self.ItemId)
+  if (b) and (s) then
+    Util.CooldownFrame_SetTimer(self.WCooldown, C_Container.GetContainerItemCooldown(b, s));
+  end
+end
+
+changed to
+-- 3.4.1 wrath 12/28/2022 fix GetItemCooldown removed
+--function Button:UpdateCooldownItem()
+--  local b, s = Util.LookupItemInvSlot(self.ItemId)
+--  if (b) and (s) then
+--    Util.CooldownFrame_SetTimer(self.WCooldown, C_Container.GetContainerItemCooldown(b, s));
+--  end
+--end
+-- 3.4.1. wrath 01/17/2023 fix, GetItemCooldown added back in as C_Container.GetItemCooldown
+function Button:UpdateCooldownItem()
+	Util.CooldownFrame_SetTimer(self.WCooldown, C_Container.GetItemCooldown(self.ItemId));
+end
+
+
+Util.lua
+
+changed ----------------------------------------------------------------------------
+		for s = GetContainerNumSlots(b), 1, -1 do
+			ItemId = GetContainerItemID(b, s);
+to ---------------------------------------------------------------------------------
+		for s = C_Container.GetContainerNumSlots(b), 1, -1 do
+			ItemId = C_Container.GetContainerItemID(b, s);
+
+changed ----------------------------------------------------------------------------
+		for s = 1, GetContainerNumSlots(b) do
+			Id = GetContainerItemID(b, s);
+to ---------------------------------------------------------------------------------
+		for s = 1, C_Container.GetContainerNumSlots(b) do
+			Id = C_Container.GetContainerItemID(b, s);						
+			
+
