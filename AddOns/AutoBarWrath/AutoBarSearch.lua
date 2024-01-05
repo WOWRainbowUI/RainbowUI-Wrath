@@ -14,11 +14,7 @@ local _, AB = ... -- Pulls back the Addon-Local Variables and store them locally
 
 
 local AutoBar = AutoBar
-local ABGCS = AutoBarGlobalCodeSpace	--TODO: Replace all with ABGCocde, or just the global AB
-local ABGCode = AutoBarGlobalCodeSpace
 local ABGData = AutoBarGlobalDataObject
-
-local AceOO = MMGHACKAceLibrary("AceOO-2.0")
 
 AutoBarSearch = {
 
@@ -49,8 +45,8 @@ AutoBarSearch = {
 }
 
 local METHOD_DEBUG = false
-local DEBUG_IDS = ABGCode.MakeSet({182773, 172179})
-local DEBUG_GUIDS = ABGCode.MakeSet({ABGCode.ToyGUID(182773), ABGCode.ToyGUID(172179)})
+--local DEBUG_IDS = AB.MakeSet({182773, 172179})
+--local DEBUG_GUIDS = AB.MakeSet({AB.ToyGUID(182773), AB.ToyGUID(172179)})
 
 
 -- Remove itemId from bag, slot, spell
@@ -99,47 +95,44 @@ end
 -- end
 
 
--- Recycle lists will avoid garbage collection and memory thrashing but potentially grow over time
--- A simple 2 list aproach that recycles objects specific to that type of list so the bulk of operations should be only initing recycled objects.
-local Recycle = AceOO.Class()
-Recycle.virtual = true
-Recycle.prototype.dataList = 0
-
-function Recycle.prototype:init()
-	Recycle.super.prototype.init(self) -- Mandatory init.
-	self.dataList = {}
-end
-
 
 -- The search space with all items to look for
 -- Tracks client buttons that are looking (for proper deletion)
 --		{ itemId = {buttonKey, ...} }
 --#region SearchSpace
-local SearchSpace = AceOO.Class(Recycle)
+---@class SearchSpace
+local SearchSpace = {
+	dataList = {}
+}
 
--- Add a list of itemIds for the given buttonKey
-function SearchSpace.prototype:Add(itemId, buttonKey)
-	local clientButtons = self.dataList[itemId]
+-- Add an itemId for the given buttonKey
+---@param p_item_id number
+---@param p_button_key string
+function SearchSpace:Add(p_item_id, p_button_key)
+	local clientButtons = self.dataList[p_item_id]
 	if (not clientButtons) then
 		clientButtons = {}
-		self.dataList[itemId] = clientButtons
+		self.dataList[p_item_id] = clientButtons
 	end
-	clientButtons[buttonKey] = true
+	clientButtons[p_button_key] = true
 end
 
--- Remove a list of itemIds for the given buttonKey
-function SearchSpace.prototype:Delete(itemId, buttonKey)
-	local clientButtons = self.dataList[itemId]
+
+-- Remove an itemId for the given buttonKey
+---@param p_item_id number
+---@param p_button_key string
+function SearchSpace:Delete(p_item_id, p_button_key)
+	local clientButtons = self.dataList[p_item_id]
 	if (clientButtons) then
-		clientButtons[buttonKey] = nil
+		clientButtons[p_button_key] = nil
 	end
-	if (# clientButtons == 0) then
-		self.dataList[itemId] = nil
+	if (AB.is_table_empty(clientButtons)) then
+		self.dataList[p_item_id] = nil
 	end
 end
 
--- Remove and Recycle all items
-function SearchSpace.prototype:Reset()
+-- Remove all items
+function SearchSpace:Reset()
 	for itemId, clientButtons in pairs(self.dataList) do
 		for _i, buttonKey in pairs(clientButtons) do
 			clientButtons[buttonKey] = nil
@@ -151,7 +144,7 @@ end
 
 -- Return the search space list.
 -- Do not manipulate the list.  It is only for performance when checking if an itemId is searched for
-function SearchSpace.prototype:GetList()
+function SearchSpace:GetList()
 	return self.dataList
 end
 
@@ -164,15 +157,16 @@ end
 -- Priority is slotIndex.categoryIndex
 --		{ itemId = {category, slotIndex, categoryIndex} }
 --#region Items
-local Items = AceOO.Class(Recycle)
+local Items = {
+	dataList = {}
+}
 
-function Items.prototype:init()
-	Items.super.prototype.init(self)
+function Items:init()
 end
 
 -- Add a list of itemIds for the given buttonKey
-function Items.prototype:Add(itemList, buttonKey, category, slotIndex)
---AutoBar:Print("Items.prototype:Add    category " .. tostring(category) .. " itemList " .. tostring(itemList))
+function Items:Add(itemList, buttonKey, category, slotIndex)
+--AutoBar:Print("Items:Add    category " .. tostring(category) .. " itemList " .. tostring(itemList))
 	if (not self.dataList[buttonKey]) then
 		self.dataList[buttonKey] = {}
 	end
@@ -196,7 +190,7 @@ end
 
 -- Remove a list of itemIds for the given buttonKey
 -- ToDo: on deletion reapply lower priority ones / track them from the start?
-function Items.prototype:Delete(itemList, buttonKey, _category, slotIndex)
+function Items:Delete(itemList, buttonKey, _category, slotIndex)
 	for _i, itemId in pairs(itemList) do
 		local buttonItems = self.dataList[buttonKey]
 		local itemData = buttonItems[itemId]
@@ -207,8 +201,8 @@ function Items.prototype:Delete(itemList, buttonKey, _category, slotIndex)
 	end
 end
 
--- Remove and Recycle all items
-function Items.prototype:Reset()
+-- Remove all items
+function Items:Reset()
 	for buttonKey, buttonItems in pairs(self.dataList) do
 		for item_id, _item_data in pairs(buttonItems) do
 			buttonItems[item_id] = nil
@@ -232,13 +226,13 @@ local function get_items(p_category)
 end
 
 -- Populate all the buttons
-function Items.prototype:Populate()
-	if(METHOD_DEBUG) then ABGCode.LogWarning("Items:Populate"); end
+function Items:Populate()
+	if(METHOD_DEBUG) then AB.LogWarning("Items:Populate"); end
 	for buttonKey, button in pairs(AutoBar.buttonList) do
 		if (button and button[1]) then
 			for category_index = 1, # button, 1 do
 				local category, item_list = get_items(button[category_index])
-				--if(button[category_index] == "Muffin.Toys.Hearth") then ABGCode.LogWarning("   ", category, AB.Dump(item_list)) end
+				--if(button[category_index] == "Muffin.Toys.Hearth") then AB.LogWarning("   ", category, AB.Dump(item_list)) end
 				if (item_list) then
 					self:Add(item_list, buttonKey, category, category_index)
 				end
@@ -249,13 +243,13 @@ function Items.prototype:Populate()
 end
 
 -- Re-Populate a  button
-function Items.prototype:RePopulate(p_button_key)
-	if(METHOD_DEBUG) then ABGCode.LogWarning("Items:RePopulate", p_button_key); end
+function Items:RePopulate(p_button_key)
+	if(METHOD_DEBUG) then AB.LogWarning("Items:RePopulate", p_button_key); end
 	local button = AutoBar.buttonList[p_button_key]
 	if (button and button[1]) then
 		for slotIndex = 1, # button, 1 do
 			local category, itemList = get_items(button[slotIndex])
-			if(button[slotIndex] == "Muffin.Toys.Hearth") then ABGCode.LogWarning("   ", category, AB.Dump(itemList)) end
+			if(button[slotIndex] == "Muffin.Toys.Hearth") then AB.LogWarning("   ", category, AB.Dump(itemList)) end
 			if (itemList) then
 				self:Add(itemList, p_button_key, category, slotIndex)
 			end
@@ -267,7 +261,7 @@ end
 
 -- Return the buttons search list.
 -- Do not manipulate the list.  It is only for performance when checking if an itemId is searched for
-function Items.prototype:GetList(buttonKey)
+function Items:GetList(buttonKey)
 	if (buttonKey) then
 		return self.dataList[buttonKey]
 	else
@@ -286,14 +280,14 @@ end
 
 -- Add itemId to bag, slot
 function AutoBarSearch.found:Add(itemId, bag, slot, spell)
-	local searchSpace = AutoBarSearch.space:GetList()
+	local search_list = AutoBarSearch.space:GetList()
 	local debug = false --(DEBUG_GUIDS[itemId])
-	if (debug) then ABGCode.LogWarning("Found:Add", itemId, bag, slot, spell, "-->foundData:", AB.Dump(self.dataList[itemId], 1), "space:", searchSpace[itemId]); end
+	if (debug) then AB.LogWarning("Found:Add", itemId, bag, slot, spell, "-->foundData:", AB.Dump(self.dataList[itemId], 1), "space:", search_list[itemId]); end
 
 	local itemData = self.dataList[itemId]
---AutoBar:Print("Found.prototype:Add    itemId " .. tostring(itemId) .. " bag " .. tostring(bag) .. " slot " .. tostring(slot) .. " spell ")
+--AutoBar:Print("Found:Add    itemId " .. tostring(itemId) .. " bag " .. tostring(bag) .. " slot " .. tostring(slot) .. " spell ")
 	if (not itemData) then
-		if (debug) then ABGCode.LogWarning("   no itemData", searchSpace[itemId]); end
+		if (debug) then AB.LogWarning("   no itemData", search_list[itemId]); end
 		itemData = {}
 		self.dataList[itemId] = itemData
 		itemData[1] = bag
@@ -301,7 +295,7 @@ function AutoBarSearch.found:Add(itemId, bag, slot, spell)
 		itemData[3] = spell
 
 		-- First time Item found so add it everywhere
-		if (searchSpace[itemId]) then
+		if (search_list[itemId]) then
 			AutoBarSearch.current:Merge(itemId)
 		end
 
@@ -327,21 +321,21 @@ function AutoBarSearch.found:Add(itemId, bag, slot, spell)
 			itemData[i] = bag
 			itemData[i + 1] = slot
 			itemData[i + 2] = spell
---AutoBar:Print("Found.prototype:Add    itemId " .. tostring(itemId) .. " i " .. tostring(i) .. " bag " .. tostring(itemData[i]) .. " slot " .. tostring(itemData[i + 1]) .. " spell " .. tostring(itemData[i + 2]))
+--AutoBar:Print("Found:Add    itemId " .. tostring(itemId) .. " i " .. tostring(i) .. " bag " .. tostring(itemData[i]) .. " slot " .. tostring(itemData[i + 1]) .. " spell " .. tostring(itemData[i + 2]))
 		end
 	end
 end
 
 -- Remove bag, slot, spell for the itemId
 function AutoBarSearch.found:Delete(itemId, bag, slot, spell)
-	local searchSpace = AutoBarSearch.space:GetList()
+	local search_list = AutoBarSearch.space:GetList()
 	local itemData = self.dataList[itemId]
-	--if (spell == "Wild Charge") then print("Found.prototype:Delete - itemId ",itemId," bag ",bag," slot ",slot," spell ", spell, "ItemData", itemData) end
+	--if (spell == "Wild Charge") then print("Found:Delete - itemId ",itemId," bag ",bag," slot ",slot," spell ", spell, "ItemData", itemData) end
 	if (itemData) then
 		local i = 1
 		repeat
 			if (itemData[i] == bag and itemData[i + 1] == slot and itemData[i + 2] == spell) then
-				--AutoBar:Print("Found.prototype:Delete    itemData[i] " .. tostring(itemData[i]) .. " itemData[i + 1] " .. tostring(itemData[i + 1]) .. " itemData[i + 2] " .. tostring(itemData[i + 2]) .. " i " .. tostring(i))
+				--AutoBar:Print("Found:Delete    itemData[i] " .. tostring(itemData[i]) .. " itemData[i + 1] " .. tostring(itemData[i + 1]) .. " itemData[i + 2] " .. tostring(itemData[i + 2]) .. " i " .. tostring(i))
 				-- Move rest back
 				local j = i
 				repeat
@@ -359,14 +353,14 @@ function AutoBarSearch.found:Delete(itemId, bag, slot, spell)
 		if (not (itemData[1] or itemData[2] or itemData[3])) then
 			self.dataList[itemId] = nil
 
-			if (searchSpace[itemId]) then
+			if (search_list[itemId]) then
 				AutoBarSearch.current:Purge(itemId)
 			end
 		end
 	end
 end
 
--- Remove and Recycle all items
+-- Remove all items
 function AutoBarSearch.found:Reset()
 	for itemId, _itemData in pairs(self.dataList) do
 		self.dataList[itemId] = nil
@@ -430,48 +424,46 @@ end
 -- bag, slot synced to Stuff
 -- { itemId, ... }
 --#region Current
-local Current = AceOO.Class()
+local Current = {
+	dataList = {}
+}
 
-function Current.prototype:init()
-	Current.super.prototype.init(self)
-	self.dataList = {}
-end
 
 -- Add the brand new item to any interested buttons
-function Current.prototype:Merge(itemId)
+function Current:Merge(itemId)
 	local debug = false --(DEBUG_GUIDS[itemId])
-	if (debug) then ABGCode.LogWarning("Current:Merge", itemId); end
+	if (debug) then AB.LogWarning("Current:Merge", itemId); end
 
 	local items = AutoBarSearch.items:GetList()
 	for buttonKey, searchItems in pairs(items) do
 		if (searchItems and searchItems[itemId]) then
 			local itemData = searchItems[itemId]
 			self:Add(buttonKey, itemId)
-			--print("Current.prototype:Merge    itemId " .. tostring(itemId) .. " buttonKey " .. tostring(buttonKey), itemData.slotIndex, itemData.categoryIndex)
-			if (debug) then ABGCode.LogWarning("Current:Merge itemId:", itemId, buttonKey); end
+			--print("Current:Merge    itemId " .. tostring(itemId) .. " buttonKey " .. tostring(buttonKey), itemData.slotIndex, itemData.categoryIndex)
+			if (debug) then AB.LogWarning("Current:Merge itemId:", itemId, buttonKey); end
 			AutoBarSearch.sorted:Add(buttonKey, itemId, itemData.slotIndex, itemData.categoryIndex)
 		end
 	end
 end
 
 -- Purge the defunct item from its client buttons
-function Current.prototype:Purge(itemId)
+function Current:Purge(itemId)
 	local items = AutoBarSearch.items:GetList()
 	for buttonKey, searchItems in pairs(items) do
 		local debug = false --(buttonKey == "AutoBarButtonHearth")
 		if (searchItems and searchItems[itemId]) then
 			self:Delete(buttonKey, itemId)
-			--AutoBar:Print("Current.prototype:Purge    itemId " .. tostring(itemId) .. " buttonKey " .. tostring(buttonKey))
-			if (debug) then ABGCode.LogWarning("Current:Purge itemId:", itemId); end
+			--AutoBar:Print("Current:Purge    itemId " .. tostring(itemId) .. " buttonKey " .. tostring(buttonKey))
+			if (debug) then AB.LogWarning("Current:Purge itemId:", itemId); end
 			AutoBarSearch.sorted:Delete(buttonKey, itemId)
 		end
 	end
 end
 
 -- Add the found item to the list of itemIds for the given buttonKey
-function Current.prototype:Add(buttonKey, itemId)
+function Current:Add(buttonKey, itemId)
 	local debug = false --(DEBUG_IDS[itemId])
-	if (debug) then ABGCode.LogWarning("Current:Add", buttonKey, itemId); end
+	if (debug) then AB.LogWarning("Current:Add", buttonKey, itemId); end
 
 	if (not self.dataList[buttonKey]) then
 		self.dataList[buttonKey] = {}
@@ -483,18 +475,18 @@ end
 
 -- Remove the found item from the list of itemIds for the given buttonKey
 -- ToDo: on deletion reapply lower priority ones / track them from the start?
-function Current.prototype:Delete(buttonKey, itemId)
+function Current:Delete(buttonKey, itemId)
 	local debug = false --(buttonKey == "AutoBarButtonHearth")
 	if (not self.dataList[buttonKey]) then
 		self.dataList[buttonKey] = {}
 	end
 	local buttonItems = self.dataList[buttonKey]
 	buttonItems[itemId] = nil
-	if (debug) then ABGCode.LogWarning("Current:Delete itemId:", itemId); end
+	if (debug) then AB.LogWarning("Current:Delete itemId:", itemId); end
 end
 
--- Remove and Recycle all items
-function Current.prototype:Reset()
+-- Remove all items
+function Current:Reset()
 	for buttonKey, buttonItems in pairs(self.dataList) do
 		for itemId, _item_data in pairs(buttonItems) do
 			buttonItems[itemId] = nil
@@ -509,7 +501,7 @@ end
 
 -- Return the buttons found list.
 -- Do not manipulate the list.  It is only for performance.
-function Current.prototype:GetList(buttonKey)
+function Current:GetList(buttonKey)
 	if (buttonKey) then
 		return self.dataList[buttonKey]
 	else
@@ -524,19 +516,17 @@ end
 -- Verify / add items
 -- n = { itemId, slotIndex, categoryIndex}, ... }
 --#region Sorted
-local Sorted = AceOO.Class(Recycle)
-
-function Sorted.prototype:init()
-	Sorted.super.prototype.init(self)
-	self.promotedList = {}	-- Location current best usable item came from
-	self.dirtyList = {}		-- Which lists need sorting
-	self.dirty = nil		-- True if some list needs sorting
-end
+local Sorted  = {
+	dataList = {},
+	promotedList = {},	-- Location current best usable item came from
+	dirtyList = {},		-- Which lists need sorting
+	dirty = nil,		-- True if some list needs sorting
+}
 
 -- Add the found item to the list of itemIds for the given buttonKey
-function Sorted.prototype:Add(buttonKey, itemId, slotIndex, categoryIndex)
+function Sorted:Add(buttonKey, itemId, slotIndex, categoryIndex)
 	local debug = false --(DEBUG_IDS[itemId])
-	if (debug) then ABGCode.LogWarning("Sorted:Add ", buttonKey, itemId, slotIndex, categoryIndex); end
+	if (debug) then AB.LogWarning("Sorted:Add ", buttonKey, itemId, slotIndex, categoryIndex); end
 
 	if (not self.dataList[buttonKey]) then
 		self.dataList[buttonKey] = {}
@@ -545,7 +535,7 @@ function Sorted.prototype:Add(buttonKey, itemId, slotIndex, categoryIndex)
 	local bFound = nil
 
 	if (not itemId) then
-		AutoBar:Print("Sorted.prototype:Add   bad itemId  " .. tostring(itemId))
+		AutoBar:Print("Sorted:Add   bad itemId  " .. tostring(itemId))
 	end
 
 	for _i, sortedItemData in ipairs(buttonItems) do
@@ -572,9 +562,9 @@ end
 
 -- Remove the found item from the list of itemIds for the given buttonKey
 -- ToDo: on deletion reapply lower priority ones / track them from the start?
-function Sorted.prototype:Delete(buttonKey, itemId)
+function Sorted:Delete(buttonKey, itemId)
 	local debug = false --(buttonKey == "AutoBarButtonHearth")
-	if (debug) then ABGCode.LogWarning("Sorted:Add itemId:", itemId); end
+	if (debug) then AB.LogWarning("Sorted:Delete itemId:", itemId); end
 
 	if (not self.dataList[buttonKey]) then
 		self.dataList[buttonKey] = {}
@@ -605,7 +595,7 @@ local function SortBySlotCategory(a, b)
 end
 
 -- Dirty buttonKey or all Buttons if buttonKey is nil.
-function Sorted.prototype:DirtyButtons(p_button_key)
+function Sorted:DirtyButtons(p_button_key)
 	self.dirty = true
 	if (p_button_key) then
 		self.dirtyList[p_button_key] = true
@@ -618,7 +608,7 @@ end
 
 -- Update any dirty lists.
 -- If index is specified then sort it only and do not change dirty state
-function Sorted.prototype:Update(p_button_key)
+function Sorted:Update(p_button_key)
 	local oldDirty = nil
 	if (p_button_key) then
 		oldDirty = self.dirty
@@ -642,8 +632,8 @@ end
 --/dump AutoBarSearch.sorted.dirtyList["AutoBarCustomButton7"]
 --/dump AutoBarSearch.sorted.dataList["AutoBarCustomButton7"]
 
--- Remove and Recycle all items
-function Sorted.prototype:Reset()
+-- Remove all items
+function Sorted:Reset()
 
 	for buttonKey, buttonItems in pairs(self.dataList) do
 		for i, _sortedItemData in pairs(buttonItems) do
@@ -662,13 +652,13 @@ end
 
 
 -- Dirty a specific button
-function Sorted.prototype:SetDirty(buttonKey)
+function Sorted:SetDirty(buttonKey)
 	self.dirty = true
 	self.dirtyList[buttonKey] = true
 end
 
 -- Completely reset everything and then rescan.
-function Sorted.prototype:GetInfo(buttonKey, index)
+function Sorted:GetInfo(buttonKey, index)
 	local sortedItems = self.dataList[buttonKey]
 	if (not sortedItems) then
 		return nil, nil, nil, nil, nil, nil
@@ -706,7 +696,7 @@ end
 
 -- Return the buttons sorted list.
 -- Do not manipulate the list.  It is only for performance.
-function Sorted.prototype:GetList(buttonKey)
+function Sorted:GetList(buttonKey)
 	if (buttonKey) then
 		return self.dataList[buttonKey]
 	else
@@ -723,7 +713,7 @@ local function swap(list, a, b)
 end
 
 -- Swap item to front if found
-function Sorted.prototype:SwapToFront(sortedItems, itemId)
+function Sorted:SwapToFront(sortedItems, itemId)
 	for sortedIndex, sortedItemData in ipairs(sortedItems) do
 		if (itemId == sortedItemData.itemId) then
 			swap(sortedItems, 1, sortedIndex)
@@ -734,10 +724,10 @@ function Sorted.prototype:SwapToFront(sortedItems, itemId)
 end
 
 -- After sorting make sure first item is usable
-function Sorted.prototype:SetBest(buttonKey)
+function Sorted:SetBest(buttonKey)
 	local sortedItems = AutoBarSearch.sorted:GetList(buttonKey)
 	local searchItems = AutoBarSearch.items:GetList()[buttonKey]
-	assert(searchItems, "Sorted.prototype:SetBest items["..tostring(buttonKey).."] is nil")
+	assert(searchItems, "Sorted:SetBest items["..tostring(buttonKey).."] is nil")
 	local itemId, category, categoryInfo
 
 	local buttonDB = AutoBar.buttonDBList[buttonKey]
@@ -811,7 +801,7 @@ end
 -- Multiple calls refresh current state of the spell
 -- {spellName = {can_cast, spell_link, no_spell_check, spell_id}}
 ---@param p_spell_name string
----@param p_spell_id integer
+---@param p_spell_id integer|nil
 ---@param p_no_spell_check boolean|nil
 ---@param p_spell_link string|nil
 ---@return boolean
@@ -892,7 +882,7 @@ end
 function AutoBarSearch:RegisterToy(p_toy_id)
 	assert(type(p_toy_id) == "number")
 	local debug = false --(DEBUG_IDS[p_toy_id])
-	local toy_guid = ABGCS.ToyGUID(p_toy_id)
+	local toy_guid = AB.ToyGUID(p_toy_id)
 	local toy_info = AutoBarSearch.registered_toys[toy_guid]
 
 	if (not toy_info) then
@@ -912,7 +902,7 @@ function AutoBarSearch:RegisterToy(p_toy_id)
 		toy_info.is_fave = is_fave
 	end
 
-	if (debug) then ABGCode.LogWarning("RegisterToy", "ID:", p_toy_id, "Name:", toy_name); end
+	if (debug) then AB.LogWarning("RegisterToy", "ID:", p_toy_id, "Name:", toy_name); end
 
 	return toy_info
 end
@@ -933,7 +923,7 @@ function AutoBarSearch:RegisterMacro(macroId, macroIndex, macroName, macroText)
 	macroInfo.macroName = macroName
 	macroInfo.macroText = macroText and strtrim(macroText) --TODO: Do this in the GUI
 	if (macroInfo.macroText) then
-		macroInfo.macro_action, macroInfo.macro_icon, macroInfo.macro_tooltip = ABGCode.GetActionForMacroBody(macroInfo.macroText)
+		macroInfo.macro_action, macroInfo.macro_icon, macroInfo.macro_tooltip = AB.GetActionForMacroBody(macroInfo.macroText)
 	end
 end
 
@@ -953,12 +943,12 @@ end
 
 -- Call once only
 function AutoBarSearch:Initialize()
-	AutoBarSearch.space = SearchSpace:new()		-- All items to search for
-	AutoBarSearch.items = Items:new()			-- Items to search for for each button + category etc.
+	AutoBarSearch.space = SearchSpace		-- All items to search for
+	AutoBarSearch.items = Items			-- Items to search for for each button + category etc.
 
-	AutoBarSearch.sorted = Sorted:new()			-- Sorted version of Current items
+	AutoBarSearch.sorted = Sorted			-- Sorted version of Current items
 
-	AutoBarSearch.current = Current:new()		-- Current items found for each button (Found intersect Items)
+	AutoBarSearch.current = Current		-- Current items found for each button (Found intersect Items)
 
 	init_dirty_flags()
 
@@ -1041,18 +1031,18 @@ end
 
 -- Scan bags only to support shuffling of bag items manually added or moved during combat.
 function AutoBarSearch:ScanBagsInCombat()
-	ABGCode.LogEventStart("Stuff.prototype:ScanCombat")
+	AB.LogEventStart("Stuff:ScanCombat")
 	for bag = 0, NUM_BAG_SLOTS, 1 do
 		self:ScanBag(bag)
 	end
-	ABGCode.LogEventEnd("Stuff.prototype:ScanCombat")
+	AB.LogEventEnd("Stuff:ScanCombat")
 end
 
 
 ---Scan all registered toys, refreshing their data and adding them to Stuff
 function AutoBarSearch:ScanRegisteredToys()
 
-	if (METHOD_DEBUG) then ABGCode.LogWarning("AutoBarSearch:ScanRegisteredToys", AutoBar:tcount(self.registered_toys)); end
+	if (METHOD_DEBUG) then AB.LogWarning("AutoBarSearch:ScanRegisteredToys", AutoBar:tcount(self.registered_toys)); end
 
 	for toy_guid, toy_data in pairs(self.registered_toys) do
 		self:RegisterToy(toy_data.item_id);
@@ -1119,12 +1109,12 @@ local function add_found_item(p_item_id, p_bag, p_slot)
 
 	-- Filter out too high level items
 	local itemMinLevel = select(5, GetItemInfo(p_item_id)) or 0;
-	local usable = ABGCS.IsUsableItem(p_item_id);
+	local usable = AB.IsUsableItem(p_item_id);
 	local item_spell = GetItemSpell(p_item_id);
 	if (itemMinLevel <= AutoBar.player_level and (usable or item_spell)) then
 		AutoBarSearch.found:Add(p_item_id, p_bag, p_slot, nil)
 	end
---AutoBar:Print("Stuff.prototype:Add bag " .. tostring(bag) .. " slot " .. tostring(slot))
+--AutoBar:Print("Stuff:Add bag " .. tostring(bag) .. " slot " .. tostring(slot))
 end
 
 
@@ -1180,7 +1170,7 @@ end
 
 -- Scan all of the things
 function AutoBarSearch:ScanAll()
-	ABGCode.LogEventStart("AutoBarSearch:ScanAll")
+	AB.LogEventStart("AutoBarSearch:ScanAll")
 
 	-- Cache player's current level.  Used by CStuff.add_item for filtering
 	AutoBar.player_level = UnitLevel("player")
@@ -1212,5 +1202,5 @@ function AutoBarSearch:ScanAll()
 		AutoBarSearch.dirty.macro_text = false
 	end
 
-	ABGCode.LogEventEnd("AutoBarSearch:ScanAll")
+	AB.LogEventEnd("AutoBarSearch:ScanAll")
 end
