@@ -1,5 +1,5 @@
 <Bindings>
-	<Binding name="BAGSYNCBLACKLIST" header="BAGSYNC" category="ADDONS">
+	<Binding name="BAGSYNCBLACKLIST" header="BagSync" category="ADDONS">
 		BagSync_ShowWindow("Blacklist");
 	</Binding>
 	<Binding name="BAGSYNCWHITELIST" category="ADDONS">
