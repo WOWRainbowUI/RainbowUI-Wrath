@@ -8,6 +8,7 @@ ns.defaults = {
         show_on_world = true,
         show_on_minimap = false,
         show_npcs = true,
+        show_npcs_onlynotable = false,
         show_treasure = true,
         show_routes = true,
         upcoming = true,
@@ -181,18 +182,24 @@ ns.options = {
                     desc = "顯示稀有的 NPC，通常會掉落物品或完成成就。",
                     order = 30,
                 },
+                show_npcs_onlynotable = {
+                    type = "toggle",
+                    name = "...只顯示值得注意的",
+                    desc = "只顯示仍可取得某些東西的 NPC: 當前角色的成就、外觀。",
+                    order = 31,
+                },
                 show_treasure = {
                     type = "toggle",
                     name = "顯示寶藏",
                     desc = "顯示可以拾取的寶藏",
-                    order = 30,
+                    order = 35,
                 },
                 show_routes = {
                     type = "toggle",
                     name = "顯示路徑",
                     desc = "顯示地點之間的相關路徑",
                     disabled = function() return not ns.RouteWorldMapDataProvider end,
-                    order = 31,
+                    order = 37,
                 },
                 tooltip_questid = {
                     type = "toggle",
@@ -544,6 +551,33 @@ local allLootKnown = testMaker(function(item)
     return known
 end)
 
+local function isAchieved(point)
+    if point.criteria and point.criteria ~= true then
+        if not allCriteriaComplete(point.criteria, point.achievement) then
+            return false
+        end
+    else
+        local completedByMe = select(13, GetAchievementInfo(point.achievement))
+        if not completedByMe then
+            return false
+        end
+    end
+    return true
+end
+local function isNotable(point)
+    -- A point is notable if it has loot you can use, or is tied to an
+    -- achievement you can still earn. It ignores quest-completion, because
+    -- repeatable mobs are a nightmare here.
+    if point.achievement and not isAchieved(point) then
+        return true
+    end
+    if point.loot and hasKnowableLoot(point.loot) and not allLootKnown(point.loot) then
+        return true
+    end
+    if point.follower and not C_Garrison.IsFollowerCollected(point.follower) then
+        return true
+    end
+end
 local function everythingFound(point)
     local ret
     if ns.db.collectablefound and point.loot and hasKnowableLoot(point.loot) then
@@ -553,15 +587,8 @@ local function everythingFound(point)
         ret = true
     end
     if (ns.db.achievedfound or not point.quest) and point.achievement and not point.achievementNotFound then
-        if point.criteria and point.criteria ~= true then
-            if not allCriteriaComplete(point.criteria, point.achievement) then
-                return false
-            end
-        else
-            local completedByMe = select(13, GetAchievementInfo(point.achievement))
-            if not completedByMe then
-                return false
-            end
+        if not isAchieved(point) then
+            return false
         end
         ret = true
     end
@@ -700,6 +727,10 @@ ns.should_show_point = function(coord, point, currentZone, isMinimap)
     if not point.follower then
         if point.npc then
             if not ns.db.show_npcs then
+                return false
+            end
+            if ns.db.show_npcs_onlynotable and not isNotable(point) then
+                -- Only show "notable" npcs, which we define as "has loot you can use or has an achievement"
                 return false
             end
         else
