@@ -5,12 +5,14 @@ notes for wrath 3.4.3
 -----------------ButtonForge.toc-----------------------
 ---- Updated with
 ## Interface: 30403
-## Version: 1.0.20-classic-Wrath
+## Version: 1.0.21-classic-Wrath
 ## Author: Massiner of Nathrezim, Albirew, Sunnova
 
 
 
 
+-----------------Const.lua-----------------------
+* Updated  VersionMinor from 0.20 to 0.21
 
 
 -----------------Const.lua-----------------------
