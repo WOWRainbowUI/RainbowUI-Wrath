@@ -180,6 +180,18 @@ function ns.RegisterPoints(zone, points, defaults)
                 end
             end
         end
+        if point.additional then
+            -- Extra coordinates to register. This is equivalent to just
+            -- registering the same table multiple times on the input, and
+            -- should only be used for simple cases -- related points are
+            -- going to fall apart here.
+            for _,acoord in pairs(point.additional) do
+                if ns.DEBUG and ns.points[zone][acoord] then
+                    print(myname, "point collision", zone, acoord)
+                end
+                ns.points[zone][acoord] = point
+            end
+        end
     end
 end
 function ns.RegisterVignettes(zone, vignettes, defaults)
@@ -331,7 +343,8 @@ local function render_string(s, context)
         elseif variant == "quest" or variant == "worldquest" or variant == "questname" then
             local name = C_QuestLog.GetTitleForQuestID(id)
             if not (name and name ~= "") then
-                name = tostring(id)
+                -- we bypass the normal fallback mechanism because we want the quest completion status
+                name = fallback ~= "" and fallback or (variant .. ':' .. id)
             end
             if variant == "questname" then return name end
             local completed = C_QuestLog.IsQuestFlaggedCompleted(id)
