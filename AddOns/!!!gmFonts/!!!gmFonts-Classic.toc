@@ -1,0 +1,20 @@
+## Interface: 11500
+## Version: 1010-2023050901
+## Title: gmFonts
+## Notes: A small addon for changing default UI fonts and/or adding in SharedMedia
+## Author: gmarco
+## SavedVariables: GMFONTS
+## X-WoWI-ID: 24024
+## X-Curse-Project-ID: 86033
+## IconTexture: Interface\AddOns\!!!gmFonts\icon.tga
+
+## Title-zhTW: |cffffffee[系統]|r 遊戲字體
+## Notes-zhTW: gmFonts |n|n更改整體遊戲預設的字體和大小。|n|n|cffffd200使用方法: |r從Esc>選項>插件>字體，進行設定。
+## X-Category-zhTW: 介面
+
+libs\LibStub.lua
+libs\CallbackHandler-1.0.lua
+libs\LibSharedMedia-3.0.lua
+libs\PhanxConfig-Dropdown.lua
+
+core.lua

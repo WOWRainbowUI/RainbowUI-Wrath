@@ -36,6 +36,10 @@ LSM:Register(MediaType_BORDER, "fer13", [[Interface\AddOns\SharedMedia_BNS\Borde
 -- -----
 --   FONT
 -- -----
+LSM:Register(MediaType_FONT, " 昭源黑體123",					[[Interface\Addons\SharedMedia_BNS\font\ChironHeiHK-M.ttf]], zhCN + zhTW + western)
+LSM:Register(MediaType_FONT, " 莞荽+霞鹜文楷",				[[Interface\Addons\SharedMedia_BNS\font\bLEI00D.ttf]], zhCN + zhTW + western)
+LSM:Register(MediaType_FONT, " 更莎黑體等寬",				[[Interface\Addons\SharedMedia_BNS\font\SarasaMonoTC-Regular.ttf]], zhCN + zhTW + western)
+LSM:Register(MediaType_FONT, "Alata",							[[Interface\Addons\SharedMedia_BNS\font\Alata.ttf]], zhCN + zhTW + western)
 LSM:Register(MediaType_FONT, "MaJi Bold",						[[Interface\Addons\SharedMedia_BNS\font\MaJi-Bold.ttf]], zhCN + zhTW + western)
 LSM:Register(MediaType_FONT, "US Damage text",					[[Interface\Addons\SharedMedia_BNS\font\US_damage_Font_Bold.TTF]], zhCN + zhTW + western)
 LSM:Register(MediaType_FONT, "CANAVAR Bold",					[[Interface\Addons\SharedMedia_BNS\font\CANAVAR-Bold.ttf]], zhCN + zhTW + western)
@@ -47,7 +51,7 @@ LSM:Register(MediaType_FONT, "sf-fourche Bold",					[[Interface\Addons\SharedMed
 LSM:Register(MediaType_FONT, "Spartan Bold",					[[Interface\Addons\SharedMedia_BNS\font\Spartan Bold.ttf]], zhCN + zhTW + western)
 LSM:Register(MediaType_FONT, "Hackman",							[[Interface\Addons\SharedMedia_BNS\font\Hackman.ttf]], zhCN + zhTW + western)
 LSM:Register(MediaType_FONT, "Kdam Thmor Pro",					[[Interface\Addons\SharedMedia_BNS\font\Kdam Thmor Pro.ttf]], zhCN + zhTW + western)
-LSM:Register(MediaType_FONT, "Oskar",							[[Interface\Addons\SharedMedia_BNS\font\Oskar.ttf]], zhCN + zhTW + western)
+LSM:Register(MediaType_FONT, "Balisong",						[[Interface\Addons\SharedMedia_BNS\font\Balisong.ttf]], zhCN + zhTW + western)
 LSM:Register(MediaType_FONT, "Refunk",							[[Interface\Addons\SharedMedia_BNS\font\Refunk.ttf]], zhCN + zhTW + western)
 
 -- -----
@@ -110,6 +114,11 @@ LSM:Register("sound", "#|cff00c0ff語音：注意血量|r", [[Interface\Addons\S
 LSM:Register("sound", "#|cff00c0ff語音：注意減傷|r", [[Interface\Addons\SharedMedia_BNS\sound\defensive.ogg]])
 LSM:Register("sound", "#|cff00c0ff語音：注意群療|r", [[Interface\Addons\SharedMedia_BNS\sound\healall.ogg]])
 LSM:Register("sound", "#|cff00c0ff語音：下一棒|r", [[Interface\Addons\SharedMedia_BNS\sound\下一棒.ogg]])
+LSM:Register("sound", "#|cff00c0ff語音：快卡視野|r", [[Interface\Addons\SharedMedia_BNS\sound\快卡視野.ogg]])
+LSM:Register("sound", "#|cff00c0ff語音：注意寶珠|r", [[Interface\Addons\SharedMedia_BNS\sound\watchorb.ogg]])
+LSM:Register("sound", "#|cff00c0ff語音：小怪快打|r", [[Interface\Addons\SharedMedia_BNS\sound\killmob.ogg]])
+LSM:Register("sound", "#|cff00c0ff語音：受難出現|r", [[Interface\Addons\SharedMedia_BNS\sound\shounanchuxian.ogg]])
+LSM:Register("sound", "#|cff00c0ff語音：虛体出現|r", [[Interface\Addons\SharedMedia_BNS\sound\xutichuxian.ogg]])
 LSM:Register("sound", "!|cff00c0ffJoJo冒險野郎1|r", [[Interface\Addons\SharedMedia_BNS\sound\Fists of Fury_1.ogg]]) 
 LSM:Register("sound", "!|cff00c0ffJoJo冒險野郎2|r", [[Interface\Addons\SharedMedia_BNS\sound\Fists of Fury_2.ogg]]) 
 LSM:Register("sound", "!|cff00c0ffJoJo冒險野郎3|r", [[Interface\Addons\SharedMedia_BNS\sound\Fists of Fury_3.ogg]]) 

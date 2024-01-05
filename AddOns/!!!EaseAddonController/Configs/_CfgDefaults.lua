@@ -2,6 +2,27 @@ local _, U1 = ...
 
 local D = {}
 U1.CfgDefaults = D
+D["!!!gmFonts"] = {
+	defaultEnable = 1,
+	tags = { "MISC" }, 
+	title = "遊戲字體",
+	desc = "載入時會自動將遊戲預設的系統、聊天、提示說明和傷害數字，更改為字體材質包中的字體。``可以在設定選項中調整視窗介面文字的字體和大小，其他地方的文字則是在每個插件中分別設定。例如聊天文字在 '聊天視窗美化' 插件設定、玩家和怪頭上的名字在 '威力血條' 設定...等等。``要使用自己的字體，請看問與答`https://addons.miliui.com/wow/rainbowui#q157 ``關閉此插件便可以換回遊戲原本的字體。`",
+	modifier = "彩虹ui",
+    {
+        text = "設定選項",
+        callback = function(cfg, v, loading) 
+			Settings.OpenToCategory("字體")
+		end,
+    },
+	{
+		type = "text",
+		text = "|cffFF2D2D啟用插件後需要重新載入介面。|r",
+	},
+	{
+		type = "text",
+		text = "|cffFF2D2D特別注意：請不要選擇英文字體，會無法顯示中文字。|r",
+	},
+};
 D["!BugGrabber"] = { 
 	defaultEnable = 1,
 	optdeps = { "BugSack", },
@@ -1933,16 +1954,20 @@ D["SexyMap"] = {
 };
 D["SharedMedia"] = {
     defaultEnable = 1,
-	title = "共享媒體庫",
-	desc = "讓不同的插件能夠共享材質、背景、邊框、字體和音效，也提供了多種材質可供設定插件時使用。`",
-	-- --icon = "Interface\\Icons\\inv_offhand_1h_pandariatradeskill_c_03",
-	-- img = true,
+	title = "(請刪除) 共享媒體庫",
+	desc = "這個插件已改名為 '彩虹字體材質包'，資料夾名稱也不同。``請刪除舊的資料夾 (AddOns 裡面的 SharedMedia) 以避免發生衝突。`",
+};
+D["SharedMedia_Rainbow"] = {
+    defaultEnable = 1,
+	tags = { "MISC" },
+	title = "彩虹字體材質包",
+	desc = "讓不同的插件能夠共享材質、背景、邊框、字體和音效，也提供了多種中英文字體和材質可供設定插件時使用。``|cffFF2D2D特別注意：在插件的設定中選擇字體時，英文字體只能顯示英文、無法顯示中文 (遇到中文字會變成問號)。如有需要顯示中文，請選擇中文字體。|r`",
 };
 D["SharedMedia_BNS"] = {
     defaultEnable = 1,
 	tags = { "MISC" },
 	title = "BNS 音效材質包",
-	desc = "讓不同的插件能夠共享材質、背景、邊框、音效和字體，也提供了多種音效、材質和字體可供 WA 和其他插件使用。`",
+	desc = "讓不同的插件能夠共享材質、背景、邊框、字體和音效，也提供了多種中英文字體、音效和材質可供 WA 和其他插件使用。`",
 };
 D["ShinyBuffs"] = {
 	defaultEnable = 1,
