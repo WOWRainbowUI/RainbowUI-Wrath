@@ -186,11 +186,12 @@ function PossessBarModule:Unload()
 
     if self.bar then
         self.bar:Free()
+		self.bar = nil
     end
 end
 
 function PossessBarModule:OnFirstLoad()
-    self.Update = Addon:Defer(self.Update, 0.01, self)
+    self.Update = Addon:Debounce(self.Update, 0.01, self)
 end
 
 function PossessBarModule:Update()

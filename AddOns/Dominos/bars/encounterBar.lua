@@ -72,7 +72,10 @@ function EncounterBarModule:Load()
 end
 
 function EncounterBarModule:Unload()
-	self.frame:Free()
+    if self.frame then
+        self.frame:Free()
+        self.frame = nil
+    end
 end
 
 function EncounterBarModule:OnFirstLoad()

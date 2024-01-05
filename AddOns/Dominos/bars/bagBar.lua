@@ -179,7 +179,7 @@ function BagBarModule:Load()
 end
 
 function BagBarModule:Unload()
-    if self.frame ~= nil then
+    if self.frame then
         self.frame:Free()
         self.frame = nil
     end
