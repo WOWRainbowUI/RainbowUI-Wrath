@@ -1,5 +1,33 @@
-Decursive 2.7.10
+Decursive 2.7.13
 ================
+
+Decursive 2.7.13 (2023-12-18)
+-----------------------------
+
+- Fix spell detection in classic versions of WoW when "Show all spells ranks"
+  option is not checked in WoW's spell book UI.
+
+- The blacklist can now be disabled completely by setting the "Seconds on the
+  Blacklist" option to 0.
+
+- Fix problem with Decursive' message frame preventing the new Pinging WoW
+  feature to work when clicking through this invisible frame.
+
+
+Decursive 2.7.12 (2023-11-08)
+-----------------------------
+
+- TOC update for Retail
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
+
+Decursive 2.7.11 (2023-10-22)
+-----------------------------
+
+- TOC update for Wrath
 
 
 Decursive 2.7.10 (2023-09-12)
@@ -27,9 +55,6 @@ Report any problem found with this new feature in [issue #248 on wowace.com](htt
 
 - WoW Classic: Fix detection of Dispel Magic Rank 2 for Priests.
 
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.9.3 (2023-07-16)
