@@ -121,6 +121,9 @@ L.NoteTimersGlow = "發光不到五秒的自有計時器的註記 (包含計時�
 L.NoteHelpAdv6 = "選項 |cffffff00全部發光|r 當計時器少於5秒鐘時，將為所有玩家添加註記發光。 這個發光無法禁用。"
 L.NoteHelpAdv7 = "選項 |cffffff00發光|r 當計時器少於5秒鐘時，將僅為線上玩家添加註記發光。 這個發光無法禁用。"
 L.NoteTimersOnlyMy = "隱藏沒有我名字的計時器行列"
+L.NotePersonalWindow = "個人註記在分別的視窗"
+L.NoteShowInNewWindow = "顯示在新視窗"
+L.NoteShowInNewWindowTooltip = "Shift+右鍵點擊視窗來隱藏它\nCtrl+點擊在此按鈕以重設視窗位置(如果顯示)"
 
 L.setminimap1 = "隱藏小地圖圖示"
 L.setauthor = "作者"
@@ -591,6 +594,7 @@ PH.cd2OtherSetOnlyNotOnCD = "只顯示無冷卻的"
 L.cd2ColSetIconMasque = "啟用Masque支援"
 PH.cd2ColSetRightToLeft = "定位為從右到左"
 L.cd2AutoChangeSpecTooltip = "為專精自動切換設定檔"
+L.cd2ClickKeyMod = "點擊按鍵修改"
 
 L.sallspellsEggClear = "清空"
 L.sallspellsEgg = "戰鬥記錄"

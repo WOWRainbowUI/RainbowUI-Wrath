@@ -388,6 +388,26 @@ do
 	end
 end
 
+do
+
+	local nilData = {}
+	local talentEntriesData = {}
+	module.db.talent_entries_debug = talentEntriesData
+	module.db.talent_entries = setmetatable({}, {
+		__index = function (t,k) 
+			return talentEntriesData[k] or nilData
+		end
+	})
+	function module:SetTalentEntries(player,entries)
+		if not player then
+			return
+		end
+		talentEntriesData[player] = entries
+	end
+	--/dump GetMouseFocus().entryID
+end
+
+
 module.db.spell_charge_fix = {		--Спелы с зарядами
 	[51505]=108283,
 	[204019]=1,
@@ -515,6 +535,8 @@ do
 		end
 	end
 end
+
+module.db.spell_runningSameTalent = {}	--Схожие таланты
 
 module.db.spell_reduceCdCast = {	--Заклинания, применение которых уменьшает время восстановления других заклинаний	[spellID] = {reduceSpellID,time;{reduceSpellID2,talentID},time2;{reduceSpellID3,talentID,specID,effectOnlyDuringBuffActive},time3}
 }
@@ -1052,6 +1074,7 @@ do
 		["afterCombatNotReset"]={module.db.spell_afterCombatNotReset,0},
 		["changeCdWithHaste"]={module.db.spell_reduceCdByHaste,0},
 		["sameSpell"]={module.db.spell_runningSameSpell2,0},
+		["sameTalent"]={module.db.spell_runningSameTalent,0},
 		["isDispel"]={module.db.spell_dispellsList,0},
 		["isBattleRes"]={module.db.spell_battleRes,0},
 		["isRacial"]={module.db.spell_isRacial,0},
@@ -1342,6 +1365,9 @@ local function BarUpdateText(self)
 		end
 	end
 
+	if barParent.textShowTargetName and barData.targetName and time >= 1 then
+		name = name .. " > "..barData.targetName
+	end
 	if barData.specialAddText then
 		name = name .. (barData.specialAddText() or "")
 	end
@@ -1634,6 +1660,7 @@ local function UpdateBarStatus(self,isTitle)
 		self.curr_start = data.charge
 		self.curr_end = data.charge+data.cd
 		self.curr_dur = data.cd
+		if self.curr_dur < 1 then self.curr_dur = 1 end
 
 		if parent.optionTimeLineAnimation == 1 then
 			self.timeline:SetShown(false)
@@ -1650,6 +1677,7 @@ local function UpdateBarStatus(self,isTitle)
 		self.curr_start = lastUse
 		self.curr_end = t
 		self.curr_dur = t - lastUse
+		if self.curr_dur < 1 then self.curr_dur = 1 end
 		self.curr_end_cd = tOnlyCD
 
 		self.timeline.SetWidth = self.timeline._SetWidth
@@ -2037,6 +2065,11 @@ local function LineIconOnClick(self)
 		parent.data.specialClick(parent.data)
 		return
 	end
+	if (parent:GetParent().methodsLineClickMod == "shift" and not IsShiftKeyDown()) or
+		(parent:GetParent().methodsLineClickMod == "alt" and not IsAltKeyDown()) or
+		(parent:GetParent().methodsLineClickMod == "ctrl" and not IsControlKeyDown()) then
+		return
+	end
 	local time = parent.data.lastUse + parent.data.cd - GetTime()
 	if time < 0 then return end
 	local text = parent.data.name.." - "..parent.data.spellName..": "..format("%1.1d:%2.2d",time/60,time%60)
@@ -2048,6 +2081,11 @@ local function LineIconOnClickWhisper(self)
 	if not parent.data then	return end
 	if parent.data.specialClick then
 		parent.data.specialClick(parent.data)
+		return
+	end
+	if (parent:GetParent().methodsLineClickMod == "shift" and not IsShiftKeyDown()) or
+		(parent:GetParent().methodsLineClickMod == "alt" and not IsAltKeyDown()) or
+		(parent:GetParent().methodsLineClickMod == "ctrl" and not IsControlKeyDown()) then
 		return
 	end
 	local time = parent.data.lastUse + parent.data.cd - GetTime()
@@ -2684,6 +2722,7 @@ do
 	local spell_isTalent = _db.spell_isTalent
 	local spell_isPvpTalent = _db.spell_isPvpTalent
 	local session_gGUIDs = _db.session_gGUIDs
+	local spell_runningSameTalent = _db.spell_runningSameTalent
 	local spell_isPetAbility = _db.spell_isPetAbility
 	local session_Pets = _db.session_Pets
 	local petsAbilities = _db.petsAbilities
@@ -2703,6 +2742,7 @@ do
 	local saveDataTimer = 0
 	local lastBattleResChargesStatus = nil
 
+	--[[
 	local function sort_f(a,b)
 		if a.column ~= b.column then
 			return a.column < b.column
@@ -2716,6 +2756,21 @@ do
 			return (a.sort or 0) > (b.sort or 0)
 		else
 			return (a.sort or 0) < (b.sort or 0)
+		end
+	end
+	]]
+	local function sort_f(a,b)
+		if a.sorting ~= b.sorting then
+			return (a.sorting or 0) < (b.sorting or 0)
+		else
+			return (a.sort or 0) < (b.sort or 0)
+		end
+	end
+	local function rsort_f(a,b)
+		if a.sorting ~= b.sorting then
+			return (a.sorting or 0) > (b.sorting or 0)
+		else
+			return (a.sort or 0) > (b.sort or 0)
 		end
 	end
 
@@ -2741,6 +2796,12 @@ do
 
 	local HiddenOnCD = {}	--for "Show only without cd" option, hidden cds can't fire updateall event
 
+	local _CV_PerCol,_CV_PerCol_Count = {},{}
+	local _CV_ATF = {}
+	for i=1,maxColumns do 
+		_CV_PerCol[i] = {} 
+		_CV_PerCol_Count[i] = 1 
+	end
 	local function SortAllData()
 		local currTime = GetTime()
 	  	for i=1,_CV_Len do
@@ -2783,10 +2844,54 @@ do
 				data.sorting = 0
 			end
 			data.rsort = columnFrame.methodsReverseSorting
+
+			_CV_PerCol[data.column][ _CV_PerCol_Count[data.column] ] = data
+			_CV_PerCol_Count[data.column] = _CV_PerCol_Count[data.column] + 1
 	  	end
-		sort(_CV,sort_f)
+		local count = 1
+		for i=1,maxColumns do 
+			local CV_Col = _CV_PerCol[i]
+			for j=_CV_PerCol_Count[i],#CV_Col do
+				CV_Col[j] = nil
+			end
+			_CV_PerCol_Count[i] = 1
+			if columnsTable[i].ATFenabled then
+				local sort_func = columnsTable[i].methodsReverseSorting and rsort_f or sort_f
+				for k=1,#CV_Col do
+					if CV_Col[k] ~= 0 then
+						for j=2,#_CV_ATF do
+							_CV_ATF[j] = nil
+						end
+						local c = 1
+						_CV_ATF[1] = CV_Col[k]
+						for l=k+1,#CV_Col do
+							if CV_Col[l] ~= 0 and CV_Col[l].guid == CV_Col[k].guid then
+								c = c + 1
+								_CV_ATF[c] = CV_Col[l]
+								CV_Col[l] = 0
+							end
+						end
+
+						sort(_CV_ATF,sort_func)
+						for j=1,#_CV_ATF do
+							_CV[count] = _CV_ATF[j]
+							count = count + 1
+						end
+					end
+				end
+			else
+				sort(CV_Col,columnsTable[i].methodsReverseSorting and rsort_f or sort_f)
+
+				for j=1,#CV_Col do
+					_CV[count] = CV_Col[j]
+					count = count + 1
+				end
+			end
+		end
 	end
 	module.SortAllData = SortAllData
+	--MRT_CD_TESTMODENUM
+
 
 	local function TalentReplaceOtherCheck(spellID,name)
 		local spellData = spell_talentReplaceOther[spellID]
@@ -2813,6 +2918,13 @@ do
 
 		return isOnCD or (data.isCharge and data.charge and data.charge > currTime)
 	end
+	local function CheckAllTalents(name,list)
+		for i=1,#list do
+			if session_gGUIDs[name][ list[i] ] then
+				return true
+			end
+		end
+	end
 
 	function UpdateAllData()
 		reviewID = reviewID + 1
@@ -2834,7 +2946,7 @@ do
 
 			if isTestMode or (VMRT_CDE[spellID] and 
 			(db[unitSpecID] or (not db[unitSpecID] and db[4])) and 
-			(not spell_isTalent[spellID] or session_gGUIDs[name][spellID]) and 
+			(not spell_isTalent[spellID] or session_gGUIDs[name][spellID] or (spell_runningSameTalent[spellID] and CheckAllTalents(name,spell_runningSameTalent[spellID]))) and 
 			(not spell_isPvpTalent[spellID] or (session_gGUIDs[name][spellID] and IsPvpTalentsOn(name))) and 
 			(not spell_isPetAbility[spellID] or session_Pets[name] == spell_isPetAbility[spellID] or (session_Pets[name] and petsAbilities[ session_Pets[name] ] and petsAbilities[ session_Pets[name] ][1] == spell_isPetAbility[spellID]) or (type(spell_isPetAbility[spellID]) == "table" and session_Pets[name] and ExRT.F.table_find(spell_isPetAbility[spellID],session_Pets[name]))) and
 			(not spell_talentReplaceOther[spellID] or not TalentReplaceOtherCheck(spellID,name)) and
@@ -3646,6 +3758,9 @@ local function UpdateRoster()
 
 						if not alreadyInCds then
 							local guid = UnitGUID(name)
+							if _db.testMode and not guid then
+								guid = name
+							end
 
 							local new = {
 								name = shownName,
@@ -3804,7 +3919,8 @@ local function UpdateRoster()
 				tremove(_C, i)
 			end
 		end
-		while #_C > 300 do
+		local testModeMax = MRT_CD_TESTMODENUM or 300
+		while #_C > testModeMax do
 			tremove(_C, math.random(1,#_C))
 		end
 	end
@@ -3829,7 +3945,7 @@ do
 			end
 		end
 	end
-	function CLEUstartCD(i)
+	function CLEUstartCD(i,targetName)
 		local currTime = GetTime()
 		local data = nil
 		if type(i) == "table" then
@@ -3858,6 +3974,8 @@ do
 				return
 			end
 		end
+
+		data.targetName = targetName
 
 		data.cd = data.db[uSpecID][2]
 		data.duration = data.db[uSpecID][3]
@@ -3919,6 +4037,13 @@ do
 							if type(timeReduce[2]) == "number" and timeReduce[2] > 1000 then
 								if IsAuraActive(fullName,timeReduce[2]) then
 									timeReduce = timeReduce[1]
+									if type(timeReduce[3]) == "number" then
+										if module.db.talent_entries[fullName][ timeReduce[3] ] then
+											timeReduce = timeReduce[1]
+										else
+											timeReduce = 0
+										end
+									end
 								else
 									timeReduce = 0
 								end
@@ -4787,8 +4912,10 @@ do
 		UnitHealth = UnitHealth,
 		GetSpellInfo = GetSpellInfo,
 		type = type,
+		Gtype = type,
 		pairs = pairs,
 		ipairs = ipairs,
+		strsplit = strsplit,
 
 		CLEUstartCD = CLEUstartCD,
 		UpdateAllData = UpdateAllData,
@@ -4835,7 +4962,7 @@ do
 
 				local line = CDList[sourceName][spellID]
 				if line then
-					CLEUstartCD(line)
+					CLEUstartCD(line,destName)
 				end
 
 				if spell_isTalent[spellID] and not isSpellDuplicateDisabled and not session_gGUIDs[sourceName][spellID] then
@@ -5013,7 +5140,7 @@ do
 				if CDspellID then
 					local line = CDList[sourceName][CDspellID]
 					if line then
-						CLEUstartCD(line)
+						CLEUstartCD(line,destName)
 					end
 				end
 
@@ -5060,7 +5187,7 @@ do
 					end, 30)
 				elseif spellID == 64901 and destName and sourceName then	--Symbol of Hope
 					local hymnDur = 5 / (1 + (UnitSpellHaste(sourceName) or 0) /100)
-					local perSec = 60 / hymnDur
+					local perSec = 30 / hymnDur
 
 					symbolofhope[sourceName..":"..destName] = C_Timer.NewTicker(1,function(self)
 						local line, updateReq
@@ -5279,7 +5406,7 @@ do
 				if CDspellID then
 					local line = CDList[sourceName][CDspellID]
 					if line then
-						CLEUstartCD(line)
+						CLEUstartCD(line,destName)
 					end
 				end
 
@@ -5287,7 +5414,7 @@ do
 				if CDspellID then
 					local line = CDList[sourceName][CDspellID]
 					if line then
-						CLEUstartCD(line)
+						CLEUstartCD(line,destName)
 					end
 				end
 
@@ -7389,6 +7516,7 @@ function module.options:Load()
 			local deftextIconCDStyle = VColOpt.textIconCDStyle or defOpt.textIconCDStyle
 			optColSet.dropDownIconCDStyle:SetText(optColSet.dropDownIconCDStyle.Styles[deftextIconCDStyle])
 		end
+		optColSet.chkShowTargetName:SetChecked(VColOpt.textShowTargetName)
 
 		optColSet.chkGeneralText:SetChecked(VColOpt.textGeneral)
 
@@ -7406,6 +7534,15 @@ function module.options:Load()
 
 			local defSortingRules = VColOpt.methodsSortingRules or defOpt.methodsSortingRules
 			optColSet.dropDownSortingRules:SetText(optColSet.dropDownSortingRules.Rules[defSortingRules])
+
+			local ClickModText
+			for i=1,#optColSet.dropDownLineClickMod.Mods,2 do 
+				if optColSet.dropDownLineClickMod.Mods[i+1] == VColOpt.methodsLineClickMod then
+					ClickModText = optColSet.dropDownLineClickMod.Mods[i]
+					break
+				end
+			end
+			optColSet.dropDownLineClickMod:SetText(ClickModText or optColSet.dropDownLineClickMod.Mods[1])
 		end
 		optColSet.chkIconTooltip:SetChecked(VColOpt.methodsIconTooltip)
 		optColSet.chkLineClick:SetChecked(VColOpt.methodsLineClick)
@@ -8342,6 +8479,15 @@ function module.options:Load()
 		}
 	end
 
+	self.optColSet.chkShowTargetName = ELib:Check(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextShowTargetName):Point("TOPLEFT",self.optColSet.chkIconName,0,-60):OnClick(function(self) 
+		if self:GetChecked() then
+			currColOpt.textShowTargetName = true
+		else
+			currColOpt.textShowTargetName = nil
+		end
+		module:ReloadAllSplits()
+	end)
+
 	self.optColSet.chkGeneralText = ELib:Check(self.optColSet.superTabFrame.tab[5],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.textGeneral = true
@@ -8352,7 +8498,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralText:doAlphas()
-		ExRT.lib.SetAlphas(VMRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.textLeftTemEdit,module.options.optColSet.textRightTemEdit,module.options.optColSet.textCenterTemEdit,module.options.optColSet.chkIconName,module.options.optColSet.textAllTemplates,module.options.optColSet.textLeftTemText,module.options.optColSet.textRightTemText,module.options.optColSet.textCenterTemText,module.options.optColSet.textResetButton,module.options.optColSet.sliderIconNameChars,module.options.optColSet.dropDownIconCDStyle,module.options.optColSet.textdropDownIconCDStyle)
+		ExRT.lib.SetAlphas(VMRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.textLeftTemEdit,module.options.optColSet.textRightTemEdit,module.options.optColSet.textCenterTemEdit,module.options.optColSet.chkIconName,module.options.optColSet.textAllTemplates,module.options.optColSet.textLeftTemText,module.options.optColSet.textRightTemText,module.options.optColSet.textCenterTemText,module.options.optColSet.textResetButton,module.options.optColSet.sliderIconNameChars,module.options.optColSet.dropDownIconCDStyle,module.options.optColSet.textdropDownIconCDStyle,module.options.optColSet.chkShowTargetName)
 	end
 
 	--> Method options
@@ -8448,7 +8594,24 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkNewSpellNewLine = ELib:Check(self.optColSet.col6scroll,L.cd2NewSpellNewLine):Point(10,-230):Tooltip(L.cd2NewSpellNewLineTooltip):OnClick(function(self) 
+	self.optColSet.textLineClickMod = ELib:Text(self.optColSet.col6scroll,L.cd2ClickKeyMod..":",11):Size(200,20):Point(10,-230)
+	self.optColSet.dropDownLineClickMod = ELib:DropDown(self.optColSet.col6scroll,205,4):Size(150):Point(250,-230)
+	self.optColSet.dropDownLineClickMod.Mods = {"-",nil,SHIFT_KEY or "Shift","shift",CTRL_KEY or "Ctrl","ctrl",ALT_KEY_TEXT or "Alt","alt"}
+	for i=1,#self.optColSet.dropDownLineClickMod.Mods,2 do
+		local text = self.optColSet.dropDownLineClickMod.Mods[i]
+		self.optColSet.dropDownLineClickMod.List[ #self.optColSet.dropDownLineClickMod.List+1 ] = {
+			text = text,
+			arg1 = self.optColSet.dropDownLineClickMod.Mods[i+1],
+			func = function (self,arg)
+				ELib:DropDownClose()
+				currColOpt.methodsLineClickMod = arg
+				module:ReloadAllSplits()
+				self:GetParent().parent:SetText(text)
+			end
+		}
+	end
+
+	self.optColSet.chkNewSpellNewLine = ELib:Check(self.optColSet.col6scroll,L.cd2NewSpellNewLine):Point(10,-255):Tooltip(L.cd2NewSpellNewLineTooltip):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsNewSpellNewLine = true
 		else
@@ -8457,8 +8620,8 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.textSortingRules= ELib:Text(self.optColSet.col6scroll,L.cd2MethodsSortingRules..":",11):Size(200,20):Point(10,-255)
-	self.optColSet.dropDownSortingRules = ELib:DropDown(self.optColSet.col6scroll,405,6):Size(220):Point(180,-255)
+	self.optColSet.textSortingRules = ELib:Text(self.optColSet.col6scroll,L.cd2MethodsSortingRules..":",11):Size(200,20):Point(10,-280)
+	self.optColSet.dropDownSortingRules = ELib:DropDown(self.optColSet.col6scroll,405,6):Size(220):Point(180,-280)
 	self.optColSet.dropDownSortingRules.Rules = {L.cd2MethodsSortingRules1,L.cd2MethodsSortingRules2,L.cd2MethodsSortingRules3,L.cd2MethodsSortingRules4,L.cd2MethodsSortingRules5,L.cd2MethodsSortingRules6}
 	for i=1,#self.optColSet.dropDownSortingRules.Rules do
 		self.optColSet.dropDownSortingRules.List[i] = {
@@ -8474,7 +8637,7 @@ function module.options:Load()
 		}
 	end
 
-	self.optColSet.chkHideOwnSpells = ELib:Check(self.optColSet.col6scroll,L.cd2MethodsDisableOwn):Point(10,-280):OnClick(function(self) 
+	self.optColSet.chkHideOwnSpells = ELib:Check(self.optColSet.col6scroll,L.cd2MethodsDisableOwn):Point(10,-305):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsHideOwnSpells = true
 		else
@@ -8483,7 +8646,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkAlphaNotInRange = ELib:Check(self.optColSet.col6scroll,L.cd2MethodsAlphaNotInRange):Point(10,-305):OnClick(function(self) 
+	self.optColSet.chkAlphaNotInRange = ELib:Check(self.optColSet.col6scroll,L.cd2MethodsAlphaNotInRange):Point(10,-330):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsAlphaNotInRange = true
 		else
@@ -8500,7 +8663,7 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 
-	self.optColSet.chkDisableActive = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetDisableActive):Point(10,-330):OnClick(function(self) 
+	self.optColSet.chkDisableActive = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetDisableActive):Point(10,-355):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsDisableActive = true
 		else
@@ -8509,7 +8672,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkOneSpellPerCol = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetOneSpellPerCol):Point(10,-355):OnClick(function(self) 
+	self.optColSet.chkOneSpellPerCol = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetOneSpellPerCol):Point(10,-380):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsOneSpellPerCol = true
 		else
@@ -8518,7 +8681,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end):Tooltip(L.cd2ColSetOneSpellPerColTooltip)
 
-	self.optColSet.chkSortByAvailability = ELib:Check(self.optColSet.col6scroll,L.cd2SortByAvailability):Point(10,-380):OnClick(function(self) 
+	self.optColSet.chkSortByAvailability = ELib:Check(self.optColSet.col6scroll,L.cd2SortByAvailability):Point(10,-405):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsSortByAvailability = true
 		else
@@ -8589,7 +8752,7 @@ function module.options:Load()
 
 
 	function self.optColSet.chkGeneralMethods:doAlphas()
-		ExRT.lib.SetAlphas(VMRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkShowOnlyOnCD,module.options.optColSet.chkBotToTop,module.options.optColSet.chkRightToLeft,module.options.optColSet.dropDownStyleAnimation,module.options.optColSet.dropDownTimeLineAnimation,module.options.optColSet.chkIconTooltip,module.options.optColSet.chkLineClick,module.options.optColSet.chkNewSpellNewLine,module.options.optColSet.dropDownSortingRules,module.options.optColSet.textSortingRules,module.options.optColSet.textStyleAnimation,module.options.optColSet.textTimeLineAnimation,module.options.optColSet.chkHideOwnSpells,module.options.optColSet.chkAlphaNotInRange,module.options.optColSet.sliderAlphaNotInRange,module.options.optColSet.chkDisableActive,module.options.optColSet.chkOneSpellPerCol,module.options.optColSet.chkLineClickWhisper,module.options.optColSet.chkSortByAvailability, module.options.optColSet.chkSortByAvailability_activeToTop, module.options.optColSet.chkReverseSorting, module.options.optColSet.chkCDOnlyTimer, module.options.optColSet.chkTextIgnoreActive, module.options.optColSet.chkShowOnlyNotOnCD)
+		ExRT.lib.SetAlphas(VMRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkShowOnlyOnCD,module.options.optColSet.chkBotToTop,module.options.optColSet.chkRightToLeft,module.options.optColSet.dropDownStyleAnimation,module.options.optColSet.dropDownTimeLineAnimation,module.options.optColSet.chkIconTooltip,module.options.optColSet.chkLineClick,module.options.optColSet.chkNewSpellNewLine,module.options.optColSet.dropDownSortingRules,module.options.optColSet.textSortingRules,module.options.optColSet.textStyleAnimation,module.options.optColSet.textTimeLineAnimation,module.options.optColSet.chkHideOwnSpells,module.options.optColSet.chkAlphaNotInRange,module.options.optColSet.sliderAlphaNotInRange,module.options.optColSet.chkDisableActive,module.options.optColSet.chkOneSpellPerCol,module.options.optColSet.chkLineClickWhisper,module.options.optColSet.chkSortByAvailability, module.options.optColSet.chkSortByAvailability_activeToTop, module.options.optColSet.chkReverseSorting, module.options.optColSet.chkCDOnlyTimer, module.options.optColSet.chkTextIgnoreActive, module.options.optColSet.chkShowOnlyNotOnCD, module.options.optColSet.dropDownLineClickMod, module.options.optColSet.textLineClickMod)
 	end
 
 
@@ -10486,6 +10649,7 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	columnFrame.methodsIconTooltip = (not currColOpt.methodsGeneral and currColOpt.methodsIconTooltip) or (currColOpt.methodsGeneral and generalOpt.methodsIconTooltip) 
 	columnFrame.methodsLineClick = (not currColOpt.methodsGeneral and currColOpt.methodsLineClick) or (currColOpt.methodsGeneral and generalOpt.methodsLineClick)
 	columnFrame.methodsLineClickWhisper = (not currColOpt.methodsGeneral and currColOpt.methodsLineClickWhisper) or (currColOpt.methodsGeneral and generalOpt.methodsLineClickWhisper)
+	columnFrame.methodsLineClickMod = (not currColOpt.methodsGeneral and currColOpt.methodsLineClickMod) or (currColOpt.methodsGeneral and generalOpt.methodsLineClickMod)
 	columnFrame.methodsNewSpellNewLine = (not currColOpt.methodsGeneral and currColOpt.methodsNewSpellNewLine) or (currColOpt.methodsGeneral and generalOpt.methodsNewSpellNewLine)
 	columnFrame.methodsSortingRules = (not currColOpt.methodsGeneral and currColOpt.methodsSortingRules) or (currColOpt.methodsGeneral and generalOpt.methodsSortingRules) or defOpt.methodsSortingRules
 	columnFrame.methodsHideOwnSpells = (not currColOpt.methodsGeneral and currColOpt.methodsHideOwnSpells) or (currColOpt.methodsGeneral and generalOpt.methodsHideOwnSpells)
@@ -10518,6 +10682,9 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 
 	columnFrame.textIconNameChars = (not currColOpt.textGeneral and currColOpt.textIconNameChars) or (currColOpt.textGeneral and generalOpt.textIconNameChars) or defOpt.textIconNameChars
 	columnFrame.textIconCDStyle = (not currColOpt.textGeneral and currColOpt.textIconCDStyle) or (currColOpt.textGeneral and generalOpt.textIconCDStyle) or defOpt.textIconCDStyle
+
+	columnFrame.textShowTargetName = (not currColOpt.textGeneral and currColOpt.textShowTargetName) or (currColOpt.textGeneral and generalOpt.textShowTargetName)
+
 
 	local blacklistText = (not currColOpt.blacklistGeneral and currColOpt.blacklistText) or (currColOpt.blacklistGeneral and generalOpt.blacklistText) or defOpt.blacklistText
 	columnFrame.BlackList = CreateBlackList(blacklistText)
@@ -11141,8 +11308,8 @@ module.db.AllSpells = {
 		]]
 		},
 	{31884,	"PALADIN,RAID,DPS",1,--Гнев карателя
-		nil,{31884,120,20},{31884,120,20},{31884,120,20},
-		durationDiff={231895,5,286229,5,53376,"*1.25"},cdDiff={296320,"*0.80"},sameSpell={31884,231895,389539},hideWithTalent={216331},icon="Interface\\Icons\\spell_holy_avenginewrath",reduceCdAfterCast={{53600,204074},{-1.5,-3},{85673,204074},{-1.5,-3},{53600,204074},{-1.5,-3},{85256,204074},{-1.5,-3},{53385,204074},{-1.5,-3},{215661,204074},{-1.5,-3}},increaseDurAfterCast={{24275,391142},1,{24275,337594},1,{24275,332806},3}},
+		nil,{31884,120,20},{31884,120,20},{31884,60,20},
+		durationDiff={231895,10,286229,5,406872,3,53376,"*1.25"},cdDiff={231895,60,296320,"*0.80"},sameSpell={31884,231895,389539},sameTalent={231895},hideWithTalent={216331},icon="Interface\\Icons\\spell_holy_avenginewrath",reduceCdAfterCast={{53600,204074},{-1.5,-3},{85673,204074},{-1.5,-3},{53600,204074},{-1.5,-3},{85256,204074},{-1.5,-3},{53385,204074},{-1.5,-3},{215661,204074},{-1.5,-3}},increaseDurAfterCast={{24275,391142},1,{24275,337594},1,{24275,332806},3}},
 	{1044,	"PALADIN,DEFTAR",2,--Благословенная свобода
 		{1044,25,8},nil,nil,nil,
 		isTalent=true,hasCharges=199454,reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
@@ -11330,9 +11497,6 @@ module.db.AllSpells = {
 	{20066,	"PALADIN,CC",3,--Покаяние
 		{20066,15,0},nil,nil,nil,
 		isTalent=true},
-	{152262,"PALADIN,DPS,HEAL",3,--Серафим
-		{152262,45,15},nil,nil,nil,
-		isTalent=true},
 	{210256,"PALADIN,PVP",3,--Благословение святилища
 		nil,nil,nil,{210256,45,5},
 		isTalent=true},
@@ -11380,7 +11544,7 @@ module.db.AllSpells = {
 			end
 		]]},
 	{359844,"HUNTER,DPS",3,--Зов дикой природы
-		nil,{359844,180,20},nil,nil,
+		nil,{359844,120,20},nil,nil,
 		isTalent=true},
 	{392060,"HUNTER",3,--Стенающая стрела
 		nil,{392060,60,0},nil,nil,
@@ -11575,7 +11739,7 @@ module.db.AllSpells = {
 		isTalent=true,durationDiff={272026,3}},
 	{2094,	"ROGUE,CC",3,--Ослепление
 		{2094,120,0},
-		isTalent=true,cdDiff={256165,-30}},
+		isTalent=true,cdDiff={256165,"*0.75"}},
 	{31224,	"ROGUE,DEF",4,--Плащ теней
 		{31224,120,5},
 		isTalent=true,
@@ -11610,7 +11774,7 @@ module.db.AllSpells = {
 		]]},
 	{1966,	"ROGUE,DEF",4,--Уловка
 		{1966,15,6},
-		isTalent=true},
+		isTalent=true,hasCharges=423647},
 	{1776,	"ROGUE,CC",3,--Парализующий удар
 		{1776,20,0},
 		isTalent=true},
@@ -11673,7 +11837,7 @@ module.db.AllSpells = {
 			end
 		]]},
 	{5938,	"ROGUE",3,--Отравляющий укол
-		{5938,25,0},
+		{5938,30,0},
 		isTalent=true},
 	{382245,"ROGUE",3,--Хладнокровие
 		{382245,45,0},
@@ -11685,10 +11849,11 @@ module.db.AllSpells = {
 		{381623,60,6},
 		isTalent=true,hasCharges=1},
 	{114018,"ROGUE,UTIL",1,--Скрывающий покров
-		{114018,360,15},nil,nil,nil},
+		{114018,360,15},nil,nil,nil,
+		cdDiff={423662,"*0.5"}},
 	{2983,	"ROGUE,MOVE",4,--Спринт
 		{2983,120,8},nil,nil,nil,
-		cdDiff={231691,-60},ignoreUseWithAura=375255,changeCdWithAura={381754,"*0.85"}},
+		cdDiff={231691,-60},ignoreUseWithAura=375255,changeCdWithAura={381754,"*0.85"},durationDiff={423683,4}},
 	{212283,"ROGUE,DPS",3,--Символы смерти
 		nil,nil,nil,{212283,30,10},
 		cdDiff={394309,-5}},
@@ -11708,13 +11873,13 @@ module.db.AllSpells = {
 		nil,{200806,45,0},nil,nil,
 		isTalent=true},
 	{196937,"ROGUE",3,--Призрачный удар
-		nil,nil,{196937,35,0},nil,
+		nil,nil,{196937,90,0},nil,
 		isTalent=true},
 	{51690,	"ROGUE,DPS",3,--Череда убийств
 		nil,nil,{51690,120,0},nil,
 		isTalent=true},
 	{137619,"ROGUE,DPS",3,--Метка смерти
-		{137619,60,0},nil,nil,nil,
+		{137619,40,0},nil,nil,nil,
 		isTalent=true},
 	{280719,"ROGUE",3,--Тайный прием
 		nil,nil,nil,{280719,60,0},
@@ -11722,6 +11887,8 @@ module.db.AllSpells = {
 	{277925,"ROGUE",3,--Торнадо из сюрикэнов
 		nil,nil,nil,{277925,60,4},
 		isTalent=true},
+	{425748,"ROGUE",3,--Exsanguinate
+		nil,{425748,60,10},nil,nil},
 	{213981,"ROGUE,PVP",3,--Хладнокровие
 		nil,nil,nil,{213981,60,0},
 		isTalent=true},
@@ -11767,7 +11934,8 @@ module.db.AllSpells = {
 		nil,nil,{204883,15,0},nil,
 		changeCdWithHaste=true},
 	{19236,	"PRIEST,DEF",4,--Молитва отчаяния
-		{19236,90,0},nil,nil,nil},
+		{19236,90,0},nil,nil,nil,
+		cdDiff={238100,-20}},
 	{47585,	"PRIEST,DEF",4,--Слияние с Тьмой
 		nil,nil,nil,{47585,120,6},
 		isTalent=true,cdDiff={288733,-30}},
@@ -11793,8 +11961,8 @@ module.db.AllSpells = {
 		{73325,90,0},nil,nil,nil,
 		isTalent=true,hasCharges=336470,cdDiff={390620,-30,337678,{-20,-22,-24,-26,-28,-30,-32,-34,-36,-38,-40,-42,-44,-46,-48}},sameSpell={336471,73325},ignoreUseWithAura=375254,changeCdWithAura={381753,"*0.85"}},
 	{32375,	"PRIEST,DISPEL",1,--Массовое рассеивание
-		{32375,45,0},nil,nil,nil,
-		isTalent=true,cdDiff={341167,-20}},
+		{32375,120,0},nil,nil,nil,
+		isTalent=true,cdDiff={426438,-60}},
 	{33206,	"PRIEST,DEFTAR",2,--Подавление боли
 		nil,{33206,180,8},nil,nil,
 		isTalent=true,durationDiff={329693,"*1.80"},reduceCdAfterCast={{17,373035},-3},hasCharges=373035},
@@ -11815,27 +11983,8 @@ module.db.AllSpells = {
 			end
 		]]},
 	{373481,"PRIEST",3,--Слово Силы: Жизнь
-		{373481,30,0},nil,nil,nil,
-		isTalent=true,
-		CLEU_SPELL_HEAL=[[
-			if spellID == 373481 and destName then
-				local maxHP = UnitHealthMax(destName) or 0
-				if maxHP ~= 0 then
-					local hpB4 = UnitHealth(destName) - (amount-overhealing)
-					local hp = hpB4 / maxHP
-	
-					if hp < 0.35 then
-						local line = CDList[sourceName][373481]
-						if line then
-							C_Timer.After(0.3,function()	--Await for actual cast, selfhealing event fired first
-								line:ChangeCD(-20)
-							end)
-						end
-					end
-				end
-
-			end
-		]]},
+		{373481,15,0},nil,nil,nil,
+		isTalent=true},
 	{62618,	"PRIEST,RAID",1,--Слово силы: Барьер
 		nil,{62618,180,10},nil,nil,
 		isTalent=true,cdDiff={197590,-90},hideWithTalent=271466,icon="Interface\\Icons\\spell_holy_powerwordbarrier"},
@@ -11912,7 +12061,7 @@ module.db.AllSpells = {
 		isTalent=true},
 	{265202,"PRIEST,RAID",1,--Слово Света: Спасение
 		nil,nil,{265202,720,0},nil,
-		isTalent=true,reduceCdAfterCast={34861,-30,2050,-30,{34861,196985},{-3,-6},{2050,196985},{-3,-6}}},
+		isTalent=true,reduceCdAfterCast={34861,-15,2050,-15,{34861,196985},{-1.5,-3},{2050,196985},{-1.5,-3}}},
 	--{205369,"PRIEST,AOECC",3,--Мыслебомба
 	--	nil,nil,nil,{205369,30,2},
 	--	isTalent=true},
@@ -11922,9 +12071,6 @@ module.db.AllSpells = {
 	{123040,"PRIEST",3,--Подчинитель разума
 		nil,{123040,60,12},nil,nil,
 		isTalent=true,cdDiff={296320,"*0.80"},reduceCdAfterCast={{585,390770},-2,{47540,390770},-2,{8092,390770},-2}},
-	{129250,"PRIEST",3,--Слово силы: Утешение
-		nil,{129250,15,0},nil,nil,
-		isTalent=true,changeCdWithHaste=true},
 	{64044,	"PRIEST,CC",3,--Глубинный ужас
 		nil,nil,nil,{64044,45,4},
 		isTalent=true},
@@ -12838,17 +12984,7 @@ module.db.AllSpells = {
 		]]},
 	{386997,"WARLOCK",3,--Гниение души
 		nil,{386997,60,0},nil,nil,
-		isTalent=true,
-		CLEU_SPELL_DAMAGE=[[
-			if spellID == 316099 and sourceName and session_gGUIDs[sourceName][389630] then
-				local line = CDList[sourceName][386997]
-				if line then
-					local talent_rank = _db.talent_classic_rank[sourceName][389630] or 2
-
-					line:ReduceCD(talent_rank * 0.5)
-				end
-			end
-		]]},
+		isTalent=true,cdDiff={389630,{-15,-30}}},
 	{386833,"WARLOCK",3,--Гильотина
 		nil,nil,{386833,45,8},nil,
 		isTalent=true},
@@ -13219,7 +13355,7 @@ module.db.AllSpells = {
 		hideWithTalent=252216,ignoreUseWithAura=375230,changeCdWithAura={381746,"*0.85"}},
 	{22842,	"DRUID,DEFTANK",4,--Неистовое восстановление
 		{22842,36,3},nil,nil,nil,nil,
-		isTalent=true,baseForSpec=104,hasCharges=273048,changeCdWithHaste=true,
+		isTalent=true,baseForSpec=104,hasCharges=273048,changeCdWithHaste=true,cdDiff={372945,{"*0.8","*0.6"},50334,{"*0.001",50334,103211}},
 		CLEU_PREP=[[
 			berserk = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -13246,12 +13382,12 @@ module.db.AllSpells = {
 		]]},
 	{6795,	"DRUID,TAUNT",5,--Рык
 		{6795,8,0},nil,nil,nil,nil,
-		hideWithTalent=207017},
+		hideWithTalent=207017,cdDiff={50334,{"*0.50",50334,103216}}},
 	{99,	"DRUID,CC",3,--Парализующий рык
 		{99,30,0},nil,nil,nil,nil,
 		isTalent=true},
 	{29166,	"DRUID,HEALUTIL",2,--Озарение
-		{29166,180,10},
+		{29166,180,8},
 		isTalent=true,
 		CLEU_SPELL_HEAL=[[
 			if spellID == 48438 and session_gGUIDs[sourceName][287251] then
@@ -13344,7 +13480,7 @@ module.db.AllSpells = {
 		]]},
 	{740,	"DRUID,RAID",1,--Спокойствие
 		nil,nil,nil,nil,{740,180,8},
-		isTalent=true,cdDiff={197073,-60,329802,-54,296320,"*0.80"},changeDurWithHaste=true,
+		isTalent=true,cdDiff={197073,-30,329802,-54,296320,"*0.80"},changeDurWithHaste=true,
 		CLEU_SPELL_HEAL=[[
 			if spellID == 157982 and event == "SPELL_HEAL" and sourceGUID == destGUID and session_gGUIDs[sourceName][392162] then
 				local line, updateReq
@@ -13382,7 +13518,7 @@ module.db.AllSpells = {
 		nil,nil,{274837,45,0},nil,nil,
 		isTalent=true},
 	{197721,"DRUID,HEAL",3,--Расцвет
-		nil,nil,nil,nil,{197721,90,8},
+		nil,nil,nil,nil,{197721,60,6},
 		isTalent=true},
 	{205636,"DRUID,UTIL",3,--Сила природы
 		nil,{205636,60,10},nil,nil,nil,
@@ -13462,7 +13598,7 @@ module.db.AllSpells = {
 		nil,{198589,60,10},nil,
 		cdDiff={338671,{-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-20}},startCdAfterAuraApply=212800},
 	{179057,"DEMONHUNTER,AOECC",3,--Кольцо Хаоса
-		{179057,60,2},
+		{179057,45,2},
 		isTalent=true,cdDiff={206477,"*0.8"}},
 	{278326,"DEMONHUNTER",5,--Поглощение магии
 		{278326,10,0},nil,nil,
@@ -13496,11 +13632,11 @@ module.db.AllSpells = {
 		{217832,45,0},nil,nil,
 		isTalent=true,cdDiff={205506,15}},
 	{191427,"DEMONHUNTER,DPS,DEFTANK",3,--Метаморфоза
-		nil,{191427,240,30},{187827,180,15},
-		durationDiff={235893,-15},cdDiff={320421,-60,235893,-60,296320,"*0.80"},sameSpell={200166,191427}},
+		nil,{191427,180,20},{187827,180,15},
+		durationDiff={235893,-15},cdDiff={320421,{-30,-60},235893,-60,296320,"*0.80"},sameSpell={200166,191427}},
 	{204596,"DEMONHUNTER",3,--Печать огня
 		{204596,30,2},
-		isTalent=true,durationDiff={209281,-1},cdDiff={209281,"*0.8",211489,"*0.75"},
+		isTalent=true,durationDiff={209281,-1},cdDiff={211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var204596 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -13528,7 +13664,7 @@ module.db.AllSpells = {
 		]]},
 	{207684,"DEMONHUNTER,AOECC",1,--Печать страдания
 		{207684,120,2},
-		isTalent=true,durationDiff={209281,-1},cdDiff={320418,-30,209281,"*0.8",211489,"*0.75"},
+		isTalent=true,durationDiff={209281,-1},cdDiff={320418,-30,211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var207684 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -13556,7 +13692,7 @@ module.db.AllSpells = {
 		]]},
 	{202137,"DEMONHUNTER,UTIL",1,--Печать немоты
 		nil,nil,{202137,60,2},
-		isTalent=true,durationDiff={209281,-1},cdDiff={209281,"*0.8",211489,"*0.75"},
+		isTalent=true,durationDiff={209281,-1},cdDiff={211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var202137 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -13583,8 +13719,8 @@ module.db.AllSpells = {
 			end
 		]]},
 	{188501,"DEMONHUNTER",3,--Призрачное зрение
-		{188501,60,10},nil,nil,
-		stopDurWithAuraFade=188501},
+		{188501,30,10},nil,nil,
+		stopDurWithAuraFade=188501,durationDiff={389849,6},cdDiff={391429,30}},
 	{185123,"DEMONHUNTER",3,--Бросок боевого клинка
 		{185123,9,0},nil,nil},
 	{185245,"DEMONHUNTER,TAUNT",5,--Мучение
@@ -13606,20 +13742,19 @@ module.db.AllSpells = {
 		nil,{258925,60,0},nil,
 		isTalent=true},
 	{211881,"DEMONHUNTER,CC",3,--Извержение Скверны
-		nil,{211881,30,0},nil,
-		isTalent=true},
+		nil,{211881,30,0},nil},
 	{232893,"DEMONHUNTER",3,--Клинок Скверны
 		{232893,15,0},nil,nil,
 		isTalent=true,changeCdWithHaste=true},
 	{342817,"DEMONHUNTER",3,--Буря клинков
-		nil,{342817,20,0},nil,
+		nil,{342817,25,0},nil,
 		isTalent=true,changeCdWithHaste=true},
 	{196555,"DEMONHUNTER,DEF",3,--Путь Пустоты
 		nil,{196555,180,6},nil,
 		isTalent=true},
 	{202138,"DEMONHUNTER,UTIL",3,--Печать цепей
 		nil,nil,{202138,60,2},
-		isTalent=true,cdDiff={209281,"*0.8",211489,"*0.75"},
+		isTalent=true,cdDiff={211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var202138 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -13650,7 +13785,7 @@ module.db.AllSpells = {
 		isTalent=true},
 	{390163,"DEMONHUNTER",3,--Элизийский декрет
 		nil,nil,{390163,60,2},
-		isTalent=true,cdDiff={209281,"*0.8"},
+		isTalent=true,
 		CLEU_PREP = [[
 			spell389718_var390163 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -13805,7 +13940,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={412713,"*0.9"}},
 	{409311,"EVOKER",3,--Prescience
 		nil,nil,nil,{409311,12,0},
-		isTalent=true,cdDiff={412713,"*0.9"}},
+		isTalent=true,cdDiff={412713,"*0.9"},hasCharges=1},
 	{404977,"EVOKER",3,--Time Skip
 		nil,nil,nil,{404977,180,2},
 		isTalent=true,cdDiff={412713,"*0.9"}},
@@ -14104,6 +14239,27 @@ module.db.AllSpells = {
 	{370511,"ITEMS",3,--Refreshing Healing Potion
 		{370511,300,0},
 		item=191380},
+	{422146,"ITEMS",3,--Belor'relos
+		{422146,120,0},
+		item=207172},
+	{422441,"ITEMS",3,--Branch of the Tormented Ancient
+		{422441,150,0},
+		item=207169},
+	{422303,"ITEMS",3,--Bandolier of Twisted Blades
+		{422303,90,0},
+		item=207165},
+	{423611,"ITEMS",3,--Ashes of the Embersoul
+		{423611,120,0},
+		item=207167},
+	{422956,"ITEMS",3,--Nymue's Unraveling Spindle
+		{422956,120,18},
+		item=208615},
+	{422083,"ITEMS",3,--Smoldering Seedling
+		{422083,120,0},
+		item=207170},
+	{427113,"ITEMS",3,--Dreambinder
+		{427113,120,4},
+		item=208616},
 
 
 	{295373,"ESSENCES",3,--Сосредоточенный огонь

@@ -709,6 +709,16 @@ function ExRT.F.GetPlayerParty(unitName)
 	return 0
 end
 
+function ExRT.F.GetOwnPartyNum()
+	for i=1,GetNumGroupMembers() do
+		local name,_,subgroup = GetRaidRosterInfo(i)
+		if UnitIsUnit(name,'player') then
+			return subgroup
+		end
+	end
+	return 1
+end
+
 function ExRT.F.CreateAddonMsg(...)
 	local result = ""
 	for i=1,select('#',...) do
@@ -1374,12 +1384,26 @@ end
 
 do
 	local exportWindow
+	local pendingToShow
 	function ExRT.F:Export2(stringData)
 		if not exportWindow then
 			exportWindow = ExRT.lib:Popup("Export"):Size(650,50)
 			exportWindow.Edit = ExRT.lib:Edit(exportWindow):Point("TOP",0,-20):Size(640,25)
 			exportWindow:SetScript("OnHide",function(self)
-				self.Edit:SetText("")	
+				self.Edit:SetText("")
+				self.onEnterFunc = nil
+				if pendingToShow then
+					stringData = select(2,next(pendingToShow))
+					if not stringData then
+						pendingToShow = nil
+						return
+					end
+					tremove(pendingToShow, 1)
+					C_Timer.After(0,function()
+						exportWindow.Edit:SetText(stringData)
+						exportWindow:Show()
+					end)
+				end
 			end)
 			exportWindow.Edit:SetScript("OnEditFocusGained", function(self)
 				self:HighlightText()
@@ -1395,16 +1419,41 @@ do
 					self:GetParent():Hide()
 				end
 			end)
+			exportWindow.Edit:SetScript("OnEnterPressed",function(self)
+				if self:GetParent().onEnterFunc then
+					self:GetParent().onEnterFunc(self:GetText())
+					self:GetParent():Hide()
+				end
+			end)
 			function exportWindow:OnShow()
 				self.Edit:SetFocus()
 			end  
+		elseif exportWindow:IsShown() then
+			if not pendingToShow then
+				pendingToShow = {}
+			end
+			pendingToShow[#pendingToShow+1] = stringData
+			return
+
+		end
+
+		if type(stringData) == "function" then
+			exportWindow.onEnterFunc = stringData
+			stringData = ""
+		else
+			exportWindow.onEnterFunc = nil
+		end
+
+		if type(stringData) == "table" then
+			stringData = table.concat(ExRT.F.TableToText(stringData))
+		elseif type(stringData) ~= "string" then
+			stringData = tostring(stringData)
 		end
 
 		exportWindow:NewPoint("CENTER",UIParent,0,0)
 		exportWindow.Edit:SetText(stringData)
 		exportWindow:Show()
 	end
-
 end
 
 ---------------> Import/Export data <---------------
@@ -2138,6 +2187,7 @@ ExRT.GDB.EncountersList = {
 
 	{2119,2587,2639,2590,2592,2635,2605,2614,2607},	--voti
 	{2166,2688,2682,2687,2693,2680,2689,2683,2684,2685},	--a
+	{"10.2",2232,2820,2709,2737,2731,2728,2708,2824,2786,2677},	--d
 }
 
 
@@ -2147,6 +2197,33 @@ if UnitLevel'player' > 60 then
 	ACTUAL_DUNG = 2096
 	ACTUAL_RAID = 2119
 end
+
+do
+	local function StringVerToNumber(ver)
+		local i = 0
+		local r = 0
+		for n in ver:gmatch("%d+") do
+			r = r + tonumber(n) * (10 ^ i)
+			i = i - 2
+		end
+		return r
+	end
+	local ver_now = StringVerToNumber(GetBuildInfo())
+	for i=#ExRT.GDB.EncountersList,1,-1 do
+		local t = ExRT.GDB.EncountersList[i]
+		if type(t[1]) == "string" then
+			if StringVerToNumber(t[1]) > ver_now then
+				tremove(ExRT.GDB.EncountersList, i)
+			else
+				tremove(t, 1)
+			end
+		elseif t[1] == ACTUAL_DUNG then
+			--stop loop for old data
+			break
+		end
+	end
+end
+
 function ExRT.F.GetEncountersList(onlyRaid,onlyActual,reverse)
 	local new = {}
 

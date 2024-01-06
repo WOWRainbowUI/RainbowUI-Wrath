@@ -939,6 +939,7 @@ do
 					end
 					
 	
+					local entries = {}
 					local c = 0
 					for i=1,#nodes do
 						local nodeID = nodes[i]
@@ -973,6 +974,7 @@ do
 											else
 												data[-c] = nil
 											end
+											entries[entryID] = true
 	
 											cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
 					
@@ -997,6 +999,7 @@ do
 						data[i] = nil
 						data[-i] = nil
 					end
+					cooldownsModule:SetTalentEntries(name,entries)
 	
 					for i=1,4 do
 						local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
@@ -1601,7 +1604,7 @@ function module.main:ENCOUNTER_START()
 			
 			if encoded then
 				tal = encoded:gsub("%^","##")
-				ExRT.F.SendExMsg("inspect","R\tY"..tal)	
+				ExRT.F.SendExMsgExt({prefixNum = ExRT.F.GetOwnPartyNum()+1},"inspect","R\tY"..tal)	
 			end
 			tal = ""
 		end
@@ -1656,7 +1659,7 @@ function module.main:ENCOUNTER_START()
 	end
 
 	if str ~= "" then
-		ExRT.F.SendExMsg("inspect","R\t"..str)
+		ExRT.F.SendExMsgExt({prefixNum = ExRT.F.GetOwnPartyNum()+1},"inspect","R\t"..str)
 	end
 end
 

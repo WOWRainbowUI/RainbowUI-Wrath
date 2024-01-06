@@ -144,7 +144,7 @@ Options.modulesList.selected = 1
 Options.modulesList:Update()
 
 ------------------------------------------------------------
-
+--[[ 不顯示選項
 MRT.Options.InBlizzardInterface = CreateFrame( "Frame", nil )
 MRT.Options.InBlizzardInterface.name = L.optionframename
 if MRT.is10 or SettingsPanel then
@@ -181,7 +181,7 @@ MRT.Options.InBlizzardInterface.button = ELib:Button(MRT.Options.InBlizzardInter
 	end
 	MRT.Options:Open()
 end)
-
+--]]
 ------------------------------------------------------------
 
 Options.scale = ELib:Slider(Options):_Size(70,8):Point("TOPRIGHT",-45,-5):Range(50,200,true):OnShow(function(self)
@@ -462,7 +462,7 @@ function MRT.Options:UpdateModulesList()
 end
 
 ----> Options
-local OptionsFrame_title
+local OptionsFrame_title, OptionsFrame_image, OptionsFrame_imagehat
 
 function OptionsFrame:AddSnowStorm(maxSnowflake)
 	local sf = OptionsFrame.SnowStorm or CreateFrame("ScrollFrame", nil, Options)
@@ -480,7 +480,7 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 		local hat = CreateFrame("Button",nil,OptionsFrame)  
 		OptionsFrame.hatBut = hat
 		hat:SetSize(50,30) 
-		hat:SetPoint("CENTER",OptionsFrame.image,-40,55)
+		hat:SetPoint("CENTER",OptionsFrame_image,-40,55)
 		hat.maxSnowflake = maxSnowflake
 		hat:RegisterForClicks("LeftButtonDown","RightButtonDown")
 		hat:SetScript("OnClick",function(self,button) 
@@ -492,10 +492,10 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 			OptionsFrame:AddSnowStorm(self.maxSnowflake)
 		end)
 		hat:SetScript("OnEnter",function()
-			OptionsFrame.imagehat:SetVertexColor(1,.8,.8)
+			OptionsFrame_imagehat:SetVertexColor(1,.8,.8)
 		end)
 		hat:SetScript("OnLeave",function()
-			OptionsFrame.imagehat:SetVertexColor(1,1,1)
+			OptionsFrame_imagehat:SetVertexColor(1,1,1)
 		end)
 
 		hat.g = hat:CreateAnimationGroup()
@@ -522,7 +522,7 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 					p = 0 - p
 				end
 			end
-			OptionsFrame.imagehat:SetPoint("CENTER",OptionsFrame.image,"CENTER",p*12*3,0)
+			OptionsFrame_imagehat:SetPoint("CENTER",OptionsFrame_image,"CENTER",p*12*3,0)
 		end)
 		hat.g.a:SetStartDelay(10)
 		hat.g:Play()
@@ -636,9 +636,9 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 		local hat = CreateFrame("Button",nil,OptionsFrame)  
 		OptionsFrame.hatBut = hat
 		hat:SetSize(76,20) 
-		hat:SetPoint("TOP",OptionsFrame.image,22,-5)
+		hat:SetPoint("TOP",OptionsFrame_image,22,-5)
 		if deathStarType == 2 then
-			hat:SetPoint("TOP",OptionsFrame.image,3,-35)
+			hat:SetPoint("TOP",OptionsFrame_image,3,-35)
 			hat:SetSize(50,50) 
 		end
 		hat.maxDeathStars = maxDeathStars
@@ -789,13 +789,24 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 end
 
 
-OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogo2"):Point("TOPLEFT",15,5):Size(140,140)
-OptionsFrame_title = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("LEFT",OptionsFrame.image,"RIGHT",15,-5):Size(512*0.7,128*0.7)
+OptionsFrame_image = OptionsFrame:CreateTexture(nil,"ARTWORK")
+
+local p = {[0] = OptionsFrame_image[0]}
+setmetatable(p,getmetatable(OptionsFrame_image))
+OptionsFrame_image[0] = nil
+OptionsFrame_image = p
+
+OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogo2")
+OptionsFrame_image:SetPoint("TOPLEFT",15,5)
+OptionsFrame_image:SetSize(140,140)
+OptionsFrame_image.Point = OptionsFrame_image.SetPoint
+
+OptionsFrame_title = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("LEFT",OptionsFrame_image,"RIGHT",15,-5):Size(512*0.7,128*0.7)
 
 local askFrame_show
 local pmove_pos = 40
 OptionsFrame.pmove = CreateFrame("Frame",nil,OptionsFrame)
-OptionsFrame.pmove:SetPoint("CENTER",OptionsFrame.image,"CENTER",54*cos(pmove_pos),54*sin(pmove_pos))
+OptionsFrame.pmove:SetPoint("CENTER",OptionsFrame_image,"CENTER",54*cos(pmove_pos),54*sin(pmove_pos))
 OptionsFrame.pmove:SetSize(15,15)
 local function pmove_OnUpdate(self,elapsed)
 	if not self:IsMouseOver() or not IsMouseButtonDown() then
@@ -813,8 +824,8 @@ local function pmove_OnUpdate(self,elapsed)
 		self:SetScript("OnUpdate",nil)
 		askFrame_show()
 	end
-	self:SetPoint("CENTER",OptionsFrame.image,"CENTER",54*cos(pmove_pos),54*sin(pmove_pos))
-	OptionsFrame.image:SetRotation((pmove_pos-40)*PI/180)
+	self:SetPoint("CENTER",OptionsFrame_image,"CENTER",54*cos(pmove_pos),54*sin(pmove_pos))
+	OptionsFrame_image:SetRotation((pmove_pos-40)*PI/180)
 end
 OptionsFrame.pmove:SetScript("OnMouseDown",function(self)
 	self.isReverse = false
@@ -833,12 +844,12 @@ OptionsFrame.animLogo.g.a:SetDuration(.5)
 OptionsFrame.animLogo.g.a:SetScript("OnUpdate",function(self)
 	local p = 0.5-abs(0.5-self:GetProgress())
 	if pmove_pos ~= 40 then return end
-	OptionsFrame.image:SetRotation(p*10*PI/180)
+	OptionsFrame_image:SetRotation(p*10*PI/180)
 end)
 OptionsFrame.animLogo.g.a:SetStartDelay(4)
 OptionsFrame.animLogo.g:Play()
 
-OptionsFrame.imagehat = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogoHat","OVERLAY"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140,140):Shown(false)
+OptionsFrame_imagehat = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogoHat","OVERLAY"):Point("CENTER",OptionsFrame_image,"CENTER",0,0):Size(140,140):Shown(false)
 
 OptionsFrame.dateChecks = CreateFrame("Frame",nil,OptionsFrame)
 OptionsFrame.dateChecks:SetPoint("TOPLEFT")
@@ -871,7 +882,7 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 	end
 
 	if isChristmas then
-		OptionsFrame.imagehat:Show()
+		OptionsFrame_imagehat:Show()
 		if isSnowDay then
 			OptionsFrame:AddSnowStorm()
 		else
@@ -882,7 +893,7 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 	end
 
 	if (today.month == 5 and today.day == 4) then
-		OptionsFrame.image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogom4")
+		OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogom4")
 		OptionsFrame_title:Color("FF9117")
 		if math.random(1,5) == 4 then
 			OptionsFrame_title:Color("ff0000")	--you are sith
@@ -896,7 +907,7 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 	end
 
 	if (today.month == 4 and today.day == 5) then
-		OptionsFrame.image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogost")
+		OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogost")
 
 		OptionsFrame:AddDeathStar(nil,2)
 
@@ -905,17 +916,17 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 
 	if (today.month == 4 and today.day == 28) then
 		local s = 0.39
-		OptionsFrame_title:Size(512*0.7,128*0.7*s):TexCoord(0,1,0,s):Point("LEFT",OptionsFrame.image,"RIGHT",15,-5+128*s*0.4*0.5):Color(0, 87/255, 183/255,1)
+		OptionsFrame_title:Size(512*0.7,128*0.7*s):TexCoord(0,1,0,s):Point("LEFT",OptionsFrame_image,"RIGHT",15,-5+128*s*0.4*0.5):Color(0, 87/255, 183/255,1)
 		local OptionsFrame_title2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("TOP",OptionsFrame_title,"BOTTOM"):Size(512*0.7,128*0.7*(1-s)):TexCoord(0,1,s,1):Color(255/255, 221/255, 0,1)
 
 		return
 	end
 
 	if type(GetGuildInfo) == 'function' and ((MRT.isClassic and GetGuildInfo("player") == "Гачивайд") or (not MRT.isClassic and today.wday == 4 and GetGuildInfo("player") == "Дивайд")) then
-		OptionsFrame.image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogogv")
-		OptionsFrame.image:SetTexCoord(0,1,0.21875,1-0.21875)
-		OptionsFrame.image:SetSize(140,79)
-		OptionsFrame.image:Point("TOPLEFT",15,5-32)
+		OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogogv")
+		OptionsFrame_image:SetTexCoord(0,1,0.21875,1-0.21875)
+		OptionsFrame_image:SetSize(140,79)
+		OptionsFrame_image:Point("TOPLEFT",15,5-32)
 
 		return
 	end

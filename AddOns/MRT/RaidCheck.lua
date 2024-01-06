@@ -3048,7 +3048,7 @@ function module:SendConsumeData()
 
 	local kitNow, kitMax, kitTimeLeft, kitType = module:KitCheck()
 
-	ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
+	ExRT.F.SendExMsgExt({prefixNum = ExRT.F.GetOwnPartyNum()+1},"raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
 		(not ExRT.isClassic and UnitLevel'player'==60 and "\tKIT\t"..format("%d/%d",kitNow, kitMax) or "")..
 		(not ExRT.isClassic and UnitLevel'player'==60 and "\tOIL\t"..format("%d",oilMH) or "")..
 		(not ExRT.isClassic and UnitLevel'player'==60 and "\tOIL2\t"..format("%d",oilOH) or "")..

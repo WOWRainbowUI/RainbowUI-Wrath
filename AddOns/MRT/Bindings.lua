@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-BINDING_HEADER_ExRT = ExRT.L.addonname
+BINDING_HEADER_ExRT = "Method Raid Tools"
 BINDING_NAME_EXRT_FIGHTLOG_OPEN = ExRT.L.BossWatcher
 BINDING_NAME_EXRT_OPEN = ExRT.L.minimapmenu
 
