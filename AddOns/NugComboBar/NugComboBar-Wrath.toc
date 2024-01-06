@@ -1,18 +1,19 @@
 ## Interface: 30403
 ## Title: NugComboBar
 ## Notes: Combopoints counter
-## Title-zhTW: |cffFF7373[職業]|r 連擊點數-3D圓
-## Notes-zhTW: NugComboBar |n|n使用精美的3D圓形來顯示連擊點數。|n|n|cffffd200使用方法: |r從Esc>介面>插件>連擊點數，解鎖移動和進行設定。
-## X-Category-zhTW: 職業
-## DefaultState: disabled
 ## Author: d87
 ## SavedVariablesPerCharacter: NugComboBarDB_Character
 ## SavedVariables: NugComboBarDB_Global
-## Version: 10.1.2
+## Version: 10.2.0
 
 ## X-WoWI-ID: 6308
 ## X-Curse-Project-ID: 2538
 ## X-Wago-ID: 9rN4yy6D
+
+## Title-zhTW: |cffFF7373[職業]|r 連擊點數-3D圓
+## Notes-zhTW: NugComboBar |n|n使用精美的3D圓形來顯示連擊點數。|n|n|cffffd200使用方法: |r從Esc>介面>插件>連擊點數，解鎖移動和進行設定。
+## X-Category-zhTW: 職業
+## DefaultState: disabled
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua

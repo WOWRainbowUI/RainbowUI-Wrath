@@ -1,6 +1,7 @@
 # NugComboBar
 
-## [10.1.2](https://github.com/rgd87/NugComboBar/tree/10.1.2) (2023-07-12)
-[Full Changelog](https://github.com/rgd87/NugComboBar/compare/10.1.1...10.1.2) [Previous Releases](https://github.com/rgd87/NugComboBar/releases)
+## [10.2.0](https://github.com/rgd87/NugComboBar/tree/10.2.0) (2023-11-27)
+[Full Changelog](https://github.com/rgd87/NugComboBar/compare/10.1.2...10.2.0) [Previous Releases](https://github.com/rgd87/NugComboBar/releases)
 
-- Bugfix for DF Settings Panel  
+- Updated ToC  
+- Season of Discovery Arcane Blast added  

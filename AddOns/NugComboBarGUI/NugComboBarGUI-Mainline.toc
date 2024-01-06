@@ -1,13 +1,14 @@
-## Interface: 100105
+## Interface: 100200
 ## Title: NugComboBarGUI
 ## Notes: NugComboBar Configuration Panel
-## Title-zhTW: |cffFF7373[職業]|r 連擊點數-3D圓-設定選項
-## Notes-zhTW: NugComboBarGUI |n|n技能連擊點數條的設定面板。
-## X-Category-zhTW: 職業
-## DefaultState: disabled
-## Version: 10.1.2
+## Version: 10.2.0
 ## Dependencies: NugComboBar
 ## Author: d87
 ## LoadOnDemand: 1
 ..\NugComboBar\Options\includes.xml
+
+## Title-zhTW: |cffFF7373[職業]|r 連擊點數-3D圓-設定選項
+## Notes-zhTW: NugComboBarGUI |n|n技能連擊點數條的設定面板。
+## X-Category-zhTW: 職業
+## DefaultState: disabled
 
