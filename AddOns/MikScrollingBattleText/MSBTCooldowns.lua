@@ -28,8 +28,6 @@ local GetSkillName = MikSBT.GetSkillName
 local DisplayEvent = MikSBT.Animations.DisplayEvent
 local HandleCooldowns = MSBTTriggers.HandleCooldowns
 
-local IsClassic = WOW_PROJECT_ID >= WOW_PROJECT_CLASSIC
-
 
 
 -------------------------------------------------------------------------------
@@ -184,7 +182,7 @@ local function OnUpdateCooldown(cooldownType, cooldownFunc)
 
 	-- Add the last successful spell to the active cooldowns if necessary.
 	local cooldownID = lastCooldownIDs[cooldownType]
-	if (cooldownID) then
+	if (cooldownID and cooldownFunc) then -- 暫時修正
 		-- Make sure the spell cooldown is enabled.
 		local _, duration, enabled = cooldownFunc(cooldownID)
 		if (enabled == 1) then
@@ -428,12 +426,7 @@ local function UseContainerItemHook(bag, slot)
 	if (not itemCooldownsEnabled) then return end
 
 	-- Get item id for the used bag and slot.
-	local itemID
-	if IsClassic then
-		itemID = C_Container.GetContainerItemID(bag, slot)
-	else
-		itemID = C_Container.GetContainerItemID(bag, slot)
-	end
+	local itemID = C_Container.GetContainerItemID(bag, slot)
 	if (itemID) then OnItemUse(itemID) end
 end
 
@@ -472,11 +465,7 @@ _, playerClass = UnitClass("player")
 -- Setup hooks.
 hooksecurefunc("UseAction", UseActionHook)
 hooksecurefunc("UseInventoryItem", UseInventoryItemHook)
-if IsClassic then
-	hooksecurefunc(C_Container, "UseContainerItem", UseContainerItemHook)
-else
-	hooksecurefunc(C_Container, "UseContainerItem", UseContainerItemHook)
-end
+hooksecurefunc(C_Container, "UseContainerItem", UseContainerItemHook)
 hooksecurefunc("UseItemByName", UseItemByNameHook)
 
 -- Specify the abilities that reset cooldowns.
