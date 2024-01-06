@@ -241,29 +241,35 @@ LibEvent:attachTrigger("INSPECT_FRAME_BACKDROP", function(self, frame)
     end
 end)
 
+--設置邊框和位置
 LibEvent:attachTrigger("INSPECT_FRAME_SHOWN", function(self, frame, parent, ilevel)
     local x, y, f = 0, 0, parent:GetName()
     if (f == "InspectFrame" or f == "PaperDollFrame") then
         x, y = 33, 14
     end
-    local backdrop = frame:GetBackdrop()
+
+    -- SOD EngravingFrame (Rune window)
+    if (f == "PaperDollFrame" and EngravingFrame) then
+        if (C_Engraving.IsEngravingEnabled()) then
+            x, y = -180, 14
+        end
+    end
+
     if (MerInspectDB and MerInspectDB.ShowInspectAngularBorder) then
-        backdrop.edgeSize = 1
-        backdrop.edgeFile = "Interface\\Buttons\\WHITE8X8"
-        backdrop.insets.top = 1
-        backdrop.insets.left = 1
-        backdrop.insets.right = 1
-        backdrop.insets.bottom = 1
-        frame.backdrop = backdrop
+        frame.backdrop.edgeSize = 1
+        frame.backdrop.edgeFile = "Interface\\Buttons\\WHITE8X8"
+        frame.backdrop.insets.top = 1
+        frame.backdrop.insets.left = 1
+        frame.backdrop.insets.right = 1
+        frame.backdrop.insets.bottom = 1
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2-x, 0-y)
     else
-        backdrop.edgeSize = 16
-        backdrop.edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border"
-        backdrop.insets.top = 4
-        backdrop.insets.left = 4
-        backdrop.insets.right = 4
-        backdrop.insets.bottom = 4
-        frame.backdrop = backdrop
+        frame.backdrop.edgeSize = 16
+        frame.backdrop.edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border"
+        frame.backdrop.insets.top = 4
+        frame.backdrop.insets.left = 4
+        frame.backdrop.insets.right = 4
+        frame.backdrop.insets.bottom = 4
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0-x, 0-y)
     end
 end)
@@ -307,7 +313,7 @@ end)
 --   Player   --
 ----------------
 
-local PlayerStatsFrame = CreateFrame("Frame", nil, UIParent, "ClassicStatsFrameTemplate")
+local PlayerStatsFrame = CreateFrame("Frame", nil, UIParent, "MerClassicEraClassicStatsFrameTemplate")
 local mask = PlayerStatsFrame:CreateTexture()
 mask:SetTexture("Interface\\Tooltips\\UI-Tooltip-Background")
 mask:SetPoint("TOPLEFT", PlayerStatsFrame, "TOPLEFT", 3, -2)

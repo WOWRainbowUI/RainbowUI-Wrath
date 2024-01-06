@@ -1,0 +1,25 @@
+## Interface: 30403
+## Title: MerInspect for classic era
+## Version: 1.0.7
+## Notes: Inspect Assist 
+## Notes-zhCN: 观察助手
+## Notes-zhTW: 觀察助手
+## Author: M(Mermaid) maintained by Timtam
+## Thanks: Mermaid, 独孤傲雪, xLoki
+## SavedVariables: MerInspectDB
+
+## Title-zhTW: |cffB973FF[裝備]|r 觀察
+## Notes-zhTW: MerInspect for classic era |n|n觀察其他玩家和自己時會在角色資訊視窗右方列出裝備清單和物品等級，方便查看和比較裝備。|n|n|cffffd200使用方法: |r從Esc>選項>插件>裝備-觀察，進行設定。
+## X-Category-zhTW: 物品
+
+libs\lib.xml
+locales\locales.xml
+templates\templates.xml
+Options.lua
+ItemSlot.lua
+ItemBorder.lua
+InspectCore.lua
+InspectUnit.lua
+InspectUnitGemAndEnchant.lua
+InspectUnitSpecialization.lua
+InspectUnitStats.lua

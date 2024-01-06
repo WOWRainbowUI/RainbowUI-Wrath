@@ -43,19 +43,6 @@ local function SetStaticValue(stats, value, ...)
 	end
 end
 
---静态值属性-套裝(只計算一次就好)(@todo 同屬性的多個套裝問題)
-local function SetOnceStaticValue(stats, value, ...)
-    if (not stats.oncestatic) then stats.oncestatic = {} end
-    for i = 1, select("#", ...) do
-        if (not stats.oncestatic[select(i,...)]) then
-            stats.oncestatic[select(i,...)] = { value = tonumber(value) or 0, once = true, final = nil }
-        elseif (stats.oncestatic[select(i,...)].once) then
-        else
-            stats.oncestatic[select(i,...)].value = stats.oncestatic[select(i,...)].value + (tonumber(value) or 0)
-        end
-	end
-end
-
 --静态值并设置为完整值
 local function SetStaticValueAndFinal(stats, value, key)
     SetStaticValue(stats, value, key)
@@ -84,13 +71,7 @@ end
 
 --计算最终属性值
 local function CalculateStatLogic(unit, stats)
-    --step1 處理套裝或僅一次屬性的加成
-    if (stats.oncestatic) then
-        for k, v in pairs(stats.oncestatic) do
-            SetStaticValue(stats, v.value, k)
-        end
-    end
-    --step2 处理百分比属性
+    --step1 处理百分比属性
     if (stats.percent) then
         stats.percentValues = {}
         for _, v in ipairs(stats.percent) do
@@ -104,7 +85,7 @@ local function CalculateStatLogic(unit, stats)
             SetStaticValue(stats, floor(v), k)
         end
     end
-    --step3 换算%
+    --step2 换算%
 
     return stats
 end
@@ -112,7 +93,7 @@ end
 --装备属性: 逐条根据文字解析
 local function GetStats(text, r, g, b, stats, link)
     local v, v1, v2, txt, txt1, txt2
-    --套装名称
+    --套装
     if strfind(text, "%(%d/%d%)") or strfind(text, "（%d/%d）") then
         return SetSuitValue(stats, text, select(3, strfind(link or "","(|c%x+)|Hitem:.-|h|r")) or "|cffffffff")
     end
@@ -148,11 +129,7 @@ local function GetStats(text, r, g, b, stats, link)
 		v = strmatch(text, "%+(%d+)")
 		for _, p in ipairs(patterns.general) do
 			if strfind(text, p.pattern) then
-                if (strfind(text, patterns.setprefix)) then
-                    SetOnceStaticValue(stats, v, strsplit("|",p.key))
-                else
-                    SetStaticValue(stats, v, strsplit("|",p.key))
-                end
+				SetStaticValue(stats, v, strsplit("|",p.key))
 				break
 			end
 		end
@@ -162,11 +139,7 @@ local function GetStats(text, r, g, b, stats, link)
     for _, p in ipairs(patterns.extra) do
 		if strfind(text, p.pattern) then
             v = strmatch(text, p.pattern)
-            if (strfind(text, patterns.setprefix)) then
-                SetOnceStaticValue(stats, v, strsplit("|",p.key))
-            else
-                SetStaticValue(stats, v, strsplit("|",p.key))
-            end
+            SetStaticValue(stats, v, strsplit("|",p.key))
             return
         end
 	end
@@ -213,64 +186,29 @@ local function GetBuffStats(text, stats)
 				end
 			end
 		end
-	end
-end
-
---天赋解析 @todo
-local function GetTalentEffect(rank, nameTalent, stats, class, race, level)
-    
+	end	
 end
 
 --读取UNIT的Buff加成
 function lib:GetUnitBuffStats(unit, stats)
     if (type(stats) ~= "table") then stats = {} end
-    local _, text, texture
-    local textures = {}
+    local text
 	local i = 1
 	while UnitBuff(unit, i) do
-        _, texture = UnitBuff(unit, i)
-        textures[texture] = i
 		tooltip:SetOwner(UIParent, "ANCHOR_NONE")
 		tooltip:ClearLines()
 		tooltip:SetUnitBuff(unit, i)
 		for j = 2, tooltip:NumLines() do			
 			text = _G[tooltip:GetName() .."TextLeft" .. j]:GetText()
 			GetBuffStats(text, stats)
-		end
+		end	
 		i = i + 1;
 	end
-    --德鲁伊印记抗性和牧师暗抗(取牧师的:牧min^30>德max^25): 野性印记 图标136078 暗影防护 图标136121 
-    if (textures[136121] and textures[136078]) then
-        tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		tooltip:ClearLines()
-		tooltip:SetUnitBuff(unit, textures[136078])
-		for j = 2, tooltip:NumLines() do			
-			text = _G[tooltip:GetName() .."TextLeft" .. j]:GetText()
-			for _, p in ipairs(patterns.buff) do
-                if p.conflict and strfind(text, p.pattern) then
-                    v = strmatch(text, p.pattern)
-                    if (v and tonumber(v) > 0) then
-                        SetStaticValue(stats, -v, "ResistanceShadow")
-                    end
-                end
-            end
-		end
-    end
 end
 
 --读取天赋加成 @todo
 function lib:GetUnitTalentStats(unit, stats, class, race, level)
-    local inspect = (unit ~= "player")
-    local numTabs = GetNumTalentTabs(inspect)
-	for i = 1, numTabs do
-		local numTalents = GetNumTalents(i,inspect)
-		for j = 1, numTalents do
-			nameTalent, _, _, _, currRank, maxRank = GetTalentInfo(i,j,inspect)
-			if currRank > 0 then
-				GetTalentEffect(currRank, nameTalent, stats, class, race, level)
-			end
-		end
-	end
+    
 end
 
 --读取种族及初始属性加成

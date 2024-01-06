@@ -7,7 +7,6 @@
 
 local addon, ns = ...
 
-local LibItemGem = LibStub:GetLibrary("LibItemGem.7000")
 local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
 local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
 
@@ -130,27 +129,8 @@ end
 --讀取並顯示圖標
 local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
     if (not ItemLink) then return 0 end
-    local num, info, qty = LibItemGem:GetItemGemInfo(ItemLink)
-    local _, quality, texture, icon, r, g, b
-    for i, v in ipairs(info) do
-        icon = GetIconFrame(frame)
-        if (v.link) then
-            _, _, quality, _, _, _, _, _, _, texture = GetItemInfo(v.link)
-            r, g, b = GetItemQualityColor(quality or 0)
-            icon.bg:SetVertexColor(r, g, b)
-            icon.texture:SetTexture(texture or "Interface\\Cursor\\Quest")
-            UpdateIconTexture(icon, texture, v.link, "item")
-        else
-            icon.bg:SetVertexColor(1, 0.82, 0, 0.5)
-            icon.texture:SetTexture("Interface\\Cursor\\Quest")
-        end
-        icon.title = v.name
-        icon.itemLink = v.link
-        icon:ClearAllPoints()
-        icon:SetPoint("LEFT", anchorFrame, "RIGHT", i == 1 and 6 or 1, 0)
-        icon:Show()
-        anchorFrame = icon
-    end
+    local num = 0
+    local _, qty, quality, texture, icon, r, g, b
     local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(ItemLink)
     local enchantSpellID = LibItemEnchant:GetEnchantSpellID(ItemLink)
     if (enchantSpellID) then

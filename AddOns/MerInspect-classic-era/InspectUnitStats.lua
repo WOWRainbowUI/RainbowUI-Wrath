@@ -13,7 +13,7 @@ local GetStatsName = LibItemStats.GetStatsName
 local function ShowSupportedItemStatsFrame(frame, unit)
     if (not frame.statsFrame) then
         if (LibItemStats:IsSupported()) then
-            local statsFrame = CreateFrame("Frame", nil, frame, "ClassicStatsFrameTemplate")
+            local statsFrame = CreateFrame("Frame", nil, frame, "MerClassicEraClassicStatsFrameTemplate")
             frame.statsFrame = statsFrame
             frame:HookScript("OnHide", function(self)
                 self.statsFrame:Hide()
@@ -29,7 +29,7 @@ end
 
 local function DefaultItemStatsFrame(frame, unit)
     if (not frame.statsFrame) then
-        local statsFrame = CreateFrame("Frame", nil, frame, "InsetFrameTemplate3,BackdropTemplate")
+        local statsFrame = CreateFrame("Frame", nil, frame, "InsetFrameTemplate3")
         statsFrame:SetSize(180, 157)
         statsFrame:SetPoint("TOPLEFT", frame, "TOPRIGHT", 0, -1)
         for i = 1, 32 do
@@ -47,7 +47,7 @@ local function DefaultItemStatsFrame(frame, unit)
         mask:SetPoint("TOPLEFT", statsFrame, "TOPRIGHT", -58, -3)
         mask:SetPoint("BOTTOMRIGHT", statsFrame, "BOTTOMRIGHT", -3, 2)
         mask:SetBlendMode("ADD")
-        mask:SetGradientAlpha("VERTICAL", 0.1, 0.4, 0.4, 0.8, 0.1, 0.2, 0.2, 0.8)
+        mask:SetGradient("VERTICAL", CreateColor(0.1, 0.4, 0.4, 0.8), CreateColor(0.1, 0.2, 0.2, 0.8))
         frame.statsFrame = statsFrame
         frame:HookScript("OnHide", function(self)
             self.statsFrame:Hide()
@@ -108,26 +108,5 @@ hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, max
         ShowSupportedItemStatsFrame(frame, unit)
     --else
     --    DefaultItemStatsFrame(frame, unit)
-    end
-end)
-
-LibEvent:attachTrigger("INSPECT_STATSFRAME_BACKDROP", function(self, frame)
-    local backdrop = frame:GetBackdrop()
-    if (MerInspectDB and MerInspectDB.ShowInspectAngularBorder) then
-        backdrop.edgeSize = 1
-        backdrop.edgeFile = "Interface\\Buttons\\WHITE8X8"
-        backdrop.insets.top = 1
-        backdrop.insets.left = 1
-        backdrop.insets.right = 1
-        backdrop.insets.bottom = 1
-        frame.backdrop = backdrop
-    else
-        backdrop.edgeSize = 16
-        backdrop.edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border"
-        backdrop.insets.top = 4
-        backdrop.insets.left = 4
-        backdrop.insets.right = 4
-        backdrop.insets.bottom = 4
-        frame.backdrop = backdrop
     end
 end)

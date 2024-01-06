@@ -17,7 +17,7 @@ local function SetItemAngularBorder(self, quality, itemIDOrLink)
         else
             w, h = min(w, ww), min(h, hh)
         end
-        self.angularFrame = CreateFrame("Frame", nil, self)
+        self.angularFrame = CreateFrame("Frame", nil, self, "BackdropTemplate")
         self.angularFrame:SetFrameLevel(5)
         self.angularFrame:SetSize(w, h)
         self.angularFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)

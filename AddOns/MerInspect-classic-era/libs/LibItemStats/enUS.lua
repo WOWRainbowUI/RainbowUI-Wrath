@@ -4,7 +4,6 @@ local locale = GetLocale()
 if (locale == "enUS" or locale == "enGB") then
 
     LibItemStatsPatterns = {
-        setprefix = "Set:",
         ignore = {
             "^Use",
             "^Chance on hit",
@@ -127,7 +126,7 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "ResistanceFrost", pattern = "冰霜抗性提高(%d+)"},
             { key = "Stamina|Agility|Strength|Intellect|Spirit", percent = true, pattern = "all attributes by (%d+)%%"},
             { key = "Stamina|Agility|Strength|Intellect|Spirit", pattern = "all attributes by (%d+)"},
-            { key = "ResistanceFrost|ResistanceShadow|ResistanceArcane|ResistanceFire|ResistanceNature|ResistanceHoly", pattern = "all resistances by (%d+)", conflict = true },
+            { key = "ResistanceFrost|ResistanceShadow|ResistanceArcane|ResistanceFire|ResistanceNature|ResistanceHoly", pattern = "all resistances by (%d+)"},
             { key = "ManaRestore", pattern = "每5秒恢復(%d+)點法力"},
             { key = "HealthRestore", pattern = "每5秒恢復(%d+)點生命"},
             
