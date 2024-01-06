@@ -180,6 +180,7 @@ function PallyPower:OnInitialize()
 		PallyPower_SavedPresets = {}
 		PallyPower_SavedPresets["PallyPower_Assignments"] = {[0] = {}}
 		PallyPower_SavedPresets["PallyPower_NormalAssignments"] = {[0] = {}}
+		PallyPower_SavedPresets["PallyPower_AuraAssignments"] = {[0] = {}}
 	end
 	local h = _G["PallyPowerFrame"]
 	h:ClearAllPoints()
@@ -1505,7 +1506,8 @@ function PallyPower:SendMessage(msg, type, target)
 				else
 					if IsInRaid() then
 						type = "RAID"
-					elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+					--elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+					else
 						type = "PARTY"
 					end
 				end
@@ -3833,6 +3835,10 @@ function PallyPower:AutoAssign()
 end
 
 function PallyPower:StorePreset()
+	PallyPower_SavedPresets = {}
+	PallyPower_SavedPresets["PallyPower_Assignments"] = {[0] = {}}
+	PallyPower_SavedPresets["PallyPower_NormalAssignments"] = {[0] = {}}
+	PallyPower_SavedPresets["PallyPower_AuraAssignments"] = {[0] = {}}
 	--save current Assignments to preset
 	PallyPower_SavedPresets["PallyPower_Assignments"][0] = tablecopy(PallyPower_Assignments)
 	PallyPower_SavedPresets["PallyPower_NormalAssignments"][0] = tablecopy(PallyPower_NormalAssignments)
