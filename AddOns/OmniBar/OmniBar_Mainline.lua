@@ -18,7 +18,8 @@ addon.Cooldowns = {
 
     [47528] = {default = true, duration = 15, class = "DEATHKNIGHT"}, -- Mind Freeze
     [48265] = {duration = 45, class = "DEATHKNIGHT", charges = 2}, -- Death's Advance
-    [48707] = {duration = 30, class = "DEATHKNIGHT"}, -- Anti-Magic Shell
+    [48707] = {duration = 40, class = "DEATHKNIGHT"}, -- Anti-Magic Shell
+		[410358] = {parent = 48707, duration = 30}, -- Anti-Magic Shell (Spellwarden)
     [49576] = {duration = 25, class = "DEATHKNIGHT", charges = 2}, -- Death Grip
     [51052] = {duration = 120, class = "DEATHKNIGHT"}, -- Anti-Magic Zone
     [61999] = {duration = 600, class = "DEATHKNIGHT"}, -- Raise Ally
@@ -67,18 +68,18 @@ addon.Cooldowns = {
 			[207349] = {parent = 49206}, -- Dark Arbiter
 		[91802] = {duration = 30, class = "DEATHKNIGHT", specID = {252}}, -- Shambling Rush (Ghoul)
 		[207289] = {duration = 90, class = "DEATHKNIGHT", specID = {252}}, -- Unholy Assault
-		[275699] = {duration = 45, class = "DEATHKNIGHT", specID = {252}}, -- Apocalypse
+		[275699] = {duration = 30, class = "DEATHKNIGHT", specID = {252}}, -- Apocalypse
 		[390279] = {duration = 90, class = "DEATHKNIGHT", specID = {252}}, -- Vile Contagion
 	        [210128] = {duration = 12, class = "DEATHKNIGHT", specID = {252}, charges = 2}, -- Reanimation
 		[115989] = {duration = 45, class = "DEATHKNIGHT", specID = {252}}, -- Unholy Blight
 
     -- Demon Hunter
 
-    [179057] = {duration = 48, class = "DEMONHUNTER"}, -- Chaos Nova
+    [179057] = {duration = 45, class = "DEMONHUNTER"}, -- Chaos Nova
     [183752] = {default = true, duration = 15, class = "DEMONHUNTER"}, -- Disrupt
     [188501] = {duration = 30, class = "DEMONHUNTER"}, -- Spectral Sight
-    [191427] = {duration = 180, class = "DEMONHUNTER"}, -- Metamorphosis
-		[187827] = {parent = 191427, duration = 180}, -- Metamorphosis (Vengeance)
+    [191427] = {duration = 120, class = "DEMONHUNTER"}, -- Metamorphosis
+		[187827] = {parent = 191427, duration = 120}, -- Metamorphosis (Vengeance)
     [196718] = {duration = 180, class = "DEMONHUNTER"}, -- Darkness
     [198793] = {duration = {default = 25, [577] = 20}, class = "DEMONHUNTER"}, -- Vengeful Retreat
     [205604] = {duration = 60, class = "DEMONHUNTER"}, -- Reverse Magic
@@ -94,11 +95,12 @@ addon.Cooldowns = {
 
 		-- Havoc
 
-		[258925] = {duration = 60, class = "DEMONHUNTER", specID = {577}}, -- Fel Barrage
+		[258925] = {duration = 90, class = "DEMONHUNTER", specID = {577}}, -- Fel Barrage
 		[211881] = {duration = 30, class = "DEMONHUNTER", specID = {577}}, -- Fel Eruption
 		[390163] = {duration = 60, class = "DEMONHUNTER", specID = {577, 581}}, -- Elysian Decree
 		[198013] = {duration = 40, class = "DEMONHUNTER", specID = {577}}, -- Eye Beam
 		[258860] = {duration = 40, class = "DEMONHUNTER", specID = {577}}, -- Essence Break
+	        [342817] = {duration = 25, class = "DEMONHUNTER", specID = {577}}, -- Glaive Tempest
 
 		-- Vengeance
 
@@ -113,7 +115,7 @@ addon.Cooldowns = {
     -- Priest
 
     [586] = {duration = 20, class = "PRIEST"}, -- Fade
-    [32375] = {duration = 25, class = "PRIEST"}, -- Mass Dispel
+    [32375] = {duration = 60, class = "PRIEST"}, -- Mass Dispel
     [375901] = {duration = 45, class = "PRIEST"}, -- Mindgames
     [316262] = {duration = 90, class = "PRIEST"}, -- Thoughtsteal
     [32379] = {duration = 10, class = "PRIEST"}, -- Shadow Word: Death
@@ -123,21 +125,20 @@ addon.Cooldowns = {
     [19236] = {duration = 70, class = "PRIEST"}, -- Desperate Prayer
     [108920] = {duration = 60, class = "PRIEST"}, -- Void Tendrils
     [108968] = {duration = 300, class = "PRIEST"}, -- Void Shift
-    [373481] = {duration = 30, class = "PRIEST"}, -- Power Word: Life
+    [373481] = {duration = 15, class = "PRIEST"}, -- Power Word: Life
     [15286] = {duration = 90, class = "PRIEST"}, -- Vampiric Embrace
+    [34433] = {duration = 180, class = "PRIEST"}, -- Shadowfiend
 
 		-- Discipline
 
 		[33206] = {duration = 180, class = "PRIEST", specID = {256}, charges = 2}, -- Pain Suppression
-		[34433] = {duration = 180, class = "PRIEST", specID = {256, 258}}, -- Shadowfiend
-			[123040] = {parent = 34433, duration = 60}, -- Mindbender (Discipline)
-			[200174] = {parent = 34433, duration = 60}, -- Mindbender (Shadow)
+		[123040] = {duration = 60, class = "PRIEST", specID = {256}}, -- Mindbender (Discipline)
 		[47536] = {duration = 90, class = "PRIEST", specID = {256}}, -- Rapture
 		[62618] = {duration = 180, class = "PRIEST", specID = {256}}, -- Power Word: Barrier
 	                [271466] = {parent = 34433}, -- Luminous Barrier
 		[197862] = {duration = 60, class = "PRIEST", specID = {256}}, -- Archangel
 		[197871] = {duration = 60, class = "PRIEST", specID = {256}}, -- Dark Archangel
-		[314867] = {duration = 30, class = "PRIEST", specID = {256}}, -- Shadow Covenant
+		[421453] = {duration = 240, class = "PRIEST", specID = {256}}, -- Ultimate Penitence
 		[194509] = {duration = 15, class = "PRIEST", specID = {256}, charges = 2}, -- Power Word: Radiance
 		[214621] = {duration = 24, class = "PRIEST", specID = {256}}, -- Schism
 		[527] = {duration = 8, class = "PRIEST", specID = {256, 257}, charges = 2}, -- Purify
@@ -158,6 +159,7 @@ addon.Cooldowns = {
 		-- Shadow
 
 		[15487] = {duration = 45, class = "PRIEST", specID = {258}}, -- Silence
+		[200174] = {duration = 60, class = "PRIEST", specID = {258}}, -- Mindbender (Shadow)
 		[47585] = {duration = 90, class = "PRIEST", specID = {258}}, -- Dispersion
 		[64044] = {duration = 45, class = "PRIEST", specID = {258}}, -- Psychic Horror
 		[263165] = {duration = 30, class = "PRIEST", specID = {258}}, -- Void Torrent
@@ -178,10 +180,7 @@ addon.Cooldowns = {
     [6940] = {duration = 60, class = "PALADIN"}, -- Blessing of Sacrifice
 		[199448] = {parent = 6940, duration = 60}, -- Ultimate Sacrifice
     [20066] = {duration = 15, class = "PALADIN"}, -- Repentance
-    [31884] = {duration = 60, class = "PALADIN"}, -- Avenging Wrath
-		[216331] = {parent = 31884, duration = 60}, -- Avenging Crusader
-		[231895] = {parent = 31884, duration = 120}, -- Crusade
-		[389539] = {parent = 31884, duration = 120}, -- Sentinel
+    [31884] = {duration = 120, class = "PALADIN"}, -- Avenging Wrath
     [115750] = {duration = 90, class = "PALADIN"}, -- Blinding Light
     [375576] = {duration = 60, class = "PALADIN"}, -- Divine Toll
     [96231] = {default = true, duration = 15, class = "PALADIN"}, -- Rebuke
@@ -190,8 +189,7 @@ addon.Cooldowns = {
 
 		-- Holy
 
-		[498] = {duration = 42, class = "PALADIN", specID = {65, 70}}, -- Divine Protection
-			[403876] = {parent = 498, duration = 63}, -- Divine Protection (Retribution)
+		[498] = {duration = 42, class = "PALADIN", specID = {65}}, -- Divine Protection
 		[31821] = {duration = 90, class = "PALADIN", specID = {65}}, -- Aura Mastery
 		[200652] = {duration = 90, class = "PALADIN", specID = {65}}, -- Tyr's Deliverance
 		[210294] = {duration = 30, class = "PALADIN", specID = {65}}, -- Divine Favor
@@ -199,6 +197,7 @@ addon.Cooldowns = {
 		[148039] = {duration = 30, class = "PALADIN", specID = {65}}, -- Barrier of Faith
 	        [414273] = {duration = 90, class = "PALADIN", specID = {65}}, -- Hand of Divinity
 	        [414170] = {duration = 60, class = "PALADIN", specID = {65}}, -- Daybreak
+	        [216331] = {duration = 60, class = "PALADIN", specID = {65}}, -- Avenging Crusader
 	        [114165] = {duration = 20, class = "PALADIN", specID = {65}}, -- Holy Prism
 
 		-- Protection
@@ -212,12 +211,15 @@ addon.Cooldowns = {
 		[213644] = {duration = 8, class = "PALADIN", specID = {66, 70}}, -- Cleanse Toxins
 		[378974] = {duration = 120, class = "PALADIN", specID = {66}}, -- Bastion of Light
 		[327193] = {duration = 90, class = "PALADIN", specID = {66}}, -- Moment of Glory
+	        [389539] = {duration = 120, class = "PALADIN", specID = {66}}, -- Sentinel
 		[204018] = {duration = 240, class = "PALADIN", specID = {66, 70}}, -- Blessing of Spellwarding
 
 		-- Retribution
 
 		[184662] = {duration = 63, class = "PALADIN", specID = {70}}, -- Shield of Vengeance
+	        [403876] = {duration = 63, class = "PALADIN", specID = {70}}, -- Divine Protection (Retribution)
 		[255937] = {duration = 24, class = "PALADIN", specID = {70}}, -- Wake of Ashes
+	        [231895] = {duration = 120, class = "PALADIN", specID = {70}}, -- Crusade
 		[210256] = {duration = 45, class = "PALADIN", specID = {70}}, -- Blessing of Sanctuary
 		[343527] = {duration = 27, class = "PALADIN", specID = {70}}, -- Execution Sentence
 		[343721] = {duration = 54, class = "PALADIN", specID = {70}}, -- Final Reckoning
@@ -246,10 +248,10 @@ addon.Cooldowns = {
 		-- Balance
 
 		[78675] = {default = true, duration = 60, class = "DRUID", specID = {102}}, -- Solar Beam
-		[102560] = {duration = 180, class = "DRUID", specID = {102}}, -- Incarnation: Chosen of Elune
-			[390414] = {parent = 102560, duration = 120}, -- Incarnation: Chosen of Elune (Orbital Strike)
-		[194223] = {duration = 180, class = "DRUID", specID = {102}}, -- Celestial Alignment
-			[383410] = {parent = 194223, duration = 120}, -- Celestial Alignment (Orbital Strike)
+		[390414] = {duration = 120, class = "DRUID", specID = {102}}, -- Incarnation: Chosen of Elune (Orbital Strike)
+			[102560] = {parent = 102560, duration = 180}, -- Incarnation: Chosen of Elune
+		[383410] = {duration = 120, class = "DRUID", specID = {102}}, -- Celestial Alignment (Orbital Strike)
+			[194223] = {parent = 194223, duration = 180}, -- Celestial Alignment
 		[202425] = {duration = 45, class = "DRUID", specID = {102}}, -- Warrior of Elune
 		[202770] = {duration = 45, class = "DRUID", specID = {102}}, -- Fury of Elune
 		[205636] = {duration = 60, class = "DRUID", specID = {102}}, -- Force of Nature
@@ -280,12 +282,12 @@ addon.Cooldowns = {
 
 		-- Restoration
 
-		[740] = {duration = 120, class = "DRUID", specID = {105}}, -- Tranquility
+		[740] = {duration = 150, class = "DRUID", specID = {105}}, -- Tranquility
 		[18562] = {duration = 15, class = "DRUID", specID = {105}}, -- Swiftmend
 		[33891] = {duration = 180, class = "DRUID", specID = {105}}, -- Incarnation: Tree of Life
 		[102342] = {duration = 90, class = "DRUID", specID = {105}}, -- Ironbark
 		[102351] = {duration = 30, class = "DRUID", specID = {105}}, -- Cenarion Ward
-		[197721] = {duration = 90, class = "DRUID", specID = {105}}, -- Flourish
+		[197721] = {duration = 60, class = "DRUID", specID = {105}}, -- Flourish
 		[203651] = {duration = 60, class = "DRUID", specID = {105}}, -- Overgrowth
 		[392160] = {duration = 20, class = "DRUID", specID = {105}}, -- Invigorate
 		[305497] = {duration = 45, class = "DRUID", specID = {102, 103, 105}}, -- Thorns
@@ -296,7 +298,7 @@ addon.Cooldowns = {
     -- Warrior
 
     [100] = {duration = 18, class = "WARRIOR", charges = 2}, -- Charge
-    [3411] = {duration = 30, class = "WARRIOR"}, -- Intervene
+    [3411] = {duration = 40, class = "WARRIOR", charges = 2}, -- Intervene
     [6544] = {duration = 35, class = "WARRIOR"}, -- Heroic Leap
     [6552] = {default = true, duration = 14, class = "WARRIOR"}, -- Pummel
     [18499] = {duration = 60, class = "WARRIOR"}, -- Berserker Rage
@@ -307,8 +309,8 @@ addon.Cooldowns = {
     [107574] = {duration = 90, class = "WARRIOR"}, -- Avatar
     [236077] = {duration = 45, class = "WARRIOR"}, -- Disarm
     [376079] = {duration = 90, class = "WARRIOR"}, -- Spear of Bastion
-    [5246] = {duration = 90, class = "WARRIOR"}, -- Intimidating Shout
-		[316593] = {parent = 5246, duration = 90}, -- Intimidating Shout (Menace)
+    [5246] = {duration = 75, class = "WARRIOR"}, -- Intimidating Shout
+		[316593] = {parent = 5246, duration = 75}, -- Intimidating Shout (Menace)
     [97462] = {duration = 180, class = "WARRIOR"}, -- Rallying Cry
     [386208] = {duration = 3, class = "WARRIOR"}, -- Defensive Stance
     [384318] = {duration = 60, class = "WARRIOR"}, -- Thunderous Roar
@@ -385,8 +387,8 @@ addon.Cooldowns = {
 		[48181] = {duration = 15, class = "WARLOCK", specID = {265}}, -- Haunt
 		[386951] = {duration = 30, class = "WARLOCK", specID = {265}}, -- Soul Swap
 		[205179] = {duration = 45, class = "WARLOCK", specID = {265}}, -- Phantom Singularity
-		[205180] = {duration = 120, class = "WARLOCK", specID = {265}}, -- Summon Darkglare
-		[386997] = {duration = 60, class = "WARLOCK", specID = {265}}, -- Soul Rot
+		[205180] = {duration = 90, class = "WARLOCK", specID = {265}}, -- Summon Darkglare
+		[386997] = {duration = 30, class = "WARLOCK", specID = {265}}, -- Soul Rot
 		[108503] = {duration = 30, class = "WARLOCK", specID = {265, 267}}, -- Grimoire of Sacrifice
 	        [417537] = {duration = 45, class = "WARLOCK", specID = {265}}, -- Oblivion
 
@@ -395,7 +397,7 @@ addon.Cooldowns = {
 		[89751] = {duration = 30, class = "WARLOCK", specID = {266}}, -- Felstorm
 			[115831] = {parent = 89751}, -- Wrathstorm
 		[89766] = {duration = 30, class = "WARLOCK", specID = {266}}, -- Axe Toss
-		[265187] = {duration = 90, class = "WARLOCK", specID = {266}}, -- Summon Demonic Tyrant
+		[265187] = {duration = 60, class = "WARLOCK", specID = {266}}, -- Summon Demonic Tyrant
 		[212459] = {duration = 120, class = "WARLOCK", specID = {266}}, -- Call Fel Lord
 		[212619] = {default = true, duration = 60, class = "WARLOCK", specID = {266}}, -- Call Felhunter
 		[353601] = {duration = 45, class = "WARLOCK", specID = {266}}, -- Fel Obelisk
@@ -414,7 +416,7 @@ addon.Cooldowns = {
 		[152108] = {duration = 30, class = "WARLOCK", specID = {267}}, -- Cataclysm
 		[196447] = {duration = 25, class = "WARLOCK", specID = {267}}, -- Channel Demonfire
 		[387976] = {duration = 45, class = "WARLOCK", specID = {267}, charges = 3}, -- Dimensional Rift
-		[1122] = {duration = 180, class = "WARLOCK", specID = {267}}, -- Summon Infernal
+		[1122] = {duration = 120, class = "WARLOCK", specID = {267}}, -- Summon Infernal
 		[6353] = {duration = 45, class = "WARLOCK", specID = {267}}, -- Soul Fire
 
     -- Shaman
@@ -523,8 +525,7 @@ addon.Cooldowns = {
 
 		[19574] = {duration = 90, class = "HUNTER", specID = {253}}, -- Bestial Wrath
 		[147362] = {default = true, duration = 24, class = "HUNTER", specID = {253, 254}}, -- Counter Shot
-		[193530] = {duration = 120, class = "HUNTER", specID = {253}}, -- Aspect of the Wild
-		[359844] = {duration = 180, class = "HUNTER", specID = {253}}, -- Call of the Wild
+		[359844] = {duration = 120, class = "HUNTER", specID = {253}}, -- Call of the Wild
 		[205691] = {duration = 120, class = "HUNTER", specID = {253}}, -- Dire Beast: Basilisk
 		[356707] = {duration = 60, class = "HUNTER", specID = {253}}, -- Wild Kingdom
 		[321530] = {duration = 60, class = "HUNTER", specID = {253}}, -- Bloodshed
@@ -555,9 +556,9 @@ addon.Cooldowns = {
 
     [66] = {duration = 300, class = "MAGE"}, -- Invisibility
     [110959] = {duration = 120, class = "MAGE"}, -- Greater Invisibility
-    [1953] = {duration = 13, class = "MAGE"}, -- Blink
-		[212653] = {parent = 1953, duration = 23, charges = 2}, -- Shimmer
-    [2139] = {default = true, duration = 24, class = "MAGE"}, -- Counterspell
+    [1953] = {duration = 11, class = "MAGE"}, -- Blink
+    [212653] = {duration = 21, class = "MAGE", charges = 2}, -- Shimmer
+    [2139] = {default = true, duration = 20, class = "MAGE"}, -- Counterspell
     [11426] = {duration = 25, class = "MAGE"}, -- Ice Barrier
     [45438] = {duration = 180, class = "MAGE"}, -- Ice Block
 	        [414658] = {parent = 45438}, -- Ice Cold
@@ -618,12 +619,11 @@ addon.Cooldowns = {
     [2983] = {duration = 60, class = "ROGUE"}, -- Sprint
     [31224] = {duration = 120, class = "ROGUE"}, -- Cloak of Shadows
     [57934] = {duration = 30, class = "ROGUE"}, -- Tricks of the Trade
-    [137619] = {duration = 30, class = "ROGUE"}, -- Marked for Death
     [152150] = {duration = 30, class = "ROGUE"}, -- Death from Above
     [408] = {duration = 20, class = "ROGUE"}, -- Kidney Shot
     [5277] = {duration = 120, class = "ROGUE"}, -- Evasion
     [36554] = {duration = 30, class = "ROGUE", charges = 2}, -- Shadowstep
-    [5938] = {duration = 25, class = "ROGUE", charges = 2}, -- Shiv
+    [5938] = {duration = 30, class = "ROGUE", charges = 2}, -- Shiv
     [207777] = {duration = 45, class = "ROGUE"}, -- Dismantle
     [381623] = {duration = 60, class = "ROGUE", specID = {63}, charges = 3}, -- Thistle Tea
     [385616] = {duration = 45, class = "ROGUE"}, -- Echoing Reprimand
@@ -631,7 +631,7 @@ addon.Cooldowns = {
     [2094] = {duration = {default = 120, [260] = 90}, class = "ROGUE"}, -- Blind
     [385408] = {duration = 90, class = "ROGUE"}, -- Sepsis
     [212182] = {duration = 180, class = "ROGUE", specID = {259, 260}}, -- Smoke Bomb
-		[359053] = {parent = 212182, duration = 120, specID = {261}}, -- Smoke Bomb (Subtlety)
+    [359053] = {duration = 120, class = "ROGUE", specID = {261}}, -- Smoke Bomb (Subtlety)
     [185313] = {duration = 60, class = "ROGUE", charges = 2}, -- Shadow Dance
     [382245] = {duration = 45, class = "ROGUE"}, -- Cold Blood
     [185311] = {duration = 30, class = "ROGUE"}, -- Crimson Vial
@@ -641,15 +641,14 @@ addon.Cooldowns = {
 		[703] = {duration = 6, class = "ROGUE", specID = {259}}, -- Garrote
 		[360194] = {duration = 120, class = "ROGUE", specID = {259}}, -- Deathmark
 		[385627] = {duration = 60, class = "ROGUE", specID = {259}}, -- Kingsbane
-		[200806] = {duration = 180, class = "ROGUE", specID = {259}}, -- Exsanguinate
 
 		-- Outlaw
 
 		[13750] = {duration = 180, class = "ROGUE", specID = {260}}, -- Adrenaline Rush
-		[51690] = {duration = 120, class = "ROGUE", specID = {260}}, -- Killing Spree
+		[51690] = {duration = 90, class = "ROGUE", specID = {260}}, -- Killing Spree
 		[195457] = {duration = 30, class = "ROGUE", specID = {260}}, -- Grappling Hook
 		[315341] = {duration = 45, class = "ROGUE", specID = {260}}, -- Between the Eyes
-		[343142] = {duration = 120, class = "ROGUE", specID = {260}}, -- Dreadblades
+		[196937] = {duration = 90, class = "ROGUE", specID = {260}}, -- Ghostly Strike
 		[271877] = {duration = 45, class = "ROGUE", specID = {260}}, -- Blade Rush
 
 		-- Subtlety
@@ -658,6 +657,8 @@ addon.Cooldowns = {
 		[207736] = {duration = 120, class = "ROGUE", specID = {261}}, -- Shadowy Duel
 		[384631] = {duration = 90, class = "ROGUE", specID = {261}}, -- Flagellation
 		[280719] = {duration = 45, class = "ROGUE", specID = {261}}, -- Secret Technique
+	        [426591] = {duration = 45, class = "ROGUE", specID = {261}}, -- Goremaw's Bite
+	        [212283] = {duration = 25, class = "ROGUE", specID = {261}}, -- Symbols of Death
 
     -- Monk
 
@@ -714,7 +715,6 @@ addon.Cooldowns = {
 		[388193] = {duration = 30, class = "MONK", specID = {269, 270}}, -- Faeline Stomp
 		[322118] = {duration = 180, class = "MONK", specID = {270}}, -- Invoke Yu'Lon, the Jade Serpent
 		[325197] = {duration = 60, class = "MONK", specID = {270}}, -- Invoke Chi-Ji, the Red Crane
-		[122281] = {duration = 30, class = "MONK", specID = {268, 270}, charges = 2}, -- Healing Elixir
 		[115450] = {duration = 8, class = "MONK", specID = {270}}, -- Detox
 
     -- Evoker
@@ -737,8 +737,8 @@ addon.Cooldowns = {
     [358267] = {duration = 30, class = "EVOKER", charges = 2}, -- Hover
     [357208] = {duration = 30, class = "EVOKER"}, -- Fire Breath
     [357210] = {duration = 60, class = "EVOKER"}, -- Deep Breath
-    [383005] = {duration = 60, class = "EVOKER"}, -- Chrono Loop
-    [378441] = {duration = 60, class = "EVOKER"}, -- Time Stop
+    [383005] = {duration = 45, class = "EVOKER"}, -- Chrono Loop
+    [378441] = {duration = 45, class = "EVOKER"}, -- Time Stop
     [370388] = {duration = 90, class = "EVOKER"}, -- Swoop Up
     [378464] = {duration = 90, class = "EVOKER"}, -- Nullifying Shroud
 
@@ -770,6 +770,6 @@ addon.Cooldowns = {
 		[408233] = {duration = 60, class = "EVOKER", specID = {1473}}, -- Bestow Weyrnstone
 		[360827] = {duration = 30, class = "EVOKER", specID = {1473}}, -- Blistering Scales
 		[406732] = {duration = 120, class = "EVOKER", specID = {1473}}, -- Spatial Paradox
-		[409311] = {duration = 12, class = "EVOKER", specID = {1473}}, -- Prescience
+		[409311] = {duration = 12, class = "EVOKER", specID = {1473}, charges = 2}, -- Prescience
 	        [404977] = {duration = 180, class = "EVOKER", specID = {1473}}, -- Time Skip
 }

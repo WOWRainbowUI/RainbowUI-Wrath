@@ -1,1 +1,1 @@
-- Update compatibility
+- Spell updates
