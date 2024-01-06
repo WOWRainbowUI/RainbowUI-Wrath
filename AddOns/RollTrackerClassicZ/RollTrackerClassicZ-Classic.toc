@@ -1,4 +1,4 @@
-## Interface: 30403
+## Interface: 11500
 ## Title: RollTracker Classic Z
 ## Notes: Keeps tracks of /rolls, loot and more
 ## Title-zhTW: |cffFF7F00[副本]|r 骰子記錄
