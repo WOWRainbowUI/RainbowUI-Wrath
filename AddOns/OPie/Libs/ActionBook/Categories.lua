@@ -1,7 +1,6 @@
 local COMPAT, _, T = select(4,GetBuildInfo()), ...
 if T.SkipLocalActionBook then return end
 local MODERN = COMPAT >= 8e4
-local MODERN_CONTAINERS = MODERN or C_Container and C_Container.GetContainerNumSlots and true
 local CF_WRATH = not MODERN and COMPAT >= 3e4
 local AB = T.ActionBook:compatible(2,21)
 local RW = T.ActionBook:compatible("Rewire", 1,27)
@@ -133,8 +132,7 @@ do -- spellbook
 end
 AB:AugmentCategory(L"Items", function(_, add)
 	wipe(mark)
-	local ns = MODERN_CONTAINERS and C_Container.GetContainerNumSlots or GetContainerNumSlots
-	local giid = MODERN_CONTAINERS and C_Container.GetContainerItemID or GetContainerItemID
+	local ns, giid = C_Container.GetContainerNumSlots, C_Container.GetContainerItemID
 	for t=0,1 do
 		t = t == 0 and GetItemSpell or IsEquippableItem
 		for bag=0,4 do
@@ -217,7 +215,7 @@ elseif CF_WRATH then
 		end
 	end)
 end
-if MODERN then -- Mounts
+if COMPAT >= 3e4 then -- Mounts
 	AB:AugmentCategory(L"Mounts", function(_, add)
 		if GetSpellInfo(150544) then add("spell", 150544) end
 		local myFactionId = UnitFactionGroup("player") == "Horde" and 0 or 1
@@ -232,13 +230,6 @@ if MODERN then -- Mounts
 		table.sort(i2, function(a,b) return icmp(i2n[a], i2n[b]) end)
 		for i=1,#i2 do
 			add("mount", i2[i])
-		end
-	end)
-elseif CF_WRATH then
-	AB:AugmentCategory(L"Mounts", function(_, add)
-		for i=1, GetNumCompanions("MOUNT") do
-			local _, _, sid = GetCompanionInfo("MOUNT", i)
-			add("spell", sid)
 		end
 	end)
 end
@@ -268,7 +259,7 @@ AB:AugmentCategory(L"Raid markers", function(_, add)
 		end
 	end
 end)
-if MODERN then -- toys
+if MODERN or CF_WRATH then -- toys
 	local tx, fs, fx, tfs = C_ToyBox, {}, {}
 	hooksecurefunc(C_ToyBox, "SetFilterString", function(s) tfs = s end) -- No corresponding Get
 	local function doAddToys(add)
@@ -313,6 +304,7 @@ end
 do -- misc
 	if MODERN then
 		AB:AddActionToCategory(L"Miscellaneous", "extrabutton", 1)
+		AB:AddActionToCategory(L"Miscellaneous", "zoneability", 0)
 	end
 	AB:AddActionToCategory(L"Miscellaneous", "imptext", "")
 end
@@ -320,7 +312,7 @@ do -- aliases
 	AB:AddCategoryAlias("Miscellaneous", L"Miscellaneous")
 end
 do
-	local panels = {"character", "reputation", "currency", "spellbook", "talents", "achievements", "quests", "groupfinder", "collections", "adventureguide", "guild", "map", "social", "calendar", "options", "gamemenu"}
+	local panels = {"character", "reputation", "currency", "spellbook", "talents", "achievements", "quests", "groupfinder", "collections", "adventureguide", "guild", "map", "social", "calendar", "macro", "options", "gamemenu"}
 	AB:AugmentCategory(L"UI panels", function(_, add)
 		for i=1,#panels do
 			i = panels[i]

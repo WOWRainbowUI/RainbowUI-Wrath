@@ -1,5 +1,5 @@
-local config, COMPAT, _, T = {}, select(4,GetBuildInfo()), ...
-local MODERN, CF_WRATH = COMPAT >= 10e4, COMPAT < 10e4 and COMPAT >= 3e4
+local config, COMPAT, ADDON, T = {}, select(4,GetBuildInfo()), ...
+local MODERN, CF_WRATH, CI_ERA = COMPAT >= 10e4, COMPAT < 10e4 and COMPAT >= 3e4, COMPAT < 2e4
 local L, EV, TS, XU, frame = T.L, T.Evie, T.TenSettings, T.exUI, nil
 local GameTooltip = T.NotGameTooltip or GameTooltip
 T.config = config
@@ -13,7 +13,7 @@ do -- /opie
 		end
 	end
 	addSuffix(function()
-		print("|cff0080ffOPie|r |cffffffff" .. GetAddOnMetadata("OPie", "Version") .. "|r")
+		print("|cff0080ffOPie|r |cffffffff" .. (C_AddOns.GetAddOnMetadata(ADDON, "Version") or "??") .. "|r")
 	end, "version", "v")
 	T.AddSlashSuffix = addSuffix
 
@@ -178,6 +178,12 @@ do -- config.bind
 			return Deactivate(self)
 		elseif unbindableKeys[bind] then
 			return
+		elseif bind and bind:match("PAD") and (
+		         bind == GetCVar("GamePadEmulateAlt") or
+		         bind == GetCVar("GamePadEmulateCtrl") or
+		         bind == GetCVar("GamePadEmulateShift")
+		       ) then
+			return
 		end
 		Deactivate(self)
 		local bind, p = bind and ((IsAltKeyDown() and "ALT-" or "") ..  (IsControlKeyDown() and "CTRL-" or "") .. (IsShiftKeyDown() and "SHIFT-" or "") .. (IsMetaKeyDown() and "META-" or "") .. bind), self:GetParent()
@@ -258,14 +264,19 @@ do -- config.bind
 		GameTooltip:Show()
 	end
 	local specialSymbolMap = {OPEN="[", CLOSE="]", SEMICOLON=";"}
-	local function bindNameLookup(key)
-		return GetBindingText(specialSymbolMap[key] or key)
-	end
 	local function SetBindingText(self, bind, pre, post, hasBinding)
 		if type(bind) == "string" and bind:match("%[.*%]") then
 			return SetBindingText(self, KR:EvaluateCmdOptions(bind), pre, post or " |cff20ff20[+]|r", true)
 		end
-		local bindText = bind and bind ~= "" and GetBindingText((bind:gsub("[^%-]+$", bindNameLookup)))
+		local bindText = bind and bind ~= "" and GetBindingText((bind:gsub("[^%-]+$", specialSymbolMap)))
+		if CI_ERA and bindText and bind:match("PAD") then
+			for ai in bindText:gmatch("|A:([^:]+)") do
+				if not C_Texture.GetAtlasInfo(ai) then -- BUG[1.14.4/2310]
+					bindText = bind:gsub("[^%-]+$", specialSymbolMap)
+					break
+				end
+			end
+		end
 		self.hasSetBinding, self.bindCoreText = not not (hasBinding or bindText), bindText
 		return self:SetText((pre or "") .. (bindText or L"Not bound") .. (post or ""))
 	end
@@ -415,7 +426,7 @@ local OPC_OptionSets = {
 		{"bool", "ClickActivation", caption=L"Activate on left click"},
 		{"bool", "NoClose", caption=L"Leave open after use", depOn="ClickActivation", depValue=true, otherwise=false},
 		{"bool", "UseDefaultBindings", caption=L"Use default ring bindings"},
-		{"drop", "PadSupportMode", {"freelook", "cursor", "none", freelook=L"Camera analog stick", cursor=L"Virtual mouse cursor", none=L"None"}, caption=L"Controller interaction mode", hideFeature="GamePad"},
+		{"drop", "PadSupportMode", {"freelook", "freelook1", "cursor", "none", freelook=L"Camera analog stick", freelook1=L"Movement analog stick", cursor=L"Virtual mouse cursor", none=L"None"}, caption=L"Controller interaction mode", hideFeature="GamePad"},
 		{"range", "IndicationOffsetX", -500, 500, 50, caption=L"Move rings right", valueFormat="%d"},
 		{"range", "IndicationOffsetY", -300, 300, 50, caption=L"Move rings down", valueFormat="%d"},
 		{"range", "MouseBucket", 5, 1, 1, caption=L"Scroll wheel sensitivity", stdLabels=true},
@@ -464,11 +475,11 @@ do -- Widget construction
 		OPC_AlterOption(drop, dd[2], nv)
 	end
 	local function dropInitialize(self)
-		local dda = OPC_WidgetControl[self][3]
+		local dda, cv = OPC_WidgetControl[self][3], OPC_WidgetControl[self].cv
 		local info = {func=dropSelect, arg2=self, minWidth=self:GetWidth()-40}
 		for i=1,#dda do
 			local k = dda[i]
-			info.text, info.arg1, info.checked = dda[k], k, OPC_WidgetControl[self].cv == k
+			info.text, info.arg1, info.checked = dda[k], k, cv == k
 			UIDropDownMenu_AddButton(info)
 		end
 	end

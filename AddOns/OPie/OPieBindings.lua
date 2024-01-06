@@ -10,33 +10,36 @@ local OBC_Profile = CreateFrame("Frame", "OBC_Profile", frame, "UIDropDownMenuTe
 	OBC_Profile.initialize, OBC_Profile.text = OPC_Profile.initialize, OPC_Profile.text
 local bindSet = CreateFrame("Frame", "OPC_BindingSet", frame, "UIDropDownMenuTemplate")
 	bindSet:SetPoint("LEFT", OBC_Profile, "RIGHT")	UIDropDownMenu_SetWidth(bindSet, 250)
-local bindLines, bindZone, bindZoneOrigin = {}, CreateFrame("Frame", nil, frame) do
+local bindLines, bindLines2, bindZone, bindZoneOrigin = {}, {}, CreateFrame("Frame", nil, frame) do
 	bindZone:SetClipsChildren(true)
 	bindZone:SetHitRectInsets(0, -22, 0, 0)
 	bindZoneOrigin = CreateFrame("Frame", nil, bindZone)
-	bindZoneOrigin:SetSize(1,1)
+	bindZoneOrigin:SetHeight(1)
 	bindZoneOrigin:SetPoint("TOPLEFT")
+	bindZoneOrigin:SetPoint("TOPRIGHT")
 	bindZoneOrigin:Hide()
 	bindZone.clipContainer, bindZone.bindingContainerFrame = bindZone, frame
-	for i=1,18 do
-		local bind = config.createBindingButton(bindZone, 200)
-		bind:SetPoint("TOPLEFT", bindZoneOrigin, "TOPLEFT", 355, 22-24*i)
+	for i=1,19 do
+		local bind = config.createBindingButton(bindZone, 170)
+		bind:SetPoint("TOPLEFT", bindZoneOrigin, "TOPLEFT", 220, 22-24*i)
+		local bind2 = config.createBindingButton(bindZone, 170)
+		bind2:SetPoint("LEFT", bind, "RIGHT", 4, 0)
 		local label = bind:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-		label:SetPoint("LEFT", -350, -1)
+		label:SetPoint("TOPLEFT", bindZoneOrigin, 5, 18-24*i)
 		bind.warn = bind:CreateTexture(nil, "ARTWORK")
 		bind.warn:SetTexture("Interface/EncounterJournal/UI-EJ-WarningTextIcon")
 		bind.warn:SetSize(14, 14)
 		bind.warn:SetPoint("RIGHT", bind, "LEFT", -3, 0)
-		bindLines[i], bind.label = bind, label
+		bindLines[i], bind.label, bindLines2[i] = bind, label, bind2
 	end
-	bindZone:SetPoint("TOP", OBC_Profile, "BOTTOM", 0, -21)
+	bindZone:SetPoint("TOP", OBC_Profile, "BOTTOM", 0, -4)
 	bindZone:SetPoint("LEFT", 15, 0)
 	bindZone:SetPoint("RIGHT", -30, 0)
 	bindZone:SetHeight((#bindLines-1)*24+3)
 end
 local bindZoneBar = XU:Create("ScrollBar", nil, frame)
-	bindZoneBar:SetPoint("TOPLEFT", bindZone, "TOPRIGHT", 1, 18)
-	bindZoneBar:SetPoint("BOTTOMLEFT", bindZone, "BOTTOMRIGHT", 1, -14)
+	bindZoneBar:SetPoint("TOPLEFT", bindZone, "TOPRIGHT", 1, 14)
+	bindZoneBar:SetPoint("BOTTOMLEFT", bindZone, "BOTTOMRIGHT", 1, -10)
 	bindZoneBar:SetWindowRange(#bindLines-1)
 	bindZoneBar:SetStepsPerPage(#bindLines-5)
 local bindZoneCover = CreateFrame("Frame", nil, bindZone)
@@ -46,13 +49,8 @@ local bindZoneCover = CreateFrame("Frame", nil, bindZone)
 	bindZoneCover:SetScript("OnShow", function(self)
 		self:SetFrameLevel(bindLines[#bindLines]:GetFrameLevel()+10)
 	end)
-local lRing = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	lRing:SetPoint("BOTTOMLEFT", bindZone, "TOPLEFT", 4, 3)
-local lBinding = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	lBinding:SetPoint("BOTTOMLEFT", bindZone, "TOPLEFT", 355+4, 3)
-	lBinding:SetText(L"Binding")
 
-local ringBindings = {map={}, name=L"Ring Bindings", caption=L"Ring"}
+local ringBindings = {map={}, name=L"Ring Bindings", TwoBindingSlots=true}
 function ringBindings:refresh()
 	local pos, map = 1, self.map
 	for key in PC:IterateRings(IsAltKeyDown()) do
@@ -63,15 +61,14 @@ function ringBindings:refresh()
 	end
 	self.count = #map
 end
-function ringBindings:get(id)
-	local name, key = PC:GetRingInfo(self.map[id])
-	local bind, cBind, isOverride, isActiveInt, isActiveExt = PC:GetRingBinding(key)
+local function ringBindings_getInner(key, bidx)
+	local bind, cBind, isOverride, isActiveInt, isActiveExt = PC:GetRingBinding(key, bidx)
 	local showWarning, prefix, tipTitle, tipText = false
 	local cebind = cBind or (bind and KR:EvaluateCmdOptions(bind))
 	local BC_HEADER_PREFIX = "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0:0:0:2|t "
 	if not isOverride and not PC:GetOption("UseDefaultBindings", key) then
 		if bind then
-			showWarning, prefix, tipTitle = true, "|cffa0a0a0", HIGHLIGHT_FONT_COLOR_CODE .. L"Default binding disabled"
+			showWarning, prefix, tipTitle = true, "|cffa0a0a0", BC_HEADER_PREFIX .. L"Default binding disabled"
 			tipText = (L"Choose a binding for this ring, or enable the %s option in OPie options."):format(HIGHLIGHT_FONT_COLOR_CODE .. L"Use default ring bindings" .. "|r")
 		end
 	elseif cBind and isActiveExt ~= true then
@@ -90,28 +87,37 @@ function ringBindings:get(id)
 	elseif cBind == nil and cebind and not isActiveInt then
 		showWarning, tipTitle = true, BC_HEADER_PREFIX .. L"Binding conflict"
 		prefix, tipText = "|cffa0a0a0", L"This binding is not currently active because it conflicts with another."
-	elseif isOverride then
+	elseif isOverride and bind ~= nil then
 		prefix = "|cffffffff"
 	end
-	return bind, name or key or "?", prefix, cBind, tipTitle, tipText, showWarning
+	return bind, prefix, cBind, tipTitle, tipText, showWarning
 end
-function ringBindings:set(id, key)
+function ringBindings:get(id)
+	local name, key = PC:GetRingInfo(self.map[id])
+	local text = name or key or "?"
+	local bind, prefix, cBind, title, tip, warning = ringBindings_getInner(key, 1)
+	local bind2, prefix2, _cBind2, title2, tip2, warning2 = ringBindings_getInner(key, 2)
+	return bind, text, prefix, cBind, title, tip, warning, bind2, prefix2, title2, tip2, warning2
+end
+function ringBindings:set(id, key, bidx)
 	id = self.map[id]
 	config.undo:saveActiveProfile()
-	PC:SetRingBinding(id, key)
+	PC:SetRingBinding(id, bidx, key)
 end
 function ringBindings:default()
 	PC:ResetRingBindings()
 end
 function ringBindings:altClick() -- self is the binding button
-	self:ToggleAlternateEditor(PC:GetRingBinding(ringBindings.map[self:GetID()]))
+	local id, bidx = self:GetID()
+	id, bidx = id < 0 and -id or id, id < 0 and 2 or 1
+	self:ToggleAlternateEditor(PC:GetRingBinding(ringBindings.map[id], bidx))
 end
 function ringBindings:shiftClick()
-	local name, key, macro = PC:GetRingInfo(ringBindings.map[self:GetID()])
+	local name, key, macro = PC:GetRingInfo(ringBindings.map[math.abs(self:GetID())])
 	TS:ShowPromptOverlay(frame, name or key, (L"The following macro command opens this ring:"):format("|cffFFD029" .. (name or key) .. "|r"), false, false, nil, 0.90, nil, macro)
 end
 
-local subBindings = { name=L"In-Ring Bindings", caption=L"Action",
+local subBindings = { name=L"In-Ring Bindings",
 	options={"ScrollNestedRingUpButton", "ScrollNestedRingDownButton", "OpenNestedRingButton", "SelectedSliceBind"},
 	optionNames={L"Scroll nested ring (up)", L"Scroll nested ring (down)", L"Open nested ring", L"Selected slice (keep ring open)"},
 	count=0, t={},
@@ -215,26 +221,39 @@ local function updatePanelContent()
 	local csBase = csv - csPartial
 	bindZoneOrigin:SetPoint("TOPLEFT", 0, csPartial*24)
 	for i=1,#bindLines do
-		local j, e = csBase+i, bindLines[i]
+		local j, e, e2 = csBase+i, bindLines[i], bindLines2[i]
 		if j > m then
 			e:Hide()
+			e2:Hide()
 		else
-			local binding, text, prefix, _, title, tip, showWarningIcon = currentOwner:get(j)
+			local binding, text, prefix, _, title, tip, showWarningIcon, binding2, prefix2, title2, tip2, warning2 = currentOwner:get(j)
 			e.bindingName, e.tooltipTitle, e.tooltipText = text, title, tip
 			e.label:SetText(text)
-			e.warn:SetShown(showWarningIcon)
+			e.warn:SetShown(showWarningIcon or warning2)
 			e:SetBindingText(binding, prefix)
 			e:SetID(j) e:Hide() e:Show()
+			e2:Hide()
+			if currentOwner.TwoBindingSlots then
+				e2.bindingName, e2.tooltipTitle, e2.tooltipText = text, title2, tip2
+				e2:SetBindingText(binding2, prefix2)
+				e2:SetID(-j)
+				e2:Show()
+				e:SetPoint("TOPLEFT", bindZoneOrigin, "TOPLEFT", 221, 22-24*i)
+				e:SetWidth(170)
+			else
+				e:SetPoint("TOPLEFT", bindZoneOrigin, "TOPLEFT", 350, 22-24*i)
+				e:SetWidth(215)
+			end
 		end
 	end
-	lRing:SetText(currentOwner.caption)
 	bindZone.OnBindingAltClick = currentOwner.altClick
 	bindZone.OnBindingShiftClick = currentOwner.shiftClick
 	UIDropDownMenu_SetText(bindSet, currentOwner.name .. (currentOwner.nameSuffix or ""))
 end
 function bindZone.SetBinding(buttonOrId, binding)
-	local id = type(buttonOrId) == "number" and buttonOrId or buttonOrId:GetID()
-	currentOwner:set(id, binding)
+	local id, bidx = type(buttonOrId) == "number" and buttonOrId or buttonOrId:GetID()
+	id, bidx = id < 0 and -id or id, id < 0 and 2 or 1
+	currentOwner:set(id, binding, bidx)
 	updatePanelContent()
 end
 bindZone:SetScript("OnMouseWheel", function(_, delta)

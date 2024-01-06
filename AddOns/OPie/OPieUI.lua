@@ -459,7 +459,7 @@ end
 local function OnUpdate_Main(self, elapsed)
 	local count, offset = self.count, self.offset
 	local imode, qaid, angle, isActiveRadius, stl = PC:GetCurrentInputs()
-	local radius, miScaleAdd, frameRate = self.radius, configCache.MIScaleAdd, GetFramerate()
+	local radius, miScaleAdd, frameRate = self.radius, configCache.MIScaleAdd, LOCKED_FRAMERATE or GetFramerate()
 
 	if qaid and count > 0 then
 		angle = (90 - offset - (qaid-1)*360/count) % 360

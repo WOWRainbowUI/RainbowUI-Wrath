@@ -89,7 +89,7 @@ do -- AB/specset
 		local _, name, _, ico = GetSpecializationInfo(idx)
 		return SPECIALIZATION, name or idx, ico or "Interface/Icons/Temp", nil, SetSpecializationTooltip, idx
 	end
-	AB:RegisterActionType("specset", createSpecSet, describeSpecSet)
+	AB:RegisterActionType("specset", createSpecSet, describeSpecSet, 2)
 	AB:AugmentCategory("Miscellaneous", function(_, add)
 		for i=1,GetNumSpecializations() do
 			add("specset", i)

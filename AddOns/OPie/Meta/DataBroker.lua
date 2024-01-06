@@ -21,7 +21,8 @@ do -- action handler
 		if not obj then return end
 		return true, 0, obj.icon, obj.label or obj.text, 0,0,0, obj.OnTooltipShow, nil, obj
 	end
-	local function createBroker(name, rightClick)
+	local function createBroker(name, flags)
+		local rightClick = flags == 8
 		if type(name) ~= "string" or not (LDB or checkLDB() or LDB) then return end
 		local pname = name .. "#" .. (rightClick and "R" or "L")
 		if not nameMap[pname] then
@@ -31,7 +32,7 @@ do -- action handler
 		end
 		return nameMap[pname]
 	end
-	AB:RegisterActionType("opie.databroker.launcher", createBroker, describeBroker, {"clickUsingRightButton"})
+	AB:RegisterActionType("opie.databroker.launcher", createBroker, describeBroker, 2)
 end
 do -- category
 	local waiting = true
@@ -64,4 +65,4 @@ do -- category
 		end
 	end
 end
-AB.CreateSimpleEditorPanel("opie.databroker.launcher", {"clickUsingRightButton", clickUsingRightButton=L"Simulate a right-click"})
+AB.CreateSimpleEditorPanel("opie.databroker.launcher", {"clickUsingRightButton", clickUsingRightButton=L"Simulate a right-click", flagValues={clickUsingRightButton=8}})

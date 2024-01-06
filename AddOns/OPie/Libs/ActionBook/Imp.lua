@@ -1,4 +1,4 @@
-local MAJ, REV, COMPAT, _, T = 1, 4, select(4,GetBuildInfo()), ...
+local MAJ, REV, COMPAT, _, T = 1, 5, select(4,GetBuildInfo()), ...
 if T.SkipLocalActionBook then return end
 
 local EV, AB, RW = T.Evie, T.ActionBook:compatible(2,34), T.ActionBook:compatible("Rewire", 1,27)
@@ -176,8 +176,7 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 			return cs
 		end
 		function replaceMountTag(ctype, tag, prefix)
-			if not MODERN then
-			elseif tag == "ground" then
+			if tag == "ground" then
 				gmSid = gmSid and IsKnownSpell(gmSid) or findMount(gmPref or gmSid, 230, ctype)
 				return replaceSpellID(ctype, tostring(gmSid), prefix)
 			elseif tag == "air" then
@@ -188,6 +187,9 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 				return replaceSpellID(ctype, tostring(drSid), prefix)
 			end
 			return nil
+		end
+		if not (MODERN or CF_WRATH) then
+			replaceMountTag = function () end
 		end
 		local function editPreference(orig, new)
 			return type(new) == "number" and new or new ~= false and orig or nil
@@ -223,7 +225,7 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 	end)
 	local toImpText, prepareQuantizer do
 		local spells, specialTokens, OTHER_SPELL_IDS = {}, {}, {150544, 243819}
-		local abTokens = {["Ground Mount"]="{{mount:ground}}", ["Flying Mount"]="{{mount:air}}", ["Dragonriding Mount"]="{{mount:dragon}}"}
+		local abMountTokens = {["Ground Mount"]="{{mount:ground}}", ["Flying Mount"]="{{mount:air}}", ["Dragonriding Mount"]=MODERN and "{{mount:dragon}}" or nil}
 		toImpText = genParser(function(ctype, value, ctx, args, cpos)
 			if type(ctx) == "number" and ctx > 0 then
 				return nil, ctx-1
@@ -263,7 +265,7 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 			until not peek or cc > 5
 			return value
 		end)
-		local function addModernSpells()
+		local function addMountSpells()
 			local gmi, idm = C_MountJournal.GetMountInfoByID, C_MountJournal.GetMountIDs()
 			for i=1, #idm do
 				local _, sid = gmi(idm[i])
@@ -272,6 +274,11 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 					spells[sname:lower()] = sid
 				end
 			end
+			for k, tok in pairs(abMountTokens) do
+				specialTokens[k:lower()], specialTokens[L(k):lower()] = tok, tok
+			end
+		end
+		local function addModernSpells()
 			local cid = C_ClassTalents.GetActiveConfigID()
 			if not cid then
 				local spec = GetSpecializationInfo(GetSpecialization())
@@ -334,20 +341,15 @@ local toMacroText, quantizeMacro, formatMacro, formatToken, setMountPreference d
 				end
 			end
 			if MODERN then
+				addMountSpells()
 				addModernSpells()
-				local L = T.ActionBook.L
-				for k, tok in pairs(abTokens) do
-					specialTokens[k:lower()], specialTokens[L(k):lower()] = tok, tok
-				end
 			elseif CF_WRATH then
-				for k=1,2 do
-					k = k == 1 and "MOUNT" or "CRITTER"
-					for i=1,GetNumCompanions(k) do
-						local _, _, sid = GetCompanionInfo(k, i)
-						local sn = GetSpellInfo(sid)
-						if sn then
-							addSpell(sn, sid)
-						end
+				addMountSpells()
+				for i=1,GetNumCompanions("CRITTER") do
+					local _, _, sid = GetCompanionInfo("CRITTER", i)
+					local sn = GetSpellInfo(sid)
+					if sn then
+						addSpell(sn, sid)
 					end
 				end
 			end
@@ -509,7 +511,7 @@ do -- AB imptext action type
 		end
 		return L"Custom Macro", "", ico or "interface/icons/inv_misc_questionmark"
 	end
-	AB:RegisterActionType("imptext", createImpMacro, describeImpMacro)
+	AB:RegisterActionType("imptext", createImpMacro, describeImpMacro, 1)
 end
 do -- Editor UI
 	local multilineInput do
