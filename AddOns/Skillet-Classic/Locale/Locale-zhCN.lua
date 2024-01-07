@@ -134,6 +134,8 @@ L["HIGHERVELLUMDESC"] = "Use a higher level of vellum when correct vellum is una
 L["HIGHERVELLUMNAME"] = "Use higher vellum"
 L["Ignore"] = "忽略"
 --[[Translation missing --]]
+L["Ignore on hand"] = "Ignore on hand"
+--[[Translation missing --]]
 L["IGNOREBANKEDREAGENTSDESC"] = "Ignore banked reagents when queuing craftable reagents"
 --[[Translation missing --]]
 L["IGNOREBANKEDREAGENTSNAME"] = "Ignore banked reagents"
@@ -146,6 +148,10 @@ L["Ignored List"] = "忽略的列表"
 L["Ignored Materials Clear"] = "忽略的材料清除"
 L["Ignored Materials List"] = "忽略的材料列表"
 L["IGNORELISTDESC"] = "打开忽略的材料列表框体"
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSDESC"] = "Ignore queued reagents"
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSNAME"] = "Ignore queued reagents"
 L["Illusions"] = "幻象"
 L["in your bank"] = "在银行"
 L["in your inventory"] = "在你的库存中"
@@ -158,9 +164,9 @@ L["INCLUDEREAGENTSNAME"] = "包含搜索中的材料"
 L["INTERRUPTCLEARDESC"] = "Moving, jumping, closing the frame, or clicking the Pause button clears the in progress queue entry"
 --[[Translation missing --]]
 L["INTERRUPTCLEARNAME"] = "Spell interrupt clears queue entry"
-L["Inventory"] = "背包"
 --[[Translation missing --]]
 L["inventory"] = "inventory"
+L["Inventory"] = "背包"
 L["INVENTORYDESC"] = "背包信息"
 L["InvSlot"] = "插槽"
 L["is now disabled"] = "现已停用"

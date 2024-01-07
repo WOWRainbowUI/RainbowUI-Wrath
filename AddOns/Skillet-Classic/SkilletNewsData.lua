@@ -25,6 +25,45 @@ local isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 Skillet.NewsName = L["Skillet-Classic News"]
 Skillet.NewsData = {
+	{	version = "1.81",
+		data = {
+			{	name = "New Features",
+				data = {
+					{ header = "Links", body = "Shift-Click detail icon to send item link to chat\nAlt-Click detail icon to send actual reagents needed to chat\nCtrl-Alt-Click to send basic reagents to chat" },
+					{ header = "Queuing", body = "Ignore queued reagents. Queuing recipes which share reagents will queue all of them" },
+					{ header = "Shopping", body = "Ignore items on hand. The shopping list will reflect everything needed to process the queue" },
+				},
+			},
+			{	name = "Changes",
+				data = {
+					{ header = "Links", body = "Remove tooltip 'to link' messages if no link can be created" },
+				},
+			},
+		},
+	},
+	{	version = "1.80",
+		data = {
+			{	name = "Changes",
+				data = {
+					{ header = "TOC", body = "Update TOC" },
+				},
+			},
+		},
+	},
+	{	version = "1.79",
+		data = {
+			{	name = "New Feature",
+				data = {
+					{ header = "Option", body = "Add chat command to display Auctionator / Journalator API results" },
+				},
+			},
+			{	name = "Changes",
+				data = {
+					{ header = "Plugins", body = "Adjust debugs in Auctionator plugin" },
+				},
+			},
+		},
+	},
 	{	version = "1.78",
 		data = {
 			{	name = "New Feature",
