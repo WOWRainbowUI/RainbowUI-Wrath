@@ -1,3 +1,3 @@
-# 11.1.29 (2023-10-03)
+# 11.1.36 (2023-12-22)
 
-* Fixed a Lua error in Classic that occurred when entering battlegrounds as an API function was used that is not available in Classic [Comment #7041].
+* Added Shamans, Warlocks, and Rogues to automatic role detection based on active runes for WoW Classic Season of Discovery [Comment #7146].
