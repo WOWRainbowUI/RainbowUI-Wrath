@@ -260,21 +260,23 @@ local function ShouldShowOnItem(item)
     end
     return db.misc
 end
-local function UpdateButtonFromItem(button, item, variant)
+local blank = {}
+local function UpdateButtonFromItem(button, item, variant, suppress)
     if not item or item:IsItemEmpty() then
         return
     end
+    suppress = suppress or blank
     item:ContinueOnItemLoad(function()
         if not ShouldShowOnItem(item) then return end
         local itemID = item:GetItemID()
         local link = item:GetItemLink()
         local _, _, _, equipLoc, _, itemClass, itemSubClass = GetItemInfoInstant(itemID)
         local minLevel = link and select(5, GetItemInfo(link or itemID))
-        AddLevelToButton(button, item)
-        AddUpgradeToButton(button, item, equipLoc, minLevel)
-        AddBoundToButton(button, item)
+        if not suppress.level then AddLevelToButton(button, item) end
+        if not suppress.upgrade then AddUpgradeToButton(button, item, equipLoc, minLevel) end
+        if not suppress.bound then AddBoundToButton(button, item) end
         if (variant == "character" or variant == "inspect" or not db.missingcharacter) then
-            AddMissingToButton(button, link)
+            if not suppress.missing then AddMissingToButton(button, link) end
         end
     end)
 end
@@ -626,6 +628,60 @@ ns:RegisterAddonHook("LiteBag", function()
         local bag = frame:GetParent():GetID()
         UpdateContainerButton(frame, bag)
     end)
+end)
+
+-- Baganator
+ns:RegisterAddonHook("Baganator", function()
+    local suppress = {}
+    local function check_baginator_config(value)
+        return Baganator.Config.Get("icon_top_left_corner") == value or
+            Baganator.Config.Get("icon_top_right_corner") == value or
+            Baganator.Config.Get("icon_bottom_left_corner") == value or
+            Baganator.Config.Get("icon_bottom_right_corner") == value
+    end
+    local function baganator_setitemdetails(button, details)
+        CleanButton(button)
+        if not db.bags then return end
+        local item
+        -- If we have a container-item, we should use that because it's needed for soulbound detection
+        local bag = button.GetBagID and button:GetBagID() or button:GetParent():GetID()
+        local slot = button:GetID()
+        -- print("SetItemDetails", details.itemLink, bag, slot)
+        if bag and slot and slot ~= 0 then
+            item = Item:CreateFromBagAndSlot(bag, slot)
+        elseif details.itemLink then
+            item = Item:CreateFromItemLink(details.itemLink)
+        end
+        if not item then return end
+        suppress.level = check_baginator_config("item_level")
+        UpdateButtonFromItem(button, item, "bags", suppress)
+    end
+    local function baganator_rebuildlayout(frame)
+        for _, button in ipairs(frame.buttons) do
+            if not button.____SimpleItemLevelHooked then
+                button.____SimpleItemLevelHooked = true
+                hooksecurefunc(button, "SetItemDetails", baganator_setitemdetails)
+            end
+        end
+    end
+    local function baganator_hookmain()
+        hooksecurefunc(Baganator_MainViewFrame.BagLive, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.ReagentBagLive, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.BankLive, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.ReagentBankLive, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.BagCached, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.ReagentBagCached, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.BankCached, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_MainViewFrame.ReagentBankCached, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_BankOnlyViewFrame.BankLive, "RebuildLayout", baganator_rebuildlayout)
+        hooksecurefunc(Baganator_BankOnlyViewFrame.ReagentBankLive, "RebuildLayout", baganator_rebuildlayout)
+    end
+    -- Depending on whether we were loaded before or after Baganator, this might or might not have already been created...
+    if Baganator_MainViewFrame then
+        baganator_hookmain()
+    elseif Baganator and Baganator.UnifiedBags.Initialize then
+        hooksecurefunc(Baganator.UnifiedBags, "Initialize", baganator_hookmain)
+    end
 end)
 
 -- helper
