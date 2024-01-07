@@ -16,6 +16,10 @@
 # World of Warcraft®: Warlords of Draenor™
 # ©2014 Blizzard Entertainment, Inc. All rights reserved. Warlords of Draenor is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
 
+## Title-zhTW: |cffFF2D2D[戰鬥]|r 法術警告
+## Notes-zhTW: SpellActivationOverlay |n|n顯示和正式服一樣的法術警告效果，技能觸發時在角色周圍顯示材質圖案，以及快捷列的按鈕發光。|n|n|cffffd200使用方法: |r從Esc>選項>插件>法術警告，進行設定。
+## X-Category-zhTW: 戰鬥
+
 components\aura.lua
 components\counter.lua
 components\events.lua
