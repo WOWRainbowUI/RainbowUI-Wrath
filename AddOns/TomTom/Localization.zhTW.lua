@@ -260,6 +260,7 @@ TomTomLocals = {
 	["Cursor: ---"] = "游標: ---",
 	["Cursor: %s"] = "游標: %s",
 
+	-- 自行加入
 	["TomTom"] = "導航箭頭",
 	["TomTom "] = "TomTom 導航箭頭",
 	

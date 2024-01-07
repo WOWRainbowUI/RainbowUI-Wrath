@@ -1,23 +1,26 @@
-## Interface: 100107
+## Interface: 100200
 ## Title: TomTom
 ## Author: Cladhaire, Ludovicus
-## Version: v3.5.2-release
+## Version: v3.5.4-release
 ## License: All Rights Reserved
 ## IconTexture: Interface\AddOns\TomTom\Images\StaticArrow.tga
 ## Notes: Acts as your portable navigation assistant
+## Notes-frFR: Agit comme un assistant de navigation portable
 ## Notes-zhCN:一个简单的导航助手。
+## Notes-ruRU: Удобный портативный навигатор по игровой карте
+## Notes-deDE: Dient dir als portabler Navigationsassistent.
 ## SavedVariables: TomTomDB, TomTomWaypoints, TomTomWaypointsM
 ## OptionalDeps: HereBeDragons-2.0
-
-## Title-zhTW: |cff4DFF4D[地圖]|r TomTom 導航箭頭
-## Notes-zhTW: TomTom |n|n一個簡單的導航助手。自行在世界地圖上設定好目的地導航點，或是輸入座標後，會在畫面中間出現指示方向的導航箭頭，跟著跑就對了!|n|n|cffffd200使用方法: |r按住 Ctrl+右鍵點擊世界地圖上的位置，新增導航目的地。|n|n輸入 /way x y 來設定目的地的座標，x和y為座標數值。|n|n從Esc>介面>插件>導航箭頭，進行設定。
-## X-Category-zhTW: 地圖
 
 ## X-Localizations: enUS, enGB, deDE, frFR, zhCN, ruRU, zhTW
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, zhCN, zhTW, koKR, ruRU
 ## X-Curse-Project-ID: 18808
 ## X-WoWI-ID: 7032
 ## X-Wago-ID: Rn6VaONd
+
+## Title-zhTW: |cff4DFF4D[地圖]|r TomTom 導航箭頭
+## Notes-zhTW: TomTom |n|n一個簡單的導航助手。自行在世界地圖上設定好目的地導航點，或是輸入座標後，會在畫面中間出現指示方向的導航箭頭，跟著跑就對了!|n|n|cffffd200使用方法: |r按住 Ctrl+右鍵點擊世界地圖上的位置，新增導航目的地。|n|n輸入 /way x y 來設定目的地的座標，x和y為座標數值。|n|n從Esc>介面>插件>導航箭頭，進行設定。
+## X-Category-zhTW: 地圖
 
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml

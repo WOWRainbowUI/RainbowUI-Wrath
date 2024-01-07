@@ -245,6 +245,10 @@ TomTomLocals = {
 	["|cffffff78TomTom:|r Selected waypoint (%s%s%s) in %s"] = "|cffffff78TomTom:|r Selected waypoint (%s%s%s) in %s",
 	["|cffffff78TomTom:|r Waypoint %s valid"] = "|cffffff78TomTom:|r Waypoint %s valid",
 	["|cffffff78TomTom|r: Added '%s' (sent from %s) to zone %s"] = "|cffffff78TomTom|r: Added '%s' (sent from %s) to zone %s",
+	
+	-- 自行加入
+	["TomTom"] = "TomTom",
+	["TomTom "] = "TomTom",
 }
 
 setmetatable(TomTomLocals, {__index=function(t,k) rawset(t, k, k); return k; end})
