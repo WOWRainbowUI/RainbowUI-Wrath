@@ -1,6 +1,6 @@
 ﻿## Interface: 30403
 ## Title: Spy
-## Version: 3.1.6
+## Version: 3.1.7
 ## Notes: Detects and alerts you to the presence of nearby enemy players.
 ## Notes-zhCN: 检测并提醒您附近有敌方玩家。
 ## Creator: Immolation
