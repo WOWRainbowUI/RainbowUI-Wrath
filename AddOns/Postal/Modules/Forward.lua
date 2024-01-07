@@ -64,11 +64,11 @@ local function FreeBagSpace()
 	local FreeSpace = 0
 	for bagID = 0, 4, 1 do
 		local numberOfFreeSlots, bagType
-		if Postal.WOWBCClassic then
-			numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
-		else
+--		if Postal.WOWBCClassic then
+--			numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
+--		else
 			numberOfFreeSlots, bagType = C_Container.GetContainerNumFreeSlots(bagID)
-		end
+--		end
 		FreeSpace = FreeSpace + numberOfFreeSlots
 	end
 	return FreeSpace
@@ -131,7 +131,11 @@ function Postal_Forward_OpenMail_Forward()
 		subject = prefix..subject
 	end
 	if subject then SendMailSubjectEditBox:SetText(subject) end
-	if bodyText then SendMailBodyEditBox:SetText(bodyText) end
+	if Postal.WOWWotLKClassic or Postal.WOWClassic then
+		if bodyText then MailEditBox.ScrollBox.EditBox:SetText(bodyText) end
+	else
+		if bodyText then SendMailBodyEditBox:SetText(bodyText) end
+	end
 	SendMailNameEditBox:SetFocus()
 	Postal_Forward_ForwardMailItems(1)
 end

@@ -132,7 +132,10 @@ function Postal:OnInitialize()
 
 	-- Initialize database
 	local EnableDefault = false
-	if type(next(Postal3DB)) ~= "nil" then EnableDefault = Postal3DB.global.EnableDefault end
+	if Postal3DB and Postal3DB.global then
+		EnableDefault = Postal3DB.global.EnableDefault and true or false
+	end
+--	if type(next(Postal3DB)) ~= "nil" then EnableDefault = Postal3DB.global.EnableDefault end
 	if EnableDefault == true then
 		self.db = LibStub("AceDB-3.0"):New("Postal3DB", defaults, true)
 	else
