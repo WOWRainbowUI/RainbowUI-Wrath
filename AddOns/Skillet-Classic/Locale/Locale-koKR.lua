@@ -132,6 +132,8 @@ L["HIGHERVELLUMDESC"] = "Use a higher level of vellum when correct vellum is una
 L["HIGHERVELLUMNAME"] = "Use higher vellum"
 L["Ignore"] = "무시"
 --[[Translation missing --]]
+L["Ignore on hand"] = "Ignore on hand"
+--[[Translation missing --]]
 L["IGNOREBANKEDREAGENTSDESC"] = "Ignore banked reagents when queuing craftable reagents"
 --[[Translation missing --]]
 L["IGNOREBANKEDREAGENTSNAME"] = "Ignore banked reagents"
@@ -144,6 +146,10 @@ L["Ignored List"] = "무시 목록"
 L["Ignored Materials Clear"] = "무시 재료 지우기"
 L["Ignored Materials List"] = "무시할 재료 목록"
 L["IGNORELISTDESC"] = "무시할 재료 목록 창을 엽니다."
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSDESC"] = "Ignore queued reagents"
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSNAME"] = "Ignore queued reagents"
 L["Illusions"] = "환영"
 L["in your bank"] = ": 은행 안에 있음. "
 L["in your inventory"] = ": 가방에 있음 "
@@ -156,9 +162,9 @@ L["INCLUDEREAGENTSNAME"] = "검색 시 재료를 포함"
 L["INTERRUPTCLEARDESC"] = "Moving, jumping, closing the frame, or clicking the Pause button clears the in progress queue entry"
 --[[Translation missing --]]
 L["INTERRUPTCLEARNAME"] = "Spell interrupt clears queue entry"
-L["Inventory"] = "인벤토리"
 --[[Translation missing --]]
 L["inventory"] = "inventory"
+L["Inventory"] = "인벤토리"
 L["INVENTORYDESC"] = "인벤토리 정보"
 L["InvSlot"] = "소지품 아이템"
 L["is now disabled"] = "사용안함"

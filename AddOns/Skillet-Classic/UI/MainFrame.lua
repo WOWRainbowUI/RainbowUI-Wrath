@@ -673,7 +673,17 @@ function Skillet:TradeButton_OnEnter(button)
 		local rank, maxRank = data.rank, data.maxRank
 		GameTooltip:AddLine("["..tostring(rank).."/"..tostring(maxRank).."]",0,1,0)
 		if tradeID == self.currentTrade then
-			GameTooltip:AddLine(L["shift-click to link"])
+			if GetTradeSkillListLink then
+				local link = GetTradeSkillListLink()
+				if link then
+					GameTooltip:AddLine(L["shift-click to link"])
+				elseif C_TradeSkillUI then
+					link = C_TradeSkillUI.GetTradeSkillListLink()
+					if link then
+						GameTooltip:AddLine(L["shift-click to link"])
+					end
+				end
+			end
 		end
 		local buttonIcon = _G[button:GetName().."Icon"]
 		local r,g,b = buttonIcon:GetVertexColor()
@@ -710,11 +720,16 @@ function Skillet:TradeButton_OnClick(this,button)
 	if button == "LeftButton" then
 		if player == self.currentPlayer and self.currentTrade then
 			if self.currentTrade == tradeID and IsShiftKeyDown() then
-				DA.DEBUG(0,"TradeButton_OnClick: Linking...")
 				if GetTradeSkillListLink then
 					local link = GetTradeSkillListLink()
-					DA.DEBUG(0,"TradeButton_OnClick: link= "..DA.PLINK(link)..", activeEditBox= "..tostring(activeEditBox))
-					ChatEdit_InsertLink(link)
+					if link then
+						ChatEdit_InsertLink(link)
+					elseif C_TradeSkillUI then
+						link = C_TradeSkillUI.GetTradeSkillListLink()
+						if link then
+							ChatEdit_InsertLink(link)
+						end
+					end
 				end
 			elseif self.currentTrade ~= tradeID then
 				if self.skillIsCraft[self.currentTrade] ~= self.skillIsCraft[tradeID] then
@@ -880,7 +895,7 @@ function Skillet:UpdateTradeButtons(player)
 	--DA.DEBUG(3,"UpdateTradeButtons complete")
 end
 
-function SkilletPluginDropdown_OnClick(this)
+local function SkilletPluginDropdown_OnClick(this)
 	--DA.DEBUG(0,"SkilletPluginDropdown_OnClick()")
 	local oldScript = this.oldButton:GetScript("OnClick")
 	oldScript(this)
@@ -2745,91 +2760,215 @@ end
 local function recurseReagents(orecipe, oi, recipe, level)
 	DA.DEBUG(0,"recurseReagents("..tostring(orecipe.name)..", "..tostring(oi)..", "..tostring(recipe.name)..", "..tostring(level)..")")
 	--DA.DEBUG(1,"recurseReagents: orecipe= "..DA.DUMP1(orecipe))
-	DA.DEBUG(1,"recurseReagents: recipe= "..DA.DUMP1(recipe))
+	--DA.DEBUG(1,"recurseReagents: recipe= "..DA.DUMP1(recipe))
+--
+-- Check for wild, out of control recursion
+--
+	local reagentLinkList = {}
+	if level > 10 then
+		Skillet.wildRecursion = true
+		return {}
+	end
 	for i = 1, #recipe.reagentData, 1 do
 		if level == 1 then oi = i end
 		local oreagent = orecipe.reagentData[oi]
 		local reagent = recipe.reagentData[i]
 		--DA.DEBUG(1,"recurseReagents: reagent= "..DA.DUMP1(reagent))
 		if reagent and reagent.id then
-			local reagentName, reagentLink, recipeSource, reagentIndex
+			local reagentName, reagentLink, recipeSource, reagentRecipe, reagentIndex
 			reagentName, reagentLink = GetItemInfo(reagent.id)
 			recipeSource = Skillet.db.global.itemRecipeSource[reagent.id]
-			DA.DEBUG(1,"recurseReagents: recipeSource= "..DA.DUMP1(recipeSource))
+			--DA.DEBUG(1,"recurseReagents: recipeSource= "..DA.DUMP1(recipeSource))
 			if recipeSource then
-				for recipeSourceID in pairs(recipeSource) do
-					reagentRecipe = Skillet:GetRecipe(recipeSourceID)
-					--DA.DEBUG(2,"recurseReagents: recipeSourceID= "..tostring(recipeSourceID)..", reagentRecipe= "..DA.DUMP1(reagentRecipe))
-					reagentIndex = Skillet.data.skillIndexLookup[Skillet.currentPlayer][recipeSourceID]
-					--DA.DEBUG(2,"recurseReagents: recipeSourceID= "..tostring(recipeSourceID)..", reagentIndex= "..tostring(reagentIndex))
+				local rsc = 1
+				for rs in pairs(recipeSource) do
+					reagentRecipe = Skillet:GetRecipe(rs)
+					--DA.DEBUG(2,"recurseReagents: rsc= "..tostring(rsc)..", rs= "..tostring(rs)..", reagentRecipe= "..DA.DUMP1(reagentRecipe))
+					reagentIndex = Skillet.data.skillIndexLookup[Skillet.currentPlayer][rs]
+					--DA.DEBUG(2,"recurseReagents: rsc= "..tostring(rsc)..", rs= "..tostring(rs)..", reagentIndex= "..tostring(reagentIndex))
+					rsc = rsc + 1
 				end
-			end
-			--DA.DEBUG(1,"recurseReagents: reagentLink= "..DA.DUMP1(reagentLink))
-			if reagentLink then
-				if reagentIndex then
-					recurseReagents(orecipe, oi, reagentRecipe, level+1)
+				--DA.DEBUG(1,"recurseReagents: rsc= "..tostring(rsc))
+				--DA.DEBUG(1,"recurseReagents: reagentLink= "..DA.PLINK(reagentLink))
+				if reagentLink then
+					if not reagentLinkList[reagent.id] then
+						reagentLinkList[reagent.id] = {}
+					end
+					reagentLinkList[reagent.id].level = level
+					reagentLinkList[reagent.id].reagentIndex = i
+					reagentLinkList[reagent.id].reagentID = reagent.id
+					reagentLinkList[reagent.id].reagentName = reagentName
+					reagentLinkList[reagent.id].reagentLink = reagentLink
+					reagentLinkList[reagent.id].numNeeded = reagent.numNeeded
+					reagentLinkList[reagent.id].recipeID = recipe.itemID
+					reagentLinkList[reagent.id].recipeName = recipe.name
+
+					reagentLinkList[reagent.id].orecipeIndex = oi
+					reagentLinkList[reagent.id].oreagentID = oreagent.id
+					reagentLinkList[reagent.id].oreagentName = oreagent.name
+					if reagentRecipe then
+						reagentLinkList[reagent.id].tradeID = reagentRecipe.tradeID
+						if reagentIndex then
+							reagentLinkList[reagent.id].crafted = recurseReagents(orecipe, oi, reagentRecipe, level+1)
+						end
+					end
+				end -- reagentLink
+			else
+				if not reagentLinkList[reagent.id] then
+					reagentLinkList[reagent.id] = {}
 				end
-				if not Skillet.reagentLinkList[oreagent.id] then
-					Skillet.reagentLinkList[oreagent.id] = {}
+				reagentLinkList[reagent.id].level = level
+				reagentLinkList[reagent.id].reagentIndex = i
+				reagentLinkList[reagent.id].reagentID = reagent.id
+				reagentLinkList[reagent.id].reagentName = reagentName
+				reagentLinkList[reagent.id].reagentLink = reagentLink
+				reagentLinkList[reagent.id].numNeeded = reagent.numNeeded
+				reagentLinkList[reagent.id].recipeID = recipe.itemID
+				reagentLinkList[reagent.id].recipeName = recipe.name
+			end -- recipeSource
+		end -- reagent and reagent.id
+	end -- for
+	return reagentLinkList
+end
+
+local function combineCrafted(level, reagentName, numNeeded, reagent)
+	DA.DEBUG(0,"combineCrafted("..tostring(level)..", "..tostring(reagentName)..", "..tostring(numNeeded)..", reagent)")
+--	DA.DEBUG(1,"combineCrafted: reagent= "..DA.DUMP(reagent)
+	if reagent then 
+		local combinedList = {}
+		for r,m in pairs(reagent) do
+			if m.crafted then
+				local list = combineCrafted(level+1, m.reagentName, m.numNeeded, m.crafted)
+				--DA.DEBUG(1,"combineCrafted: adding list= "..DA.DUMP1(list))
+				for k,v in pairs(list) do 
+					v.numNeeded = numNeeded * v.numNeeded
+					combinedList[k] = v 
 				end
-				if not Skillet.reagentLinkList[oreagent.id][level] then
-					Skillet.reagentLinkList[oreagent.id][level] = {}
+			else
+				if not combinedList[r] then
+					combinedList[r] = {}
 				end
-				if not Skillet.reagentLinkList[oreagent.id][level][reagent.id] then
-					Skillet.reagentLinkList[oreagent.id][level][reagent.id] = {}
-				end
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].reagentIndex = i
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].reagentName = reagentName
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].reagentLink = reagentLink
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].numNeeded = reagent.numNeeded
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].tradeID = reagentRecipe.tradeID
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].recipeID = recipe.itemID
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].recipeName = recipe.name
-				Skillet.reagentLinkList[oreagent.id][level][reagent.id].orecipeIndex = oi
+				--DA.DEBUG(1,"combineCrafted: adding reagent= "..tostring(r))
+				combinedList[r].reagentID = m.reagentID
+				combinedList[r].reagentLink = m.reagentLink
+				combinedList[r].numNeeded = numNeeded * m.numNeeded
 			end
 		end
+		DA.DEBUG(1,"combineCrafted: combinedList= "..DA.DUMP1(combinedList))
+		return combinedList
+	else
+		DA.DEBUG(0,"combineCrafted: nil reagent") 
+		return {[0] = {reagentID = 0, reagentLink = nil, numNeeded = 1}}
 	end
 end
 
 --
 -- Called when the icon button is alt-clicked
+--   recurse is set with ctrl-alt-click
 --
 function Skillet:ReagentsLinkOnClick(button, skillIndex, recurse)
 	DA.DEBUG(0,"ReagentsLinkOnClick("..tostring(button)..", "..tostring(skillIndex)..", "..tostring(recurse)..")")
 	if not self.db.profile.link_craftable_reagents then
 		return
 	end
-	local skillIndexLookup = Skillet.data.skillIndexLookup[Skillet.currentPlayer]
+	local skillIndexLookup = self.data.skillIndexLookup[Skillet.currentPlayer]
 	local recipe = self:GetRecipeDataByTradeIndex(self.currentTrade, skillIndex)
 	--DA.DEBUG(1,"recipe= "..DA.DUMP1(recipe))
+--
+-- Link the basic reagents by recursing through any craftable reagents
+--
 	if recurse then
-		self.reagentLinkList = {}
-		recurseReagents(recipe, 0, recipe, 1)
+--
+-- Step 1: Build a multi-level table of reagents
+--
+		self.reagentLinkList = recurseReagents(recipe, 0, recipe, 1)
+		if self.wildRecursion then 
+			DA.WARN("recurseReagents() gone wild")
+			return
+		end
 		DA.DEBUG(1,"reagentLinkList= "..DA.DUMP(self.reagentLinkList))
-	end
-	local sep = " "
-	for i = 1, #recipe.reagentData, 1 do
-		local reagent = recipe.reagentData[i]
-		--DA.DEBUG(1,"reagent= "..DA.DUMP1(reagent))
-		if reagent and reagent.id then
-			local reagentName, reagentLink, recipeSource, reagentIndex
-			reagentName, reagentLink = GetItemInfo(reagent.id)
-			recipeSource = Skillet.db.global.itemRecipeSource[reagent.id]
-			--DA.DEBUG(1,"recipeSource= "..DA.DUMP1(recipeSource))
-			if recipeSource then
-				for recipeSourceID in pairs(recipeSource) do
-					reagentRecipe = Skillet:GetRecipe(recipeSourceID)
-					reagentIndex = skillIndexLookup[recipeSourceID]
-					--DA.DEBUG(2,"recipeSourceID= "..tostring(recipeSourceID)..", reagentIndex= "..tostring(reagentIndex))
+--
+-- Step 2: Combine the levels
+--
+		self.reagentBasicList = {}
+		for r,m in pairs(self.reagentLinkList) do
+			if m.crafted then
+				local combinedList = combineCrafted(1, m.reagentName, m.numNeeded, m.crafted)
+				for s,n in pairs(combinedList) do
+					DA.DEBUG(1,"Step 2: adding s= "..tostring(s))
+					if not self.reagentBasicList[s] then
+						self.reagentBasicList[s] = {}
+					end
+					self.reagentBasicList[s].reagentID = n.reagentID
+					self.reagentBasicList[s].reagentName = n.reagentName
+					self.reagentBasicList[s].reagentLink = n.reagentLink
+					DA.DEBUG(1,"Step 2: s.numNeeded= "..tostring(self.reagentBasicList[s].numNeeded))
+					DA.DEBUG(1,"Step 2: n.numNeeded= "..tostring(n.numNeeded))
+					self.reagentBasicList[s].numNeeded = (self.reagentBasicList[s].numNeeded or 0) + n.numNeeded
 				end
+			else
+				DA.DEBUG(1,"Step 2: adding r= "..tostring(r))
+				if not self.reagentBasicList[r] then
+					self.reagentBasicList[r] = {}
+				end
+				self.reagentBasicList[r].reagentID = m.reagentID
+				self.reagentBasicList[r].reagentName = m.reagentName
+				self.reagentBasicList[r].reagentLink = m.reagentLink
+				self.reagentBasicList[r].numNeeded =  m.numNeeded
 			end
-			--DA.DEBUG(1,"reagentLink= "..DA.DUMP1(reagentLink))
-			if reagentLink and reagentIndex then
-				ChatEdit_InsertLink(sep .. reagent.numNeeded .. "x" .. reagentLink.."*")
-			elseif reagentLink then
-				ChatEdit_InsertLink(sep .. reagent.numNeeded .. "x" .. reagentLink)
+		end
+		DA.DEBUG(1,"reagentBasicList= "..DA.DUMP(self.reagentBasicList))
+--
+-- Step 3: Combine the duplicates
+--
+		self.reagentCombinedList = {}
+		for r,m in pairs(self.reagentBasicList) do
+			if m.reagentID then
+				if not self.reagentCombinedList[m.reagentID] then
+					self.reagentCombinedList[m.reagentID] = {}
+				end
+				self.reagentCombinedList[m.reagentID].reagentLink = m.reagentLink
+				self.reagentCombinedList[m.reagentID].numNeeded = (self.reagentCombinedList[m.reagentID].numNeeded or 0) + m.numNeeded
 			end
+		end
+		DA.DEBUG(1,"reagentCombinedList= "..DA.DUMP(self.reagentCombinedList))
+
+--
+-- Step 4: Output the results
+--
+		local sep = " "
+		for r,m in pairs(self.reagentCombinedList) do
+			ChatEdit_InsertLink(sep .. m.numNeeded .. "x" .. m.reagentLink)
 			sep = ", "
+		end
+	else
+--
+-- Link the actual reagents adding "*" to craftable reagents
+--
+		local sep = " "
+		for i = 1, #recipe.reagentData, 1 do
+			local reagent = recipe.reagentData[i]
+			--DA.DEBUG(1,"reagent= "..DA.DUMP1(reagent))
+			if reagent and reagent.id then
+				local reagentName, reagentLink, recipeSource, reagentIndex
+				reagentName, reagentLink = GetItemInfo(reagent.id)
+				recipeSource = Skillet.db.global.itemRecipeSource[reagent.id]
+				--DA.DEBUG(1,"recipeSource= "..DA.DUMP1(recipeSource))
+				if recipeSource then
+					for recipeSourceID in pairs(recipeSource) do
+						reagentRecipe = Skillet:GetRecipe(recipeSourceID)
+						reagentIndex = skillIndexLookup[recipeSourceID]
+						--DA.DEBUG(2,"recipeSourceID= "..tostring(recipeSourceID)..", reagentIndex= "..tostring(reagentIndex))
+					end
+				end
+				--DA.DEBUG(1,"reagentLink= "..DA.DUMP1(reagentLink))
+				if reagentLink and reagentIndex then
+					ChatEdit_InsertLink(sep .. reagent.numNeeded .. "x" .. reagentLink.."*")
+				elseif reagentLink then
+					ChatEdit_InsertLink(sep .. reagent.numNeeded .. "x" .. reagentLink)
+				end
+				sep = ", "
+			end
 		end
 	end
 end
@@ -3092,6 +3231,82 @@ local skillMenuListLocked = {
 	},
 }
 
+local skillMenuListClassic = {
+--[[
+	{
+		text = "skillMenuList",
+		isTitle = true,
+		notCheckable = true,
+	},
+--]]
+	{
+		text = L["New Group"],
+		hasArrow = true,
+		menuList = skillMenuGroup,
+	},
+	{
+		text = "-----",
+		isTitle = true,
+		notCheckable = true,
+	},
+	{
+		text = L["Selection"],
+		hasArrow = true,
+		menuList = skillMenuSelection,
+	},
+	{
+		text = L["Copy"],
+		func = function() Skillet:SkillButton_CopySelected() end,
+	},
+	{
+		text = L["Cut"],
+		func = function() Skillet:SkillButton_CutSelected() end,
+	},
+	{
+		text = L["Paste"],
+		func = function() Skillet:SkillButton_PasteSelected(Skillet.menuButton) end,
+	},
+	{
+		text = "-----",
+		isTitle = true,
+		notCheckable = true,
+	},
+	{
+		text = L["Ignore"],
+		hasArrow = true,
+		menuList = skillMenuIgnore,
+	},
+}
+
+local skillMenuListClassicLocked = {
+--[[
+	{
+		text = "skillMenuListLocked",
+		isTitle = true,
+		notCheckable = true,
+	},
+--]]
+	{
+		text = L["Selection"],
+		hasArrow = true,
+		menuList = skillMenuSelection,
+	},
+	{
+		text = L["Copy"],
+		func = function() Skillet:SkillButton_CopySelected() end,
+	},
+	{
+		text = "-----",
+		isTitle = true,
+		notCheckable = true,
+	},
+	{
+		text = L["Ignore"],
+		hasArrow = true,
+		menuList = skillMenuIgnore,
+	},
+}
+
 local headerMenuList = {
 --[[
 	{
@@ -3235,10 +3450,18 @@ function Skillet:SkilletSkillMenu_Show(button)
 		end
 	else
 		GameTooltip:Hide() --hide tooltip, because it may be over the menu, sometimes it still fails
-		if locked then
-			EasyMenu(skillMenuListLocked, SkilletSkillMenu, _G["UIParent"], x/uiScale,y/uiScale, "MENU", 5)
+		if isClassic then
+			if locked then
+				EasyMenu(skillMenuListClassicLocked, SkilletSkillMenu, _G["UIParent"], x/uiScale,y/uiScale, "MENU", 5)
+			else
+				EasyMenu(skillMenuListClassic, SkilletSkillMenu, _G["UIParent"], x/uiScale,y/uiScale, "MENU", 5)
+			end
 		else
-			EasyMenu(skillMenuList, SkilletSkillMenu, _G["UIParent"], x/uiScale,y/uiScale, "MENU", 5)
+			if locked then
+				EasyMenu(skillMenuListLocked, SkilletSkillMenu, _G["UIParent"], x/uiScale,y/uiScale, "MENU", 5)
+			else
+				EasyMenu(skillMenuList, SkilletSkillMenu, _G["UIParent"], x/uiScale,y/uiScale, "MENU", 5)
+			end
 		end
 	end
 end

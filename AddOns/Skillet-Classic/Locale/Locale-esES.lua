@@ -121,6 +121,8 @@ L["HIGHERVELLUMDESC"] = "Use a higher level of vellum when correct vellum is una
 --[[Translation missing --]]
 L["HIGHERVELLUMNAME"] = "Use higher vellum"
 L["Ignore"] = "Ignorar"
+--[[Translation missing --]]
+L["Ignore on hand"] = "Ignore on hand"
 L["IGNOREBANKEDREAGENTSDESC"] = "Ignora los componentes en el banco al poner en cola componentes fabricables"
 L["IGNOREBANKEDREAGENTSNAME"] = "Ignora los componentes en el banco"
 --[[Translation missing --]]
@@ -132,6 +134,10 @@ L["Ignored List"] = "Ignorados"
 L["Ignored Materials Clear"] = "Materiales ignorados borrados"
 L["Ignored Materials List"] = "Lista de materiales ignorados"
 L["IGNORELISTDESC"] = "Abra el marco de la lista materiales ignorados."
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSDESC"] = "Ignore queued reagents"
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSNAME"] = "Ignore queued reagents"
 L["Illusions"] = "Ilusiones"
 L["in your bank"] = "en tu banco"
 L["in your inventory"] = "en tu inventario"

@@ -134,6 +134,8 @@ L["HIGHERVELLUMDESC"] = "Use a higher level of vellum when correct vellum is una
 L["HIGHERVELLUMNAME"] = "Use higher vellum"
 L["Ignore"] = "Ignorieren"
 --[[Translation missing --]]
+L["Ignore on hand"] = "Ignore on hand"
+--[[Translation missing --]]
 L["IGNOREBANKEDREAGENTSDESC"] = "Ignore banked reagents when queuing craftable reagents"
 --[[Translation missing --]]
 L["IGNOREBANKEDREAGENTSNAME"] = "Ignore banked reagents"
@@ -146,6 +148,10 @@ L["Ignored List"] = "Ignorierliste"
 L["Ignored Materials Clear"] = "Liste Ignorierte Materialien leeren"
 L["Ignored Materials List"] = "Liste Ignorierte Materialien"
 L["IGNORELISTDESC"] = "Öffnet das Fenster Liste Ignorierte Materialien"
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSDESC"] = "Ignore queued reagents"
+--[[Translation missing --]]
+L["IGNOREQUEUEDREAGENTSNAME"] = "Ignore queued reagents"
 L["Illusions"] = "Illusionen"
 L["in your bank"] = "in Ihrer Bank"
 L["in your inventory"] = "in deinem Inventar"

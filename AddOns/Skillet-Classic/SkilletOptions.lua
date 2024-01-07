@@ -188,6 +188,19 @@ Skillet.options =
 					width = 1.5,
 					order = 22
 				},
+				ignore_queued_reagents = {
+					type = "toggle",
+					name = L["IGNOREQUEUEDREAGENTSNAME"],
+					desc = L["IGNOREQUEUEDREAGENTSDESC"],
+					get = function()
+						return Skillet.db.profile.ignore_queued_reagents
+					end,
+					set = function(self,value)
+						Skillet.db.profile.ignore_queued_reagents = value
+					end,
+					width = 1.5,
+					order = 22
+				},
 --[[
 				queue_glyph_reagents = {
 					type = "toggle",
@@ -1048,6 +1061,32 @@ Skillet.options =
 				else
 					DA.DEBUG(0,"|cff8888ffSkillet|r: Combat lockdown restriction." ..
 												  " Leave combat and try again.")
+				end
+			end,
+			order = 79
+		},
+		AJ = {
+			type = "input",
+			name = "AJ",
+			desc = "Display Auctionator (and Journalator) API output for value, an ItemID or itemLink",
+			get = function()
+				return Skillet.AJID
+			end,
+			set = function(self,value)
+				Skillet.AJID = value
+				local name = GetItemInfo(value)
+				local itemID = GetItemInfoInstant(value)
+				print("value= "..tostring(value)..", itemID= "..tostring(itemID)..", name= "..tostring(name))
+				if Auctionator.API and itemID then
+					local price = (Auctionator.API.v1.GetAuctionPriceByItemID(addonName, itemID) or 0)
+					print("itemID= "..tostring(itemID)..", price= "..Skillet:FormatMoneyShort(price, true))
+					if Journalator.API and name then
+						successCount = Journalator.API.v1.GetRealmSuccessCountByItemName(addonName, name)
+						failedCount = Journalator.API.v1.GetRealmFailureCountByItemName(addonName, name)
+						lastSold = Journalator.API.v1.GetRealmLastSoldByItemName(addonName, name)
+						lastBought = Journalator.API.v1.GetRealmLastBoughtByItemName(addonName, name)
+						print("itemName= "..tostring(name)..", successCount= "..tostring(successCount)..", failedCount= "..tostring(failedCount)..", lastSold= "..tostring(lastSold)..", lastBought= "..tostring(lastBought))
+					end
 				end
 			end,
 			order = 80
