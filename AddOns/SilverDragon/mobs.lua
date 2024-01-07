@@ -130,7 +130,7 @@ function module:OptionsRequested(callback, options)
 								core:SetIgnore(info.arg, not core.db.global.ignore[info.arg])
 							end,
 							args = {
-								desc = core:GetModule("Config").desc("This will fill in as rare mobs are seen in the current session.", 0),
+								desc = core:GetModule("Config").desc("這裡會列出此次登入後曾看到過的稀有怪。", 0),
 							},
 						}
 					},

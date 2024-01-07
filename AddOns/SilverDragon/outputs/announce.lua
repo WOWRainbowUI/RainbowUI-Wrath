@@ -287,7 +287,7 @@ function module:OnInitialize()
 					soundfile_boss = soundfile("sound_boss", 35),
 					sound_boss_loop = soundrange(37),
 					loot = {type="header", name="", order=40,},
-					sound_loot = toggle("拾取音效", "寶藏要播放音效", 41),
+					sound_loot = toggle("戰利品音效", "寶藏要播放音效", 41),
 					soundfile_loot = soundfile("sound_loot", 45),
 					sound_loot_loop = soundrange(47),
 				},

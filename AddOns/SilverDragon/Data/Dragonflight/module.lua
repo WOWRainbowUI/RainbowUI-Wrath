@@ -13,6 +13,7 @@ local FORBIDDENREACH = 2151 -- 2026
 local FORBIDDENREACHINTRO = 2118 -- Dracthyr
 local PRIMALISTFUTURE = 2085
 local ZARALEKCAVERN = 2133
+local EMERALDDREAM = 2200
 
 local FACTION_MARUUK = 2503
 local FACTION_DRAGONSCALE = 2507
@@ -21,6 +22,8 @@ local FACTION_ISKAARA = 2511
 local FACTION_LOAMM = 2564
 
 -- Rares
+
+local LOC_alldragonisles = {[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},}
 
 core:RegisterMobData("巨龍崛起", {
 	[193217] = {
@@ -40,27 +43,27 @@ core:RegisterMobData("巨龍崛起", {
 	},
 	-- Stormed off
 	-- Storm
-	[193653] = {name="Gaelzion", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Storm Invasions"},
-	[193647] = {name="Karantun", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Storm Invasions"},
-	[193684] = {name="Pipspark Thundersnap", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Storm Invasions"},
-	[193674] = {name="Voraazka", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Storm Invasions"},
+	[193653] = {name="Gaelzion", locations=LOC_alldragonisles,notes="Storm Invasions"},
+	[193647] = {name="Karantun", locations=LOC_alldragonisles,notes="Storm Invasions"},
+	[193684] = {name="Pipspark Thundersnap", locations=LOC_alldragonisles,notes="Storm Invasions"},
+	[193674] = {name="Voraazka", locations=LOC_alldragonisles,notes="Storm Invasions"},
 	-- Earth
-	[193644] = {name="Bouldron", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Earth Invasions"},
-	[193680] = {name="Zurgaz Corebreaker", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Earth Invasions"},
-	[193652] = {name="Grizzlerock", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Earth Invasions"},
-	[193654] = {name="Gravlion", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Earth Invasions"},
+	[193644] = {name="Bouldron", locations=LOC_alldragonisles,notes="Earth Invasions"},
+	[193680] = {name="Zurgaz Corebreaker", locations=LOC_alldragonisles,notes="Earth Invasions"},
+	[193652] = {name="Grizzlerock", locations=LOC_alldragonisles,notes="Earth Invasions"},
+	[193654] = {name="Gravlion", locations=LOC_alldragonisles,notes="Earth Invasions"},
 	-- Fire
-	[193648] = {name="Infernum", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Fire Invasions"},
-	[193686] = {name="Neela Firebane", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Fire Invasions"},
-	[193675] = {name="Kain Firebrand", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Fire Invasions"},
-	[193650] = {name="Emblazion", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Fire Invasions"},
+	[193648] = {name="Infernum", locations=LOC_alldragonisles,notes="Fire Invasions"},
+	[193686] = {name="Neela Firebane", locations=LOC_alldragonisles,notes="Fire Invasions"},
+	[193675] = {name="Kain Firebrand", locations=LOC_alldragonisles,notes="Fire Invasions"},
+	[193650] = {name="Emblazion", locations=LOC_alldragonisles,notes="Fire Invasions"},
 	-- Water
-	[193645] = {name="Crystalus", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Water Invasions",},
-	[193682] = {name="Rouen Icewind", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Water Invasions",},
-	[193655] = {name="Frozion", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Water Invasions",},
-	[193677] = {name="Maeleera", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Water Invasions",vignette=5243,},
-	[193678] = {name="Fieraan", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Water Invasions",vignette=5243,},
-	[193679] = {name="Leerain", locations={[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},},notes="Water Invasions",vignette=5243,},
+	[193645] = {name="Crystalus", locations=LOC_alldragonisles,notes="Water Invasions",},
+	[193682] = {name="Rouen Icewind", locations=LOC_alldragonisles,notes="Water Invasions",},
+	[193655] = {name="Frozion", locations=LOC_alldragonisles,notes="Water Invasions",},
+	[193677] = {name="Maeleera", locations=LOC_alldragonisles,notes="Water Invasions",vignette=5243,},
+	[193678] = {name="Fieraan", locations=LOC_alldragonisles,notes="Water Invasions",vignette=5243,},
+	[193679] = {name="Leerain", locations=LOC_alldragonisles,notes="Water Invasions",vignette=5243,},
 	-- Assorted hidden things
 	[190971] = {name="Shas'ith", hidden=true}, -- the locked-up variant which is always there
 	-- War party, except Brundin who's below:
@@ -71,6 +74,27 @@ core:RegisterMobData("巨龍崛起", {
 	--
 	[201186] = {name="Shimmermaw Jr.", locations={[FORBIDDENREACH]={},},hidden=true,},
 	[201310] = {name="Nidharr", locations={[FORBIDDENREACH]={},},hidden=true,},
+	-- Fyrakk assault rares
+	[200832] = {name="Fyrakk", locations=LOC_alldragonisles,hidden=true,},
+	[203699] = {name="Half-bound Rageflame", locations=LOC_alldragonisles,hidden=true,},
+	[201054] = {name="Crimson Oldblood", locations=LOC_alldragonisles,hidden=true,},
+	[203703] = {name="Flamebringer Rageblood", locations=LOC_alldragonisles,hidden=true,},
+	[203705] = {name="Flamebringer Elementalist", locations=LOC_alldragonisles,hidden=true,},
+	[203707] = {name="Flamebringer Cauterizer", locations=LOC_alldragonisles,hidden=true,},
+	[203698] = {name="Rampant Shadowflame", locations=LOC_alldragonisles,hidden=true,},
+	[203700] = {name="Flamebringer Shaman", locations=LOC_alldragonisles,hidden=true,},
+	-- Researchers Under Fire
+	[203834] = {name="Contaminated Titan Watcher",locations={[ZARALEKCAVERN]={45006200}},achievement=18201,criteria=1,hidden=true,},
+	[202318] = {name="Response Team Watcher",locations={[ZARALEKCAVERN]={47806380}},hidden=true,},
+	[202309] = {name="Cavern Flayer Matriarch",locations={[ZARALEKCAVERN]={47405680}},loot={205276},hidden=true,},
+	[202270] = {name="Animated Contaminant",locations={[ZARALEKCAVERN]={45406180}},hidden=true},
+	[203846] = {name="Elder Magma Serpent",locations={[ZARALEKCAVERN]={44605800}},achievement=18199,criteria=2,loot={205229},hidden=true},
+	[203355] = {name="Captain Reykal",locations={[ZARALEKCAVERN]={49205740}},achievement=18209,criteria=1,hidden=true},
+	-- Sniffenseeking
+	[201747] = {name="Bogg",locations={[ZARALEKCAVERN]={54405220}},hidden=true,},
+	[204426] = {name="Jalgon Stoutburn",locations={[ZARALEKCAVERN]={58005660}},hidden=true,},
+	[205540] = {name="Pahi'rys",locations={[ZARALEKCAVERN]={60005620}},hidden=true},
+	[203606] = {name="Calibrating Scent Matrix",locations={[ZARALEKCAVERN]={58005600}},notes="Making Scents",hidden=true},
 }, true)
 
 -- Treasures
@@ -189,6 +213,7 @@ local ns = {
 	FORBIDDENREACH = FORBIDDENREACH,
 	PRIMALISTFUTURE = PRIMALISTFUTURE,
 	ZARALEKCAVERN = ZARALEKCAVERN,
+	EMERALDDREAM = EMERALDDREAM,
 	FACTION_MARUUK = FACTION_MARUUK,
 	FACTION_DRAGONSCALE = FACTION_DRAGONSCALE,
 	FACTION_VALDRAKKEN = FACTION_VALDRAKKEN,
@@ -833,7 +858,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 	achievement=16676, -- Adventurer
 })
 ns.RegisterPoints(ns.WAKINGSHORES, {
-	[46725013] = {
+	[81213783] = {
 		label="Primal Scythid Queen",
 		quest=66074, -- 57559, 62396
 		npc=184853,
@@ -1127,7 +1152,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 	[31646421] = {
 		label="Zenet Avis",
 		criteria=56066,
-		quest=nil,
+		quest=73901,
 		npc=193209,
 		loot={
 			{200879, note="Hatches into..."}, -- Zenet Egg
@@ -1427,32 +1452,32 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 		loot={},
 		vignette=5087,
 	},
-	--[[
-	[] = {
+	[77868271] = {
 		label="Sulfurion",
 		criteria=56086,
 		quest=nil,
 		npc=191842,
 		loot={},
 		vignette=5135,
+		path=76768206,
 	},
-	[] = {
+	[59716810] = {
 		label="Porta the Overgrown",
 		criteria=56087,
 		quest=nil,
 		npc=191950,
 		loot={},
 		vignette=5136,
+		active=ns.conditions.Item(194426, 5), -- Enriched Soil
 	},
-	[] = {
+	[27715557] = {
 		label="The Jolly Giant",
 		criteria=56088,
-		quest=nil,
+		quest=73976,
 		npc=195204,
 		loot={},
 		vignette=5352,
 	},
-	--]]
 	[84214784] = {
 		label="Windscale the Stormborn",
 		criteria=56089,
@@ -2907,6 +2932,25 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200763, -- Frosted Scale Drape
 		},
 	},
+	[54608580] = { -- Temporal Investi-gator
+		quest=nil,
+		npc=201664,
+		loot={
+			{206993,toy=true,}, -- Investi-gator's Pocketwatch
+			200126, -- Mantle of Copious Chronologies
+		},
+		note="Finish {quest:75935:Time Signature} questline, then:\n*Get a {item:208449:Melly's Metronographer+++} from {npc:204990:Melly Teletone}\n*Use it by {npc:203769:Bartender Bob}\nBuy {item:208448:Infinitea}\n*Drink it here then (quickly!) use the clock",
+	},
+	[59807040] = { -- Zal'kir the Chosen
+		quest=nil,
+		npc=205865,
+		loot={
+			208168, -- Black Blade of K'tanth
+			208170, -- Runeaxe of the Last Resistance
+			208172, -- Bloodstained Runecrook
+		},
+		path=59376968,
+	},
 })
 ns.RegisterPoints(ns.PRIMALISTFUTURE, {
 	[48601740] = {
@@ -3335,7 +3379,7 @@ ns.RegisterPoints(ns.ZARALEKCAVERN, {
 			{203320,quest=73808,}, -- Winding Slitherdrake: Ears
 			205299, -- Rudiment Cuffs
 			205304, -- Snareguard Sash
-			{205419,toy=true,}, -- Jrumm's Drum
+			{205419,toy=true,}, -- Dinn's Drum
 		},
 		vignette=5660,
 	},
@@ -3392,7 +3436,12 @@ ns.RegisterPoints(ns.ZARALEKCAVERN, {
 		criteria=59190,
 		quest=75295, -- 75296
 		npc=203592,
-		loot={205321}, -- Brimstone Bracers
+		loot={
+			{203334,quest=73824,}, -- Winding Slitherdrake: Curled Horns
+			205291, -- Garrison General's Cape
+			205321, -- Brimstone Bracers
+			205331, -- Zskorran Cleaver
+		},
 		vignette=5645,
 	},
 	[32445127] = { -- Emberdusk
@@ -3413,7 +3462,6 @@ ns.RegisterPoints(ns.ZARALEKCAVERN, {
 		loot={
 			{206021, pet=3545}, -- Kob'rok's Luminescent Scale
 			{205152, pet=3546}, -- Skaarn
-			{205147, pet=3541}, -- Ridged Shalewing
 			205307, -- Kob'rok's Scale Sabatons
 		},
 		vignette=5638,
@@ -3502,4 +3550,319 @@ ns.RegisterPoints(ns.ZARALEKCAVERN, {
 	},
 }, {
 	achievement=17783, -- Adventurer of Zaralek Cavern
+})
+
+ns.RegisterPoints(ns.EMERALDDREAM, {
+	[54803680] = { -- Mosa Umbramane
+		criteria=62949,
+		quest=77940,
+		npc=210070,
+		loot={
+			208375, -- Owlbear's Decisive Strike
+			{210647, class="DRUID"}, -- Mark of the Umbramane
+		},
+		vignette=5822,
+	},
+	[44403920] = { -- Ristar the Rabid
+		criteria=62951,
+		quest=77890,
+		npc=210161,
+		loot={
+			209957, -- Fang of the Frenzied Nightclaw
+			208322, -- Treads of the Nightclaw
+			208359, -- Nightclaw's Bauble
+			{210674,quest=78511,}, -- Mark of the Sable Dreamtalon
+		},
+		vignette=5871,
+	},
+	[34806320] = { -- Envoy of Winter
+		criteria=62933,
+		quest=77878,
+		npc=209929, -- also 214131
+		loot={
+			208332, -- Horns of the Envoy
+			208337, -- Leaf Steward's Leggings
+			208340, -- Stag's Flourishing Mantle
+			208365, -- Winter's Stand
+		},
+		note="Loot nearby {item:208881:Shiversnap Blossom} and throw into the well",
+		vignette=5816,
+	},
+	[40457263] = { -- Moragh the Slothful
+		criteria=62942,
+		quest=78210,
+		npc=210045,
+		loot={
+			210121, -- Ring of Season's Sunset
+			210237, -- Nipping Night's Necklace
+		},
+		vignette=5908,
+	},
+	[51203180] = { -- Bloodstripe Great Ray
+		criteria=62945,
+		quest=77942,
+		npc=210050,
+		loot={
+			208376, -- Great Ray's Longbow
+		},
+		vignette=5819,
+	},
+	[53804040] = { -- Greedy Gessie
+		criteria=62932,
+		quest=77982,
+		npc=209936,
+		loot={
+			208355, -- String of Delicacies
+		},
+		vignette=5817, -- or 5969? There's two in Vignette.db2...
+	},
+	[41207320] = { -- Matriarch Keevah
+		criteria=62944,
+		quest=78213,
+		npc=210051,
+		loot={
+			{210683, class="DRUID"}, -- Mark of the Dreamtalon Matriarch
+		},
+		vignette=5911,
+	},
+	[62007140] = { -- Nuoberon
+		criteria=62929,
+		quest=77570,
+		npc=209113,
+		loot={
+			209880, -- Curve of Starry Dusks
+			209959, -- Pinch of Dream Magic
+		},
+		vignette=5786, -- Nuoberon, the Wild Dream of a Child
+	},
+	[43404700] = { -- Somnambulant Ori
+		criteria=62944,
+		quest=78212,
+		npc=210047,
+		loot={
+			208381, -- Scepter of Still Waters
+			209956, -- Ori's Verdant Feather
+		},
+		vignette=5910,
+	},
+	[66006280] = { -- Crabtankerous
+		criteria=62937,
+		quest=77862,
+		npc=209909,
+		loot={
+			208333, -- Fallen Flame's Crown
+			208334, -- Legplates of the Krakken
+			208341, -- Fire-Runed Spaulders
+		},
+		vignette=5809,
+	},
+	[58405120] = { -- Ignit the Firebranded
+		criteria=62936,
+		quest=77864,
+		npc=209620,
+		loot={
+			208325, -- Ignit's Fiery Heart
+			208338, -- Furious Flame's Shoulders
+			208383, -- Pommel of Fire
+		},
+		vignette=5811,
+	},
+	[61805180] = { -- Splinterlimb
+		criteria=62935,
+		quest=77863,
+		npc=209365, -- also 212410
+		loot={
+			208346, -- Singed Barkbands
+			208361, -- Splinterlimb's Branch
+		},
+		vignette=5810,
+	},
+	[46201920] = { -- Moltenbinder's Disciple
+		criteria=62947,
+		quest=77941,
+		npc=208658,
+		loot={
+			{205463, toy=true}, -- Molten Lava Ball
+			208353, -- Djaradin's Molten Band
+		},
+		vignette=5818,
+	},
+	[43603100] = { -- Surging Lasher
+		criteria=62941,
+		additional={57805220, 60806400, 59007200},
+		quest=78263,
+		npc=210111,
+		loot={
+			208330, -- Piercing Touch of the Vine
+			208335, -- Vibrant Fall Leggings
+			208367, -- Lasher's Red Thorn
+			207761, -- Technique: Grotto Netherwing Drake: Chin Tendrils
+		},
+	},
+	[63803620] = { -- Molten Leadspike
+		criteria=62948,
+		quest=77943,
+		npc=210064,
+		loot={
+			208323, -- Nature's Firebathed Robes
+			208349, -- Burning Leather Cuffs
+		},
+		vignette=5821,
+	},
+	[37603180] = { -- Isaqa
+		criteria=62940,
+		quest=77989,
+		npc=209919,
+		loot={
+			208345, -- Forgebreaker's Belt
+			208348, -- Binds of the Shatterer
+			208385, -- Flame Endowed Blade
+		},
+		vignette=5824,
+	},
+	[38406200] = { -- Voracious Mikanji
+		criteria=64492,
+		quest=78214,
+		npc=210508,
+		loot={
+			208354, -- Cerulean Turtle's Pendant
+		},
+		vignette=5912,
+	},
+	[40304920] = { -- Keen-eyed Cian
+		criteria=62943,
+		quest=78211,
+		npc=210046,
+		loot={
+			208336, -- Legguards of the Dreamsaber
+			208342, -- Girdle of Nature's Fury
+			208363, -- Twinfang of the Cian
+			{210650, class="DRUID"}, -- Mark of the Keen-Eyed Dreamsaber
+		},
+		vignette=5909,
+	},
+	[47403030] = { -- Henri Snufftail
+		criteria=62950,
+		quest=77944,
+		npc=210075,
+		loot={
+			208357, -- Henri's Warm Coat
+		},
+		vignette=5820,
+	},
+	[35102260] = { -- Talthonei Ashwhisper
+		additional={36902240,61406740,63907010,64406660},
+		criteria=62934,
+		quest=77994,
+		npc=209902, -- also 210413
+		loot={
+			208369, -- Druid's Vengeful Gaze
+			208374, -- Talthornei's Wrath
+		},
+		vignette=5828, -- also 5829
+	},
+	[64208400] = { -- Reefbreaker Moruud
+		criteria=62931,
+		quest=77867,
+		npc=209898,
+		loot={
+			208327, -- Maruud's Piercing Hands
+		},
+		vignette=5806, -- also 5814
+	},
+	[63407160] = { -- Fruitface
+		criteria=62938,
+		quest=77846,
+		npc=209913,
+		loot={
+			208344, -- Sash of the Fruit Thief
+			208372, -- Trickster's Tip Toers
+			208388, -- Leafster's Magic Wand
+			-- 210493, -- Technique: Grotto Netherwing Drake: Spiked Jaw
+		},
+		note="Inside the Barrows of Reverie",
+		vignette=5805,
+	},
+	[26002660] = { -- The Apostle
+		criteria=62939,
+		quest=77990,
+		npc=209911,
+		loot={
+			208370, -- The Apostle's Steps
+			208389, -- Spear of the Wilds
+		},
+		vignette=5825,
+	},
+}, {
+	achievement=19316, -- Adventurer of the Emerald Dream
+})
+ns.RegisterPoints(2254, { -- Barrows of Reverie
+	[54173749] = { -- Fruitface
+		criteria=62938,
+		quest=77846,
+		npc=209913,
+		loot={
+			208344, -- Sash of the Fruit Thief
+			208372, -- Trickster's Tip Toers
+			208388, -- Leafster's Magic Wand
+			-- 210493, -- Technique: Grotto Netherwing Drake: Spiked Jaw
+		},
+		related={
+			[60226882] = {label="{npc:209950:Mylune}", minimap=true},
+		},
+		note="Talk to {npc:209950:Mylune} for {spell:421446:Mylune's Blessing}. Pick up {item:208837:Missing Fruit} until {npc:209980:Thieving Podling} appears. Chase it here.",
+		vignette=5805,
+	},
+}, {
+	achievement=19316, -- Adventurer of the Emerald Dream
+})
+ns.RegisterPoints(ns.EMERALDDREAM, {
+	[57803780] = { -- Elusive Verdant Gladewarden
+		quest=nil,
+		npc=212133,
+	},
+	[30002120] = { -- Firebrand Fystia
+		criteria=62930,
+		quest=78015,
+		npc=209893,
+		loot={
+			208328, -- Fystia's Deft Hands
+			209881, -- Fystia's Fiery Kris
+		},
+		vignette=5835,
+	},
+	[41202620] = { -- Amalgamation of Dreams
+		additional={39805300,51805740,58205940,62805200},
+		quest=nil,
+		npc=209915,
+	},
+	[40804280] = { -- Elusive Blooming Brierhide
+		quest=nil,
+		npc=212090,
+	},
+	[39805120] = { -- Raszageth's Last Breath
+		additional={50403840, 65404340, 67406620},
+		quest=77859,
+		npc=209912,
+		loot={
+			208373, -- Band of Bated Breath
+		},
+		vignette=5808,
+	},
+	[22903240] = { -- Balboan
+		quest=78039,
+		npc=210559,
+		note="In cave",
+		loot={
+			208356, -- Earthbound Furbolg's Shroud
+		},
+		vignette=5837,
+	},
+	--[[
+	[0] = { -- Enormous Dream Moth
+		quest=nil,
+		npc=209864,
+		vignette=5799,
+	},
+	--]]
 })

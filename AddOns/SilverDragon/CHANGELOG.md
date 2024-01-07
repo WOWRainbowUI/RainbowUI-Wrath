@@ -1,5 +1,32 @@
 # Changelog
 
+## Changed in v2023.11
+
+* Show data on world quest icons if available
+* Ohn'ahran Plains: locations for a few remaining Adventurer rares
+* Arathi Highlands: add Doom's Howl, and a few world quest IDs
+
+## Changed in v2023.10.1
+
+* Blizzard hotfixed out the range-check API that I was using to only announce rares that nearby group members saw, so I've switched to a different API for that.
+
+## Changed in v2023.10
+
+* Fix for an issue that was preventing icons appearing on the world map in Classic for some people
+* Some minor data fixes for past expansions
+
+## Changed in v2023.9
+
+* More loot and ids for Emerald Dream rares
+* Fix Primal Scythid Queen's location in Waking Shores
+* Remove a stray Lost Gilnean Wardog from Thunder Bluff
+
+## Changed in v2023.8
+
+* Updated for 10.2.0
+* New rares for the Emerald Dream, still missing a few quest IDs so expect another update soon
+* Update some rares from the last few patches, and include various assault rares as hidden-mobs
+
 ## Changed in v2023.7
 
 * Updated for 10.1.5 and then 10.1.7

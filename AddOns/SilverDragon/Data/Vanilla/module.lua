@@ -6,7 +6,7 @@ local core = LibStub("AceAddon-3.0"):GetAddon("SilverDragon")
 -- local ANNIVERSARY = core.conditions.CalendarEvent(1262) -- this needs to be updated each year...
 local ANNIVERSARY = core.conditions.CalendarEventStartTexture(1084434)
 
-core:RegisterMobData("艾澤拉斯", {
+core:RegisterMobData("經典艾澤拉斯", {
 	[61] = {name="Thuros Lightfingers",locations={[37]={50408320},},loot={6202,6203},},
 	[62] = {name="Gug Fatcandle",locations={[37]={47603180},[425]={31401740},},},
 	[79] = {name="Narg the Taskmaster",locations={[37]={38008140},},loot={1913,6147},},
@@ -523,7 +523,7 @@ core:RegisterMobData("艾澤拉斯", {
 	[51028] = {name="The Deep Tunneler",locations={[83]={50607220},},tameable=236197,},
 	[51029] = {name="Parasitus",locations={[22]={61207260},},tameable=236197,},
 	[51031] = {name="Tracker",locations={[22]={62404740},},tameable=877481,},
-	[51037] = {name="Lost Gilnean Wardog",locations={[21]={59004180},[88]={46404660},},tameable=877481,},
+	[51037] = {name="Lost Gilnean Wardog",locations={[21]={59004180},},tameable=877481,},
 	[51040] = {name="Snuffles",locations={[14]={25202740},},art=15,tameable=877481,},
 	[51042] = {name="Bleakheart",locations={[23]={71804540},},tameable=877481,},
 	[51044] = {name="Plague",locations={[18]={57803300},},tameable=877481,},
@@ -563,5 +563,25 @@ core:RegisterMobData("艾澤拉斯", {
 	[121911] = {name="Taerar",locations={[63]={93904060}},loot={150390,150392,150394,150395,150413,150414,150429,150408,150403,150412,150393,150388,150411,},quest=47463,requires=ANNIVERSARY,},
 	[121912] = {name="Ysondre",locations={[69]={51201160}},loot={150387,150389,150391,150396,150397,150409,150429,150408,150403,150412,150393,150388,150411,},quest=47463,requires=ANNIVERSARY,},
 	[121913] = {name="Emeriss",locations={[47]={46603940}},loot={150404,150405,150406,150410,150415,150416,150429,150408,150403,150412,150393,150388,150411,},quest=47463,requires=ANNIVERSARY,},
-	[167749] = {name="Doomwalker",locations={[71]={63225047}},loot={{186469,mount=293,},{186501,toy=true,},186459,186460,186461,186462,186463,186464,186465,186466,186467,186468,186475,186481,186484,186506,},quest=60214,requires=ANNIVERSARY,},
+	[167749] = {name="Doomwalker",locations={[71]={63225047}},quest=60214,requires=ANNIVERSARY,
+		loot={
+			{186469,mount=293,}, -- Illidari Doomhawk
+			{208572,mount=1798,}, -- Azure Worldchiller
+			{186501,toy=true,}, -- Doomwalker Trophy Stand
+			186459, -- Archaic Charm of Presence
+			186460, -- Anger-Spark Gloves
+			186461, -- Gilded Trousers of Benediction
+			186462, -- Black-Iron Battlecloak
+			186463, -- Terrorweave Tunic
+			186464, -- Fathom-Helm of the Deeps
+			186465, -- Faceguard of the Endless Watch
+			186466, -- Ethereum Nexus-Reaver
+			186467, -- Barrel-Blade Longrifle
+			186468, -- Talon of the Tempest
+			186475, -- Hellstitched Mantle
+			186481, -- Darkcrest Waistguard
+			186484, -- Voidforged Greaves
+			186506, -- Akama's Edge
+		},
+	},
 }, true)

@@ -7,7 +7,7 @@ SilverDragon = addon
 SilverDragon.NAMESPACE = ns -- for separate addons
 addon.events = LibStub("CallbackHandler-1.0"):New(addon)
 
-ns.CLASSIC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
+ns.CLASSIC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE -- rolls forward
 ns.CLASSICERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC -- forever vanilla
 
 local faction = UnitFactionGroup("player")
@@ -47,7 +47,7 @@ do
 	Debug = addon.Debug
 end
 
-BINDING_HEADER_SILVERDRAGON = "稀有怪獸與牠們的產地"
+BINDING_HEADER_SILVERDRAGON = "SilverDragon"
 _G["BINDING_NAME_CLICK SilverDragonPopupButton:LeftButton"] = "選取剛發現的稀有怪"
 _G["BINDING_NAME_CLICK SilverDragonMacroButton:LeftButton"] = "掃描附近的稀有怪"
 
@@ -112,6 +112,10 @@ local questMobLookup = {
 	-- [questid] = { [mobid] = true, ... }
 }
 ns.questMobLookup = questMobLookup
+local worldQuestMobLookup = {
+	-- [questid] = { [mobid] = true, ... }
+}
+ns.worldQuestMobLookup = worldQuestMobLookup
 local vignetteMobLookup = {
 	-- [name] = { [mobid] = true, ... }
 }
@@ -129,6 +133,16 @@ function addon:RegisterMobData(source, data, updated)
 	end
 	if not addon.datasources[source] then addon.datasources[source] = {} end
 	MergeTable(addon.datasources[source], data)
+	-- pick up achievements if needed
+	for mobid, mobdata in pairs(data) do
+		if mobdata.achievement and mobdata.criteria then
+			if not ns.achievements[mobdata.achievement] then
+				ns.achievements[mobdata.achievement] = {}
+			end
+			ns.achievements[mobdata.achievement][mobid] = mobdata.criteria
+			ns.mobs_to_achievement[mobid] = mobdata.achievement
+		end
+	end
 end
 function addon:RegisterTreasureData(source, data, updated)
 	if not updated then return end
@@ -159,7 +173,14 @@ do
 					requires=point.require or point.hide_before,
 					vignette=point.vignette,
 					quest=point.quest,
+					hidden=point.hidden,
+					worldquest=point.worldquest,
 				}
+				if point.additional then
+					for _,acoord in pairs(point.additional) do
+						table.insert(data.locations[uiMapID], acoord)
+					end
+				end
 				if point.route and type(point.route) == "table" then
 					data.routes = {[uiMapID] = {point.route}}
 				end
@@ -167,12 +188,17 @@ do
 					data.routes = {[uiMapID] = point.routes}
 				end
 				if point.npc then
-					addon.datasources[source][point.npc] = data
+					if not addon.datasources[source][point.npc] then
+						addon.datasources[source][point.npc] = data
+					else
+						addon.datasources[source][point.npc].locations[uiMapID] = data.locations[uiMapID]
+					end
 					if point.achievement and point.criteria then
 						if not ns.achievements[point.achievement] then
 							ns.achievements[point.achievement] = {}
 						end
 						ns.achievements[point.achievement][point.npc] = point.criteria
+						ns.mobs_to_achievement[point.npc] = point.achievement
 					end
 				else
 					addon.treasuresources[source][point.vignette] = data
@@ -182,22 +208,22 @@ do
 	end
 end
 do
-	local function addQuestMobLookup(mobid, quest)
+	local function addQuestMobLookup(lookup, mobid, quest)
 		if type(quest) == "table" then
 			if quest.alliance then
-				return addQuestMobLookup(mobid, faction == "Alliance" and quest.alliance or quest.horde)
+				return addQuestMobLookup(lookup, mobid, faction == "Alliance" and quest.alliance or quest.horde)
 			end
 			for _, questid in ipairs(quest) do
-				if not questMobLookup[quest] then
-					questMobLookup[quest] = {}
+				if not lookup[questid] then
+					lookup[questid] = {}
 				end
-				questMobLookup[quest][mobid] = true
+				lookup[questid][mobid] = true
 			end
 		else
-			if not questMobLookup[quest] then
-				questMobLookup[quest] = {}
+			if not lookup[quest] then
+				lookup[quest] = {}
 			end
-			questMobLookup[quest][mobid] = true
+			lookup[quest][mobid] = true
 		end
 	end
 	local function addMobToLookups(mobid, mobdata)
@@ -214,7 +240,10 @@ do
 		end
 		-- In the olden days, we had one mob per quest and/or vignette. Alas...
 		if mobdata.quest then
-			addQuestMobLookup(mobid, mobdata.quest)
+			addQuestMobLookup(questMobLookup, mobid, mobdata.quest)
+		end
+		if mobdata.worldquest then
+			addQuestMobLookup(worldQuestMobLookup, mobid, mobdata.worldquest)
 		end
 		if mobdata.vignette then
 			local vignetteMobs = vignetteMobLookup[mobdata.vignette]

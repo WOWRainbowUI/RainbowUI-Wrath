@@ -31,30 +31,10 @@ local IsInRaid, IsInGroup, SendChatMessage = IsInRaid, IsInGroup, SendChatMessag
 -- Make sure FCT is loaded
 EnableAddOn("Blizzard_CombatText")
 local loadFCT = nil
-if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE or C_GameRules then -- Retail, Classic patch 1.14.4, Wrath patch 3.4.3
-	if not IsAddOnLoaded("Blizzard_CombatText") then
-		loadFCT = function()
-			loadFCT = nil
-			LoadAddOn("Blizzard_CombatText")
-		end
-	end
-else
-	if GetCVar("enableFloatingCombatText") == "0" then
-		loadFCT = function()
-			loadFCT = nil
-			if not IsAddOnLoaded("Blizzard_CombatText") then
-				if SHOW_COMBAT_TEXT and SHOW_COMBAT_TEXT == "0" then -- Classic
-					SHOW_COMBAT_TEXT = "1" -- Must be set to 1 for OnLoad to properly initialize
-					LoadAddOn("Blizzard_CombatText")
-					SHOW_COMBAT_TEXT = "0"
-				else
-					SetCVar("enableFloatingCombatText", "1") -- Must be set to 1 for OnLoad to properly initialize
-					LoadAddOn("Blizzard_CombatText")
-					SetCVar("enableFloatingCombatText", "0")
-				end
-				CombatText_UpdateDisplayedMessages()
-			end
-		end
+if not IsAddOnLoaded("Blizzard_CombatText") then
+	loadFCT = function()
+		loadFCT = nil
+		LoadAddOn("Blizzard_CombatText")
 	end
 end
 
