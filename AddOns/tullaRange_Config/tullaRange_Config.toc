@@ -1,4 +1,4 @@
-## Interface: 100107
+## Interface: 100200
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
 ## Title-zhTW: |cff00CCFF[快捷列]|r 射程著色-設定選項
