@@ -1,8 +1,8 @@
-## Interface: 11404
+## Interface: 11500
 ## Title: Spellbook Abridged
 ## Notes: A Spellbook Filter to reduce clutter from multiple ranks of the same spell.
 ## Author: LBXZero, Artscout375
-## Version: 2.6.10
+## Version: 2.6.11
 ## SavedVariablesPerCharacter: SpellBookAbridgedOptions
 
 ## Title-zhTW: |cff00CCFF[快捷列]|r 自動升級法術
