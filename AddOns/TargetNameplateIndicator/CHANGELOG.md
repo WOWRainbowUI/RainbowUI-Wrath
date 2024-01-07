@@ -1,3 +1,22 @@
+## 1.53
+- Add missing localisation entries on CurseForge
+
+## 1.52
+- Add green_arrow_down_11384 texture
+  - Suggested by Hayan of CurseForge, from [Iconpacks](https://iconpacks.net/?utm_source=link-attribution&utm_content=11384)
+
+## 1.51
+- Add missing localisation entries on CurseForge
+
+## 1.50
+- Add option to control frame strata of indicator
+- Bump TOC Interface version to 10.2.0
+- Bump TOC Interface version for Classic to 1.15.0
+
+## 1.49
+- Bump TOC Interface version to 10.1.7
+- Bump TOC Interface version for Classic to 1.14.4
+
 ## 1.48
 - Bump TOC Interface version to 10.1.5
 - Bump TOC Interface version for WotLK Classic to 3.4.2

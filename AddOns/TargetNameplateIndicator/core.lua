@@ -58,6 +58,7 @@ do
 			texture = "Interface\\AddOns\\TargetNameplateIndicator\\Textures\\Reticule",
 			height = 70,
 			width = 70,
+			frameStrata = "BACKGROUND",
 			opacity = 1,
 			texturePoint = "BOTTOM",
 			anchorPoint = "TOP",
@@ -80,7 +81,7 @@ do
 			target = {
 				enable = true,
 				self = {
-					enable = true,
+					enable = false,
 					texture = "Interface\\AddOns\\TargetNameplateIndicator\\Textures\\NeonWhiteArrow",
 					height = 70,
 					width = 70,
@@ -91,7 +92,7 @@ do
 					yOffset = -5,
 				},
 				friendly = {
-					enable = true,
+					enable = false,
 					texture = "Interface\\AddOns\\TargetNameplateIndicator\\Textures\\NeonGreenArrow",
 					height = 70,
 					width = 70,
@@ -116,7 +117,7 @@ do
 			mouseover = {
 				enable = true,
 				self = {
-					enable = true,
+					enable = false,
 					texture = "Interface\\AddOns\\TargetNameplateIndicator\\Textures\\whitearrow1",
 					height = 70,
 					width = 70,
@@ -188,7 +189,7 @@ do
 			targettarget = {
 				enable = true,
 				self = {
-					enable = true,
+					enable = false,
 					texture = "Interface\\AddOns\\TargetNameplateIndicator\\Textures\\whitearrow1",
 					height = 70,
 					width = 70,
