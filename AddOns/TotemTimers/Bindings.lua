@@ -7,7 +7,7 @@ local SpellIDs = TotemTimers.SpellIDs
 local TRACKER_END = 8
 
 local L = LibStub("AceLocale-3.0"):GetLocale("TotemTimers", true)
-
+--[[
 BINDING_NAME_TOTEMTIMERSSET1 = "Set 1"
 BINDING_NAME_TOTEMTIMERSSET2 = "Set 2"
 BINDING_NAME_TOTEMTIMERSSET3 = "Set 3"
@@ -19,7 +19,7 @@ BINDING_NAME_TOTEMTIMERSSET8 = "Set 8"
 BINDING_NAME_TOTEMTIMERSCLOSE = "Close All Menus"
 BINDING_NAME_TOTEMTIMERSMULTICAST = "Active Multicast (Call of Elements etc.)"
 BINDING_NAME_TOTEMTIMERSMULTICASTMENU = "Open Multicast Menu"
-
+--]]
 local _G = getfenv()
 
 for i=1,4 do
@@ -40,7 +40,7 @@ end
 local function SetupSpellNames()
     BINDING_NAME_TOTEMTIMERSLIGHTNINGSHIELD = SpellNames[SpellIDs.LightningShield]      
     BINDING_NAME_TOTEMTIMERSWATERSHIELD = SpellNames[SpellIDs.WaterShield] or "Water Shield"
-    BINDING_NAME_TOTEMTIMERSTOTEMICCALL = SpellNames[SpellIDs.TotemicCall] or "Totemic Recall"
+    BINDING_NAME_TOTEMTIMERSTOTEMICCALL = SpellNames[SpellIDs.TotemicCall] or "收回圖騰"
     BINDING_NAME_TOTEMTIMERSEARTHSHOCK = SpellNames[SpellIDs.EarthShock]
 	BINDING_NAME_TOTEMTIMERSFLAMESHOCK = SpellNames[SpellIDs.FlameShock]
 	BINDING_NAME_TOTEMTIMERSFROSTSHOCK = SpellNames[SpellIDs.FrostShock]
