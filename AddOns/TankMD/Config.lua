@@ -15,6 +15,9 @@ config.misdirectSpells = {
 config.misdirectButtons = {
 	[1] = "TankMDButton1",
 	[2] = "TankMDButton2",
+	[3] = "TankMDButton3",
+	[4] = "TankMDButton4",
+	[5] = "TankMDButton5",
 }
 
 -- Events which queue a tank update

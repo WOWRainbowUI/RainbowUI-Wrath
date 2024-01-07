@@ -4,4 +4,7 @@
 		 -->
 	<Binding name="CLICK TankMDButton1:LeftButton" header="TankMD " category="ADDONS" runOnUp="false" />
 	<Binding name="CLICK TankMDButton2:LeftButton" category="ADDONS" runOnUp="false" />
+	<Binding name="CLICK TankMDButton3:LeftButton" category="ADDONS" runOnUp="false" />
+	<Binding name="CLICK TankMDButton4:LeftButton" category="ADDONS" runOnUp="false" />
+	<Binding name="CLICK TankMDButton5:LeftButton" category="ADDONS" runOnUp="false" />
 </Bindings>
