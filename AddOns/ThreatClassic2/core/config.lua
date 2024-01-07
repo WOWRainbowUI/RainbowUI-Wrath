@@ -46,7 +46,7 @@ defaultConfig.frame = {
 -- backdrop settings
 defaultConfig.backdrop = {
     texture             = defaultTexture,                       -- backdrop texture
-    color               = {0, 0, 0, 1},                         -- backdrop color
+    color               = {0, 0, 0, 0.1},                         -- backdrop color
     edgeTexture         = defaultTexture,                       -- backdrop edge texture
     edgeColor           = {0, 0, 0, 1},                         -- backdrop edge color
     tile                = false,                                -- backdrop texture tiling

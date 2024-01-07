@@ -1,14 +1,11 @@
-## Interface: 11403
+## Interface: 11500
 ## Title: ThreatClassic2
 ## Notes: Simple threat meter for WoW Classic, TBCC and WotlK.
-## Title-zhTW: |cffFF2D2D[戰鬥]|r 仇恨監控
-## Notes-zhTW: ThreatClassic2 |n顯示隊友的仇恨值，有 OT 提醒、許多校正和顏色設定。|n|cffffd200使用方法：|r在仇恨值視窗標題列上面點右鍵，打開設定選項。
-## DefaultState: disabled
 ## Author: Dennis-Florian Herr (dfherr)
 ## X-Curse-Project-ID: 355497
 ## X-WoWI-ID: 25966
 ## X-Wago-ID: pkNM1ONz
-## Version: 2.48
+## Version: 2.49
 ## SavedVariables: ThreatClassic2DB
 ## SavedVariablesPerCharacter: TC2_Options
 
@@ -19,5 +16,10 @@
 
 ## X-License: MIT
 ## X-Website: https://github.com/dfherr/ThreatClassic2
+
+## Title-zhTW: |cffFF2D2D[戰鬥]|r 仇恨監控
+## Notes-zhTW: ThreatClassic2 |n|n顯示隊友的仇恨值，有 OT 提醒、許多校正和顏色設定。|n|n|cffffd200使用方法: |r在仇恨值視窗標題列上面點右鍵，打開設定選項。
+## X-Category-zhTW: 戰鬥
+## DefaultState: disabled
 
 ThreatClassic2.xml
