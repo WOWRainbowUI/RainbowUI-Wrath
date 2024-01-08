@@ -230,7 +230,8 @@ function VUHDO_clusterBorderBouquetCallback(aUnit, anIsActive, anIcon, aTimer, a
 	for _, tButton in pairs(VUHDO_getUnitButtonsSafe(aUnit)) do
 		tBorder = VUHDO_getClusterBorderFrame(tButton);
 		if aColor then
-			tBorder:SetBackdropBorderColor(VUHDO_backColor(aColor));
+			tBorder:SetBackdropBorderColor(VUHDO_backColorWithFallback(aColor));
+
 			tBorder:Show();
 		else
 			tBorder:Hide();

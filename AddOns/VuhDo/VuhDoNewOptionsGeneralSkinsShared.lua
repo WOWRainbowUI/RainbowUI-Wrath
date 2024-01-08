@@ -223,6 +223,13 @@ local VUHDO_DEFAULT_PROFILES = {
 					["growth"] = "TOPLEFT",
 					["width"] = 56,
 				},
+				["PRIVATE_AURA"] = {
+					["show"] = true,
+					["scale"] = 0.8,
+					["point"] = "LEFT",
+					["xAdjust"] = 5,
+					["yAdjust"] = 0,
+				},
 				["RAID_ICON"] = {
 					["show"] = true,
 					["yAdjust"] = -20,
@@ -922,6 +929,13 @@ local VUHDO_DEFAULT_PROFILES = {
 					["growth"] = "TOPLEFT",
 					["width"] = 84.99999950797955,
 				},
+				["PRIVATE_AURA"] = {
+					["show"] = true,
+					["scale"] = 0.8,
+					["point"] = "LEFT",
+					["xAdjust"] = 5,
+					["yAdjust"] = 0,
+				},
 				["RAID_ICON"] = {
 					["show"] = true,
 					["yAdjust"] = -20,
@@ -1091,6 +1105,13 @@ local VUHDO_DEFAULT_PROFILES = {
 					["growth"] = "TOPLEFT",
 					["width"] = 143.0000131439748,
 				},
+				["PRIVATE_AURA"] = {
+					["show"] = true,
+					["scale"] = 0.8,
+					["point"] = "LEFT",
+					["xAdjust"] = 5,
+					["yAdjust"] = 0,
+				},
 				["RAID_ICON"] = {
 					["show"] = true,
 					["yAdjust"] = -20,
@@ -1252,6 +1273,13 @@ local VUHDO_DEFAULT_PROFILES = {
 					["growth"] = "TOPLEFT",
 					["width"] = 84.99999051103423,
 				},
+				["PRIVATE_AURA"] = {
+					["show"] = true,
+					["scale"] = 0.8,
+					["point"] = "LEFT",
+					["xAdjust"] = 5,
+					["yAdjust"] = 0,
+				},
 				["RAID_ICON"] = {
 					["show"] = true,
 					["yAdjust"] = -20,
@@ -1412,6 +1440,13 @@ local VUHDO_DEFAULT_PROFILES = {
 					["height"] = 82.99997856196622,
 					["growth"] = "TOPLEFT",
 					["width"] = 118.0000032332772,
+				},
+				["PRIVATE_AURA"] = {
+					["show"] = true,
+					["scale"] = 0.8,
+					["point"] = "LEFT",
+					["xAdjust"] = 5,
+					["yAdjust"] = 0,
 				},
 				["RAID_ICON"] = {
 					["show"] = true,
@@ -2385,8 +2420,6 @@ local VUHDO_PROFILE_MODEL = {
 	["CONFIG"] = {
 		["-root-"] = VUHDO_PROFILE_MODEL_MATCH_ALL,
 
-		["RANGE_SPELL"] = VUHDO_PROFILE_MODEL_MATCH_NEVER,
-		["RANGE_PESSIMISTIC"] = VUHDO_PROFILE_MODEL_MATCH_NEVER,
 		["CURRENT_PROFILE"] = VUHDO_PROFILE_MODEL_MATCH_NEVER,
 		["IS_CLIQUE_COMPAT_MODE"] = VUHDO_PROFILE_MODEL_MATCH_NEVER, 
 		["IS_CLIQUE_PASSTHROUGH"] = VUHDO_PROFILE_MODEL_MATCH_NEVER,

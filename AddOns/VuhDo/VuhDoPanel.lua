@@ -477,7 +477,9 @@ end
 --
 local tUnit;
 function VUHDO_addUnitButton(aHealButton, aPanelNum)
+
 	tUnit = aHealButton:GetAttribute("unit");
+
 	if not VUHDO_UNIT_BUTTONS[tUnit] then
 		VUHDO_UNIT_BUTTONS[tUnit] = { };
 		VUHDO_UNIT_BUTTONS_PANEL[tUnit] = { };
@@ -489,4 +491,7 @@ function VUHDO_addUnitButton(aHealButton, aPanelNum)
 
 	tinsert(VUHDO_UNIT_BUTTONS[tUnit], aHealButton);
 	tinsert(VUHDO_UNIT_BUTTONS_PANEL[tUnit][aPanelNum], aHealButton);
+
+	VUHDO_refreshPrivateAuras(aPanelNum, aHealButton, tUnit);
+
 end

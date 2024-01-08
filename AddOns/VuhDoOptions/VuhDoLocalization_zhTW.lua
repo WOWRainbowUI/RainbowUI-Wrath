@@ -187,9 +187,9 @@ VUHDO_I18N_TT.K060 = "只顯示你可以驅散的減益.不勾選則顯示全部
 VUHDO_I18N_TT.K062 = "過量治療時血條閃爍.";
 VUHDO_I18N_TT.K063 = "顯示你對自己的治療，這可能對某些玩家造成誤導.";
 VUHDO_I18N_TT.K065 = "選擇檢查玩家是否在治療範圍內的刷新率.注意：較低的設定值可能導致系統表現的下降.";
-VUHDO_I18N_TT.K066 = "檢查一個\"典型的\"治療法術的距離.如果您不具有任何增益法術也選此項.";
+VUHDO_I18N_TT.K066 = "Check this to use the range of a \"typical\" spell. Also select this if you dont have any relevant spells.";
 VUHDO_I18N_TT.K067 = "輸入一個法術名稱,該法術將被用於檢測距離.";
-VUHDO_I18N_TT.K068 = "用右邊的法術施放距離進行距離檢測.";
+VUHDO_I18N_TT.K068 = "Select this to have the spell range checked due to the range of the spell below.";
 VUHDO_I18N_TT.K070 = "選擇HOT圖標基於條高度的縮放百分比";
 VUHDO_I18N_TT.K071 = "血條內部右側顯示HOT圖標";
 VUHDO_I18N_TT.K072 = "血條內部左側顯示HOT圖標";
@@ -648,6 +648,8 @@ VUHDO_I18N_TT.K588 = "Show incoming spell casts from friendly units.";
 VUHDO_I18N_TT.K589 = "Show incoming spell casts from enemy units.";
 VUHDO_I18N_TT.K590 = "Show all incoming spell casts.";
 VUHDO_I18N_TT.K591 = "Filter to show only incoming spell casts from boss/NPC units.";
+VUHDO_I18N_TT.K592 = "Check this to show private aura icons on the health bar.";
+VUHDO_I18N_TT.K593 = "Select a size for your private aura icons.";
 
 -- TBCC game version specific strings (tooltip IDs begin at K900)
 
@@ -1191,6 +1193,8 @@ VUHDO_I18N_BOSS_ONLY = "Boss Only";
 
 VUHDO_I18N_X = "X";
 VUHDO_I18N_Y = "Y";
+
+VUHDO_I18N_PRIVATE_AURAS = "Private Auras";
 
 -- TBCC game version specific strings
 

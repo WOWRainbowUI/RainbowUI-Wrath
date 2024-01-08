@@ -117,13 +117,59 @@ local VUHDO_DEFAULT_MODELS = {
 
 
 local VUHDO_DEFAULT_RANGE_SPELLS = {
-	["PALADIN"] = VUHDO_SPELL_ID.FLASH_OF_LIGHT,
-	["SHAMAN"] = VUHDO_SPELL_ID.HEALING_WAVE,
-	["DRUID"] = VUHDO_SPELL_ID.REJUVENATION,
-	["PRIEST"] = VUHDO_SPELL_ID.HEAL,
-	["MONK"] = VUHDO_SPELL_ID.DETOX,
-	["EVOKER"] = VUHDO_SPELL_ID.LIVING_FLAME,
-}
+	["WARRIOR"] = {
+		["HELPFUL"] = { }, -- FIXME: anything?
+		["HARMFUL"] = { VUHDO_SPELL_ID.TAUNT },
+	},
+	["ROGUE"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.SHADOWSTEP },
+		["HARMFUL"] = { VUHDO_SPELL_ID.SHADOWSTEP },
+	},
+	["HUNTER"] = {
+		["HELPFUL"] = { }, -- FIXME: anything?
+		["HARMFUL"] = { 193455, 19434, 132031 }, -- VUHDO_SPELL_ID.COBRA_SHOT, VUHDO_SPELL_ID.AIMED_SHOT, VUHDO_SPELL_ID.STEADY_SHOT
+	},
+	["PALADIN"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.FLASH_OF_LIGHT },
+		["HARMFUL"] = { VUHDO_SPELL_ID.HAND_OF_RECKONING },
+	},
+	["MAGE"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.ARCANE_INTELLECT },
+		["HARMFUL"] = { 116, 30451, 133 }, -- VUHDO_SPELL_ID.FROSTBOLT, VUHDO_SPELL_ID.ARCANE_BLAST, VUHDO_SPELL_ID.FIREBALL
+	},
+	["WARLOCK"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.SOULSTONE },
+		["HARMFUL"] = { VUHDO_SPELL_ID.SHADOW_BOLT },
+	},
+	["SHAMAN"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.HEALING_WAVE },
+		["HARMFUL"] = { VUHDO_SPELL_ID.LIGHTNING_BOLT },
+	},
+	["DRUID"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.REJUVENATION },
+		["HARMFUL"] = { VUHDO_SPELL_ID.MOONFIRE },
+	},
+	["PRIEST"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.FLASH_HEAL },
+		["HARMFUL"] = { VUHDO_SPELL_ID.SMITE },
+	},
+	["DEATHKNIGHT"] = {
+		["HELPFUL"] = { 47541 }, -- VUHDO_SPELL_ID.DEATH_COIL
+		["HARMFUL"] = { 47541, 49576 }, -- VUHDO_SPELL_ID.DEATH_COIL, VUHDO_SPELL_ID.DEATH_GRIP
+	},
+	["MONK"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.DETOX },
+		["HARMFUL"] = { VUHDO_SPELL_ID.PROVOKE },
+	},
+	["DEMONHUNTER"] = {
+		["HELPFUL"] = { }, -- FIXME: anything?
+		["HARMFUL"] = { VUHDO_SPELL_ID.THROW_GLAIVE },
+	},
+	["EVOKER"] = {
+		["HELPFUL"] = { VUHDO_SPELL_ID.LIVING_FLAME },
+		["HARMFUL"] = { VUHDO_SPELL_ID.LIVING_FLAME },
+	},
+};
 
 
 
@@ -713,8 +759,14 @@ local VUHDO_DEFAULT_CONFIG = {
 	["UPDATE_HOTS_MS"] = 250,
 	["SCAN_RANGE"] = "2", -- 0=all, 2=100 yards, 3=40 yards
 
-	["RANGE_SPELL"] = "",
-	["RANGE_PESSIMISTIC"] = true,
+	["RANGE_SPELL"] = {
+		["HELPFUL"] = "",
+		["HARMFUL"] = "",
+	},
+	["RANGE_PESSIMISTIC"] = {
+		["HELPFUL"] = true,
+		["HARMFUL"] = true,
+	},
 
 	["IS_SHOW_GCD"] = false,
 	["IS_SCAN_TALENTS"] = true,
@@ -856,17 +908,12 @@ end
 --
 function VUHDO_loadDefaultConfig()
 	local tClass;
-	 _, tClass = UnitClass("player");
+	_, tClass = UnitClass("player");
 
 	if (VUHDO_CONFIG == nil) then
 		VUHDO_CONFIG = VUHDO_decompressOrCopy(VUHDO_DEFAULT_CONFIG);
-
-		if (VUHDO_DEFAULT_RANGE_SPELLS[tClass] ~= nil) then
-			VUHDO_CONFIG["RANGE_SPELL"] = VUHDO_DEFAULT_RANGE_SPELLS[tClass];
-			VUHDO_CONFIG["RANGE_PESSIMISTIC"] = false;
-		end
 	end
-
+	
 	VUHDO_CONFIG["BLIZZ_UI_HIDE_PLAYER"] = VUHDO_convertToTristate(VUHDO_CONFIG["BLIZZ_UI_HIDE_PLAYER"], 3, 2);
 	VUHDO_CONFIG["BLIZZ_UI_HIDE_PARTY"] = VUHDO_convertToTristate(VUHDO_CONFIG["BLIZZ_UI_HIDE_PARTY"], 3, 2);
 	VUHDO_CONFIG["BLIZZ_UI_HIDE_TARGET"] = VUHDO_convertToTristate(VUHDO_CONFIG["BLIZZ_UI_HIDE_TARGET"], 3, 2);
@@ -881,6 +928,27 @@ function VUHDO_loadDefaultConfig()
 	if ((VUHDO_CONFIG["VERSION"] or 1) < 4) then
 		VUHDO_CONFIG["IS_SHARE"] = true;
 		VUHDO_CONFIG["VERSION"] = 4;
+	end
+
+	if (VUHDO_DEFAULT_RANGE_SPELLS[tClass] ~= nil) then
+		for tUnitReaction, tRangeSpells in pairs(VUHDO_DEFAULT_RANGE_SPELLS[tClass]) do
+			local tIsGuessRange = true;
+
+			if VUHDO_strempty(VUHDO_CONFIG["RANGE_SPELL"][tUnitReaction]) then
+				for _, tRangeSpell in pairs(tRangeSpells) do
+					if type(tRangeSpell) == "number" then
+						tRangeSpell = IsPlayerSpell(tRangeSpell) and GetSpellInfo(tRangeSpell) or "!";
+					end
+
+					if tRangeSpell ~= "!" then
+						VUHDO_CONFIG["RANGE_SPELL"][tUnitReaction] = tRangeSpell;
+						tIsGuessRange = false;
+					end
+				end
+
+				VUHDO_CONFIG["RANGE_PESSIMISTIC"][tUnitReaction] = tIsGuessRange;
+			end
+		end
 	end
 
 	-- 3.4.0 - Wrath of the Lich King Classic - phase 1
@@ -1493,6 +1561,14 @@ local VUHDO_DEFAULT_PER_PANEL_SETUP = {
 			["R"] = 0, ["G"] = 0, ["B"] = 0, ["O"] = 1,
 			["useBackground"] = true, ["useOpacity"] = true,
 		},
+	},
+
+	["PRIVATE_AURA"] = {
+		["show"] = true,
+		["scale"] = 0.8,
+		["point"] = "LEFT",
+		["xAdjust"] = 5,
+		["yAdjust"] = 0,
 	},
 
 	["RAID_ICON"] = {
