@@ -1,5 +1,5 @@
 ## Interface: 11500
-## Version: v1.4 Fix
+## Version: v1.4 Fix2
 ## Title: BlockMessageTeamGuard
 ## Notes: BlockMessageTeamGuard V1.4
 ## SavedVariables: LP_DB
