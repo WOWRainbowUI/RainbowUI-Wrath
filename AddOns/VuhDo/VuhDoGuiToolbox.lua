@@ -853,6 +853,26 @@ end
 
 
 --
+local tOpacity;
+function VUHDO_backColorWithFallback(aColor)
+	
+	if aColor and aColor["useOpacity"] and aColor["O"] then
+		tOpacity = aColor["O"];
+	else
+		tOpacity = 1;
+	end
+
+	if aColor and aColor["useBackground"] and aColor["R"] and aColor["G"] and aColor["B"] then
+		return aColor["R"], aColor["G"], aColor["B"], tOpacity;
+	else
+		return 1, 1, 1, tOpacity;
+	end
+
+end
+
+
+
+--
 function VUHDO_backColor(aColor)
 	return aColor["R"], aColor["G"], aColor["B"], aColor["O"];
 end

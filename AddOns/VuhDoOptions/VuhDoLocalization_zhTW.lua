@@ -188,9 +188,9 @@ VUHDO_I18N_TT.K060 = "只顯示自己可以驅散的減益，不勾選則會顯�
 VUHDO_I18N_TT.K062 = "過量治療會讓血量條變亮。";
 VUHDO_I18N_TT.K063 = "也要顯示自己造成的即將治療，但感覺會被其他玩家的誤導。";
 VUHDO_I18N_TT.K065 = "選擇檢查玩家是否在範圍內的更新頻率。溫馨提示: 較低的數值更新較頻繁，可能會降低系統效能。";
-VUHDO_I18N_TT.K066 = "使用 \"典型的\" 法術來做範圍檢查。如果你沒有任何增益類型的法術也請勾選此選項。";
+VUHDO_I18N_TT.K066 = "使用 \"典型的\" 法術來做範圍檢查。如果你沒有任何相關法術也請勾選此選項。";
 VUHDO_I18N_TT.K067 = "輸入用來做範圍檢查的法術名稱。";
-VUHDO_I18N_TT.K068 = "使用右方所指定的法術施法範圍來做範圍檢查。";
+VUHDO_I18N_TT.K068 = "使用下方所指定的法術施法範圍來做範圍檢查。";
 VUHDO_I18N_TT.K070 = "選擇持續性治療的圖示大小為條列高度的多少百分比。";
 VUHDO_I18N_TT.K071 = "持續性治療圖示顯示在血量條內部的右側。";
 VUHDO_I18N_TT.K072 = "持續性治療圖示顯示在血量條內部的左側。";
@@ -649,6 +649,8 @@ VUHDO_I18N_TT.K588 = "只顯示友方單位即將施放的法術。";
 VUHDO_I18N_TT.K589 = "只顯示敵方單位即將施放的法術。";
 VUHDO_I18N_TT.K590 = "顯示所有即將施放的法術。";
 VUHDO_I18N_TT.K591 = "只顯示首領/NPC 即將施放的法術。";
+VUHDO_I18N_TT.K592 = "在血量條上顯示非公開性的光環圖示。";
+VUHDO_I18N_TT.K593 = "選擇非公開性的光環圖示的大小。";
 
 -- TBCC game version specific strings (tooltip IDs begin at K900)
 
@@ -1192,6 +1194,8 @@ VUHDO_I18N_BOSS_ONLY = "只有首領";
 
 VUHDO_I18N_X = "X";
 VUHDO_I18N_Y = "Y";
+
+VUHDO_I18N_PRIVATE_AURAS = "非公開性的光環";
 
 -- TBCC game version specific strings
 

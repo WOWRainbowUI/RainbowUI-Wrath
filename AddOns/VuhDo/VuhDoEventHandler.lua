@@ -21,7 +21,7 @@ local VUHDO_parseCombatLogEvent;
 local VUHDO_updateAllOutRaidTargetButtons;
 local VUHDO_updateAllRaidTargetIndices;
 local VUHDO_updateDirectionFrame;
-
+local VUHDO_checkInteractDistance;
 local VUHDO_updateHealth;
 local VUHDO_updateManaBars;
 local VUHDO_updateTargetBars;
@@ -40,7 +40,6 @@ local VUHDO_getCurrentMouseOver;
 local VUHDO_UIFrameFlash_OnUpdate = function() end;
 
 local GetTime = GetTime;
-local CheckInteractDistance = CheckInteractDistance;
 local UnitInRange = UnitInRange;
 local IsSpellInRange = IsSpellInRange;
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation;
@@ -56,7 +55,10 @@ local UnitThreatSituation = UnitThreatSituation;
 local InCombatLockdown = InCombatLockdown;
 local type = type;
 
-local sRangeSpell, sIsRangeKnown, sIsHealerMode;
+local sRangeSpell;
+local sIsHelpfulRangeKnown = false;
+local sIsHarmfulRangeKnown = false;
+local sIsHealerMode;
 local sIsDirectionArrow = false;
 local VuhDoGcdStatusBar;
 local sHotToggleUpdateSecs = 1;
@@ -93,15 +95,22 @@ local function VUHDO_eventHandlerInitLocalOverrides()
 	VuhDoGcdStatusBar = _G["VuhDoGcdStatusBar"];
 	VuhDoDirectionFrame = _G["VuhDoDirectionFrame"];
 	VUHDO_updateDirectionFrame = _G["VUHDO_updateDirectionFrame"];
+	VUHDO_checkInteractDistance = _G["VUHDO_checkInteractDistance"];
 	VUHDO_getUnitZoneName = _G["VUHDO_getUnitZoneName"];
 	VUHDO_updateClusterHighlights = _G["VUHDO_updateClusterHighlights"];
 	VUHDO_updateCustomDebuffTooltip = _G["VUHDO_updateCustomDebuffTooltip"];
 	VUHDO_getCurrentMouseOver = _G["VUHDO_getCurrentMouseOver"];
 	VUHDO_UIFrameFlash_OnUpdate = _G["VUHDO_UIFrameFlash_OnUpdate"];
 
-	sRangeSpell = VUHDO_CONFIG["RANGE_SPELL"] or "*foo*";
+	-- FIXME: why can't model sanity be run prior to burst cache initialization?
+	if type(VUHDO_CONFIG["RANGE_SPELL"]) == "table" and type(VUHDO_CONFIG["RANGE_PESSIMISTIC"]) == "table" then
+		sRangeSpell = VUHDO_CONFIG["RANGE_SPELL"];
+		sIsHelpfulRangeKnown = not VUHDO_CONFIG["RANGE_PESSIMISTIC"]["HELPFUL"] and GetSpellInfo(sRangeSpell["HELPFUL"]) ~= nil;
+		sIsHarmfulRangeKnown = not VUHDO_CONFIG["RANGE_PESSIMISTIC"]["HARMFUL"] and GetSpellInfo(sRangeSpell["HARMFUL"]) ~= nil;
+	end
+
 	sIsHealerMode = not VUHDO_CONFIG["THREAT"]["IS_TANK_MODE"];
-	sIsRangeKnown = not VUHDO_CONFIG["RANGE_PESSIMISTIC"] and GetSpellInfo(sRangeSpell) ~= nil;
+
 	sIsDirectionArrow = VUHDO_isShowDirectionArrow();
 
 	sHotToggleUpdateSecs = VUHDO_CONFIG["UPDATE_HOTS_MS"] * 0.00033;
@@ -823,7 +832,7 @@ end
 --
 local function VUHDO_printAbout()
 
-	VUHDO_Msg("VuhDo |cffffe566['vu:du:]|r v" .. VUHDO_VERSION .. " (use /vd). Currently maintained by Ivaria@US-Hyjal in honor of Marshy and our two daughters.");
+	VUHDO_Msg("VuhDo |cffffe566['vu:du:]|r v" .. VUHDO_VERSION .. " (use /vd). Currently maintained by Ivaria@US-Hyjal in honor of Anny and our two daughters.");
 
 end
 
@@ -1178,6 +1187,7 @@ end
 
 --
 local tIsInRange, tIsCharmed;
+local tIsRangeKnown, tRangeSpell;
 local function VUHDO_updateAllRange()
 	for tUnit, tInfo in pairs(VUHDO_RAID) do
 		tInfo["baseRange"] = "player" == tUnit or "pet" == tUnit or UnitInRange(tUnit);
@@ -1195,15 +1205,23 @@ local function VUHDO_updateAllRange()
 			tIsInRange = false;
 		else
 			-- Check if unit is in range
-			if sIsRangeKnown then
+			if UnitCanAttack("player", tUnit) then
+				tIsRangeKnown = sIsHarmfulRangeKnown;
+				tRangeSpell = sRangeSpell["HARMFUL"];
+			else
+				tIsRangeKnown = sIsHelpfulRangeKnown;
+				tRangeSpell = sRangeSpell["HELPFUL"];
+			end
+
+			if tIsRangeKnown then
 				tIsInRange = tInfo["connected"] and 
-					(1 == IsSpellInRange(sRangeSpell, tUnit) or 
+					((tRangeSpell and 1 == IsSpellInRange(tRangeSpell, tUnit)) or 
 						((tInfo["dead"] or tInfo["charmed"]) and tInfo["baseRange"]) or "player" == tUnit or 
-						(VUHDO_isSpecialUnit(tUnit) and CheckInteractDistance(tUnit, 1)));
+						(VUHDO_isSpecialUnit(tUnit) and VUHDO_checkInteractDistance(tUnit, 1)));
 			else
 				tIsInRange = tInfo["connected"] and 
 					(tInfo["baseRange"] or 
-						(VUHDO_isSpecialUnit(tUnit) and CheckInteractDistance(tUnit, 1)));
+						(VUHDO_isSpecialUnit(tUnit) and VUHDO_checkInteractDistance(tUnit, 1)));
 			end
 		end
 

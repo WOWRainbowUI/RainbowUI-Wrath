@@ -448,6 +448,11 @@
 										</Scripts>
 									</StatusBar>
 
+									<!-- Private Aura anchor frames 1-3 -->
+									<Frame name="$parentPa1" setAllPoints="true"> </Frame>
+									<Frame name="$parentPa2" setAllPoints="true"> </Frame>
+									<Frame name="$parentPa3" setAllPoints="true"> </Frame>
+
 								</Frames>
 								<Layers>
 									<Layer level="OVERLAY" textureSubLevel="4">

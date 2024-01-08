@@ -187,9 +187,9 @@ VUHDO_I18N_TT.K060 = "只显示你可以驱散的减益.不勾选则显示全部
 VUHDO_I18N_TT.K062 = "过量治疗时血条闪烁.";
 VUHDO_I18N_TT.K063 = "显示你对自己的治疗，这可能对某些玩家造成误导.";
 VUHDO_I18N_TT.K065 = "选择检查玩家是否在治疗范围内的刷新率.注意：较低的设定值可能导致系统表现的下降.";
-VUHDO_I18N_TT.K066 = "检查一个\"典型的\"治疗法术的距离.如果您不具有任何增益法术也选此项.";
+VUHDO_I18N_TT.K066 = "Check this to use the range of a \"typical\" spell. Also select this if you dont have any relevant spells.";
 VUHDO_I18N_TT.K067 = "输入一个法术名称,该法术将被用於检测距离.";
-VUHDO_I18N_TT.K068 = "用右边的法术施放距离进行距离检测.";
+VUHDO_I18N_TT.K068 = "Select this to have the spell range checked due to the range of the spell below.";
 VUHDO_I18N_TT.K070 = "选择HOT图标基於条高度的缩放百分比";
 VUHDO_I18N_TT.K071 = "血条内部右侧显示HOT图标";
 VUHDO_I18N_TT.K072 = "血条内部左侧显示HOT图标";
@@ -643,6 +643,13 @@ VUHDO_I18N_TT.K583 = "Check to make all HoT icons fade out when the HoT is expir
 VUHDO_I18N_TT.K584 = "Check to make all HoT icons flash when the HoT is expiring.";
 VUHDO_I18N_TT.K585 = "Select a color for Evokers";
 VUHDO_I18N_TT.K586 = "Enable to show text only with no icon.";
+VUHDO_I18N_TT.K587 = "Show incoming spell casts only. Spells must be tracked by spell ID not name.";
+VUHDO_I18N_TT.K588 = "Show incoming spell casts from friendly units.";
+VUHDO_I18N_TT.K589 = "Show incoming spell casts from enemy units.";
+VUHDO_I18N_TT.K590 = "Show all incoming spell casts.";
+VUHDO_I18N_TT.K591 = "Filter to show only incoming spell casts from boss/NPC units.";
+VUHDO_I18N_TT.K592 = "Check this to show private aura icons on the health bar.";
+VUHDO_I18N_TT.K593 = "Select a size for your private aura icons.";
 
 -- TBCC game version specific strings (tooltip IDs begin at K900)
 
@@ -1178,6 +1185,16 @@ VUHDO_I18N_MOUSEOVER_TARGET_TARGET_HARM = "鼠标指向目标的目标单位 (�
 VUHDO_I18N_CLOCK = "时钟";
 
 VUHDO_I18N_TEXT_ONLY = "Text only";
+
+VUHDO_I18N_SHOW_FRIENDLY = "Show\nFriendly";
+VUHDO_I18N_SHOW_ENEMY = "Show\nEnemy";
+VUHDO_I18N_SHOW_ALL = "Show All";
+VUHDO_I18N_BOSS_ONLY = "Boss Only";
+
+VUHDO_I18N_X = "X";
+VUHDO_I18N_Y = "Y";
+
+VUHDO_I18N_PRIVATE_AURAS = "Private Auras";
 
 -- TBCC game version specific strings
 

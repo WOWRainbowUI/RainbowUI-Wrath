@@ -742,3 +742,12 @@ end
 function VUHDO_getPanelButtons(aPanelNum)
 	return VUHDO_BUTTONS_PER_PANEL[aPanelNum];
 end
+
+
+
+--
+function VUHDO_getBarPrivateAura(aButton, anIconNumber)
+
+	return _G[format("%sBgBarIcBarHlBarPa%d", aButton:GetName(), anIconNumber)];
+
+end

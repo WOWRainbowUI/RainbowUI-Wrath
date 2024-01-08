@@ -4,7 +4,7 @@ if not VUHDO_VERSION and GetAddOnMetadata then
 	VUHDO_VERSION = GetAddOnMetadata("VuhDo", "Version");
 end
 
-VUHDO_MIN_TOC_VERSION = 30402;
+VUHDO_MIN_TOC_VERSION = 30403;
 VUHDO_COMMS_PREFIX = "VUHDO";
 
 VUHDO_YES = 1;
@@ -643,3 +643,5 @@ VUHDO_CUSTOM_GLOW_CUDE_ICON_KEY = "_CuDe_Icon";
 VUHDO_CUSTOM_GLOW_SWIFTMEND_FRAME_KEY = "_SwMe_Frame";
 VUHDO_CUSTOM_GLOW_SWIFTMEND_ICON_KEY = "_SwMe_Icon";
 
+-- as of 10.2.0 the default Blizzard UI creates two Private Aura anchors
+VUHDO_MAX_PRIVATE_AURAS = 3;

@@ -30,6 +30,11 @@ local sManaBarHeight;
 local sSideBarLeftWidth;
 local sSideBarRightWidth;
 local sRaidIconSetup;
+local sPrivateAuraSetup;
+local sPrivateAuraHeight;
+local sPrivateAuraStep;
+local sPrivateAuraXOffset;
+local sPrivateAuraYOffset;
 local sOverhealTextSetup;
 local sIsManaBouquet;
 local sPanelSetup;
@@ -106,6 +111,16 @@ function VUHDO_initLocalVars(aPanelNum)
 		sSwiftmendIndicatorSetup["xAdjust"] = 5.5;
 		sSwiftmendIndicatorSetup["yAdjust"] = -14;
 	end
+
+	sPrivateAuraSetup = sPanelSetup["PRIVATE_AURA"];
+	sPrivateAuraHeight = sBarScaling["barHeight"];
+
+	local tSign = ("TOPLEFT" == sPrivateAuraSetup["point"] or "LEFT" == sPrivateAuraSetup["point"] or "BOTTOMLEFT" == sPrivateAuraSetup["point"]) and 1 or -1;
+	sPrivateAuraStep = tSign * sPrivateAuraHeight;
+
+	sPrivateAuraXOffset = sPrivateAuraSetup["xAdjust"] * sBarScaling["barWidth"] * 0.01;
+	sPrivateAuraYOffset = -sPrivateAuraSetup["yAdjust"] * sPrivateAuraHeight * 0.01;
+	
 end
 local VUHDO_initLocalVars = VUHDO_initLocalVars;
 
@@ -562,6 +577,44 @@ end
 
 
 --
+local tPrivateAura;
+local tX;
+local function VUHDO_initPrivateAura(aHealthBar, aButton, anAuraIndex)
+
+	tPrivateAura = VUHDO_getBarPrivateAura(aButton, anAuraIndex);
+
+	if not tPrivateAura then
+		return;
+	end
+
+	tPrivateAura:Hide();
+	tPrivateAura:ClearAllPoints();
+	tPrivateAura:SetFrameStrata(aHealthBar:GetFrameStrata());
+	tPrivateAura:SetFrameLevel(aHealthBar:GetFrameLevel() + 2);
+
+	tX = sPrivateAuraXOffset + (sPrivateAuraStep * (anAuraIndex - 1));
+	tPrivateAura:SetPoint(sPrivateAuraSetup["point"], aHealthBar:GetName(), sPrivateAuraSetup["point"], tX, sPrivateAuraYOffset);
+
+	tPrivateAura:SetWidth(sPrivateAuraHeight);
+	tPrivateAura:SetHeight(sPrivateAuraHeight);
+	tPrivateAura:SetScale(sPrivateAuraSetup["scale"] * 0.7);
+
+end
+
+
+
+--
+local function VUHDO_initPrivateAuras(aHealthBar, aButton)
+
+	for tAuraIndex = 1, VUHDO_MAX_PRIVATE_AURAS do
+		VUHDO_initPrivateAura(aHealthBar, aButton, tAuraIndex);
+	end
+
+end
+
+
+
+--
 local tX, tY;
 local function VUHDO_initRaidIcon(aHealthBar, anIcon, aWidth)
 	tX = sRaidIconSetup["xAdjust"] * aWidth * 0.01;
@@ -869,6 +922,7 @@ function VUHDO_initHealButton(aButton, aPanelNum)
 	VUHDO_initHotBars();
 	VUHDO_initAllHotIcons();
 	VUHDO_initCustomDebuffs();
+	VUHDO_initPrivateAuras(sHealthBar, sButton);
 	VUHDO_initRaidIcon(sHealthBar, VUHDO_getBarRoleIcon(sButton, 50), sBarScaling["barWidth"]);
 	VUHDO_initSwiftmendIndicator();
 	VUHDO_initFlashBar();

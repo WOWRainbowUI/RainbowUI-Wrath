@@ -29,6 +29,8 @@ local GetPlayerFacing = GetPlayerFacing;
 local GetSpellBookItemInfo = GetSpellBookItemInfo;
 local CheckInteractDistance = CheckInteractDistance;
 local UnitIsUnit = UnitIsUnit;
+local IsSpellInRange = IsSpellInRange;
+local UnitInRange = UnitInRange;
 local IsAltKeyDown = IsAltKeyDown;
 local IsControlKeyDown = IsControlKeyDown;
 local IsShiftKeyDown = IsShiftKeyDown;
@@ -169,7 +171,8 @@ local VUHDO_CONFIG;
 local VUHDO_GROUPS_BUFFS;
 local VUHDO_BOSS_UNITS;
 local sRangeSpell;
-local sIsGuessRange = true;
+local sIsHelpfulGuessRange = true;
+local sIsHarmfulGuessRange = true;
 local sScanRange;
 local sZeroRange = "";
 
@@ -185,8 +188,14 @@ function VUHDO_toolboxInitLocalOverrides()
 	VUHDO_BOSS_UNITS = _G["VUHDO_BOSS_UNITS"];
 	VUHDO_updateBouquetsForEvent = _G["VUHDO_updateBouquetsForEvent"];
 	sScanRange = tonumber(VUHDO_CONFIG["SCAN_RANGE"]);
-	sRangeSpell = VUHDO_CONFIG["RANGE_SPELL"];
-	sIsGuessRange = VUHDO_CONFIG["RANGE_PESSIMISTIC"] or GetSpellInfo(VUHDO_CONFIG["RANGE_SPELL"]) == nil;
+
+	-- FIXME: why can't model sanity be run prior to burst cache initialization?
+	if type(VUHDO_CONFIG["RANGE_SPELL"]) == "table" and type(VUHDO_CONFIG["RANGE_PESSIMISTIC"]) == "table" then
+		sRangeSpell = VUHDO_CONFIG["RANGE_SPELL"];
+		sIsHelpfulGuessRange = VUHDO_CONFIG["RANGE_PESSIMISTIC"]["HELPFUL"] or GetSpellInfo(sRangeSpell["HELPFUL"]) == nil;
+		sIsHarmfulGuessRange = VUHDO_CONFIG["RANGE_PESSIMISTIC"]["HARMFUL"] or GetSpellInfo(sRangeSpell["HARMFUL"]) == nil;
+	end
+
 	sZeroRange = "0.0 " .. VUHDO_I18N_YARDS;
 end
 
@@ -286,8 +295,31 @@ end
 
 
 --
+function VUHDO_checkInteractDistance(aUnit, aDistIndex)
+
+	if not InCombatLockdown() then
+		return CheckInteractDistance(aUnit, aDistIndex);
+	else
+		if not sIsHarmfulGuessRange and UnitCanAttack("player", aUnit) then
+			return (IsSpellInRange(sRangeSpell["HARMFUL"], aUnit) == 1) and true or false;
+		elseif not sIsHelpfulGuessRange then
+			return (IsSpellInRange(sRangeSpell["HELPFUL"], aUnit) == 1) and true or false;
+		else
+			-- default to showing in-range when we don't know any better
+			return true;
+		end
+	end
+	
+end
+local VUHDO_checkInteractDistance = VUHDO_checkInteractDistance;
+
+
+
+--
 function VUHDO_isTargetInRange(aUnit)
-	return UnitIsUnit("player", aUnit) or CheckInteractDistance(aUnit, 1);
+
+	return UnitIsUnit("player", aUnit) or VUHDO_checkInteractDistance(aUnit, 1);
+
 end
 local VUHDO_isTargetInRange = VUHDO_isTargetInRange;
 
@@ -318,16 +350,30 @@ end
 
 -- returns whether or not a unit is in range
 function VUHDO_isInRange(aUnit)
+	
 	if "player" == aUnit then 
 		return true;
 	elseif VUHDO_isSpecialUnit(aUnit) then 
 		return VUHDO_isTargetInRange(aUnit);
 	elseif VUHDO_unitPhaseReason(aUnit) then
 		return false;
-	elseif (sIsGuessRange) then 
-		return UnitInRange(aUnit);
 	else
-		local tIsSpellInRange = IsSpellInRange(sRangeSpell, aUnit);
+		local tIsGuessRange;
+		local tRangeSpell;
+
+		if UnitCanAttack("player", aUnit) then
+			tIsGuessRange = sIsHarmfulGuessRange;
+			tRangeSpell = sRangeSpell["HARMFUL"];
+		else
+			tIsGuessRange = sIsHelpfulGuessRange;
+			tRangeSpell = sRangeSpell["HELPFUL"];
+		end
+
+		if tIsGuessRange or not tRangeSpell then
+			return UnitInRange(aUnit);
+		end
+
+		local tIsSpellInRange = IsSpellInRange(tRangeSpell, aUnit);
 
 		if tIsSpellInRange ~= nil then
 			return (tIsSpellInRange == 1) and true or false;
@@ -335,6 +381,7 @@ function VUHDO_isInRange(aUnit)
 			return UnitInRange(aUnit);
 		end
 	end
+
 end
 
 
@@ -553,6 +600,7 @@ function VUHDO_isSpellKnown(aSpellName)
 	end
 
 	return (type(aSpellName) == "number" and IsSpellKnown(aSpellName))
+		or (type(aSpellName) == "number" and IsSpellKnownOrOverridesKnown(aSpellName))
 		or (type(aSpellName) == "number" and IsPlayerSpell(aSpellName))
 		or GetSpellBookItemInfo(aSpellName) ~= nil
 		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
@@ -821,12 +869,15 @@ local tActionLowerName;
 local tIsMacroKnown;
 local tIsSpellKnown; 
 local tIsTalentKnown;
+local tIsHostileAction, tIsFriendlyAction;
 function VUHDO_isActionValid(anActionName, anIsCustom, anIsHostile)
 
 	if (anActionName or "") == "" then
 		return nil;
 	end
 
+	tIsHostileAction = false;
+	tIsFriendlyAction = false;
 	tActionLowerName = strlower(anActionName);
 
 	if anIsHostile then
@@ -835,7 +886,7 @@ function VUHDO_isActionValid(anActionName, anIsCustom, anIsHostile)
 		 or VUHDO_SPELL_KEY_TARGET == tActionLowerName 
 		 or VUHDO_SPELL_KEY_EXTRAACTIONBUTTON == tActionLowerName 
 		 or VUHDO_SPELL_KEY_MOUSELOOK == tActionLowerName) then
-			return VUHDO_I18N_COMMAND, 0.8, 1, 0.8, "CMD";
+			tIsHostileAction = true;
 		end
 	else
 		if VUHDO_SPELL_KEY_ASSIST == tActionLowerName 
@@ -845,12 +896,22 @@ function VUHDO_isActionValid(anActionName, anIsCustom, anIsHostile)
 		 or VUHDO_SPELL_KEY_TARGET == tActionLowerName 
 		 or VUHDO_SPELL_KEY_EXTRAACTIONBUTTON == tActionLowerName 
 		 or VUHDO_SPELL_KEY_MOUSELOOK == tActionLowerName 
-		 or VUHDO_SPELL_KEY_DROPDOWN == tActionLowerName then 
-			return VUHDO_I18N_COMMAND, 0.8, 1, 0.8, "CMD";
+		 or VUHDO_SPELL_KEY_DROPDOWN == tActionLowerName then
+			tIsFriendlyAction = true;
 		end
 	end
 
 	tIsMacroKnown = GetMacroIndexByName(anActionName) ~= 0;
+
+	if tIsHostileAction or tIsFriendlyAction then
+		if tIsMacroKnown then
+			VUHDO_Msg(format(VUHDO_I18N_AMBIGUOUS_MACRO, anActionName), 1, 0.3, 0.3);
+			return VUHDO_I18N_WARNING, 1, 0.3, 0.3, "WRN";
+		else
+			return VUHDO_I18N_COMMAND, 0.8, 1, 0.8, "CMD";
+		end
+	end
+
 	tIsSpellKnown = VUHDO_isSpellKnown(anActionName);
 
 	if not tIsSpellKnown then

@@ -883,22 +883,40 @@ end
 local tTexture;
 local tIcon;
 local tUnit;
+local tPrivateAura;
 function VUHDO_customizeHealButton(aButton)
 
 	VUHDO_customizeText(aButton, 1, false); -- VUHDO_UPDATE_ALL
 
 	tUnit = VUHDO_getDisplayUnit(aButton);
+
 	-- Raid icon
 	if VUHDO_PANEL_SETUP[VUHDO_BUTTON_CACHE[aButton]]["RAID_ICON"]["show"] and tUnit then
-  	tIcon = GetRaidTargetIndex(tUnit);
-  	if tIcon and VUHDO_PANEL_SETUP["RAID_ICON_FILTER"][tIcon] then
-	  	tTexture = VUHDO_getBarRoleIcon(aButton, 50);
-  		VUHDO_setRaidTargetIconTexture(tTexture, tIcon);
-  		tTexture:Show();
-  	else
-  		VUHDO_getBarRoleIcon(aButton, 50):Hide();
-  	end
+		tIcon = GetRaidTargetIndex(tUnit);
+
+		if tIcon and VUHDO_PANEL_SETUP["RAID_ICON_FILTER"][tIcon] then
+			tTexture = VUHDO_getBarRoleIcon(aButton, 50);
+			VUHDO_setRaidTargetIconTexture(tTexture, tIcon);
+			tTexture:Show();
+		else
+			VUHDO_getBarRoleIcon(aButton, 50):Hide();
+		end
 	end
+
+	for tAuraIndex = 1, VUHDO_MAX_PRIVATE_AURAS do
+		tPrivateAura = VUHDO_getBarPrivateAura(aButton, tAuraIndex);
+
+		if not tPrivateAura then
+			return;
+		end
+
+		if VUHDO_PANEL_SETUP[VUHDO_BUTTON_CACHE[aButton]]["PRIVATE_AURA"]["show"] and tPrivateAura["anchorId"] then
+			tPrivateAura:Show();
+		else
+			tPrivateAura:Hide();
+		end
+	end
+
 end
 local VUHDO_customizeHealButton = VUHDO_customizeHealButton;
 

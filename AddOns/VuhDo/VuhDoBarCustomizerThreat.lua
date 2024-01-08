@@ -8,7 +8,7 @@ function VUHDO_threatIndicatorsBouquetCallback(aUnit, anIsActive, anIcon, aTimer
 		tTexture = VUHDO_getAggroTexture(VUHDO_getHealthBar(sButton, 1));
 		if anIsActive then
 			tTexture:SetAllPoints();
-			tTexture:SetVertexColor(VUHDO_backColor(aColor));
+			tTexture:SetVertexColor(VUHDO_backColorWithFallback(aColor));
 			tTexture:Show();
 			VUHDO_UIFrameFlash(tTexture, 0.2, 0.5, 3.2, true, 0, 0);
 		else
