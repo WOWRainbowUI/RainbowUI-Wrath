@@ -139,6 +139,7 @@ L['Toggle Profession Frame'] = true;
 L['Toggle Profession Spellbook'] = true;
 
 L['Set Specialization'] = true;
+L['Set Loadout'] = true;
 L['Set Loot Specialization'] = true;
 L['Current Specialization'] = true;
 L['Current Loot Specialization'] = true;
@@ -185,4 +186,3 @@ L['Call of Duty: Modern Warfare II'] = true;
 L["Diablo 4"] = true;
 L["Blizzard Arcade Collection"] = true;
 L["Crash Bandicoot 4"] = true;
-L['Set Loadout'] = true;

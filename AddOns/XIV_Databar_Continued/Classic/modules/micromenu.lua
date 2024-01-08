@@ -292,14 +292,12 @@ function MenuModule:CreateFrames()
         end
     end
 
-    if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then -- 暫時修正
-		if mm.ach then
-			self.frames.ach = CreateFrame("BUTTON", "ach", parentFrame)
-			parentFrame = self.frames.ach
-		else
-			if self.frames.ach then
-				self.frames.ach = nil
-			end
+    if mm.ach and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+		self.frames.ach = CreateFrame("BUTTON", "ach", parentFrame)
+		parentFrame = self.frames.ach
+	else
+		if self.frames.ach then
+			self.frames.ach = nil
 		end
 	end
 
@@ -312,15 +310,14 @@ function MenuModule:CreateFrames()
         end
     end
 
-	if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then -- 暫時修正
-		if mm.lfg then
-			self.frames.lfg = CreateFrame("BUTTON", "lfg", parentFrame)
-			parentFrame = self.frames.lfg
-		else
-			if self.frames.lfg then
-				self.frames.lfg = nil
-			end
+	if mm.lfg and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then	
+		self.frames.lfg = CreateFrame("BUTTON", "lfg", parentFrame)
+		parentFrame = self.frames.lfg
+	else
+		if self.frames.lfg then
+			self.frames.lfg = nil
 		end
+	end
 
     --   if mm.journal then
     --     self.frames.journal = CreateFrame("BUTTON", "journal", parentFrame)
@@ -331,22 +328,21 @@ function MenuModule:CreateFrames()
     --     end
     --   end
 
-		if mm.pvp then
-			self.frames.pvp = CreateFrame("BUTTON", "pvp", parentFrame)
-			parentFrame = self.frames.pvp
-		else
-			if self.frames.pvp then
-				self.frames.pvp = nil
-			end
+	if mm.pvp and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+		self.frames.pvp = CreateFrame("BUTTON", "pvp", parentFrame)
+		parentFrame = self.frames.pvp
+	else
+		if self.frames.pvp then
+			self.frames.pvp = nil
 		end
+	end
 
-		if mm.pet then
-			self.frames.pet = CreateFrame("BUTTON", "pet", parentFrame)
-			parentFrame = self.frames.pet
-		else
-			if self.frames.pet then
-				self.frames.pet = nil
-			end
+	if mm.pet and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+		self.frames.pet = CreateFrame("BUTTON", "pet", parentFrame)
+		parentFrame = self.frames.pet
+	else
+		if self.frames.pet then
+			self.frames.pet = nil
 		end
 	end
 
@@ -603,6 +599,13 @@ function MenuModule:SocialHover(hoverFunc)
 			["術士"] = "WARLOCK",
 			["戰士"] = "WARRIOR",
 		}
+		
+		-- 我目前正在玩的魔獸版本
+		local myWowProjectID = WOW_PROJECT_WRATH_CLASSIC
+		local _, _, _, buildInfo = GetBuildInfo()
+		if (buildInfo < 20000) then
+			myWowProjectID = WOW_PROJECT_CLASSIC
+		end
 
         -- 戰網好友
 		-- executes if there are any online bnet friends
@@ -639,7 +642,7 @@ function MenuModule:SocialHover(hoverFunc)
                     local charNameFormat = '' -- format in which the friend's character is displayed - is '' if not playing WoW, 'Char - Realm' or 'FACTION - Char' if playing WoW
 
                     -- 遊戲圖示
-					if faction and gameAccount.wowProjectID == 11 then
+					if faction and gameAccount.wowProjectID == myWowProjectID then
 						socialIcon = "|TInterface\\FriendsFrame\\PlusManz-"..faction..":16|t"
 					else
 						if C_Texture.IsTitleIconTextureReady(gameAccount.clientProgram, Enum.TitleIconVersion.Small) then
@@ -728,10 +731,10 @@ function MenuModule:SocialHover(hoverFunc)
                     -- set up tooltip line for the friend unless he's not logged into a game and 'hide bnet app friends' is true
                     -- if tContains(clientsList, gameClient) or not xb.db.profile.modules.microMenu.hideAppContact then
 					-- 隱藏戰網 app 或其他遊戲好友
-					if ((not xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact))
-						or ((xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient ~= "App") and (gameClient ~= "BSAp")))
-						or ((not xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient == "App") or (gameClient == "BSAp") or (gameAccount.wowProjectID == 11)))
-						or ((xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and (gameAccount.wowProjectID == 11)) then
+					if ((not xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact)) -- 戰網和其他遊戲都不隱藏
+						or ((xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient ~= "App") and (gameClient ~= "BSAp"))) -- 只隱藏戰網
+						or ((not xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient == "App") or (gameClient == "BSAp") or (gameAccount.wowProjectID == myWowProjectID))) -- 只隱藏其他遊戲
+						or ((xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and (gameAccount.wowProjectID == myWowProjectID)) then -- 戰網和其他遊戲都隱藏
                         -- lineLeft displays status icon, bnet name and the friend's note
                         -- local lineLeft = string.format("|T%s:16|t|cff82c5ff %s|r %s", statusIcon,
                         --    friendAccInfo.accountName, note)
@@ -1063,38 +1066,35 @@ function MenuModule:CreateClickFunctions()
     --   		ToggleEncounterJournal()
     --   	end
     --   end; --journal
+   
+	self.functions.lfg = function(self, button, down)
+		if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
+			return;
+		end
+		if button == "LeftButton" then
+			PVEFrame_ToggleFrame()
+		end
+	end; -- lfg
 
-    if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then -- 暫時修正
-		self.functions.lfg = function(self, button, down)
-			if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
-				return;
-			end
-			if button == "LeftButton" then
-				PVEFrame_ToggleFrame()
-			end
-		end; -- lfg
-	
-		self.functions.pet = function(self, button, down)
-			if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
-				return;
-			end
-			if button == "LeftButton" then
-				PetPaperDollFrame_SetTab(3)
-				ToggleCharacter("PetPaperDollFrame")
-			end
-		end; -- pet
-	end
+	self.functions.pet = function(self, button, down)
+		if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
+			return;
+		end
+		if button == "LeftButton" then
+			-- PetPaperDollFrame_SetTab(3)
+			-- ToggleCharacter("PetPaperDollFrame")
+			ToggleCollectionsJournal()
+		end
+	end; -- pet
 
-    if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then -- 暫時修正
-		self.functions.ach = function(self, button, down)
-			if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
-				return;
-			end
-			if button == "LeftButton" then
-				ToggleAchievementFrame()
-			end
-		end; -- ach
-	end
+	self.functions.ach = function(self, button, down)
+		if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
+			return;
+		end
+		if button == "LeftButton" then
+			ToggleAchievementFrame()
+		end
+	end; -- ach
 
     self.functions.quest = function(self, button, down)
         if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
@@ -1105,16 +1105,14 @@ function MenuModule:CreateClickFunctions()
         end
     end; -- quest
 
-    if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then -- 暫時修正
-		self.functions.pvp = function(self, button, down)
-			if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
-				return;
-			end
-			if button == "LeftButton" then
-				TogglePVPFrame()
-			end
-		end; -- pvp
-	end
+	self.functions.pvp = function(self, button, down)
+		if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then
+			return;
+		end
+		if button == "LeftButton" then
+			TogglePVPFrame()
+		end
+	end; -- pvp
 
     self.functions.shop = function(self, button, down)
         if (not xb.db.profile.modules.microMenu.combatEn) and InCombatLockdown() then

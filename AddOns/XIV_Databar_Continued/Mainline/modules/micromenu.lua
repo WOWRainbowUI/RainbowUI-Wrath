@@ -605,6 +605,9 @@ function MenuModule:SocialHover(hoverFunc)
 			["術士"] = "WARLOCK",
 			["戰士"] = "WARRIOR",
 		}
+		
+		-- 我目前正在玩的魔獸版本
+		-- local myWowProjectID = WOW_PROJECT_MAINLINE
 
 		-- 戰網好友
 		-- executes if there are any online bnet friends
@@ -726,11 +729,11 @@ function MenuModule:SocialHover(hoverFunc)
 
                     -- set up tooltip line for the friend unless he's not logged into a game and 'hide bnet app friends' is true
                     -- if tContains(clientsList, gameClient) or not xb.db.profile.modules.microMenu.hideAppContact then
-					-- 自行加入：隱藏戰網 app 或其他遊戲好友
-					if ((not xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact))
-						or ((xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient ~= "App") and (gameClient ~= "BSAp")))
-						or ((not xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient == "App") or (gameClient == "BSAp") or (gameAccount.wowProjectID == 1)))
-						or ((xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and (gameAccount.wowProjectID == 1)) then
+					-- 隱藏戰網 app 或其他遊戲好友
+					if ((not xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact)) -- 戰網和其他遊戲都不隱藏
+						or ((xb.db.profile.modules.microMenu.hideAppContact) and (not xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient ~= "App") and (gameClient ~= "BSAp"))) -- 只隱藏戰網
+						or ((not xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and ((gameClient == "App") or (gameClient == "BSAp") or (gameAccount.wowProjectID == WOW_PROJECT_ID))) -- 只隱藏其他遊戲
+						or ((xb.db.profile.modules.microMenu.hideAppContact) and (xb.db.profile.modules.microMenu.hideOtherGameContact) and (gameAccount.wowProjectID == WOW_PROJECT_ID)) then -- 戰網和其他遊戲都隱藏
                         -- lineLeft displays status icon, bnet name and the friend's note
                         --[[
 						local lineLeft = string.format("|T%s:16|t|cff82c5ff %s|r %s", statusIcon,

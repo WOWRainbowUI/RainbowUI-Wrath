@@ -141,6 +141,7 @@ L['Toggle Profession Frame'] = "打開/關閉專業視窗";
 L['Toggle Profession Spellbook'] = "打開/關閉專業技能書";
 
 L['Set Specialization'] = "切換專精";
+L['Set Loadout'] = "切換天賦配置";
 L['Set Loot Specialization'] = "切換優先拾取的專精";
 L['Current Specialization'] = "目前職業專精";
 L['Current Loot Specialization'] = "目前優先拾取的專精";
@@ -184,5 +185,4 @@ L['Call of Duty: Modern Warfare II'] = "決勝時刻: 現代戰爭II 2022"
 L["Diablo 4"] = "暗黑破壞神IV"
 L["Blizzard Arcade Collection"] = "暴雪遊樂場典藏系列"
 L["Crash Bandicoot 4"] = "袋狼大進擊4"
-L['Set Loadout'] = "切換天賦配置";
 L["Hide Friends Playing Other Games"] = "隱藏其他遊戲好友";
