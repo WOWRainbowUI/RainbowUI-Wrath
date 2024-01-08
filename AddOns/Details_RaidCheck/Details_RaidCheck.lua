@@ -51,6 +51,18 @@ local getUnitId = function(i)
 	return unitId
 end
 
+local gameVersion, buildNumber, releaseData, tocNumber = GetBuildInfo()
+
+local getCleuName = function(unitId)
+	if (tocNumber >= 100200) then
+		local cleuName = Details:GetFullName(unitId)
+		return cleuName
+	else
+		local cleuName = GetCLName(unitId)
+		return cleuName
+	end
+end
+
 --create the plugin object
 local DetailsRaidCheck = Details:NewPluginObject("Details_RaidCheck", DETAILSPLUGIN_ALWAYSENABLED)
 tinsert(UISpecialFrames, "Details_RaidCheck")
@@ -197,7 +209,7 @@ local CreatePluginFrames = function()
 
 	local reportString1 = raidCheckFrame:CreateFontString(nil, "overlay", "GameFontNormal")
 	reportString1:SetPoint("bottomleft", raidCheckFrame, "bottomleft", 10, 8)
-	reportString1:SetText("|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:225:307|t" .. Loc["Report No Food/Flask"] .. " |TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:328:409|t" .. Loc["Report No Pre-Pot"] .. " |TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:126:204|t" .. Loc["Report No Rune"] .. "  |  |cFFFFFFFF" .. Loc["Shift+Click: Options"] .. "|r") 
+	reportString1:SetText("|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:225:307|t" .. Loc["Report No Food/Flask"] .. " |TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:328:409|t" .. Loc["Report No Pre-Pot"] .. " |TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:126:204|t" .. Loc["Report No Rune"] .. "  |  |cFFFFFFFF" .. Loc["Shift+Click: Options"] .. "|r")  
 
 	DetailsRaidCheck:SetFontSize(reportString1, 10)
 	DetailsRaidCheck:SetFontColor(reportString1, "white")
@@ -631,7 +643,7 @@ local CreatePluginFrames = function()
 			local unitID = groupTypeId .. i
 			local unitName = UnitName(unitID)
 			local unitNameWithRealm = GetUnitName(unitID, true)
-			local cleuName = Details:GetCLName(unitID)
+			local cleuName = getCleuName(unitID)
 			local unitSerial = UnitGUID(unitID)
 			local _, unitClass, unitClassID = UnitClass(unitID)
 			local unitRole = UnitGroupRolesAssigned(unitID)
@@ -662,8 +674,9 @@ local CreatePluginFrames = function()
 					local mythicPlusProfile = rioProfile.mythicKeystoneProfile
 					local previousScore = mythicPlusProfile.previousScore or 0
 					local currentScore = mythicPlusProfile.currentScore or 0
-					mythicPlusScore = previousScore and previousScore > currentScore and previousScore or currentScore
-					mythicPlusScore = mythicPlusScore or currentScore
+					--mythicPlusScore = previousScore and previousScore > currentScore and previousScore or currentScore
+					--mythicPlusScore = mythicPlusScore or currentScore
+					mythicPlusScore = currentScore
 				end
 			end
 
@@ -693,7 +706,7 @@ local CreatePluginFrames = function()
 			--add the player data
 			local unitId = "player"
 			local unitName = UnitName(unitId)
-			local cleuName = Details:GetCLName(unitId)
+			local cleuName = getCleuName(unitId)
 			local unitSerial = UnitGUID(unitId)
 			local _, unitClass, unitClassID = UnitClass(unitId)
 			local unitRole = UnitGroupRolesAssigned(unitId)

@@ -56,6 +56,8 @@
 ---@alias actorspec number this is the specID of the actor
 ---@alias uniquecombatid number a unique ID to point to a single combat, each character has its ID counter, use with Details:DoesCombatWithUIDExists(); Details:GetCombatByUID(); retrive with combat:GetCombatUID()
 
+---@alias cleuname string
+
 ---@class petinfo : table
 ---@field key1 ownername
 ---@field key2 guid
@@ -64,7 +66,17 @@
 ---@field key5 petname
 ---@field key6 guid
 
+---@class petownerinfo : table
+---@field key1 unitname owner name
+---@field key2 guid owner guid
+---@field key3 controlflags owner flags
+---@field key4 unixtime time when the pet was created
+---@field key5 boolean true if the pet is part of the player's group
+---@field key6 petname pet name
+---@field key7 guid pet guid
+
 ---@class details
+---@field pets table<guid, petinfo> store the pet guid as the key and the petinfo as the value
 ---@field SpellTableMixin spelltablemixin
 ---@field GetInstance fun(self: details) : instance
 ---@field GetWindow fun(self: details) : instance this is an alias of GetInstance
@@ -72,6 +84,7 @@
 ---@field GetSpellSchoolFormatedName fun(self: details, spellschool: spellschool) : string
 ---@field CommaValue fun(self: details, number: number) : string
 ---@field CreateEventListener fun(self: details) : table
+---@field GetFullName fun(self: details, unitId: any, ambiguateString: any) : string create a CLEU compatible name of the unit passed, return string is in the format "playerName-realmName", the string will also be ambiguated using the ambiguateString passed
 
 ---@class detailseventlistener : table
 ---@field RegisterEvent fun(self: detailseventlistener, event: detailsevent, callback: function)
@@ -90,7 +103,7 @@
 ---@field spec specializationid
 
 ---@class customspellinfo : {name: string, isPassive: boolean, itemId: number, icon: string|number}
----@class customiteminfo: {itemId: number, isPassive: boolean}
+---@class customiteminfo: {itemId: number, isPassive: boolean, nameExtra: string?, icon: string|number|nil}
 ---@class savedspelldata : {key1: number, key2: string, key3: number}
 ---@class alternatepowertable : {last: number, total: number}
 
@@ -99,6 +112,7 @@
 ---@field __destroyedBy string
 ---@field amountCasts {[string]: table<string, number>}
 ---@field instance_type instancetype "raid" or "party" or "pvp" or "arena" or "none" or "scenario"
+---@field run_time number
 ---@field end_time number
 ---@field start_time number
 ---@field combat_counter number
@@ -117,10 +131,13 @@
 ---@field is_boss table
 ---@field is_world_trash_combat boolean when true this combat is a regular combat done in the world, not in a dungeon, raid, battleground, arena, ...
 ---@field player_last_events table<string, table[]> record the latest events of each player, latter used to build the death log
+---@field GetCombatType fun(combat: combat) : number
 ---@field GetCombatUID fun(combat: combat) : uniquecombatid
 ---@field GetTimeData fun(combat: combat, dataName: string) : table
 ---@field GetPhases fun(combat: combat) : table
----@field GetCombatTime fun(combat) : number
+---@field GetCombatTime fun(comba: combat) : number
+---@field GetRunTime fun(combat: combat) : number return the elapsed time of a mythic+ dungeon run, if not exists, return the combat time
+---@field GetRunTimeNoDefault fun(combat: combat) : number return the elapsed time of a mythic+ dungeon run, nil if not exists
 ---@field GetDeaths fun(combat) : table --get the table which contains the deaths of the combat
 ---@field GetStartTime fun(combat: combat) : number
 ---@field SetStartTime fun(combat: combat, time: number)
@@ -335,6 +352,7 @@
 ---@field IsLowerInstance fun(instance: instance) : boolean
 ---@field IsEnabled fun(instance: instance) : boolean
 ---@field GetId fun(instance: instance) : instanceid
+---@field SetSegmentId fun(instance: instance, segment: segmentid) set the segmentId for the instance and nothing else, use 'SetSegment' for a full update
 ---@field GetSegmentId fun(instance: instance) : segmentid
 ---@field RefreshCombat fun(instance: instance)
 ---@field Freeze fun(instance: instance)
@@ -464,17 +482,17 @@
 
 ---spelltableadv is similar to spelltable but allow custom members, methods and any modification isn't save to saved variables
 ---@class spelltableadv : spelltable, spelltablemixin
----@field expanded boolean if is true the show the nested spells
+---@field expanded boolean? if is true the show the nested spells
 ---@field spellTables spelltable[]
 ---@field nestedData bknesteddata[]
 ---@field bCanExpand boolean
----@field expandedIndex number
----@field bIsExpanded boolean
----@field statusBarValue number
----@field npcId npcid
----@field actorName string --when showing an actor header, this is the actor name
----@field bIsActorHeader boolean if this is true, the spellbar is an actor header, which is a bar with the actor name with the actor spells nested
----@field actorIcon textureid|texturepath
+---@field expandedIndex number?
+---@field bIsExpanded boolean?
+---@field statusBarValue number?
+---@field npcId any
+---@field actorName string? --when showing an actor header, this is the actor name
+---@field bIsActorHeader boolean? if this is true, the spellbar is an actor header, which is a bar with the actor name with the actor spells nested
+---@field actorIcon textureid|texturepath?
 
 ---@class bknesteddata : {spellId: number, spellTable: spelltable, actorName: string, value: number, bIsActorHeader: boolean} fills .nestedData table in spelltableadv, used to store the nested spells data, 'value' is set when the breakdown sort the values by the selected header
 

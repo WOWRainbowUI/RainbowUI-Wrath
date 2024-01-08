@@ -68,6 +68,9 @@ function Details:StartMeUp()
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --initialize
 
+	--make an encounter journal cache
+	C_Timer.After(1, Details222.EJCache.CreateEncounterJournalDump)
+
 	--plugin container
 	Details:CreatePluginWindowContainer()
 	Details:InitializeForge() --to install into the container plugin
@@ -276,7 +279,10 @@ function Details:StartMeUp()
 			Details.listener:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 			Details.listener:RegisterEvent("PLAYER_TALENT_UPDATE")
 			Details.listener:RegisterEvent("CHALLENGE_MODE_START")
+			--Details.listener:RegisterEvent("CHALLENGE_MODE_END") --doesn't exists ingame (only at cleu)
 			Details.listener:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+			Details.listener:RegisterEvent("WORLD_STATE_TIMER_START")
+
 		end
 
 		Details.parser_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -493,6 +499,9 @@ function Details:StartMeUp()
 				}
 				trinketData[spellId] = thisTrinketData
 			end
+
+		elseif (trinketTable.onUse and trinketTable.castId) then
+			Details222.OnUseItem.Trinkets[trinketTable.castId] = spellId
 		end
 	end
 
@@ -613,13 +622,12 @@ function Details:StartMeUp()
 
 	--to ignore this, use /run _G["UpdateAddOnMemoryUsage"] = Details.UpdateAddOnMemoryUsage_Original or add to any script that run on login
 	--also the slash command "/details stopperfcheck" stop it as well
+	Details.check_stuttering = false
 	if (Details.check_stuttering) then
 		_G["UpdateAddOnMemoryUsage"] = Details.UpdateAddOnMemoryUsage_Custom
 	end
 
 	Details.InitializeSpellBreakdownTab()
-
-	pcall(Details222.EJCache.MakeCache)
 
 	pcall(Details222.ClassCache.MakeCache)
 

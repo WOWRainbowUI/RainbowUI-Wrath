@@ -2736,43 +2736,56 @@ function damageClass:RefreshLine(instanceObject, lineContainer, whichRowLine, ra
 		percentString = format("%.1f", self[keyName] / instanceObject.top * 100)
 	end
 
-	local currentCombat = Details:GetCurrentCombat()
+	local currentCombat = instanceObject:GetCombat()
 
-	--calculate the actor dps
-	if ((Details.time_type == 2 and self.grupo) or not Details:CaptureGet("damage") or instanceObject.segmento == -1 or Details.use_realtimedps) then
-		if (Details.use_realtimedps and Details.in_combat) then
-			local currentDps = self.last_dps_realtime
-			if (currentDps) then
-				dps = currentDps
-			end
+	if (currentCombat:GetCombatType() == DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL) then
+		if (Details.mythic_plus.mythicrun_time_type == 1) then
+			--total time in combat, activity time
+			combatTime = currentCombat:GetCombatTime()
+		elseif (Details.mythic_plus.mythicrun_time_type == 2) then
+			--elapsed time of the run
+			combatTime = currentCombat:GetRunTime()
 		end
 
-		if (not dps) then
-			if (instanceObject.segmento == -1 and combatTime == 0) then
-				local actor = currentCombat(1, self.nome)
-				if (actor) then
-					local combatTime = actor:Tempo()
-					dps = damageTotal / combatTime
-					self.last_dps = dps
+		dps = damageTotal / combatTime
+		self.last_dps = dps
+	else
+		--calculate the actor dps
+		if ((Details.time_type == 2 and self.grupo) or not Details:CaptureGet("damage") or instanceObject.segmento == -1 or Details.use_realtimedps) then
+			if (Details.use_realtimedps and Details.in_combat) then
+				local currentDps = self.last_dps_realtime
+				if (currentDps) then
+					dps = currentDps
+				end
+			end
+
+			if (not dps) then
+				if (instanceObject.segmento == -1 and combatTime == 0) then
+					local actor = currentCombat(1, self.nome)
+					if (actor) then
+						local combatTime = actor:Tempo()
+						dps = damageTotal / combatTime
+						self.last_dps = dps
+					else
+						dps = damageTotal / combatTime
+						self.last_dps = dps
+					end
 				else
 					dps = damageTotal / combatTime
 					self.last_dps = dps
 				end
-			else
-				dps = damageTotal / combatTime
-				self.last_dps = dps
 			end
-		end
-	else
-		if (not self.on_hold) then
-			dps = damageTotal/self:Tempo() --calcula o dps deste objeto
-			self.last_dps = dps --salva o dps dele
 		else
-			if (self.last_dps == 0) then --n�o calculou o dps dele ainda mas entrou em standby
-				dps = damageTotal/self:Tempo()
-				self.last_dps = dps
+			if (not self.on_hold) then
+				dps = damageTotal/self:Tempo() --calcula o dps deste objeto
+				self.last_dps = dps --salva o dps dele
 			else
-				dps = self.last_dps
+				if (self.last_dps == 0) then --n�o calculou o dps dele ainda mas entrou em standby
+					dps = damageTotal/self:Tempo()
+					self.last_dps = dps
+				else
+					dps = self.last_dps
+				end
 			end
 		end
 	end
@@ -2994,8 +3007,8 @@ end
 ---@param onEnterFunc function?
 ---@param onLeaveFunc function?
 function Details:ShowExtraStatusbar(thisLine, amount, extraAmount, totalAmount, topAmount, instanceObject, onEnterFunc, onLeaveFunc)
-	if (extraAmount and extraAmount > 0) then
-		local extraStatusbar = thisLine.extraStatusbar
+	local extraStatusbar = thisLine.extraStatusbar
+	if (extraAmount and extraAmount > 0 and instanceObject.atributo == 1 and instanceObject.sub_atributo == 1) then
 		local initialOffset = 0
 		local icon_offset_x, icon_offset_y = unpack(instanceObject.row_info.icon_offset)
 
@@ -3034,6 +3047,8 @@ function Details:ShowExtraStatusbar(thisLine, amount, extraAmount, totalAmount, 
 			extraStatusbar.defaultAlpha = 0.1
 		end
 		extraStatusbar:Show()
+	else
+		extraStatusbar:Hide()
 	end
 end
 
@@ -5043,6 +5058,7 @@ function damageClass:MontaInfoDamageDone() --I guess this fills the list of spel
 
 		---@type string
 		local spellName = _GetSpellInfo(spellId)
+
 		if (spellName) then
 			---@type number in which index the spell with the same name was stored
 			local index = alreadyAdded[spellName]
@@ -5756,6 +5772,9 @@ function damageClass:BuildSpellDetails(spellBar, spellBlockContainer, blockIndex
 					blockLine1.leftText:SetText("Procs: " .. trinketProc.total)
 				end
 			end
+
+		elseif (Details.GetItemSpellInfo(spellId)) then
+			blockLine1.leftText:SetText("Uses: " .. totalCasts)
 		end
 
 		blockLine1.rightText:SetText(Loc ["STRING_HITS"]..": " .. totalHits) --hits and uptime

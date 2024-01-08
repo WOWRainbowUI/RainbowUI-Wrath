@@ -161,7 +161,7 @@
 				GameCooltip:Hide()
 			end)
 
-			tinsert(UISpecialFrames, "DetailsCustomPanel")
+			table.insert(UISpecialFrames, "DetailsCustomPanel")
 
 			--menu title bar
 				local titlebar = CreateFrame("frame", nil, customWindow,"BackdropTemplate")
@@ -455,7 +455,7 @@
 						end
 
 						if (DetailsCustomPanel.IsImporting) then
-							tinsert(_detalhes.custom, object)
+							table.insert(_detalhes.custom, object)
 						end
 
 						DetailsCustomPanel.IsEditing = false
@@ -476,7 +476,7 @@
 							["tooltip"] = false,
 						}
 
-						tinsert(_detalhes.custom, new_custom_object)
+						table.insert(_detalhes.custom, new_custom_object)
 						setmetatable(new_custom_object, _detalhes.atributo_custom)
 						new_custom_object.__index = _detalhes.atributo_custom
 						_detalhes:Msg(Loc ["STRING_CUSTOM_CREATED"])
@@ -523,7 +523,7 @@
 						end
 
 						if (DetailsCustomPanel.IsImporting) then
-							tinsert(_detalhes.custom, object)
+							table.insert(_detalhes.custom, object)
 						end
 
 						DetailsCustomPanel.IsEditing = false
@@ -559,7 +559,7 @@
 							new_custom_object.percent_script = false
 						end
 
-						tinsert(_detalhes.custom, new_custom_object)
+						table.insert(_detalhes.custom, new_custom_object)
 						setmetatable(new_custom_object, _detalhes.atributo_custom)
 						new_custom_object.__index = _detalhes.atributo_custom
 						_detalhes:Msg(Loc ["STRING_CUSTOM_CREATED"])

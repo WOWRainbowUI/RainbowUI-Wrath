@@ -40,8 +40,8 @@ local unpack = _G.unpack
 local tinsert = table.insert
 
 local startX = 200
-local startY = -40
-local heightSize = 540
+local startY = -75
+local heightSize = 600
 local presetVersion = 3
 
 --templates
@@ -6401,7 +6401,8 @@ do
 					return Details:Msg(Loc ["STRING_OPTIONS_SPELL_IDERROR"])
 				end
 				
-				Details:UserCustomSpellAdd (id, name, icon)
+                local bAddedByUser = true
+				Details:UserCustomSpellAdd (id, name, icon, bAddedByUser)
 				
 				panel:Refresh()
 				
@@ -6448,7 +6449,7 @@ do
 		end
 
 		sectionFrame.ConsolidadeSpellsSwitch:SetPoint(startX, startY - 20)
-        Details:SetFontSize(sectionFrame.ConsolidadeSpellsLabel, 16)
+        Details:SetFontSize(sectionFrame.ConsolidadeSpellsLabel, 12)
         
         local sectionOptions = {
 
@@ -6890,6 +6891,32 @@ do
         local sectionOptions = {
             {type = "label", get = function() return Loc["STRING_OPTIONS_GENERAL_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
+            {
+                type = "toggle",
+                get = function() return Details.mythic_plus.mythicrun_time_type == 1 end,
+                set = function(self, fixedparam, value)
+                    Details.mythic_plus.mythicrun_time_type = value and 1
+                    sectionFrame:GetWidgetById("mythic_time_2"):SetValue(not value)
+                end,
+                name = Loc["Use Total Combat Time"],
+                desc = Loc["The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."],
+                id = "mythic_time_1",
+            },
+
+            {
+                type = "toggle",
+                get = function() return Details.mythic_plus.mythicrun_time_type == 2 end,
+                set = function(self, fixedparam, value)
+                    Details.mythic_plus.mythicrun_time_type = value and 2
+                    sectionFrame:GetWidgetById("mythic_time_1"):SetValue(not value)
+                end,
+                name = Loc["Use Run Time"],
+                desc = Loc["The overall segment for the Mythic+ run will use 'totalDamage / runTime' to calculate DPS."],
+                id = "mythic_time_2",
+            },
+
+            {type = "blank"},
+
             {--dedicated segment for bosses
                 type = "toggle",
                 get = function() return Details.mythic_plus.boss_dedicated_segment end,
@@ -6908,16 +6935,6 @@ do
                 end,
                 name = Loc["Make Overall Segment"],
                 desc = Loc["When the run is done, make an overall segment."],
-            },
-
-            {--overall only with bosses
-                type = "toggle",
-                get = function() return Details.mythic_plus.make_overall_boss_only end,
-                set = function(self, fixedparam, value)
-                    Details.mythic_plus.make_overall_boss_only = value
-                end,
-                name = Loc["Overall Segment Boss Only"],
-                desc = Loc["Only add boss segments on the overall."],
             },
 
             {--merge trash

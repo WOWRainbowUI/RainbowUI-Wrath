@@ -1771,8 +1771,6 @@ L["Unknown"] = "未知"
 -- L["m "] = " 分 "
 -- L["s"] = " 秒"
 L["Wipe has been called by your raid leader."] = "RL 說要 RE 了。"
-L["|cFFFFFF00you might find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself ("] = "|cFFFFFF00如果你發現造成傷害不同，這是因為遊戲本身的 bug，和 Details! 無關 ("
-L["|cFFFFFF00you may find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself ("] = "|cFFFFFF00如果你發現造成傷害不同，這是因為遊戲本身的 bug，和 Details! 無關 ("
 
 -- core\plugins.lua 更改字體大小
 L["Details version is out of date."] = "Details! 版本已過期。"
@@ -2041,8 +2039,9 @@ L["All raid plugins already\nin use or disabled."] = "全部的團隊外掛套�
 L["|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:14:12:0:1:512:512:8:70:224:306|t Open Rank"] = "|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:14:12:0:1:512:512:8:70:224:306|t 打開等級"
 L["|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:14:12:0:1:512:512:8:70:328:409|t Refresh Talents"] = "|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:14:12:0:1:512:512:8:70:328:409|t 刷新天賦"
 L["M+ Score:"] = "M+ 分數:"
-L["Damage Done"] = "輸出傷害" -- 前面已有 ["STRING_ATTRIBUTE_DAMAGE_DONE"]
-
+L["Remove Common Segments"] = "移除一般戰鬥記錄"
+L["Reset, but keep Mythic+ Overall Segments"] = "重置，但是保留 M+ 整體戰鬥記錄"
+L["Remove Battleground Segments"] = "移除戰場戰鬥記錄"
 
 -- frames\window_news.lua
 L["Auto Open on New Changes"] = "有新的改動時自動打開"
@@ -2320,6 +2319,10 @@ L["Order Bars By Real Time DPS"] = "計量條依即時 DPS 排序"
 L["If Enabled, players dealing more real time DPS are place above other players in the window."] = "啟用時，即時 DPS 較高的玩家會排在其他玩家上方。"
 L["Always Use Real Time in Arenas"] = "競技場永遠使用即時 DPS"
 L["If Enabled, real time DPS is always used in arenas, even if the option above is disabled."] = "啟用時，就算停用上方的選項，競技場也會永遠使用即時 DPS。"
+L["Use Total Combat Time"] = "使用總共戰鬥時間"
+L["The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."] = "M+ 的整體戰鬥記錄使用 '總共輸出傷害 / 總共戰鬥時間' 來計算 DPS。"
+L["Use Run Time"] = "使用通關時間"
+L["The overall segment for the Mythic+ run will use 'totalDamage / runTime' to calculate DPS."] = "M+ 的整體戰鬥記錄使用 '總共輸出傷害 / 通關時間' 來計算 DPS。"
 
 -- frames\window_plater.lua 更改字體大小
 -- 要加上 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
@@ -2650,11 +2653,14 @@ L["Open your player Details! breakdown."] = "打開 Details! 玩家分析。"
 
 -- functions\dungeon.lua 更改字體大小
 -- L["Enabled"] = "啟用" -- 前面已有
-L["Details! Damage Graphic for M+"] = "Details! M+ 傷害圖表"
 L["Dungeon Run Chart"] = "地城攻略圖表"
 L["Show this chart at the end of a mythic dungeon run.\n\nIf disabled, you can reactivate it again at the options panel > streamer settings."] = "打完傳奇地城後顯示這個圖表。\n\n停用時，可以從選項面板 > streamer settings 將它再次啟用。"
 L["Show Boss"] = "顯示首領"
 L["Details!: Average Dps for "] = "Details!: 平均 DPS - "
+L["Details! Mythic Run Completed!"] = "Details! 傳奇地城通關!"
+
+-- functions\mythicdungeon.lua
+L["the overall data has been reset."] = "已重置整體資料。"
 
 -- functions\profiles.lua 更改字體大小
 L["Profile Not Found."] = "沒有找到設定檔。"

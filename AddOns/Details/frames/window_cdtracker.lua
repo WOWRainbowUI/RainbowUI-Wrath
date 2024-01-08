@@ -63,7 +63,7 @@ function Details222.CooldownTracking.GetOrCreateNewCooldownLine(cooldownFrame, l
         return cooldownLine
     else
         cooldownLine = DF:CreateTimeBar(cooldownFrame, [[Interface\AddOns\Details\images\bar_serenity]], Details.ocd_tracker.width-2, Details.ocd_tracker.height-2, 100, nil, cooldownFrame:GetName() .. "CDFrame" .. lineId)
-        tinsert(cooldownFrame.bars, cooldownLine)
+        table.insert(cooldownFrame.bars, cooldownLine)
         cooldownLine:EnableMouse(false)
         return cooldownLine
     end
@@ -148,7 +148,17 @@ end
 
                 if (cooldownLine) then
                     --get the cooldown time from the lib, it return data ready to use on statusbar
-                    local isReady, normalizedPercent, timeLeft, charges, minValue, maxValue, currentValue = openRaidLib.GetCooldownStatusFromCooldownInfo(cooldownInfo)
+
+                    local isReady, normalizedPercent, timeLeft, charges, minValue, maxValue, currentValue
+                    local bRunOkay, errorText = pcall(function()
+                        isReady, normalizedPercent, timeLeft, charges, minValue, maxValue, currentValue = openRaidLib.GetCooldownStatusFromCooldownInfo(cooldownInfo)
+                    end)
+                    if (not bRunOkay) then
+                        local spellName = GetSpellInfo(spellId)
+                        --print("error on cooldown update:", unitName, spellName, errorText)
+                        return
+                    end
+
                     if (not isReady) then
                         cooldownLine:SetTimer(currentValue, minValue, maxValue)
                     else
@@ -279,7 +289,7 @@ end
                 classId = select(3, UnitClass(unitInfo.nameFull))
             end
 
-            if (unitInfo and classId) then
+            if (unitInfo and classId and cooldownsOrganized[classId]) then
                 local allCooldownFrames = Details222.CooldownTracking.GetAllCooldownFrames()
 
                 for spellId, cooldownInfo in pairs(unitCooldowns) do
@@ -296,7 +306,7 @@ end
                     Details222.CooldownTracking.SetupCooldownLine(cooldownLine)
 
                     --add the cooldown into the organized by class table
-                    tinsert(cooldownsOrganized[classId], cooldownLine)
+                    table.insert(cooldownsOrganized[classId], cooldownLine)
 
                     --iterate to the next cooldown line
                     cooldownFrame.nextLineId = cooldownFrame.nextLineId + 1

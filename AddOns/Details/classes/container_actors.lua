@@ -18,6 +18,7 @@
 
 	local setmetatable = setmetatable --lua local
 	local bitBand = bit.band --lua local
+	local bitBor = bit.bor --lua local
 	local tableSort = table.sort --lua local
 	local ipairs = ipairs --lua local
 	local pairs = pairs --lua local
@@ -458,7 +459,7 @@ end
 			Details222.GuessSpecSchedules.Schedules[#Details222.GuessSpecSchedules.Schedules+1] = newTimer
 		end
 
-		local _, engClass = UnitClass(actorName or "")
+		local engClass = Details:GetUnitClass(actorName or "")
 
 		if (engClass) then
 			actorObject.classe = engClass
@@ -507,15 +508,22 @@ end
 	local checkValidNickname = function(nickname, playerName)
 		if (nickname and type(nickname) == "string") then
 			nickname = nickname:trim()
+
 			if (nickname == "" or nickname:len() < 2) then
 				return playerName
 			end
+
 			if (nickname:len() > 20) then
+				return playerName
+			end
+
+			if (not UnitIsInMyGuild(playerName)) then
 				return playerName
 			end
 		else
 			return playerName
 		end
+
 		return nickname
 	end
 
@@ -524,10 +532,15 @@ end
 		if (actorFlags) then
 			local _, zoneType = GetInstanceInfo()
 
+			--UnitIsInMyGuild
+
+			--on retail post 100200 patch, actorName is formatted as "name-realm"
+
 			--this is player actor
 			if (bitBand(actorFlags, OBJECT_TYPE_PLAYER) ~= 0) then
 				if (not Details.ignore_nicktag) then
-					actorObject.displayName = checkValidNickname(Details:GetNickname(actorName, false, true), actorName) --defaults to player name
+					local actorNameAmbiguated = Ambiguate(actorName, "none")
+					actorObject.displayName = checkValidNickname(Details:GetNickname(actorNameAmbiguated, false, true), actorName) --defaults to player name
 					if (Details.remove_realm_from_name) then
 						actorObject.displayName = actorObject.displayName:gsub(("%-.*"), "")
 					end
@@ -606,7 +619,7 @@ end
 						local amountOpponents = GetNumArenaOpponentSpecs and GetNumArenaOpponentSpecs() or 5
 						local found = false
 						for i = 1, amountOpponents do
-							local name = GetUnitName("arena" .. i, true)
+							local name = Details:GetFullName("arena" .. i)
 							if (name == actorName) then
 								local spec = GetArenaOpponentSpec and GetArenaOpponentSpec(i)
 								if (spec) then
@@ -682,11 +695,18 @@ end
 
 	local petBlackList = {}
 
-	local petOwnerFound = function(ownerName, petGUID, petName, petFlags, self, ownerGUID)
+	local petOwnerFound = function(ownerName, petGUID, petName, petFlags, self, ownerGUID, ownerFlags)
 		local ownerGuid = ownerGUID or UnitGUID(ownerName)
 		if (ownerGuid) then
-			Details.tabela_pets:Adicionar(petGUID, petName, petFlags, ownerGuid, ownerName, 0x00000417)
-			local petNameWithOwner, ownerName, ownerGUID, ownerFlags = Details.tabela_pets:PegaDono(petGUID, petName, petFlags)
+
+			-- 0xA00 is the flag for NPC controlled, NPC unit. 0x500 is the flag for Player Controlled, Player Unit.
+			-- Or those together with the last 2 hex bits for reaction/affiliation to 'guess' the correct flags.
+			if not ownerFlags then
+				local npcControlled = bitBand(petFlags, 0x200) ~= 0
+				ownerFlags = bitBor( npcControlled and 0xA00 or 0x500, bitBand(petFlags, 0xFF))
+			end
+			Details.tabela_pets:AddPet(petGUID, petName, petFlags, ownerGuid, ownerName, ownerFlags)
+			local petNameWithOwner, ownerName, ownerGUID, ownerFlags = Details.tabela_pets:GetPetOwner(petGUID, petName, petFlags)
 
 			local petOwnerActorObject
 
@@ -721,7 +741,7 @@ end
 		actorSerial = actorSerial or "ns"
 
 		if (container_pets[actorSerial]) then --this is a registered pet
-			local petName, ownerName, ownerGUID, ownerFlag = Details.tabela_pets:PegaDono(actorSerial, actorName, actorFlags)
+			local petName, ownerName, ownerGUID, ownerFlag = Details.tabela_pets:GetPetOwner(actorSerial, actorName, actorFlags)
 			if (petName and ownerName and ownerGUID ~= actorSerial) then
 				actorName = petName
 				petOwnerObject = self:PegarCombatente(ownerGUID, ownerName, ownerFlag, true)
@@ -734,6 +754,7 @@ end
 			if (actorFlags and bitBand(actorFlags, OBJECT_TYPE_PETGUARDIAN) ~= 0) then
 				local ownerName, ownerGUID, ownerFlags = Details222.Pets.GetPetOwner(actorSerial, actorName)
 				if (ownerName and ownerGUID) then
+					--Don't pass ownerFlags just in case the cached owner happens to be an enemy last combat, but ally now.
 					local newPetName, ownerObject = petOwnerFound(ownerName, actorSerial, actorName, actorFlags, self, ownerGUID)
 					if (newPetName and ownerObject) then
 						actorName, petOwnerObject = newPetName, ownerObject
@@ -784,7 +805,7 @@ end
 
 		--check ownership
 		if (petOwnerObject and Details.immersion_pets_on_solo_play) then
-			if (UnitIsUnit("player", petOwnerObject.nome)) then
+			if (Details.playername == petOwnerObject.nome) then
 				if (not Details.in_group) then
 					newActor.grupo = true
 				end
@@ -793,7 +814,7 @@ end
 
 		if (self.tipo == container_damage) then --containerType damage
 			local shouldScanOnce = getActorClass(newActor, actorName, actorFlags, actorSerial)
-			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName, "damage")
+			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName)
 
 			if (petOwnerObject) then
 				AddUnique(petOwnerObject.pets, actorName)
@@ -809,7 +830,7 @@ end
 
 		elseif (self.tipo == container_heal) then --containerType healing
 			local shouldScanOnce = getActorClass(newActor, actorName, actorFlags, actorSerial)
-			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName, "heal")
+			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName)
 
 			if (petOwnerObject) then
 				AddUnique(petOwnerObject.pets, actorName)
@@ -821,7 +842,7 @@ end
 
 		elseif (self.tipo == container_energy) then --containerType resources
 			local shouldScanOnce = getActorClass(newActor, actorName, actorFlags, actorSerial)
-			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName, "energy")
+			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName)
 
 			if (petOwnerObject) then
 				AddUnique(petOwnerObject.pets, actorName)
@@ -829,7 +850,7 @@ end
 
 		elseif (self.tipo == container_misc) then --containerType utility
 			local shouldScanOnce = getActorClass(newActor, actorName, actorFlags, actorSerial)
-			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName, "misc")
+			readActorFlag(newActor, petOwnerObject, actorSerial, actorFlags, actorName)
 
 			if (petOwnerObject) then
 				AddUnique(petOwnerObject.pets, actorName)
@@ -855,6 +876,12 @@ end
 		end
 
 		--enemy player
+		if (Details.zone_type == "pvp") then
+			if (bitBand(actorFlags, REACTION_HOSTILE) ~= 0) then --is hostile
+				newActor.enemy = true
+			end
+		end
+
 		if (newActor.classe == "UNGROUPPLAYER") then --is a player
 			if (bitBand(actorFlags, REACTION_HOSTILE) ~= 0) then --is hostile
 				newActor.enemy = true

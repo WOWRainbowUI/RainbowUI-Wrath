@@ -31,49 +31,72 @@
 	local UnitAffectingCombat = UnitAffectingCombat --wow api local
 	local _InCombatLockdown = InCombatLockdown --wow api local
 
+	local playerRealmName = GetRealmName()
+
 	local gump = Details.gump --details local
 
-
-	local predicateFunc = function(spellIdToFind, casterName, _, name, icon, applications, dispelName, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, isFromPlayerOrPlayerPet, nameplateShowAll, timeMod, applications)
-		--print(name, texture, count, debuffType, duration, expirationTime, spellID)
-		if (spellIdToFind == spellId and UnitExists(sourceUnit)) then
-			local spellname = GetSpellInfo(spellId)
-			if (casterName == GetUnitName(sourceUnit, true)) then
+	local predicateFunc = function(spellIdToFind, casterName, _, name, icon, applications, dispelName, duration, expirationTime, sourceUnitId, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, isFromPlayerOrPlayerPet, nameplateShowAll, timeMod, applications)
+		if (spellIdToFind == spellId and UnitExists(sourceUnitId)) then
+			if (casterName == Details:GetUnitNameForAPI(sourceUnitId)) then
 				return true
 			end
 		end
 	end
 
-	---find the duration of a debuff by passing the spellId and the caster name
-	---@param unitId unit
-	---@param spellId spellid
-	---@param casterName actorname
-	---@return auraduration|nil auraDuration
-	---@return number|nil expirationTime
-	function Details:FindDebuffDuration(unitId, spellId, casterName)
-		local name, texture, count, debuffType, duration, expirationTime = AuraUtil.FindAura(predicateFunc, unitId, "HARMFUL", spellId, casterName)
-		if (name) then
-			return duration, expirationTime
+	do
+		---find the duration of a debuff by passing the spellId and the caster name
+		---@param unitId unit
+		---@param spellId spellid
+		---@param casterName actorname
+		---@return auraduration|nil auraDuration
+		---@return number|nil expirationTime
+		function Details:FindDebuffDuration(unitId, spellId, casterName)
+			local name, texture, count, debuffType, duration, expirationTime = AuraUtil.FindAura(predicateFunc, unitId, "HARMFUL", spellId, casterName)
+			if (name) then
+				return duration, expirationTime
+			end
+		end
+
+		function Details:FindDebuffDurationByUnitName(targetString, spellId, casterString)
+			local targetName = Details:Ambiguate(targetString)
+			local casterName = Details:Ambiguate(casterString)
+			return Details:FindDebuffDuration(targetName, spellId, casterName)
 		end
 	end
 
-	---find the duration of a buff by passing the spellId and the caster name
-	---@param unitId unit
-	---@param spellId spellid
-	---@param casterName actorname
-	---@return auraduration|nil auraDuration
-	---@return number|nil expirationTime
-	function Details:FindBuffDuration(unitId, spellId, casterName)
-		local name, texture, count, debuffType, duration, expirationTime = AuraUtil.FindAura(predicateFunc, unitId, "HELPFUL", spellId, casterName)
-		if (name) then
-			return duration, expirationTime
+	do
+		---find the duration of a buff by passing the spellId and the caster name
+		---@param unitId unit
+		---@param spellId spellid
+		---@param casterName actorname
+		---@return auraduration|nil auraDuration
+		---@return number|nil expirationTime
+		function Details:FindBuffDuration(unitId, spellId, casterName) --not called anywhere else except the function below
+			local name, texture, count, debuffType, duration, expirationTime = AuraUtil.FindAura(predicateFunc, unitId, "HELPFUL", spellId, casterName)
+			if (name) then
+				return duration, expirationTime
+			end
+		end
+
+		function Details:FindBuffDurationByUnitName(targetString, spellId, casterString)
+			local targetName = Details:Ambiguate(targetString)
+			local casterName = Details:Ambiguate(casterString)
+			return Details:FindBuffDuration(targetName, spellId, casterName)
 		end
 	end
 
-	function Details:FindBuffCastedBy(unitId, buffSpellId, casterName)
-		local auraName, texture, count, auraType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, isFromPlayerOrPlayerPet, nameplateShowAll, timeMod, v1, v2, v3, v4, v5 = AuraUtil.FindAura(predicateFunc, unitId, "HELPFUL", buffSpellId, casterName)
-		if (auraName) then
-			return auraName, texture, count, auraType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, isFromPlayerOrPlayerPet, nameplateShowAll, timeMod, v1, v2, v3, v4, v5
+	do
+		function Details:FindBuffCastedBy(unitId, buffSpellId, casterName) --not called anywhere else except the function below
+			local auraName, texture, count, auraType, duration, expTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, playerOrPet, nameplateShowAll, timeMod, v1, v2, v3, v4, v5 = AuraUtil.FindAura(predicateFunc, unitId, "HELPFUL", buffSpellId, casterName)
+			if (auraName) then
+				return auraName, texture, count, auraType, duration, expTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, playerOrPet, nameplateShowAll, timeMod, v1, v2, v3, v4, v5
+			end
+		end
+
+		function Details:FindBuffCastedByUnitName(targetString, buffSpellId, casterString)
+			local targetName = Details:Ambiguate(targetString)
+			local casterName = Details:Ambiguate(casterString)
+			return Details:FindBuffCastedBy(targetName, buffSpellId, casterName)
 		end
 	end
 
@@ -635,14 +658,14 @@
 
 		Details:Destroy(Details.ToKFunctions)
 
-		tinsert(Details.ToKFunctions, Details.NoToK)
-		tinsert(Details.ToKFunctions, Details.ToK)
-		tinsert(Details.ToKFunctions, Details.ToK2)
-		tinsert(Details.ToKFunctions, Details.ToK0)
-		tinsert(Details.ToKFunctions, Details.ToKMin)
-		tinsert(Details.ToKFunctions, Details.ToK2Min)
-		tinsert(Details.ToKFunctions, Details.ToK0Min)
-		tinsert(Details.ToKFunctions, Details.comma_value)
+		table.insert(Details.ToKFunctions, Details.NoToK)
+		table.insert(Details.ToKFunctions, Details.ToK)
+		table.insert(Details.ToKFunctions, Details.ToK2)
+		table.insert(Details.ToKFunctions, Details.ToK0)
+		table.insert(Details.ToKFunctions, Details.ToKMin)
+		table.insert(Details.ToKFunctions, Details.ToK2Min)
+		table.insert(Details.ToKFunctions, Details.ToK0Min)
+		table.insert(Details.ToKFunctions, Details.comma_value)
 
 	end
 
@@ -768,14 +791,14 @@
 
 		Details:Destroy(Details.ToKFunctions)
 
-		tinsert(Details.ToKFunctions, Details.NoToK)
-		tinsert(Details.ToKFunctions, Details.ToK)
-		tinsert(Details.ToKFunctions, Details.ToK2)
-		tinsert(Details.ToKFunctions, Details.ToK0)
-		tinsert(Details.ToKFunctions, Details.ToKMin)
-		tinsert(Details.ToKFunctions, Details.ToK2Min)
-		tinsert(Details.ToKFunctions, Details.ToK0Min)
-		tinsert(Details.ToKFunctions, Details.comma_value)
+		table.insert(Details.ToKFunctions, Details.NoToK)
+		table.insert(Details.ToKFunctions, Details.ToK)
+		table.insert(Details.ToKFunctions, Details.ToK2)
+		table.insert(Details.ToKFunctions, Details.ToK0)
+		table.insert(Details.ToKFunctions, Details.ToKMin)
+		table.insert(Details.ToKFunctions, Details.ToK2Min)
+		table.insert(Details.ToKFunctions, Details.ToK0Min)
+		table.insert(Details.ToKFunctions, Details.comma_value)
 
 		--
 	end
@@ -1286,7 +1309,7 @@ end
 		end
 	end
 
-	function Details:FindGUIDFromName (name)
+	function Details:FindGUIDFromName (name) --deprecated? couldn't find any usage at november 2023
 		if (IsInRaid()) then
 			for i = 1, GetNumGroupMembers(), 1 do
 				local this_name, _ = UnitName ("raid"..i)
@@ -1302,7 +1325,7 @@ end
 				end
 			end
 		end
-		if (UnitName ("player") == name) then
+		if (UnitName ("player") == name or Details.playername == name) then
 			return UnitGUID("player")
 		end
 		return nil
