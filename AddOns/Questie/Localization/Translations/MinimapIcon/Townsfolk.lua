@@ -222,7 +222,7 @@ local townsfolkLocales = {
         ["ptBR"] = "Comida de ajudante",
         ["ruRU"] = "Еда для питомцев",
         ["deDE"] = "Futter",
-        ["koKR"] = false,
+        ["koKR"] = "펫 먹이",
         ["esMX"] = "Comida de mascota",
         ["enUS"] = true,
         ["zhCN"] = "宠物食物",
@@ -291,16 +291,16 @@ local townsfolkLocales = {
         ["frFR"] = "Maître d'armes",
     },
     ["Townsfolk"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = "Cidadãos",
         ["ruRU"] = "Городские",
         ["deDE"] = "Stadtbewohner",
-        ["koKR"] = false,
+        ["koKR"] = "마을 NPC",
         ["esMX"] = "Ciudadanos",
         ["enUS"] = true,
         ["zhCN"] = false,
         ["zhTW"] = "村民",
         ["esES"] = "Ciudadanos",
-        ["frFR"] = false,
+        ["frFR"] = "Citoyens",
     },
 
 
