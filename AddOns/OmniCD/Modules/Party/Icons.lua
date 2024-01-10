@@ -10,6 +10,7 @@ local sortPriority = function(a, b)
 	end
 	return aprio > bprio
 end
+P.sortPriority = sortPriority
 
 function P:SetIconLayout(frame, sortOrder)
 	local icons = frame.icons

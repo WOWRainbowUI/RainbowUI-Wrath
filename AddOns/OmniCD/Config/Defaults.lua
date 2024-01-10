@@ -125,7 +125,12 @@ for i = 0, 8 do
 	local key = "raidBar" .. i
 	C.Party.arena.extraBars[key] = {
 		["enabled"] = false,
+		["unitBar"] = false,
 		["locked"] = false,
+		["anchor"] = "TOPRIGHT",
+		["attach"] = "TOPLEFT",
+		["offsetX"] = 0,
+		["offsetY"] = 0,
 		["layout"] = "vertical",
 		["sortBy"] = i == 0 and 2 or 3,
 		["sortDirection"] = "asc",

@@ -25,6 +25,8 @@ local numBars = 0
 local unusedIcons = {}
 local numIcons = 0
 
+local unusedContainers = {}
+
 local UNIT_TO_PET = {
 	["raid1"]="raidpet1", ["raid2"]="raidpet2", ["raid3"]="raidpet3", ["raid4"]="raidpet4", ["raid5"]="raidpet5",
 	["raid6"]="raidpet6", ["raid7"]="raidpet7", ["raid8"]="raidpet8", ["raid9"]="raidpet9", ["raid10"]="raidpet10",
@@ -39,31 +41,28 @@ local UNIT_TO_PET = {
 E.UNIT_TO_PET = UNIT_TO_PET
 
 function P:SetEnabledColorScheme(info)
-	if not info.isDeadOrOffline then
-		return
-	end
-	info.isDeadOrOffline = false
-
-	for _, icon in pairs(info.spellIcons) do
-		local statusBar = icon.statusBar
-		if statusBar then
-			if icon.active then
-				local castingBar = statusBar.CastingBar
-				local startColor, startBGColor, startTextColor = self.CastingBarFrame_GetEffectiveStartColor(castingBar, true)
-				castingBar:SetStatusBarColor(startColor:GetRGBA())
-				castingBar.BG:SetVertexColor(startBGColor:GetRGBA())
-				castingBar.Text:SetTextColor(startTextColor:GetRGB())
+	if info.isDisabledColor then
+		info.isDisabledColor = nil
+		for _, icon in pairs(info.spellIcons) do
+			local statusBar = icon.statusBar
+			if statusBar then
+				if icon.active then
+					local castingBar = statusBar.CastingBar
+					local startColor, startBGColor, startTextColor = self.CastingBarFrame_GetEffectiveStartColor(castingBar, true)
+					castingBar:SetStatusBarColor(startColor:GetRGBA())
+					castingBar.BG:SetVertexColor(startBGColor:GetRGBA())
+					castingBar.Text:SetTextColor(startTextColor:GetRGB())
+				end
+				self:SetExStatusBarColor(icon, statusBar.key)
 			end
-			self:SetExStatusBarColor(icon, statusBar.key)
+			icon.icon:SetVertexColor(1, 1, 1)
+			local charges = icon.maxcharges and tonumber(icon.count:GetText())
+			icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0))
 		end
-		icon.icon:SetVertexColor(1, 1, 1)
-		local charges = icon.maxcharges and tonumber(icon.count:GetText())
-		icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0))
-	end
-
-	for key, frame in pairs(P.extraBars) do
-		if frame.shouldRearrangeInterrupts then
-			P:SetExIconLayout(key, true)
+		for key, frame in pairs(P.extraBars) do
+			if frame.shouldRearrangeInterrupts then
+				P:SetExIconLayout(key, true)
+			end
 		end
 	end
 end
@@ -125,6 +124,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 			end
 
 			info.isDead = nil
+			info.isDeadOrOffline = false
 			P:SetEnabledColorScheme(info)
 			self:UnregisterEvent(event)
 		end
@@ -195,6 +195,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 			else
 				P:SetDisabledColorScheme(info)
 			end
+			info.isDeadOrOffline = info.isDead or not isConnected
 		end
 	end
 end
@@ -221,6 +222,8 @@ local function OmniCDBar_OnHide(self)
 	P:RemoveUnusedIcons(self, 1)
 	self.numIcons = 0
 
+
+	P:RemoveUnusedContainers(self)
 
 	for key, frame in pairs(P.extraBars) do
 		local icons = frame.icons
@@ -335,6 +338,7 @@ local function GetUnitBarFrame()
 		frame = CreateFrame("Frame", "OmniCDBar" .. numBars, UIParent, "OmniCDTemplate")
 		frame.icons = {}
 		frame.numIcons = 0
+		frame.exContainers = {}
 		frame.anchor:Hide()
 		frame.anchor.text:SetFontObject(E.AnchorFont)
 		frame.anchor:SetScript("OnMouseUp", E.OmniCDAnchor_OnMouseUp)
@@ -342,7 +346,6 @@ local function GetUnitBarFrame()
 		frame:SetScript("OnHide", OmniCDBar_OnHide)
 		frame:SetScript("OnEvent", CooldownBarFrame_OnEvent)
 	end
-
 	unitBars[#unitBars + 1] = frame
 	return frame
 end
@@ -352,6 +355,33 @@ function P:HideBars()
 		local frame = unitBars[i]
 		frame:Hide()
 	end
+end
+
+function P:RemoveUnusedContainers(frame, raidBarIndex)
+	if ( raidBarIndex ) then
+		if ( frame.exContainers[raidBarIndex] ) then
+			tinsert(unusedContainers, frame.exContainers[raidBarIndex])
+			wipe(frame.exContainers[raidBarIndex].icons)
+			frame.exContainers[raidBarIndex] = nil
+		end
+	else
+		for raidBarIndex, container in pairs(frame.exContainers) do
+			tinsert(unusedContainers, container)
+			wipe(container.icons)
+			frame.exContainers[raidBarIndex] = nil
+		end
+	end
+end
+
+local function GetContainer(frame, raidBarIndex)
+	local container = tremove(unusedContainers)
+	if ( not container ) then
+		container = CreateFrame("Frame")
+		container:SetSize(1, 1)
+		container.icons = {}
+	end
+	frame.exContainers[raidBarIndex] = container
+	return container
 end
 
 local textureUVs = {
@@ -376,7 +406,7 @@ function P:UpdatePassThroughButtons()
 	end
 end
 
-local function GetIcon(barFrame, iconIndex)
+local function GetIcon(barFrame, iconIndex, container)
 	local icon = tremove(unusedIcons)
 	if not icon then
 		numIcons = numIcons + 1
@@ -409,7 +439,7 @@ local function GetIcon(barFrame, iconIndex)
 			end
 		end
 	end
-	icon:SetParent(barFrame.container)
+	icon:SetParent(container or barFrame.container)
 	barFrame.icons[iconIndex] = icon
 	return icon
 end
@@ -457,7 +487,6 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 	if not info.bar then
 		info.bar = GetUnitBarFrame()
 	end
-
 	local frame = info.bar
 	frame.key = index
 	frame.guid = guid
@@ -494,6 +523,21 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 	end
 	frame:RegisterUnitEvent('UNIT_CONNECTION', unit)
 
+
+	for _, f in pairs(P.extraBars) do
+		if ( f.db.enabled and f.db.unitBar ) then
+			local raidBarIndex = f.index
+			local container = frame.exContainers[raidBarIndex]
+			if ( container ) then
+				if ( container.icons[1] ) then
+					wipe(container.icons)
+				end
+			else
+				frame.exContainers[raidBarIndex] = GetContainer(frame, raidBarIndex)
+			end
+		end
+	end
+
 	local isInspectedUnit = info.spec
 	local lvl = info.level
 	local iconIndex = 0
@@ -521,16 +565,16 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 			local n = #spells
 			for j = 1, n do
 				local spell = spells[j]
-				local spellID, spellType, spec, race, item, item2, talent = spell.spellID, spell.type, spell.spec, spell.race, spell.item, spell.item2, spell.talent
+				local spellID, spellType, spec, race, item, item2, talent, disabledSpec = spell.spellID, spell.type, spell.spec, spell.race, spell.item, spell.item2, spell.talent, spell.disabledSpec
 
 				local isValidSpell
 				local enabledSpell = self.spell_enabled[spellID]
-				local extraBarKey, extraBarFrame
+				local extraBarKey, extraBarFrame, isUnitBar
 				if type(enabledSpell) == "number" then
 					extraBarKey = "raidBar" .. enabledSpell
 					extraBarFrame = E.db.extraBars[extraBarKey].enabled and self.extraBars[extraBarKey]
 				end
-				if enabledSpell and (notUser or (not self.isUserHidden or extraBarFrame)) then
+				if enabledSpell and (notUser or not self.isUserHidden or (extraBarFrame and not extraBarFrame.db.unitBar)) then
 					if i == 2 then
 						if type(race) == "table" then
 							for k = 1, #race do
@@ -547,13 +591,22 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 					elseif isInspectedUnit then
 						if i == 6 then
 							isValidSpell = (not E.postBFA or not E.covenant_abilities[spellID] or self.isInShadowlands)
-								and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, lvl >= GetSpellLevelLearned(spellID))
+								and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, lvl >= GetSpellLevelLearned(spellID), disabledSpec and disabledSpec[info.spec])
 								and (not talent or not self:IsSpecOrTalentForPvpStatus(talent, info, true))
+
+							if ( isValidSpell and info.spec == 257 and not info.auras[2050] ) then
+								local _, src = P:GetBuffDuration(unit, 423510)
+								if ( src ) then
+									info.auras[2050] = true
+									info.auras[34861] = true
+								end
+							end
 						elseif i == 5 then
 							isValidSpell = self.isInShadowlands and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, true)
 						elseif i == 4 then
 							isValidSpell = info.talentData[spec]
 						else
+
 
 							if info.auras.hasWeyrnstone then
 								info.itemData[205146] = true
@@ -596,6 +649,9 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 										if rank then
 											local rt = modData[k+1]
 											rt = type(rt) == "table" and (rt[rank] or rt[1]) or rt
+											if (tal == 422748 or tal == 422894) and self.isPvP then
+												rt = rt / 2
+											end
 											cd = cd - rt
 										end
 									end
@@ -748,7 +804,13 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 						local icon
 						if extraBarFrame then
 							extraBarFrame.numIcons = extraBarFrame.numIcons + 1
-							icon = GetIcon(extraBarFrame, extraBarFrame.numIcons)
+							if ( extraBarFrame.db.unitBar ) then
+								local container = frame.exContainers[enabledSpell]
+								icon = GetIcon(extraBarFrame, extraBarFrame.numIcons, container)
+								container.icons[#container.icons + 1] = icon
+							else
+								icon = GetIcon(extraBarFrame, extraBarFrame.numIcons)
+							end
 						else
 							iconIndex = iconIndex + 1
 							icon = frame.icons[iconIndex] or GetIcon(frame, iconIndex)
@@ -773,7 +835,7 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 						self:HideOverlayGlow(icon)
 
 						local active = info.active[spellID]
-						if active then
+						if active and active.startTime then
 							if icon.maxcharges then
 								active.charges = active.charges or (icon.maxcharges - 1)
 								icon.count:SetText(active.charges)
@@ -781,6 +843,10 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 								active.charges = nil
 							end
 							self:HighlightIcon(icon, true)
+
+
+
+
 
 							icon.cooldown:SetCooldown(active.startTime, active.duration, active.iconModRate)
 							icon.active = true
@@ -837,6 +903,7 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 	else
 		self:SetAnchor(frame)
 	end
+
 	if not isUpdateBarsOrGRU then
 		self:UpdateExBars()
 	end

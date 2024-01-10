@@ -1,6 +1,13 @@
 local E, L, C = select(2, ...):unpack()
 local P = E.Party
 
+local L_POINTS = {
+	["TOPLEFT"] = L["TOPLEFT"],
+	["TOPRIGHT"] = L["TOPRIGHT"],
+	["BOTTOMLEFT"] = L["BOTTOMLEFT"],
+	["BOTTOMRIGHT"] = L["BOTTOMRIGHT"],
+}
+
 local getColor = function(info)
 	local ele, option, c = info[#info-1], info[#info]
 	if ele == "bgColors" and option == "inactiveColor" then
@@ -26,6 +33,20 @@ end
 
 local isRaidCDBar = function(info)
 	return info[4] ~= "raidBar0"
+end
+
+local isDisabled = function(info)
+	return not E.profile.Party[ info[2] ].extraBars[ info[4] ].enabled
+end
+
+local isUnitBar = function(info)
+	local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
+	return not db.enabled or db.unitBar
+end
+
+local notUnitBar = function(info)
+	local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
+	return not db.enabled or not db.unitBar
 end
 
 local isDisabledProgressBarOrNameBar = function(info)
@@ -154,17 +175,64 @@ local extraBarsInfo = {
 			order = 1,
 			type = "toggle",
 		},
-		locked = {
-			name = LOCK_FRAME,
-			desc = L["Lock frame position"],
+		unitBar = {
+			hidden = function(info) return not E.profile.Party[ info[2] ].extraBars[ info[4] ].enabled end,
+			name = E.STR.WHATS_NEW_ESCSEQ .. L["Attach to Raid Frame"],
+			desc = L["Convert to additional CD bars that attach to each unit's raid frame."],
 			order = 2,
 			type = "toggle",
 		},
-		layoutSettings = {
-			name = L["Layout"],
+		locked = {
+			hidden = isUnitBar,
+			name = LOCK_FRAME,
+			desc = L["Lock frame position"],
+			order = 3,
+			type = "toggle",
+		},
+		positionSettings = {
+			hidden = notUnitBar,
+			name = L["Position"],
 			type = "group",
 			inline = true,
 			order = 10,
+			args = {
+				anchor = {
+					name = L["Anchor Point"],
+					desc = format("%s\n\n%s", L["Set the anchor point on the spell bar"],
+					L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"]),
+					order = 3,
+					type = "select",
+					values = L_POINTS,
+				},
+				attach = {
+					name = L["Attachment Point"],
+					desc = L["Set the anchor attachment point on the party/raid frame"],
+					order = 4,
+					type = "select",
+					values = L_POINTS,
+				},
+				offsetX = {
+					name = L["Offset X"],
+					desc = E.STR.MAX_RANGE,
+					order = 6,
+					type = "range",
+					min = -999, max = 999, softMin = -100, softMax = 100, step = 1,
+				},
+				offsetY = {
+					name = L["Offset Y"],
+					desc = E.STR.MAX_RANGE,
+					order = 7,
+					type = "range",
+					min = -999, max = 999, softMin = -100, softMax = 100, step = 1,
+				},
+			}
+		},
+		layoutSettings = {
+			hidden = isDisabled,
+			name = L["Layout"],
+			type = "group",
+			inline = true,
+			order = 20,
 			args = {
 				spellType = {
 					disabled = function(info)
@@ -200,6 +268,8 @@ local extraBarsInfo = {
 					},
 				},
 				sortBy = {
+					hidden = isUnitBar,
+					disabled = isUnitBar,
 					name = COMPACT_UNIT_FRAME_PROFILE_SORTBY,
 					desc = function(info)
 						return info[4] == "raidBar0" and interruptBarSortByDesc or raidBarSortByDesc
@@ -211,6 +281,8 @@ local extraBarsInfo = {
 					end,
 				},
 				sortDirection = {
+					hidden = isUnitBar,
+					disabled = isUnitBar,
 					name = L["Sort Direction"],
 					order = 4,
 					type = "select",
@@ -218,9 +290,6 @@ local extraBarsInfo = {
 						asc = L["Ascending"],
 						dsc = L["Descending"],
 					}
-				},
-				lb1 = {
-					name = "", order = 5, type = "description"
 				},
 				columns = {
 					name = function(info)
@@ -249,9 +318,6 @@ local extraBarsInfo = {
 					type = "range",
 					min = -5, max = 100, softMin = -1, softMax = 20, step = 1,
 				},
-				lb2 = {
-					name = "", order = 9, type = "description"
-				},
 				growUpward = {
 					name = L["Grow Rows Upward"],
 					desc = L["Toggle the grow direction of icon rows"],
@@ -259,6 +325,8 @@ local extraBarsInfo = {
 					type = "toggle",
 				},
 				growLeft = {
+					hidden = isUnitBar,
+					disabled = isUnitBar,
 					name = L["Grow Columns Left"],
 					desc = L["Toggle the grow direction of icon columns"],
 					order = 11,
@@ -267,10 +335,11 @@ local extraBarsInfo = {
 			}
 		},
 		iconSettings = {
+			hidden = isDisabled,
 			name = L["Icon"],
 			type = "group",
 			inline = true,
-			order = 20,
+			order = 30,
 			args = {
 				scale = {
 					name = L["Icon Size"],
@@ -280,6 +349,7 @@ local extraBarsInfo = {
 					min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 				},
 				showName = {
+					hidden = isUnitBar,
 					disabled = isEnabledProgressBar,
 					name = L["Show Name"],
 					desc = L["Show name on icons"],
@@ -287,12 +357,14 @@ local extraBarsInfo = {
 					type = "toggle",
 				},
 				nameOfsY = {
+					hidden = isUnitBar,
 					name = L["Name Offset Y"],
 					order = 3,
 					type = "range",
 					min = -20, max = 50, step = 1,
 				},
 				truncateIconName = {
+					hidden = isUnitBar,
 					disabled = function(info) return not E.profile.Party[ info[2] ].extraBars[ info[4] ].showName or isEnabledProgressBar(info) end,
 					name = L["Truncate Name"],
 					desc = L["Adjust value until the truncate symbol [...] disappears.\n|cffff20200: Disable option"],
@@ -303,12 +375,13 @@ local extraBarsInfo = {
 			}
 		},
 		progressBar = {
+			hidden = isUnitBar,
 			disabled = function(info)
 				local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
 				return not db.enabled or not db.progressBar or db.layout == "horizontal"
 			end,
 			name = L["Status Bar Timer"],
-			order = 30,
+			order = 40,
 			type = "group",
 			inline = true,
 			args = {
@@ -495,10 +568,11 @@ local extraBarsInfo = {
 			}
 		},
 		miscSettings = {
+			hidden = isUnitBar,
 			name = MISCELLANEOUS,
 			type = "group",
 			inline = true,
-			order = 40,
+			order = 50,
 			args = {
 				renameBar = {
 					name = L["Rename Bar"],
@@ -563,7 +637,7 @@ local extraBarsInfo = {
 }
 
 local extraBars = {
-	name = L["Extra Bars"],
+	name = E.STR.WHATS_NEW_ESCSEQ .. L["Extra Bars"],
 	type = "group",
 	childGroups = "tab",
 	order = 70,
@@ -579,7 +653,7 @@ local extraBars = {
 				P:SetExAnchor(frame, db)
 			elseif option == "scale" then
 				P:ConfigExSize(bar, true)
-			elseif option == "enabled" then
+			elseif option == "enabled" or option == "unitBar" then
 				P:Refresh(true)
 			else
 				P:ConfigExBar(bar, option)
@@ -598,11 +672,28 @@ function P:ConfigExBar(key, arg)
 	local db_icon = E.db.icons
 	local db = E.db.extraBars[key]
 	local frame = self.extraBars[key]
+
+
+	if ( arg == "anchor" or arg == "attach" or arg == "offsetX" or arg == "offsetY" ) then
+		self:UpdateExBarPositionValues()
+		for _, info in pairs(self.groupInfo) do
+			local f = info.bar
+			local _, relativeTo = f:GetPoint()
+			local container = f.exContainers[frame.index]
+			if ( container and relativeTo ~= UIParent ) then
+				container:ClearAllPoints()
+				container:SetPoint(frame.point, relativeTo, frame.relativePoint, frame.containerOfsX, frame.containerOfsY)
+			end
+		end
+		self:SetExIconLayout(key, false, true)
+		return
+	end
+
 	for i = 1, frame.numIcons do
 		local icon = frame.icons[i]
 		local statusBar = icon.statusBar
 		if arg == "layout" or arg == "progressBar" then
-			if db.layout == "vertical" and db.progressBar then
+			if ( db.layout == "vertical" and db.progressBar and not db.unitBar ) then
 				statusBar = statusBar or self:GetStatusBar(icon, key)
 				self:SetExBorder(icon, db)
 				self:SetExStatusBarWidth(statusBar, db)
@@ -633,10 +724,9 @@ function P:ConfigExBar(key, arg)
 			self:SetExStatusBarWidth(statusBar, db)
 		end
 	end
-
-	local sortOrder = arg == "sortBy" or arg == "growUpward" or arg == "sortDirection" or arg == "layout" or arg == "growLeft"
-	if sortOrder or arg == "progressBar" or arg == "columns" or arg == "paddingX" or arg == "paddingY"
-		or arg == "statusBarWidth" or arg == "groupPadding" then
+	if arg == "layout" or arg == "sortBy" or arg == "sortDirection"
+		or arg == "columns" or arg == "paddingX" or arg == "paddingY" or arg == "growUpward" or arg == "growLeft"
+		or arg == "progressBar" or arg == "statusBarWidth" then
 		self:UpdateExBarPositionValues()
 		self:SetExIconLayout(key, sortOrder, true)
 	end
@@ -656,9 +746,9 @@ local updatePixelObj = function(key, frame, db, noDelay)
 end
 
 function P:ConfigExSize(key, slider)
-	local db = E.db.extraBars[key]
 	local frame = self.extraBars[key]
-	frame.container:SetScale(db.scale)
+	local db = E.db.extraBars[key]
+	self:SetExScale(frame, db)
 
 	if E.db.icons.displayBorder or (db.layout == "vertical" and db.progressBar) then
 		if slider then

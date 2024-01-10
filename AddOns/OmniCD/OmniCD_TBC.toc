@@ -1,12 +1,13 @@
 ## Interface: 20504
 ## Title: OmniCD
-## Version: 2.5.4.2770
+## Version: 2.5.4.2775
 ## Author: Treebonker
 ## Notes: Party cooldown tracker. /oc
 ## X-Credits:
 ## X-License: All Rights Reserved
 ## X-Localizations: enUS, deDE, esMX, frFR, koKR, ruRU, zhCN, zhTW
 ## X-Website: https://www.curseforge.com/wow/addons/omnicd
+## DefaultState: Disabled
 ## SavedVariables: OmniCDDB
 
 ## Title-zhTW: |cffFF7F00[副本]|r 隊友技能冷卻監控

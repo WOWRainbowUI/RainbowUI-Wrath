@@ -24,7 +24,7 @@ E.SlashHandler = function(msg)
 		E.write("reload or rl: " .. L["Reload addon."])
 		E.write("reset or rt: " .. L["Reset all cooldown timers."])
 	elseif command == "rl" or command == "reload" then
-		E:Refresh()
+		E:Refresh(true)
 	elseif command == "t" or command == "test" then
 		if E:GetModuleEnabled("Party") then
 			local key = not P.isInTestMode and P.zone

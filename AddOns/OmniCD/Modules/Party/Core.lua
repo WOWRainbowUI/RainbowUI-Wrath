@@ -160,6 +160,8 @@ function P:UpdatePositionValues()
 	local pixel = (E.db.general.showRange and not db.detached and self.effectivePixelMult or E.PixelMult) / E.db.icons.scale
 	local growLeft = strfind(db.anchor, "RIGHT")
 	local growX = growLeft and -1 or 1
+	local growRowsUpward = db.growUpward
+	local growY = growRowsUpward and 1 or -1
 
 
 	self.point = db.anchor
@@ -178,34 +180,30 @@ function P:UpdatePositionValues()
 	self.displayInactive = db.displayInactive
 	self.maxNumIcons = db.maxNumIcons == 0 and 100 or db.maxNumIcons
 
-	local growRowsUpward = db.growUpward
-	local growY = growRowsUpward and 1 or -1
 	if db.layout == "horizontal" or db.layout == "doubleRow" or db.layout == "tripleRow" then
 		self.ofsX = 0
 		self.ofsY = growY * (E.baseIconHeight + db.paddingY * pixel)
+		self.ofsY2 = 0
 		if growLeft then
 			self.point2 = "TOPRIGHT"
 			self.relativePoint2 = "TOPLEFT"
 			self.ofsX2 = -(db.paddingX * pixel)
-			self.ofsY2 = 0
 		else
 			self.point2 = "TOPLEFT"
 			self.relativePoint2 = "TOPRIGHT"
 			self.ofsX2 = db.paddingX * pixel
-			self.ofsY2 = 0
 		end
 	else
 		self.ofsX = growX * (E.baseIconHeight + db.paddingX  * pixel)
 		self.ofsY = 0
+		self.ofsX2 = 0
 		if growRowsUpward then
 			self.point2 = "BOTTOMRIGHT"
 			self.relativePoint2 = "TOPRIGHT"
-			self.ofsX2 = 0
 			self.ofsY2 = db.paddingY * pixel
 		else
 			self.point2 = "TOPRIGHT"
 			self.relativePoint2 = "BOTTOMRIGHT"
-			self.ofsX2 = 0
 			self.ofsY2 = -(db.paddingY * pixel)
 		end
 	end
@@ -316,18 +314,21 @@ function P:IsSpecAndTalentForPvpStatus(talentID, info)
 	end
 end
 
-function P:IsSpecOrTalentForPvpStatus(talentID, info, isLearnedLevel)
+function P:IsSpecOrTalentForPvpStatus(talentID, info, isLearnedLevel, talentDisabledSpec)
 	if not talentID then
 		return isLearnedLevel
 	end
 	if type(talentID) == "table" then
 		for _, id in ipairs(talentID) do
-			local talent = P:IsSpecOrTalentForPvpStatus(id, info, isLearnedLevel)
+			local talent = P:IsSpecOrTalentForPvpStatus(id, info, isLearnedLevel, talentDisabledSpec)
 			if talent then return true end
 		end
 	else
 		if specIDs[talentID] then
 			return isLearnedLevel and info.spec == talentID
+		end
+		if talentDisabledSpec and talentDisabledSpec[self.zone] then
+			return
 		end
 		if covenantIDs[talentID] and not self.isInShadowlands then
 			return

@@ -115,7 +115,7 @@ function PS:ShowProfileDialog(text)
 			if profileType then
 				profileKey = profileType == "cds" and "" or format("%s: |cffffd200%s|r", L["Profile"], profileKey)
 				profileType = format(L["Profile Type: %s%s|r"], "|cffffd200", PS.profileTypeValues[profileType])
-				Dialog.EditBox:SetFormattedText("%s\n%s\n%s\n\n%s", L["Profile decoded successfully!"], profileType, profileKey, L["Pending user input..."])
+				Dialog.EditBox:SetText(format("%s\n%s\n%s\n\n%s", L["Profile decoded successfully!"], profileType, profileKey, L["Pending user input..."]))
 			else
 				Dialog.EditBox:SetText(PS.errorMsg)
 			end

@@ -3,6 +3,13 @@ local P = E.Party
 
 P.extraBars = {}
 
+local function RemoveContainers(raidBarIndex)
+	for _, info in pairs(P.groupInfo) do
+		local f = info.bar
+		P:RemoveUnusedContainers(f, raidBarIndex)
+	end
+end
+
 local function HideExBar(self, force)
 	local key = self.key
 	if not force and not P.disabled and E.db.extraBars[key].enabled then
@@ -12,6 +19,8 @@ local function HideExBar(self, force)
 
 	P:RemoveUnusedIcons(self, 1)
 	self.numIcons = 0
+
+	RemoveContainers(self.index)
 end
 
 function P:HideExBars(force)
@@ -54,18 +63,25 @@ end
 function P:UpdateExBarPositionValues()
 	for key, frame in pairs(self.extraBars) do
 		local db = frame.db
-		local pixel = E.PixelMult / db.scale
-		local growLeft = db.growLeft
+		local isUnitBar = db.unitBar
+		local pixel = (isUnitBar and E.db.general.showRange and self.effectivePixelMult or E.PixelMult) / db.scale
+		local growLeft = isUnitBar and strfind(db.anchor, "RIGHT") or db.growLeft
 		local growX = growLeft and -1 or 1
 		local growRowsUpward = db.growUpward
 		local growY = growRowsUpward and 1 or -1
-		local isProgressBarEnabled = db.enabled and db.progressBar
+		local isProgressBarEnabled = db.enabled and not isUnitBar and db.progressBar
 
-		frame.point = "TOPLEFT"
+		frame.point = isUnitBar and db.anchor or "TOPLEFT"
+		frame.relativePoint = db.attach
+		frame.containerOfsX = db.offsetX * growX * pixel
+		frame.containerOfsY = db.offsetY * pixel
 		frame.anchorPoint = "BOTTOMLEFT"
 		frame.anchorOfsY = growRowsUpward and -(E.baseIconHeight * db.scale + 15) or 0
 
 		if db.layout == "horizontal" then
+			frame.ofsX = 0
+			frame.ofsY = growY * (E.baseIconHeight + db.paddingY * pixel)
+			frame.ofsY2 = 0
 			if growLeft then
 				frame.point2 = "TOPRIGHT"
 				frame.relativePoint2 = "TOPLEFT"
@@ -75,11 +91,11 @@ function P:UpdateExBarPositionValues()
 				frame.relativePoint2 = "TOPRIGHT"
 				frame.ofsX2 = db.paddingX * pixel
 			end
-			frame.ofsX = 0
-			frame.ofsY = growY * (E.baseIconHeight + db.paddingY * pixel)
-			frame.ofsY2 = 0
 			frame.shouldShowProgressBar = nil
 		else
+			frame.ofsX = growX * (E.baseIconHeight + (db.paddingX * pixel) + (isProgressBarEnabled and db.statusBarWidth or 0))
+			frame.ofsY = 0
+			frame.ofsX2 = 0
 			if growRowsUpward then
 				frame.point2 = "BOTTOMLEFT"
 				frame.relativePoint2 = "TOPLEFT"
@@ -89,14 +105,11 @@ function P:UpdateExBarPositionValues()
 				frame.relativePoint2 = "BOTTOMLEFT"
 				frame.ofsY2 = -(db.paddingY * pixel)
 			end
-			frame.ofsX = growX * (E.baseIconHeight + (db.paddingX * pixel) + (isProgressBarEnabled and db.statusBarWidth or 0))
-			frame.ofsY = 0
-			frame.ofsX2 = 0
 			frame.shouldShowProgressBar = isProgressBarEnabled
 		end
 
 		local sortBy = db.sortBy
-		frame.shouldRearrangeInterrupts = db.enabled and (sortBy == 2 or sortBy >= 7)
+		frame.shouldRearrangeInterrupts = not isUnitBar and db.enabled and (sortBy == 2 or sortBy >= 7)
 	end
 end
 
@@ -322,34 +335,65 @@ function P:SetExIconLayout(key, sortOrder, updateSettings, updateIcons)
 		frame.numIcons = frame.numIcons - n
 	end
 
-	if sortOrder then
-		_sorter = sorters[db.sortBy]
-		local sortFunc = db.sortDirection == "dsc" and reverseSort or _sorter
-		sort(frame.icons, sortFunc)
-	end
+	if ( db.unitBar ) then
+		for _, info in pairs(self.groupInfo) do
+			local f = info.bar
+			for raidBarIndex, container in pairs(f.exContainers) do
+				local frame = self.extraBars["raidBar" .. raidBarIndex]
+				local icons = container.icons
+				if ( sortOrder ) then
+					sort(icons, self.sortPriority)
+				end
 
-	local count, rows = 0, 0
-	local columns = db.columns
-	for i = 1, frame.numIcons do
-		local icon = frame.icons[i]
-		icon:Hide()
-		icon:ClearAllPoints()
-
-		if i > 1 then
-			count = count + 1
-			if count == columns then
-				icon:SetPoint(frame.point, frame.container, frame.ofsX * rows, frame.ofsY * rows)
-				rows = rows + 1
-				count = 0
-			else
-				icon:SetPoint(frame.point2, frame.icons[i-1], frame.relativePoint2, frame.ofsX2, frame.ofsY2)
+				local count, rows = 0, 1
+				local columns = frame.db.columns
+				for i = 1, #icons do
+					local icon = icons[i]
+					icon:Hide()
+					icon:ClearAllPoints()
+					if ( i > 1 ) then
+						count = count + 1
+						if ( count == columns ) then
+							icon:SetPoint(frame.point, container, frame.ofsX * rows, frame.ofsY * rows)
+							rows = rows + 1
+							count = 0
+						else
+							icon:SetPoint(frame.point2, icons[i-1], frame.relativePoint2, frame.ofsX2, frame.ofsY2)
+						end
+					else
+						icon:SetPoint(frame.point, container)
+					end
+					icon:Show()
+				end
 			end
-		else
-			icon:SetPoint(frame.point, frame.container)
-			rows = rows + 1
+		end
+	else
+		if sortOrder then
+			_sorter = sorters[db.sortBy]
+			local sortFunc = db.sortDirection == "dsc" and reverseSort or _sorter
+			sort(frame.icons, sortFunc)
 		end
 
-		icon:Show()
+		local count, rows = 0, 1
+		local columns = db.columns
+		for i = 1, frame.numIcons do
+			local icon = frame.icons[i]
+			icon:Hide()
+			icon:ClearAllPoints()
+			if i > 1 then
+				count = count + 1
+				if count == columns then
+					icon:SetPoint(frame.point, frame.container, frame.ofsX * rows, frame.ofsY * rows)
+					rows = rows + 1
+					count = 0
+				else
+					icon:SetPoint(frame.point2, frame.icons[i-1], frame.relativePoint2, frame.ofsX2, frame.ofsY2)
+				end
+			else
+				icon:SetPoint(frame.point, frame.container)
+			end
+			icon:Show()
+		end
 	end
 
 
@@ -360,7 +404,7 @@ end
 
 function P:SetExAnchor(frame, db)
 	local anchor = frame.anchor
-	if db.locked then
+	if ( db.locked or db.unitBar ) then
 		anchor:Hide()
 	else
 		anchor:ClearAllPoints()
@@ -377,8 +421,17 @@ function P:SetExAnchor(frame, db)
 end
 
 function P:SetExScale(frame, db)
-	frame.container:SetScale(db.scale)
+	if ( db.unitBar ) then
+		for _, info in pairs(self.groupInfo) do
+			local f = info.bar
+			if ( f.exContainers[frame.index] ) then
+				f.exContainers[frame.index]:SetScale(db.scale)
+			end
+		end
+	else
+		frame.container:SetScale(db.scale)
 
+	end
 end
 
 function P:UpdateExBarBackdrop(frame, db)
@@ -391,13 +444,13 @@ end
 
 function P:SetExBorder(icon, db)
 	local db_icon = E.db.icons
-	local shouldShowProgressBar = db.layout == "vertical" and db.progressBar
+	local shouldShowProgressBar = not db.unitBar and db.layout == "vertical" and db.progressBar
 	if db_icon.displayBorder or shouldShowProgressBar then
 		icon.borderTop:ClearAllPoints()
 		icon.borderBottom:ClearAllPoints()
 		icon.borderRight:ClearAllPoints()
 		icon.borderLeft:ClearAllPoints()
-		local edgeSize = E.PixelMult / db.scale
+		local edgeSize = (db.unitBar and E.db.general.showRange and self.effectivePixelMult or E.PixelMult) / db.scale
 		icon.borderTop:SetPoint("TOPLEFT", icon, "TOPLEFT")
 		icon.borderTop:SetPoint("BOTTOMRIGHT", icon, "TOPRIGHT", 0, -edgeSize)
 		icon.borderBottom:SetPoint("BOTTOMLEFT", icon, "BOTTOMLEFT")
@@ -419,30 +472,32 @@ function P:SetExBorder(icon, db)
 
 		if shouldShowProgressBar then
 			local statusBar = icon.statusBar
-			if db.nameBar then
-				statusBar:DisableDrawLayer("BORDER")
-			else
-				statusBar:EnableDrawLayer("BORDER")
-				statusBar.borderTop:ClearAllPoints()
-				statusBar.borderBottom:ClearAllPoints()
-				statusBar.borderRight:ClearAllPoints()
-				statusBar.borderTop:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
-				statusBar.borderTop:SetPoint("BOTTOMRIGHT", statusBar, "TOPRIGHT", 0, -edgeSize)
-				statusBar.borderBottom:SetPoint("BOTTOMLEFT", statusBar, "BOTTOMLEFT")
-				statusBar.borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
-				statusBar.borderRight:SetPoint("TOPRIGHT", statusBar.borderTop, "BOTTOMRIGHT")
-				statusBar.borderRight:SetPoint("BOTTOMLEFT", statusBar.borderBottom, "TOPRIGHT", -edgeSize, 0)
-				if db.hideBorder then
-					statusBar.borderTop:Hide()
-					statusBar.borderBottom:Hide()
-					statusBar.borderRight:Hide()
+			if statusBar then
+				if db.nameBar then
+					statusBar:DisableDrawLayer("BORDER")
 				else
-					statusBar.borderTop:SetColorTexture(r, g, b)
-					statusBar.borderBottom:SetColorTexture(r, g, b)
-					statusBar.borderRight:SetColorTexture(r, g, b)
-					statusBar.borderTop:Show()
-					statusBar.borderBottom:Show()
-					statusBar.borderRight:Show()
+					statusBar:EnableDrawLayer("BORDER")
+					statusBar.borderTop:ClearAllPoints()
+					statusBar.borderBottom:ClearAllPoints()
+					statusBar.borderRight:ClearAllPoints()
+					statusBar.borderTop:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
+					statusBar.borderTop:SetPoint("BOTTOMRIGHT", statusBar, "TOPRIGHT", 0, -edgeSize)
+					statusBar.borderBottom:SetPoint("BOTTOMLEFT", statusBar, "BOTTOMLEFT")
+					statusBar.borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
+					statusBar.borderRight:SetPoint("TOPRIGHT", statusBar.borderTop, "BOTTOMRIGHT")
+					statusBar.borderRight:SetPoint("BOTTOMLEFT", statusBar.borderBottom, "TOPRIGHT", -edgeSize, 0)
+					if db.hideBorder then
+						statusBar.borderTop:Hide()
+						statusBar.borderBottom:Hide()
+						statusBar.borderRight:Hide()
+					else
+						statusBar.borderTop:SetColorTexture(r, g, b)
+						statusBar.borderBottom:SetColorTexture(r, g, b)
+						statusBar.borderRight:SetColorTexture(r, g, b)
+						statusBar.borderTop:Show()
+						statusBar.borderBottom:Show()
+						statusBar.borderRight:Show()
+					end
 				end
 			end
 		end
@@ -456,7 +511,7 @@ function P:SetExBorder(icon, db)
 end
 
 function P:SetExIconName(icon, db)
-	if db.layout == "vertical" and db.progressBar or not db.showName then
+	if ( db.layout == "vertical" and db.progressBar or not db.showName or db.unitBar ) then
 		icon.name:Hide()
 	else
 		icon.name:SetPoint("BOTTOM", 0, db.nameOfsY)
@@ -576,6 +631,10 @@ function P:UpdateExBars()
 			frame:Show()
 		else
 			HideExBar(frame)
+		end
+
+		if ( not frame.db.unitBar ) then
+			RemoveContainers(frame.index)
 		end
 	end
 end

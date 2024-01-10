@@ -180,10 +180,10 @@ local function GetOptions()
 						},
 						notice1 = {
 							name = format("|cffff2020* %s", (E.isClassic and L["Group member must have OmniCD to detect Talents."])
-							or (E.isWOTLKC and L["Group member must have OmniCD to detect cooldown reduction by Glyphs."])
-							or (E.isSL and L["Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."])
-							or (E.isDF and L["Group member must have OmniCD to detect cooldown reduction with a chance to proc."])
-							or ""),
+								or (E.isWOTLKC and L["Group member must have OmniCD to detect cooldown reduction by Glyphs."])
+								or (E.isSL and L["Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."])
+								or (E.isDF and L["Group member must have OmniCD to detect cooldown reduction with a chance to proc."])
+								or ""),
 							order = 18,
 							type = "description",
 						},

@@ -120,6 +120,11 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 	end
 
 	local spellID = icon.spellID
+
+	if not isRecharge and info.auras[spellID] then
+		return
+	end
+
 	info.active[spellID] = info.active[spellID] or {}
 
 	local active = info.active[spellID]

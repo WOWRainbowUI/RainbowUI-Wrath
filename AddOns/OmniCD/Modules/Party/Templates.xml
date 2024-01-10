@@ -60,7 +60,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" x="3" y="-3"/>
 					</Anchors>
-					<Color r="0.6" g="1.0" b="0.804" a="1"/><!-- DF -->
+					<Color r="1.0" g="0.2" b="0.2" a="0.8"/><!-- 2772 -->
 				</FontString>
 				<FontString name="$parentCount" inherits="NumberFontNormal" parentKey="count" justifyH="RIGHT">
 					<Anchors>
