@@ -96,6 +96,7 @@ local function init()
 	NRC:updateRaidCooldownsShowDead();
 	NRC:checkNewVersion();
 	NRC:resetOldLockouts();
+	NRC:updateRaidStatusLowDurationTime();
 end
 local f = CreateFrame("Frame");
 f:RegisterEvent("ADDON_LOADED");
@@ -317,13 +318,18 @@ function NRC:updateMinimapButton(tooltip, frame)
 	for k, v in pairs(NRC.data) do
 		if (type(v) == "table") then
 			if (k == "myChars") then
-				for char, charData in pairs(v) do
+				for char, charData in NRC:pairsByKeys(v) do
 					if (IsShiftKeyDown() or char == me) then
 						local found2;
 						local _, _, _, classColorHex = GetClassColor(charData.englishClass);
 						local text = "|c" .. classColorHex .. char .. "|r";
 						if (charData.savedInstances) then
-							for instance, instanceData in pairs(charData.savedInstances) do
+							local instances = {};
+							for k, v in pairs(charData.savedInstances) do
+								tinsert(instances, v);
+							end
+							table.sort(instances, function(a, b) return a.name < b.name end);
+							for instance, instanceData in ipairs(instances) do
 								if (instanceData.locked and instanceData.resetTime and instanceData.resetTime > GetServerTime()) then
 									local timeString = "(" .. NRC:getTimeString(instanceData.resetTime - GetServerTime(), true, "short") .. ")";
 									local instanceName = instanceData.name;

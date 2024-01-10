@@ -203,6 +203,8 @@ NRC.companionCreatures = {
 	[32641] = "Drix Blackwrench", --Tundra mount.
 	[32642] = "Mojodishu", --Tundra mount.
 	[196534] = "Hoplet", --6 month sub.
+	[213605] = "Arfus", --Completing all gamma dungeons.
+	[211025] = "Lil' Wrathion", --Cata preorder pet.
 }
 
 NRC.critterCreatures = {
@@ -2552,6 +2554,12 @@ NRC.foods = {
 		desc = "+20 MP5, +40 Stamina",
 		maxRank = true,
 	},
+	[66623] = { --https://www.wowhead.com/wotlk/item=46887/bountiful-feast (Pilgrim's event food)
+		name = "Well Fed",
+		icon = 136000,
+		desc = "+80 AP, +47 SP, +40 Stamina",
+		maxRank = true,
+	},
 };
 
 --Scrolls get overridden by dk buffs in wrath.
@@ -2868,28 +2876,28 @@ NRC.trackedConsumes = {
 		quality = 1,
 	},
 	--Healthstones.
-	[27235] = {
+	[47875] = {
 		name = "Master Healthstone",
 		icon = 135230,
-		desc = "Instantly restores 2080 life.",
+		desc = "Instantly restores 4280 life.",
 		extraInfo = "0/2",
-		itemID = 22103,
+		itemID = 36892,
 		quality = 1,
 	},
-	[27236] = {
-		name = "Master Healthstone",
+	[47876] = {
+		name = "Fel Healthstone",
 		icon = 135230,
-		desc = "Instantly restores 2288 life.",
+		desc = "Instantly restores 4708 life.",
 		extraInfo = "1/2",
-		itemID = 22104,
+		itemID = 36893,
 		quality = 1,
 	},
-	[27237] = {
-		name = "Master Healthstone",
+	[47877] = {
+		name = "Fel Healthstone",
 		icon = 135230,
-		desc = "Instantly restores 2496 life.",
+		desc = "Instantly restores 5136 life.",
 		extraInfo = "2/2",
-		itemID = 22105,
+		itemID = 36894,
 		quality = 1,
 	},
 	--Potions.
@@ -3094,7 +3102,7 @@ NRC.trackedConsumes = {
 		name = "Potion of Speed",
 		icon = 236871,
 		desc = "Increases haste rating by 500 for 15 sec.",
-		itemID = 4021,
+		itemID = 40211,
 		quality = 1,
 	},
 	[53909] = {
@@ -10061,7 +10069,14 @@ NRC.pal = {
 	[69378] = { --Drums.
 		name = "Drums of Forgotten Kings",
 		icon = 135995,
-		desc = "Gives all members of the raid or group the Blessing of Forgotten Kings",
+		desc = "+8% Stats Blessing of Forgotten Kings",
+		order = 2,
+		maxRank = true,
+	},
+	[72586] = { --Drums.
+		name = "Drums of Forgotten Kings",
+		icon = 135995,
+		desc = "+8% Stats Blessing of Forgotten Kings",
 		order = 2,
 		maxRank = true,
 	},

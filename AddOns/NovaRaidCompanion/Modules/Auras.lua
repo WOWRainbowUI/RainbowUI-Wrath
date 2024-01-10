@@ -21,12 +21,13 @@ local function unitAura(...)
 		local auras = {};
 		local serverTime = GetServerTime();
 		for i = 1, 60 do
-			local name, icon, _, _, _, expirationTime, source, _, _, spellID = UnitBuff(unit, i);
+			local name, icon, _, _, duration, expirationTime, source, _, _, spellID = UnitBuff(unit, i);
 			if (name) then
 				auras[spellID] = {
 					name = name,
 					--endTime = serverTime + (expirationTime - GetTime()),
 					--source = source,
+					duration = duration,
 					icon = icon,
 					buff = true,
 				};
@@ -111,6 +112,7 @@ function NRC:aurasScanGroup()
 						name = name,
 						--endTime = serverTime + (expirationTime - GetTime()),
 						--source = source,
+						duration = duration,
 						icon = icon,
 						buff = true,
 					};
@@ -159,6 +161,7 @@ function NRC:aurasScanGroup()
 				name = name,
 				endTime = serverTime + (expirationTime - GetTime()),
 				--source = source,
+				duration = duration,
 				icon = icon,
 				buff = true,
 			};

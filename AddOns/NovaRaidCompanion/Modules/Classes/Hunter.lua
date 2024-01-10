@@ -237,7 +237,7 @@ local function tallyMisdirection(name)
 				if (NRC.config.mdSendMyThreatGroup) then
 					if (IsInGroup()) then
 						local msg = "[NRC] " .. string.format(L["otherTransferedThreatMD"], name, NRC:commaValue(total), target or "unknown");
-						NRC:sendGroup(msg, 0.2);
+						NRC:sendGroup(msg, nil, 0.2);
 					else
 						sentMe = true;
 						NRC:print(string.format(L["meTransferedThreatMD"], "|cFF00C800" .. NRC:commaValue(total) .. "|r", target or "unknown"));
@@ -265,7 +265,6 @@ local function tallyMisdirection(name)
 					--This can be merged in to only group check after testing new new settings check.
 					if (IsInGroup()) then
 						local msg = "[NRC] " .. string.format(L["otherTransferedThreatMD"], name, NRC:commaValue(total), target or "unknown");
-						--NRC:sendGroup(msg);
 						NRC:sendGroupSettingsCheck(msg, "mdSendOthersThreatGroup", "mdSendMyThreatGroup", name);
 					else
 						sentMe = true;
@@ -312,11 +311,7 @@ end
 		end
 		local msg = string.format(L["spellCastOn"], spellLink or spellName, target) .. ".";
 		if (NRC.config.mdSendMyCastGroup) then
-			if (IsInRaid()) then
-				SendChatMessage(msg, "RAID");
-			elseif (IsInGroup()) then
-				SendChatMessage(msg, "PARTY");
-			end
+			NRC:sendGroup(msg);
 		end
 		local inInstance = IsInInstance();
 		if (inInstance and NRC.config.mdSendMyCastGroup) then
@@ -630,13 +625,7 @@ function NRC:parseMdCommand(msg)
 			text = "(" .. NRC:commaValue(last.total) .. ") " .. last.name .. " last MD: " .. last.text;
 		end
 		if (text) then
-			if (IsInRaid()) then
-				SendChatMessage(NRC:stripColors(text), "RAID");
-			elseif (IsInGroup()) then
-				SendChatMessage(NRC:stripColors(text), "PARTY");
-			else
-				NRC:print(text)
-			end
+			NRC:sendGroup(text, true);
 		else
 			if (msg and msg ~= "") then
 				print("No last misdirection data found for player " .. msg .. ".");

@@ -11,6 +11,7 @@ local slotCount, lastRaidRequest, lastDuraRequest, columCount = 0, 0, 0, 0;
 local readyCheckStatus, readyCheckRunning, readyCheckEndedTimer, readyCheckEndedTimer2 = {};
 local fadeOutTimer;
 local InCombatLockdown = InCombatLockdown;
+local lowDurationTime = 300;
 
 local f = CreateFrame("Frame", "NRCRaidStatus");
 f:RegisterEvent("GROUP_FORMED");
@@ -338,7 +339,8 @@ function NRC:loadRaidStatusFrames()
 		raidStatusFrame.button.tooltip:Hide();
 	end)
 	
-	raidStatusFrame.button2:SetPoint("TOPRIGHT", raidStatusFrame.topRight, -169, 0);
+	--raidStatusFrame.button2:SetPoint("TOPRIGHT", raidStatusFrame.topRight, -169, 0);
+	raidStatusFrame.button2:SetPoint("TOPLEFT", raidStatusFrame.topRight, 14, 0);
 	raidStatusFrame.button2:SetWidth(60);
 	raidStatusFrame.button2:SetHeight(15);
 	raidStatusFrame.button2:SetScale(1);
@@ -367,6 +369,27 @@ function NRC:loadRaidStatusFrames()
 		NRC:updateRaidStatusFrames(true);
 		--NRC.acr:NotifyChange("NovaRaidCompanion");
 	end);
+	
+	raidStatusFrame.checkbox2 = CreateFrame("CheckButton", "NRCRaidStatusFrameCheckbox2", raidStatusFrame, "ChatConfigCheckButtonTemplate");
+	raidStatusFrame.checkbox2.Text:SetText(L["Buff Durations"]);
+	raidStatusFrame.checkbox2.Text:SetFont(NRC.regionFont, 11);
+	raidStatusFrame.checkbox2.Text:SetPoint("LEFT", raidStatusFrame.checkbox2, "RIGHT", -2, 1);
+	raidStatusFrame.checkbox2.tooltip = L["buffDurationsTooltip"];
+	raidStatusFrame.checkbox2:SetFrameStrata("HIGH");
+	raidStatusFrame.checkbox2:SetFrameLevel(9);
+	raidStatusFrame.checkbox2:SetWidth(20);
+	raidStatusFrame.checkbox2:SetHeight(20);
+	raidStatusFrame.checkbox2:SetPoint("TOPRIGHT", raidStatusFrame.topRight, -229, 2);
+	raidStatusFrame.checkbox2:SetHitRectInsets(0, 0, -10, 7);
+	--raidStatusFrame.checkbox:SetBackdropBorderColor(0, 0, 0, 1);
+	raidStatusFrame.checkbox2:SetChecked(NRC.config.raidStatusBuffSwipe);
+	raidStatusFrame.checkbox2:SetScript("OnClick", function()
+		local value = raidStatusFrame.checkbox2:GetChecked();
+		NRC.config.raidStatusBuffSwipe = value;
+		NRC:updateAllRaidStatusCooldownSwipes();
+		--NRC.acr:NotifyChange("NovaRaidCompanion");
+	end);
+	
 	NRC:updateRaidStatusGroupColors();
 	NRC:updateRaidStatusFrameButtons();
 	NRC:setRaidStatusSize();
@@ -377,10 +400,12 @@ function NRC:updateRaidStatusFrameButtons()
 	if (raidStatusFrame) then
 		if (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
 			raidStatusFrame.button2:Show();
-			raidStatusFrame.topRight:SetSize(251, 30);
+			--raidStatusFrame.topRight:SetSize(251, 30);
+			raidStatusFrame.topRight:SetSize(350, 30);
 			raidStatusFrame.button2:Show();
 		else
-			raidStatusFrame.topRight:SetSize(150.5, 30);
+			--raidStatusFrame.topRight:SetSize(150.5, 30);
+			raidStatusFrame.topRight:SetSize(250.5, 30);
 			raidStatusFrame.button2:Hide();
 		end
 	end
@@ -573,7 +598,11 @@ local function updateGridTooltip(frame, localBuffData, buffData)
 	end
 	if (not NRC.raidStatusCache) then
 		if (buffData.endTime and buffData.endTime > GetServerTime()) then
-				tooltipText = tooltipText .. "\n" .. NRC:getShortTime(buffData.endTime - GetServerTime()) .. "|r";
+			local remaining = buffData.endTime - GetServerTime();
+			tooltipText = tooltipText .. "\n" .. NRC:getShortTime(remaining) .. "|r";
+			if (remaining < lowDurationTime) then
+				tooltipText = tooltipText .. " |cFFFF0000Low Duration|r";
+			end
 		else
 			tooltipText = tooltipText .. "\nDuration unknown (out of range?)|r";
 		end
@@ -631,7 +660,11 @@ local function getMultipleIconsTooltip(buffData)
 	end
 	if (not NRC.raidStatusCache) then
 		if (buffData.endTime and buffData.endTime > GetServerTime()) then
-				tooltipText = tooltipText .. "\nDuration: " .. NRC:getShortTime(buffData.endTime - GetServerTime()) .. "|r";
+			local remaining = buffData.endTime - GetServerTime();
+			tooltipText = tooltipText .. "\nDuration: " .. NRC:getShortTime(remaining) .. "|r";
+			if (remaining < lowDurationTime) then
+				tooltipText = tooltipText .. " |cFFFF0000Low Duration|r";
+			end
 		else
 			tooltipText = tooltipText .. "\nDuration unknown (out of range?)|r";
 		end
@@ -705,16 +738,61 @@ local function colorizeRes(res)
 	local color = "|cFF00C800";
 	if (res < 1) then
 		color = "|cFFFF2222";
-	--elseif (res < 100) then
-		--color = "|cFF9CD6DE";
-		--color = "|cFFFFFFFF";
 	elseif (res < 200) then
-		--color = "|cFFDEDE42";
 		color = "|cFFDEDE42";
-	--elseif (res < 300) then
-	--	color = "|cFFDEDE42";
 	end
 	return color .. res .. "|r";
+end
+
+function NRC:updateRaidStatusLowDurationTime()
+	lowDurationTime = NRC.config.raidStatusLowDurationTime;
+end
+
+local function updateCooldownSwipe(texture, endTime, maxDuration)
+	if (NRC.config.raidStatusBuffSwipe and endTime and maxDuration) then
+		local remaining = endTime - GetServerTime();
+		local elapsedDuration = maxDuration - remaining;
+		if (not texture.cooldown) then
+			local cooldown = CreateFrame("Cooldown", texture:GetName() .. "Cooldown", texture:GetParent(), "CooldownFrameTemplate");
+			cooldown:ClearAllPoints();
+			cooldown:SetSize(texture:GetSize());
+			cooldown:SetPoint("CENTER", texture);
+			cooldown:SetReverse(true);
+			cooldown:SetDrawBling(false);
+			texture.cooldown = cooldown;
+		end
+		--if (not texture.swipeRunning) then
+			texture.cooldown:SetCooldown(GetTime() - elapsedDuration, maxDuration);
+			texture.swipeRunning = true;
+		--end
+	end
+end
+
+local function stopCooldownSwipe(texture)
+	if (texture.swipeRunning) then
+		texture.cooldown:Clear();
+		texture.swipeRunning = nil;
+	end
+end
+
+function NRC:updateAllRaidStatusCooldownSwipes()
+	if (not NRC.config.raidStatusBuffSwipe) then
+		for k, v in pairs(raidStatusFrame.subFrames) do
+			if (v.texture and v.texture.swipeRunning) then
+				stopCooldownSwipe(v.texture);
+			end
+			if (v.texture2 and v.texture2.swipeRunning) then
+				stopCooldownSwipe(v.texture2);
+			end
+			if (v.texture3 and v.texture3.swipeRunning) then
+				stopCooldownSwipe(v.texture3);
+			end
+			if (v.texture4 and v.texture4.swipeRunning) then
+				stopCooldownSwipe(v.texture4);
+			end
+		end
+	end
+	NRC:updateRaidStatusFrames(true);
 end
 
 function NRC:updateRaidStatusFrames(updateLayout)
@@ -746,6 +824,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 		end
 		columCount = #data.columns;
 	end
+	local showSwipe = NRC.config.raidStatusBuffSwipe;
 	if (data) then
 		local columnCount, maxColumnCount = 0, raidStatusFrame.maxColumnCount;
 		local rowCount, maxRowCount = 1, raidStatusFrame.maxRowCount;
@@ -800,8 +879,12 @@ function NRC:updateRaidStatusFrames(updateLayout)
 				raidStatusFrame.subFrames[rowName .. "1"].name = name;
 				if (subGroups) then
 					local frame = raidStatusFrame.groupFrames[v.subGroup];
-					frame:ClearAllPoints();
 					if (not usedGroupframes[v.subGroup]) then
+						frame:ClearAllPoints();
+						if (not raidStatusFrame.subFrames[rowName .. columCount] or not raidStatusFrame.subFrames[rowName .. "1"]) then
+							--Looking for a bug.
+							NRC:debug(raidStatusFrame.subFrames[rowName .. columCount], raidStatusFrame.subFrames[rowName .. "1"])
+						end
 						frame:SetPoint("TOPRIGHT", raidStatusFrame.subFrames[rowName .. columCount], "TOPRIGHT", 0, 0.6);
 						frame:SetPoint("TOPLEFT", raidStatusFrame.subFrames[rowName .. "1"], "TOPLEFT", -20, 0.6);
 						frame:SetPoint("BOTTOMRIGHT", raidStatusFrame.subFrames[rowName .. columCount], "BOTTOMRIGHT", 0, -0.6);
@@ -841,14 +924,20 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
 								frame:SetBackdropBorderColor(1, 1, 1, 0);
 							end
+							
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						elseif (flaskSlot) then
 							if (NRC.battleElixirs[buffID]) then
 								elixirs[1] = buffData;
@@ -883,6 +972,10 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
@@ -891,6 +984,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						elseif (foodSlot and validFoods[buffID]) then
 							eating = buffData.endTime or 0;
 						end
@@ -905,6 +999,10 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
@@ -913,6 +1011,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						end
 						if (fortSlot and fort[buffID]) then
 							local frame = raidStatusFrame.subFrames[rowName .. fortSlot];
@@ -925,6 +1024,10 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
@@ -933,6 +1036,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						end
 						if (spiritSlot and spirit[buffID]) then
 							local frame = raidStatusFrame.subFrames[rowName .. spiritSlot];
@@ -945,6 +1049,10 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
@@ -953,6 +1061,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						end
 						if (shadowSlot and shadow[buffID]) then
 							local frame = raidStatusFrame.subFrames[rowName .. shadowSlot];
@@ -965,6 +1074,10 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
@@ -973,6 +1086,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						end
 						if (motwSlot and motw[buffID]) then
 							local frame = raidStatusFrame.subFrames[rowName .. motwSlot];
@@ -985,6 +1099,10 @@ function NRC:updateRaidStatusFrames(updateLayout)
 								frame:SetBackdropColor(1, 0, 0, 0.25);
 								frame:SetBackdropBorderColor(1, 0, 0, 0.7);
 								frame.red = true;
+							elseif (buffData.endTime and buffData.endTime - GetServerTime() < lowDurationTime) then
+								frame:SetBackdropColor(1, 1, 0, 0.25);
+								frame:SetBackdropBorderColor(1, 1, 0, 0.7);
+								frame.red = true;
 							else
 								frame.red = nil;
 								frame:SetBackdropColor(0, 0, 0, 0);
@@ -993,6 +1111,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 							if (not InCombatLockdown()) then
 								frame:SetAttribute("macrotext", "/target " .. name);
 							end
+							updateCooldownSwipe(frame.texture, buffData.endTime, buffData.duration);
 						end
 						if (palSlot and pal[buffID]) then
 							tinsert(pallyBuffs, buffData);
@@ -1291,6 +1410,9 @@ function NRC:updateRaidStatusFrames(updateLayout)
 						if (elixirs[1].endTime) then
 							tooltipText = tooltipText .. NRC:getShortTime(elixirs[1].endTime - GetServerTime()) .. "|r";
 						end
+						updateCooldownSwipe(frame.texture, elixirs[1].endTime, elixirs[1].duration);
+					else
+						stopCooldownSwipe(frame.texture);
 					end
 					if (elixirs[2]) then
 						frame.texture2:SetPoint("LEFT", frame, "CENTER", 0.5, 0);
@@ -1309,6 +1431,9 @@ function NRC:updateRaidStatusFrames(updateLayout)
 						if (elixirs[2].endTime) then
 							tooltipText = tooltipText .. NRC:getShortTime(elixirs[2].endTime - GetServerTime()) .. "|r";
 						end
+						updateCooldownSwipe(frame.texture2, elixirs[2].endTime, elixirs[2].duration);
+					else
+						stopCooldownSwipe(frame.texture);
 					end
 					frame.updateTooltip(tooltipText);
 					if (not InCombatLockdown()) then
@@ -1320,21 +1445,60 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
-					NRC:raidStatusSortMultipleIcons(frame, scrollBuffs, 4, true);
+					NRC:raidStatusSortMultipleIcons(frame, scrollBuffs, 4, true, true);
+					if (pallyBuffs[1]) then
+						updateCooldownSwipe(frame.texture, scrollBuffs[1].endTime, scrollBuffs[1].duration);
+					else
+						stopCooldownSwipe(frame.texture);
+					end
+					if (scrollBuffs[2]) then
+						updateCooldownSwipe(frame.texture2, scrollBuffs[2].endTime, scrollBuffs[2].duration);
+					else
+						stopCooldownSwipe(frame.texture2);
+					end
+					if (scrollBuffs[1]) then
+						updateCooldownSwipe(frame.texture3, scrollBuffs[3].endTime, scrollBuffs[3].duration);
+					else
+						stopCooldownSwipe(frame.texture3);
+					end
+					--Never add duration to 4th texture, they're too small to see properly if showing 4.
 				end
 				if (next(pallyBuffs)) then
 					local frame = raidStatusFrame.subFrames[rowName .. palSlot];
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
-					NRC:raidStatusSortMultipleIcons(frame, pallyBuffs, 4, true);
+					NRC:raidStatusSortMultipleIcons(frame, pallyBuffs, 4, true, true);
+					if (not pallyBuffs[4]) then
+						--Never add duration to 4th texture, they're too small to see properly if showing 4.
+						if (pallyBuffs[1]) then
+							updateCooldownSwipe(frame.texture, pallyBuffs[1].endTime, pallyBuffs[1].duration);
+						else
+							stopCooldownSwipe(frame.texture);
+						end
+						if (pallyBuffs[2]) then
+							updateCooldownSwipe(frame.texture2, pallyBuffs[2].endTime, pallyBuffs[2].duration);
+						else
+							stopCooldownSwipe(frame.texture2);
+						end
+						if (pallyBuffs[3]) then
+							updateCooldownSwipe(frame.texture3, pallyBuffs[3].endTime, pallyBuffs[3].duration);
+						else
+							stopCooldownSwipe(frame.texture3);
+						end
+					else
+						stopCooldownSwipe(frame.texture);
+						stopCooldownSwipe(frame.texture2);
+						stopCooldownSwipe(frame.texture3);
+					end
+					--Never add duration to 4th texture, they're too small to see properly if showing 4.
 				end
 				if (next(enchantBuffs)) then
 					local frame = raidStatusFrame.subFrames[rowName .. weaponEnchantsSlot];
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
-					NRC:raidStatusSortMultipleIcons(frame, enchantBuffs, 2, true);
+					NRC:raidStatusSortMultipleIcons(frame, enchantBuffs, 2, true, true);
 				end
 				if (flaskSlot and not hasFlask) then
 					local frame = raidStatusFrame.subFrames[rowName .. flaskSlot];
@@ -1348,6 +1512,8 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
+					stopCooldownSwipe(frame.texture2);
 				end
 				if (foodSlot and not hasFood) then
 					local frame = raidStatusFrame.subFrames[rowName .. foodSlot];
@@ -1370,6 +1536,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
 				end
 				if (scrollSlot and not hasScroll) then
 					local frame = raidStatusFrame.subFrames[rowName .. scrollSlot];
@@ -1384,6 +1551,9 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
+					stopCooldownSwipe(frame.texture2);
+					stopCooldownSwipe(frame.texture3);
 				end
 				if (intSlot and not hasInt) then
 					local frame = raidStatusFrame.subFrames[rowName .. intSlot];
@@ -1395,6 +1565,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
 				end
 				if (fortSlot and not hasFort) then
 					local frame = raidStatusFrame.subFrames[rowName .. fortSlot];
@@ -1406,6 +1577,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
 				end
 				if (spiritSlot and not hasSpirit) then
 					local frame = raidStatusFrame.subFrames[rowName .. spiritSlot];
@@ -1417,6 +1589,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
 				end
 				if (shadowSlot and not hasShadow) then
 					local frame = raidStatusFrame.subFrames[rowName .. shadowSlot];
@@ -1428,6 +1601,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
 				end
 				if (motwSlot and not hasMotw) then
 					local frame = raidStatusFrame.subFrames[rowName .. motwSlot];
@@ -1439,6 +1613,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
 				end
 				if (palSlot and not hasPal) then
 					local frame = raidStatusFrame.subFrames[rowName .. palSlot];
@@ -1453,6 +1628,9 @@ function NRC:updateRaidStatusFrames(updateLayout)
 					if (not InCombatLockdown()) then
 						frame:SetAttribute("macrotext", "/target " .. name);
 					end
+					stopCooldownSwipe(frame.texture);
+					stopCooldownSwipe(frame.texture2);
+					stopCooldownSwipe(frame.texture3);
 				end
 				if (weaponEnchantsSlot and not hasWeaponEnchant) then
 					local frame = raidStatusFrame.subFrames[rowName .. weaponEnchantsSlot];
@@ -1506,6 +1684,22 @@ function NRC:updateRaidStatusFrames(updateLayout)
 						end)
 					end
 				end
+				--[[if (subGroups) then
+					local frame = raidStatusFrame.groupFrames[v.subGroup];
+					frame:ClearAllPoints();
+					if (not usedGroupframes[v.subGroup]) then
+						frame:SetPoint("TOPRIGHT", raidStatusFrame.subFrames[rowName .. columCount], "TOPRIGHT", 0, 0.6);
+						frame:SetPoint("TOPLEFT", raidStatusFrame.subFrames[rowName .. "1"], "TOPLEFT", -20, 0.6);
+						frame:SetPoint("BOTTOMRIGHT", raidStatusFrame.subFrames[rowName .. columCount], "BOTTOMRIGHT", 0, -0.6);
+						frame:SetPoint("BOTTOMLEFT", raidStatusFrame.subFrames[rowName .. "1"], "BOTTOMLEFT", -20, -0.6);
+						frame.bg.fs:SetText("G" .. v.subGroup);
+						frame:Show();
+						usedGroupframes[v.subGroup] = true;
+					else
+						frame:SetPoint("BOTTOMRIGHT", raidStatusFrame.subFrames[rowName .. columCount], "BOTTOMRIGHT", 0, -0.6);
+						frame:SetPoint("BOTTOMLEFT", raidStatusFrame.subFrames[rowName .. "1"], "BOTTOMLEFT", -20, -0.6);
+					end
+				end]]
 				updateCharacterTooltip(raidStatusFrame.subFrames[rowName .. "1"], name, v, auras);
 			end
 			if (subGroups) then
@@ -1542,7 +1736,7 @@ function NRC:updateRaidStatusFrames(updateLayout)
 	end
 end
 
-function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMaxRank)
+function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMaxRank, checkDuration)
 	--Sort spells by order.
 	local order = true;
 	for k, v in pairs(spellData) do
@@ -1555,7 +1749,7 @@ function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMax
 	end
 	local tooltipText = "";
 	local buffCount = #spellData;
-	local missingMaxRank;
+	local missingMaxRank, lowDurationFound;
 	if (buffCount == 1) then
 		frame.fs:SetText("");
 		frame.texture:ClearAllPoints();
@@ -1571,6 +1765,9 @@ function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMax
 		tooltipText = tooltipText .. getMultipleIconsTooltip(spellData[1]);
 		if (not spellData[1].maxRank) then
 			missingMaxRank = true;
+		end
+		if (spellData[1].endTime and spellData[1].endTime - GetServerTime() < lowDurationTime) then
+			lowDurationFound = true;
 		end
 	elseif (buffCount == 2) then
 		frame.fs:SetText("");
@@ -1590,6 +1787,9 @@ function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMax
 		tooltipText = tooltipText .. "\n" .. getMultipleIconsTooltip(spellData[2]);
 		if (not spellData[1].maxRank or not spellData[2].maxRank) then
 			missingMaxRank = true;
+		end
+		if (spellData[2].endTime and spellData[2].endTime - GetServerTime() < lowDurationTime) then
+			lowDurationFound = true;
 		end
 	elseif (buffCount == 3) then
 		frame.fs:SetText("");
@@ -1612,6 +1812,9 @@ function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMax
 		tooltipText = tooltipText .. "\n" .. getMultipleIconsTooltip(spellData[3]);
 		if (not spellData[1].maxRank or not spellData[2].maxRank or not spellData[3].maxRank) then
 			missingMaxRank = true;
+		end
+		if (spellData[3].endTime and spellData[3].endTime - GetServerTime() < lowDurationTime) then
+			lowDurationFound = true;
 		end
 	elseif (buffCount == 4) then
 		frame.fs:SetText("");
@@ -1638,10 +1841,17 @@ function NRC:raidStatusSortMultipleIcons(frame, spellData, maxPossible, checkMax
 		if (not spellData[1].maxRank or not spellData[2].maxRank or not spellData[3].maxRank or not spellData[4].maxRank) then
 			missingMaxRank = true;
 		end
+		if (spellData[4].endTime and spellData[4].endTime - GetServerTime() < lowDurationTime) then
+			lowDurationFound = true;
+		end
 	end
 	if (checkMaxRank and missingMaxRank) then
 		frame:SetBackdropColor(1, 0, 0, 0.25);
 		frame:SetBackdropBorderColor(1, 0, 0, 0.7);
+		frame.red = true;
+	elseif (checkDuration and lowDurationFound) then
+		frame:SetBackdropColor(1, 1, 0, 0.25);
+		frame:SetBackdropBorderColor(1, 1, 0, 0.7);
 		frame.red = true;
 	else
 		frame.red = nil;
@@ -1829,6 +2039,15 @@ function NRC:createRaidStatusData(updateLayout)
 			duraSlot = slot;
 			slotCount = slotCount + 1;
 		end
+		if (NRC.config.raidStatusTalents) then
+			local slot = #data.columns + 1;
+			data.columns[slot] = {
+				name = L["Talents"],
+				tooltip = "|cFFDEDE42Click a players talent icon\nto show full talent tree.",
+			};
+			talentsSlot = slot;
+			slotCount = slotCount + 1;
+		end
 		if (raidStatusFrame.showRes) then
 			setResColumns();
 			if (raidStatusShadowRes) then
@@ -1906,7 +2125,7 @@ function NRC:createRaidStatusData(updateLayout)
 				weaponEnchantsSlot = slot;
 				slotCount = slotCount + 1;
 			end
-			if (raidStatusTalents) then
+			--[[if (raidStatusTalents) then
 				local slot = #data.columns + 1;
 				data.columns[slot] = {
 					name = L["Talents"],
@@ -1914,7 +2133,7 @@ function NRC:createRaidStatusData(updateLayout)
 				};
 				talentsSlot = slot;
 				slotCount = slotCount + 1;
-			end
+			end]]
 			--[[if (raidStatusArmorRes) then
 				local slot = #data.columns + 1;
 				data.columns[slot] = {

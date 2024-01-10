@@ -125,11 +125,7 @@ local function combatLogEventUnfiltered(...)
 					SendChatMessage(msg, "SAY");
 				end
 				if (NRC.config.soulstoneMsgGroup) then
-					if (IsInRaid()) then
-						SendChatMessage(msg, "RAID");
-					elseif (IsInGroup()) then
-						SendChatMessage(msg, "PARTY");
-					end
+					NRC:sendGroup(msg);
 				end
 			end
 			--if (curses[spellID]) then
@@ -207,11 +203,7 @@ local function combatLogEventUnfiltered(...)
 					else
 						msg = L["Summoning"] .. " {rt1}" .. UnitName("target") .. "{rt1}, " .. L["click!"];
 				    end
-				    if (IsInRaid()) then
-						SendChatMessage(msg, "RAID");
-					elseif (IsInGroup()) then
-						SendChatMessage(msg, "PARTY");
-					end
+				    NRC:sendGroup(msg);
 				end
 			end
 		end

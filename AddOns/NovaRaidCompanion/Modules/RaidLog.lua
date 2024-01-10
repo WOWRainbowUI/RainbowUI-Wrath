@@ -135,7 +135,7 @@ function NRC:addLoot(name, itemLink, amount, itemRarity)
 		end
 		--Attach an id if looted within 5mins of boss, just to improve some accuracy with item source.
 		--Probably change this to just epics and green+ patterns later.
-		if (lastEncounterEnd.time and GetServerTime - lastEncounterEnd.time < 300) then
+		if (lastEncounterEnd.time and GetServerTime() - lastEncounterEnd.time < 300 and itemRarity and itemRarity > 2) then
 			t.lastEncounterID = lastEncounterEnd.encounterID;
 		end
 		tinsert(NRC.raid.loot, t);
@@ -174,13 +174,7 @@ function SlashCmdList.NRCBADGESCMD(msg, editBox)
 			msg = string.lower(msg);
 			text = text .. ".";
 			if (msg == "raid" or msg == "party" or msg == "group") then
-				if (IsInRaid()) then
-					SendChatMessage("[NRC] " .. NRC:stripColors(text), "RAID");
-				elseif (IsInGroup()) then
-					SendChatMessage("[NRC] " .. NRC:stripColors(text), "PARTY");
-				else
-					NRC:print(text);
-				end
+				NRC:sendGroup("[NRC] " .. NRC:stripColors(text), true)
 			elseif (msg == "guild") then
 				if (IsInGuild()) then
 					SendChatMessage("[NRC] " .. NRC:stripColors(text), "GUILD");
@@ -333,7 +327,7 @@ function NRC:encounterEndRD(encounterID, encounterName, difficultyID, groupSize,
 			encounter.endGetTime = GetTime(),
 			tinsert(NRC.raid.encounters, encounter);
 			encounter = nil;
-			local lastEncounterEnd = {
+			lastEncounterEnd = {
 				encounterID = encounterID,
 				time = GetServerTime()
 			};
@@ -345,7 +339,12 @@ function NRC:encounterEndRD(encounterID, encounterName, difficultyID, groupSize,
 		end
 	end
 	NRC:debug("Encounter end", encounterID, encounterName, difficultyID, groupSize, success);
+	--Why does this fail to get data sometimes.
 	C_Timer.After(3, function()
+		NRC:recordLockoutData();
+	end)
+	--Retry as a backup.
+	C_Timer.After(10, function()
 		NRC:recordLockoutData();
 	end)
 	if (success == 1) then
@@ -937,7 +936,7 @@ local function getLootData(logID, minQuality, exactQuality, showKtWeapons, encou
 							end
 						end
 					elseif (minQuality) then
-						if (not encounterID or NRC:isLootFromEncounter(itemID, encounterID)) then
+						if (not encounterID) then
 							if (v.itemRarity and v.itemRarity >= minQuality) then
 								count = count + 1;
 								local t = NRC:tableCopy(v);
@@ -949,17 +948,43 @@ local function getLootData(logID, minQuality, exactQuality, showKtWeapons, encou
 									trashCount = trashCount + 1;
 								end
 							end
+						elseif (NRC:isLootFromEncounter(itemID, encounterID)) then
+							if (v.itemRarity and v.itemRarity >= minQuality) then
+								if (v.lastEncounterID and v.lastEncounterID == encounterID) then
+									count = count + 1;
+									local t = NRC:tableCopy(v);
+									t.lootID = k;
+									tinsert(lootData, t);
+									if (NRC:getBossFromLoot(itemID, instanceID)) then
+										bossCount = bossCount + 1;
+									else
+										trashCount = trashCount + 1;
+									end
+								end
+							end
 						end
 					else
-						if (not encounterID or NRC:isLootFromEncounter(itemID, encounterID)) then
+						if (not encounterID) then
 							count = count + 1;
 							local t = v;
-								t.lootID = NRC:tableCopy(k);
-								tinsert(lootData, t);
+							t.lootID = NRC:tableCopy(k);
+							tinsert(lootData, t);
 							if (NRC:getBossFromLoot(itemID, instanceID)) then
 								bossCount = bossCount + 1;
 							else
 								trashCount = trashCount + 1;
+							end
+						elseif (NRC:isLootFromEncounter(itemID, encounterID)) then
+							if (v.lastEncounterID and v.lastEncounterID == encounterID) then
+								count = count + 1;
+								local t = v;
+								t.lootID = NRC:tableCopy(k);
+								tinsert(lootData, t);
+								if (NRC:getBossFromLoot(itemID, instanceID)) then
+									bossCount = bossCount + 1;
+								else
+									trashCount = trashCount + 1;
+								end
 							end
 						end
 					end
@@ -5199,9 +5224,11 @@ f:RegisterEvent("PLAYER_TARGET_CHANGED");
 f:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 f:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 f:RegisterEvent("PLAYER_CAMPING");
+f:RegisterEvent("PLAYER_LOGOUT");
 f:RegisterEvent("GROUP_JOINED");
 f:RegisterEvent("GROUP_LEFT");
 f:RegisterEvent("CHAT_MSG_COMBAT_FACTION_CHANGE");
+f:RegisterEvent("UPDATE_INSTANCE_INFO");
 f:SetScript('OnEvent', function(self, event, ...)
 	if (event == "NAME_PLATE_UNIT_ADDED") then
 		NRC:parseGUIDRD("nameplate1", nil, "nameplate");
@@ -5228,6 +5255,9 @@ f:SetScript('OnEvent', function(self, event, ...)
 		if (NRC.inInstance) then
 			NRC.raid.leftTime = GetServerTime();
 		end
+		NRC:recordLockoutData();
+	elseif (event == "PLAYER_LOGOUT") then
+		NRC:recordLockoutData();
 	elseif (event == "GROUP_JOINED") then
 		if (NRC.raid) then
 			--Rejoined group while inside raid.
@@ -5240,6 +5270,10 @@ f:SetScript('OnEvent', function(self, event, ...)
 		NRC.lastRaidID = nil;
 	elseif (event == "CHAT_MSG_COMBAT_FACTION_CHANGE") then
 		NRC:chatMsgCombatFactionChange(...);
+	elseif (event == "UPDATE_INSTANCE_INFO" ) then
+		C_Timer.After(1, function()
+			NRC:recordLockoutData();
+		end)
 	end
 end)
 
@@ -5899,6 +5933,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 		local encounterID, encounterName, difficultyID, groupSize, success = ...;
 		NRC:encounterEndRD(encounterID, encounterName, difficultyID, groupSize, success);
 		NRC:throddleEventByFunc(event, 2, "recordGroupInfo", ...);
+		RequestRaidInfo();
 	elseif (event == "GROUP_ROSTER_UPDATE") then
 		NRC:recordGroupInfo();
 	elseif (event == "CHAT_MSG_LOOT") then

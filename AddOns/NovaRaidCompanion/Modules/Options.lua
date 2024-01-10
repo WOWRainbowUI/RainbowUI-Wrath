@@ -76,7 +76,7 @@ NRC.options = {
 	args = {
 		titleText = {
 			type = "description",
-			name = "        " .. NRC.prefixColor .. "NovaRaidCompanion (v" .. GetAddOnMetadata("NovaRaidCompanion", "Version") .. ")",
+			name = "        " .. NRC.prefixColor .. L["NovaRaidCompanion "].." (v" .. GetAddOnMetadata("NovaRaidCompanion", "Version") .. ")",
 			fontSize = "large",
 			order = 1,
 		},
@@ -2072,6 +2072,19 @@ NRC.options = {
 					order = 13,
 					get = "getSortRaidStatusByGroupsColorBackground",
 					set = "setSortRaidStatusByGroupsColorBackground",
+				},
+				raidStatusLowDurationTime = {
+					type = "range",
+					name = L["raidStatusLowDurationTimeTitle"],
+					desc = L["raidStatusLowDurationTimeDesc"],
+					order = 14,
+					get = "getRaidStatusLowDurationTime",
+					set = "setRaidStatusLowDurationTime",
+					min = 1,
+					max = 1800,
+					softMin = 1,
+					softMax = 1800,
+					step = 1,
 				},
 				raidCooldownSpellsHeader = {
 					type = "header",
@@ -5138,6 +5151,8 @@ NRC.optionDefaults = {
 		raidStatusWeaponEnchants = true,
 		raidStatusTalents = true,
 		raidStatusExpandAlways = false,
+		raidStatusBuffSwipe = true,
+		raidStatusLowDurationTime = 300;
 		--Debug.
 		--raidCooldownArcaneIntellect = true,
 		--raidCooldownFelArmor = true,
@@ -5260,13 +5275,10 @@ local function loadNewVersionFrame()
 	frame.scrollChild.fs:SetText("|cFFFFFF00Nova Raid Companion");
 	frame.scrollChild.fs2:SetText("|cFFFFFF00New in version|r |cFFFF6900" .. string.format("%.2f", NRC.version));
 	frame:Hide();
-	linesVersion = 1.30;
+	linesVersion = 1.33;
 	local lines = {
-		"Soulstone bars now stay shown when the player dies and will glow with a skull icon to indicate that the dead player has it ready to click.\nFixed some other issues with soulstone bars they should be much more reliable now.",
-		"Added raid leader feast and repair bot msgs in raid chat/warning if anyone drops it (off by default you can enable it in /nrc config), there's already a /say msg for people with the addon but the leader msg can announce anyone dropping it even without the addon.",
-		"Add 2 more DFT fight club loot export format options to use tabs instead of semicolons as the separator (Some guilds use this or it's default DFT now? Was requested.).",
-		"Added Barkskin and Last Stand to raid cooldowns (keep in mind the Last Stand glyph that reduces cooldown by 1 minute can't be inspected to detect).",
-		"Fixed a couple of cooldowns where the talented cooldown reduction times wern't working.\nFixed drums of the wild not showing in raid buffs window.",
+		"Added duration animations to buffs in the raid status window (can be disabled with the checkbox).\nLow duration buffs will now glow yellow so you can easily see if flasks/buffs are about to expire (default below 5mins, can be changed in options).\nTalents column is now shown on raid buffs frame without needing to click the More button (reminder you can click anyones talents icon to view entire talents tree).",
+		"Raid Lockouts on the minimap icon now sorted alphabetically to make it easier to read.\nFixed potion of speed showing as \"Blunting Mace\" in the consumes tracker.\nFixed healthstones consumes tracking.\nFixed chat output for msgs like md/tricks threat for Instance chat.\nRemoved feast/repair bot raid chat msgs from being triggered in Dalaran.\nVarious other small bug fixes that were long overdue.",
 	};
 	local text = "";
 	--Seperator lines couldn't be used because the wow client won't render 1 pixel frames if they are in certain posotions.
@@ -6557,6 +6569,16 @@ end
 
 function NRC:getRaidStatusExpandAlways(info)
 	return self.config.raidStatusExpandAlways;
+end
+
+--Raid status lower duration time.
+function NRC:setRaidStatusLowDurationTime(info, value)
+	self.config.raidStatusLowDurationTime = value;
+	NRC:updateRaidStatusLowDurationTime();
+end
+
+function NRC:getRaidStatusLowDurationTime(info)
+	return self.config.raidStatusLowDurationTime;
 end
 
 --Summon msg.

@@ -1212,3 +1212,9 @@ L["repairLeaderMsgDesc"] = "If you are the raid leader or assist this will annou
 
 L["repairLeaderChannelTitle"] = "Repair Leader Channel";
 L["repairLeaderChannelDesc"] = "Which channel to post the repair bot leader message?";
+
+L["Buff Durations"] = "Buff Durations";
+L["buffDurationsTooltip"] = "Show a buff duration \"swipe\" effect?";
+
+L["raidStatusLowDurationTimeTitle"] = "Low Buff Duration";
+L["raidStatusLowDurationTimeDesc"] = "When buffs are below this duration in seconds the buff will glow yellow to warn you of low duration.";

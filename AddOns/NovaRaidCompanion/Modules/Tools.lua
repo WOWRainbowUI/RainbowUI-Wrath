@@ -916,24 +916,6 @@ function NRC:getTradableTimeFromBagSlot(bag, slot) --/run NRC:getTradableTimeFro
 	end
 end
 
-function NRC:sendGroup(msg, delay)
-	if (delay) then
-		C_Timer.After(delay, function()
-			if (IsInRaid()) then
-			SendChatMessage(msg, "RAID");
-		elseif (IsInGroup()) then
-			SendChatMessage(msg, "PARTY");
-		end
-		end)
-	else
-		if (IsInRaid()) then
-			SendChatMessage(msg, "RAID");
-		elseif (IsInGroup()) then
-			SendChatMessage(msg, "PARTY");
-		end
-	end
-end
-
 function NRC:addDiffcultyText(name, difficultyName, difficultyID, extraSpace, color)
 	--Check name first, if no name then there's an ID before the version we started recording names.
 	--If we only have ID it won't be localized.
@@ -957,4 +939,40 @@ function NRC:addDiffcultyText(name, difficultyName, difficultyID, extraSpace, co
 		end]]
 	end
 	return name;
+end
+
+function NRC:sendGroup(msg, elsePrint, delay)
+	if (delay) then
+		C_Timer.After(delay, function()
+			if (IsInRaid()) then
+				SendChatMessage(NRC:stripColors(msg), "RAID");
+			elseif (LE_PARTY_CATEGORY_INSTANCE and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
+        		SendChatMessage(NRC:stripColors(msg), "INSTANCE_CHAT");
+			elseif (IsInGroup()) then
+				SendChatMessage(NRC:stripColors(msg), "PARTY");
+			elseif (elsePrint) then
+				NRC:print(msg);
+			end
+		end)
+	else
+		if (IsInRaid()) then
+			SendChatMessage(NRC:stripColors(msg), "RAID");
+		elseif (LE_PARTY_CATEGORY_INSTANCE and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
+        	SendChatMessage(NRC:stripColors(msg), "INSTANCE_CHAT");
+		elseif (IsInGroup()) then
+			SendChatMessage(NRC:stripColors(msg), "PARTY");
+		elseif (elsePrint) then
+			NRC:print(msg);
+		end
+	end
+end
+
+function NRC:sendGroupComm(msg)
+	if (IsInRaid()) then
+		NRC:sendComm("RAID", msg);
+	elseif (IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
+        NRC:sendComm("INSTANCE_CHAT", msg);
+	elseif (IsInGroup()) then
+		NRC:sendComm("PARTY", msg);
+	end
 end

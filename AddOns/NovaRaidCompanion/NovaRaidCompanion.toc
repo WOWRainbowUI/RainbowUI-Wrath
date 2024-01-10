@@ -1,12 +1,13 @@
 ## Interface: 30403
 ## Notes: Raid and combat helpers, raid wide cooldown tracking.
 ## Title: Nova Raid Companion
-## Title-zhTW: |cffFF7F00[團隊]|r NRC 團隊夥伴
-## Notes-zhTW: Nova Raid Companion |n提供出團時會用到的許多方便功能。像是團隊技能監控、項鍊監控、檢查食物精煉油抗性天賦、增益快照、拾取記錄、交易紀錄...等。|n|cffffd200使用方法：|r點小地圖按鈕。
-## DefaultState: disabled
 ## Author: Novaspark-Arugal OCE
-## Version: 1.32
+## Version: 1.33
 ## SavedVariables: NRCdatabase
+
+## Title-zhTW: |cffFF7F00[團隊]|r NRC 團隊夥伴
+## Notes-zhTW: Nova Raid Companion |n|n提供出團時會用到的許多方便功能。像是團隊技能監控、項鍊監控、檢查食物精煉油抗性天賦、增益快照、拾取記錄、交易紀錄...等。|n|n|cffffd200使用方法: |r點小地圖按鈕。
+## DefaultState: disabled
 
 embeds.xml
 Locale\Locales.xml

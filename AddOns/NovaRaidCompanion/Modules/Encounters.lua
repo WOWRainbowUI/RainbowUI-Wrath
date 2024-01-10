@@ -34,7 +34,7 @@ function NRC:encounterStart(...)
 			return;
 		end
 		--Alar costume check.
-		NRC:debug("checking bt attune");
+		--NRC:debug("checking bt attune");
 		local hasQuest = C_QuestLog.IsOnQuest(10946);
 		local isComplete = C_QuestLog.IsQuestFlaggedCompleted(10946);
 		if (hasQuest and not NRC:hasBuff("player", 39527) and not isComplete) then
@@ -62,7 +62,7 @@ function NRC:checkAttuneQuest(encounterID)
 	end
 	local delay = 15;
 	if (encounterID == 626) then
-		NRC:debug("checking bt attune");
+		--NRC:debug("checking bt attune");
 		local delay = 20;
 		C_Timer.After(delay, function()
 			local hasQuest = C_QuestLog.IsOnQuest(10944);
@@ -74,7 +74,7 @@ function NRC:checkAttuneQuest(encounterID)
 			end
 		end)
 	elseif (encounterID == 650) then
-		NRC:debug("checking ssc attune");
+		--NRC:debug("checking ssc attune");
 		local hasQuest = C_QuestLog.IsOnQuest(10901);
 		local isComplete = C_QuestLog.IsQuestFlaggedCompleted(10901);
 		if (hasQuest and not isComplete) then
@@ -86,7 +86,7 @@ function NRC:checkAttuneQuest(encounterID)
 			end)
 		end
 	elseif (encounterID == 662) then
-		NRC:debug("checking ssc attune");
+		--NRC:debug("checking ssc attune");
 		local hasQuest = C_QuestLog.IsOnQuest(10901);
 		local isComplete = C_QuestLog.IsQuestFlaggedCompleted(10901);
 		if (hasQuest and not isComplete) then
@@ -98,7 +98,7 @@ function NRC:checkAttuneQuest(encounterID)
 			end)
 		end
 	elseif (encounterID == 628) then
-		NRC:debug("checking hyjal attune");
+		--NRC:debug("checking hyjal attune");
 		local hasQuest = C_QuestLog.IsOnQuest(10445);
 		local isComplete = C_QuestLog.IsQuestFlaggedCompleted(10445);
 		if (hasQuest and not isComplete) then
@@ -110,7 +110,7 @@ function NRC:checkAttuneQuest(encounterID)
 			end)
 		end
 	elseif (encounterID == 733) then
-		NRC:debug("checking hyjal attune");
+		--NRC:debug("checking hyjal attune");
 		local hasQuest = C_QuestLog.IsOnQuest(10445);
 		local isComplete = C_QuestLog.IsQuestFlaggedCompleted(10445);
 		if (hasQuest and not isComplete) then
@@ -122,7 +122,7 @@ function NRC:checkAttuneQuest(encounterID)
 			end)
 		end
 	elseif (encounterID == 618) then
-		NRC:debug("checking bt attune");
+		--NRC:debug("checking bt attune");
 		local hasQuest = C_QuestLog.IsOnQuest(10947);
 		local isComplete = C_QuestLog.IsQuestFlaggedCompleted(10947);
 		if (hasQuest and not isComplete) then
@@ -367,6 +367,11 @@ local function combatLogEventUnfiltered(...)
 		--spellID = 54710
 		if (sourceGUID == UnitGUID("player")) then
 			if (trackAnnounce[spellID]) then
+				local mapID = C_Map.GetBestMapForUnit("player");
+				if (mapID == 125 or mapID == 126) then
+					--Not in dal.
+					return;
+				end
 				local inInstance = IsInInstance();
 				if (inInstance) then
 					--Trim the msg a bit for english clients, no need to show it's a major, all cauldrons are.
@@ -379,7 +384,7 @@ local function combatLogEventUnfiltered(...)
 						SendChatMessage(msg, "SAY");
 					end
 					if (NRC.config.sreShowCauldrons) then
-						NRC:debug(spellName, 1, "put down");
+						--NRC:debug(spellName, 1, "put down");
 						local msg = "|cFFFFAE42" .. spellName .. " put down.";
 						NRC:sreSendEvent(msg, trackAnnounce[spellID], sourceName);
 					end
@@ -395,6 +400,11 @@ local function combatLogEventUnfiltered(...)
 			end
 		end
 		if (feasts[spellID]) then
+			local mapID = C_Map.GetBestMapForUnit("player");
+			if (mapID == 125 or mapID == 126) then
+				--Not in dal.
+				return;
+			end
 			if (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
 				local msg = "{rt1}" .. spellName .. " placed on the ground by " .. sourceName .. ".";
 				if (NRC.config.feastLeaderMsg) then
@@ -403,6 +413,11 @@ local function combatLogEventUnfiltered(...)
 			end
 		end
 		if (repairBots[spellID]) then
+			local mapID = C_Map.GetBestMapForUnit("player");
+			if (mapID == 125 or mapID == 126) then
+				--Not in dal.
+				return;
+			end
 			if (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
 				local msg = "{rt1}" .. spellName .. " placed on the ground by " .. sourceName .. ".";
 				if (NRC.config.repairLeaderMsg) then
@@ -411,6 +426,11 @@ local function combatLogEventUnfiltered(...)
 			end
 		end
 		if (portals[spellID]) then
+			local mapID = C_Map.GetBestMapForUnit("player");
+			if (mapID == 125 or mapID == 126) then
+				--Not in dal.
+				return;
+			end
 			if (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
 				local msg = "{rt1}" .. spellName .. " cast by " .. sourceName .. ".";
 				if (spellName == "Wormhole") then
@@ -438,11 +458,7 @@ local function combatLogEventUnfiltered(...)
 				else
 					msg = L["Summoning"] .. " {rt1}" .. UnitName("target") .. "{rt1}, " .. L["click!"];
 			    end
-			    if (IsInRaid()) then
-					SendChatMessage(msg, "RAID");
-				elseif (IsInGroup()) then
-					SendChatMessage(msg, "PARTY");
-				end
+			    NRC:sendGroup(msg);
 			end
 		end
 	elseif (subEvent == "SPELL_DISPEL") then

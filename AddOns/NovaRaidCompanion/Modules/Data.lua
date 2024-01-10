@@ -752,7 +752,7 @@ function NRC:sendGroupSettingsCheck(msg, type, selfType, selfWho, delay)
 	for k, v in NRC:pairsByKeys(onlineMembers) do
 		NRC:debug("Sender: " .. k);
 		if (k == me) then
-			NRC:sendGroup(NRC:stripColors(msg), delay);
+			NRC:sendGroup(NRC:stripColors(msg), nil, delay);
 		end
 		return;
 	end
