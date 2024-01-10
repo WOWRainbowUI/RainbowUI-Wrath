@@ -2,7 +2,7 @@
 ## Notes: An addon for tracking the completion/faliure of instance achievements.
 ## Title:Instance Achievement Tracker
 ## Author: Whizzey
-## Version: 4.25.0
+## Version: 4.34.0
 ## OptionalDeps: LibStub, CallbackHandler-1.0, LibDBIcon-1.0, LibInspect, LibRangeCheck-2.0, LibWindow-1.1
 ## SavedVariables: AchievementTrackerOptions, AchievementTrackerDebug, AchievementTrackerNPCCache, AchievementTrackerNPCCacheClassic
 ## X-Curse-Project-ID: 286675
@@ -34,6 +34,7 @@ Localization.koKR.lua
 
 DragonflightRaids\VaultOfTheIncarnates.lua
 DragonflightRaids\AberrusTheShadowedCrucible.lua
+DragonflightRaids\AmirdrassilTheDreamsHope.lua
 
 DragonflightDungeons\AlgetharAcademy.lua
 DragonflightDungeons\BrackenhideHollow.lua

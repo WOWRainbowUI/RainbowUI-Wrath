@@ -1,5 +1,5 @@
 --------------------------------------
--- Last Auto Generated: 23/07/2023 20:00:56
+-- Last Auto Generated: 29/12/2023 09:21:38
 --------------------------------------
 local _, core = ...
 local L = core.L
@@ -143,7 +143,7 @@ core.Instances = {
 					bossIDs = {},
 					achievement = 18228,
 					players = {},
-					tactics = L["AberrusTheShadowedCrucible_AssaultOfTheZaqali"],
+					tactics = format(L["AberrusTheShadowedCrucible_AssaultOfTheZaqali"], GetSpellLink(411834), "IAT_202621", "IAT_198484", "IAT_205665", "IAT_192104", "IAT_205667", "IAT_205627", "IAT_192104", "IAT_202621", "IAT_198484", GetSpellLink(411834), "IAT_201340", GetSpellLink(401258), "IAT_201340", GetSpellLink(401258), GetSpellLink(411834), GetSpellLink(411834), "IAT_205627", "IAT_205667", GetSpellLink(411834)),
 					enabled = true,
 					track = function() core._2569:AssaultOfTheZaqali() end,
 					partial = false,
@@ -154,7 +154,7 @@ core.Instances = {
 					bossIDs = {},
 					achievement = 18230,
 					players = {},
-					tactics = L["AberrusTheShadowedCrucible_RashokTheElder"],
+					tactics = format(L["AberrusTheShadowedCrucible_RashokTheElder"], "IAT_201320", "IAT_205630", "IAT_205630", GetSpellLink(405821), "IAT_205630", "IAT_205630", GetSpellLink(405821), "IAT_205630"),
 					enabled = true,
 					track = function() core._2569:RashokTheElder() end,
 					partial = false,
@@ -165,7 +165,7 @@ core.Instances = {
 					bossIDs = {},
 					achievement = 18193,
 					players = {},
-					tactics = L["AberrusTheShadowedCrucible_TheVigilantStewardZskarn"],
+					tactics = format(L["AberrusTheShadowedCrucible_TheVigilantStewardZskarn"], "IAT_202637", GetSpellLink(411635), GetSpellLink(412323)),
 					enabled = true,
 					track = function() core._2569:TheVigilantStewardZskarn() end,
 					partial = false,
@@ -176,7 +176,7 @@ core.Instances = {
 					bossIDs = {},
 					achievement = 18172,
 					players = {},
-					tactics = L["AberrusTheShadowedCrucible_Magmorax"],
+					tactics = format(L["AberrusTheShadowedCrucible_Magmorax"], "IAT_205437", GetSpellLink(411368), "IAT_205437", GetSpellLink(411573), GetSpellLink(411581)),
 					enabled = true,
 					track = function() core._2569:Magmorax() end,
 					partial = false,
@@ -188,7 +188,7 @@ core.Instances = {
 					bossIDs = {},
 					achievement = 18149,
 					players = {},
-					tactics = L["AberrusTheShadowedCrucible_EchoOfNeltharion"],
+					tactics = format(L["AberrusTheShadowedCrucible_EchoOfNeltharion"], "IAT_185437", "IAT_205340", "IAT_201261", "IAT_205341", "IAT_202637", "IAT_201320", "IAT_205343", "IAT_202637", "IAT_205342", "IAT_205343", GetSpellLink(401022), GetSpellLink(407790), GetSpellLink(407221), GetSpellLink(401022), "IAT_205343"),
 					enabled = true,
 					track = function() core._2569:EchoOfNeltharion() end,
 					partial = false,
@@ -199,12 +199,116 @@ core.Instances = {
 					bossIDs = {},
 					achievement = 17877,
 					players = {},
-					tactics = L["AberrusTheShadowedCrucible_ScalecommanderSarkareth"],
+					tactics = format(L["AberrusTheShadowedCrucible_ScalecommanderSarkareth"], "IAT_185437", "IAT_193335", GetSpellLink(410271), GetSpellLink(410277), GetSpellLink(410277), GetSpellLink(401952), GetSpellLink(401215), GetSpellLink(410277), GetSpellLink(410285), GetSpellLink(401215), GetSpellLink(401952)),
 					enabled = true,
 					track = function() core._2569:ScalecommanderSarkareth() end,
 					partial = false,
 					encounterID = 2685,
 					displayInfoFrame = true,
+				},
+			},
+
+			[2549] = { --Amirdrassil the Dream's Hope
+				name = 1207,
+				boss1 = {
+					name = 2564, --Gnarlroot
+					bossIDs = {},
+					achievement = 19322,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_Gnarlroot"], "IAT_209333", GetSpellLink(421350), GetSpellLink(421038)),
+					enabled = true,
+					track = function() core._2549:Gnarlroot() end,
+					partial = false,
+					encounterID = 2820,
+				},
+				boss2 = {
+					name = 2554, --Igira the Cruel
+					bossIDs = {},
+					achievement = 19320,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_IgiraTheCruel"], "IAT_206689", "IAT_212668", GetSpellLink(414425), "IAT_212668"),
+					enabled = true,
+					track = function() core._2549:IgiraTheCruel() end,
+					partial = false,
+					encounterID = 2709,
+				},
+				boss3 = {
+					name = 2557, --Volcoross
+					bossIDs = {},
+					achievement = 19321,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_Volcoross"], GetSpellLink(426751), GetSpellLink(426751), "IAT_211272", GetSpellLink(426751), "IAT_211272", "IAT_211272", "IAT_211273", "IAT_211273", "IAT_208478", "IAT_208478", "IAT_211273"),
+					enabled = true,
+					track = function() core._2549:Volcoross() end,
+					partial = false,
+					encounterID = 2737,
+				},
+				boss4 = {
+					name = 2555, --Council of Dreams
+					bossIDs = {},
+					achievement = 19193,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_CouncilOfDreams"], "IAT_209490", "IAT_209490", "IAT_189620", GetSpellLink(418720), "IAT_209490", "IAT_209490"),
+					enabled = true,
+					track = function() core._2549:CouncilOfDreams() end,
+					partial = false,
+					encounterID = 2728,
+					displayInfoFrame = true,
+				},
+				boss5 = {
+					name = 2553, --Larodar, Keeper of the Flame
+					bossIDs = {},
+					achievement = 19089,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_LarodarKeeperOfTheFlame"], "IAT_208478", "IAT_211268", "IAT_211268", GetSpellLink(417634), GetSpellLink(424595), "IAT_208459", "IAT_208849", GetSpellLink(425249), "IAT_211268", "IAT_84152", "IAT_211268"),
+					enabled = true,
+					track = function() core._2549:Larodar() end,
+					partial = false,
+					encounterID = 2731,
+				},
+				boss6 = {
+					name = 2556, --Nymue, Weaver of the Cycle
+					bossIDs = {},
+					achievement = 19394,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_NymueWeaverOfTheCycle"], GetSpellLink(429721), "IAT_214020", "IAT_214020"),
+					enabled = true,
+					track = function() core._2549:Nymue() end,
+					partial = false,
+					encounterID = 2708,
+				},
+				boss7 = {
+					name = 2563, --Smolderon
+					bossIDs = {},
+					achievement = 19319,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_Smolderon"], "IAT_214082", GetSpellLink(426312), GetSpellLink(426337), GetSpellLink(426484)),
+					enabled = true,
+					track = function() core._2549:Smolderon() end,
+					partial = false,
+					encounterID = 2824,
+				},
+				boss8 = {
+					name = 2565, --Tindral Sageswift
+					bossIDs = {},
+					achievement = 19393,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_TindralSageswift"], "IAT_1043", "IAT_1043", GetSpellLink(428781), "IAT_1043"),
+					enabled = true,
+					track = function() core._2549:TindralSageswift() end,
+					partial = false,
+					encounterID = 2786,
+				},
+				boss9 = {
+					name = 2519, --Fyrakk the Blazing
+					bossIDs = {},
+					achievement = 19390,
+					players = {},
+					tactics = format(L["AmirdrassilTheDreamsHope_FyrakkTheBlazing"], "IAT_185409", "IAT_97551", "IAT_206689", "IAT_206172", GetSpellLink(431585), "IAT_207800", "IAT_97551", "IAT_207800", "IAT_4155", "IAT_4092", "IAT_4218", "IAT_4159", "IAT_4167", "IAT_4223", "IAT_157298", "IAT_185409", "IAT_157298"),
+					enabled = true,
+					track = function() core._2549:FyrakkTheBlazing() end,
+					partial = false,
+					encounterID = 2677,
 				},
 			},
 		},
@@ -3650,17 +3754,6 @@ core.Instances = {
 					encounterID = 1746,
 				},
 				boss2 = {
-					name = 1208, --Archmage Sol
-					bossIDs = {},
-					achievement = 9493,
-					players = {},
-					tactics = format(L["TheEverbloom_ArchmageSol"], GetSpellLink(166489), GetSpellLink(166489), GetSpellLink(168885), GetSpellLink(166489)),
-					enabled = false,
-					track = nil,
-					partial = false,
-					encounterID = 1751,
-				},
-				boss3 = {
 					name = 1210, --Yalnu
 					bossIDs = {}, --83846,
 					achievement = 9223,
@@ -5434,28 +5527,6 @@ core.Instances = {
 
 			[643] = { --Throne of the Tides
 				name = 65,
-				boss1 = {
-					name = 101, --Lady Naz'Jar
-					bossIDs = {40586},
-					achievement = 5285,
-					players = {},
-					tactics = format(L["ThroneOfTheTides_LadyNazJar"], "IAT_43468", "IAT_40634", "IAT_44530", "IAT_44530", "IAT_44530"),
-					enabled = true,
-					track = function() core._643:LadyNazjar() end,
-					partial = false,
-					encounterID = 1045,
-				},
-				boss2 = {
-					name = 104, --Ozumat
-					bossIDs = {44658, 44715, 44648},
-					achievement = 5286,
-					players = {},
-					tactics = L["ThroneOfTheTides_Ozumat"],
-					enabled = true,
-					track = function() core._643:Ozumat() end,
-					partial = false,
-					encounterID = 1047,
-				},
 			},
 
 			[725] = { --The Stonecore
@@ -6441,9 +6512,9 @@ core.Instances = {
 					enabled = true,
 					track = function() core._603:Dwarfageddon(12312) end,
 					partial = true,
+					displayInfoFrame = true,
 					nameWrath = L["Boss_MISSINGNAME67"],
 					tacticsClassic = "",
-					displayInfoFrame = true,
 				},
 				boss2 = {
 					name = L["Instances_Other"], --Unbroken
@@ -6637,9 +6708,9 @@ core.Instances = {
 					track = function() core._603:XT002DeconstructorNerfScrapbots(12327) end,
 					partial = false,
 					encounterID = 1142,
+					displayInfoFrame = true,
 					nameWrath = L["Boss_XT-002Deconstructor"],
 					tacticsClassic = "",
-					displayInfoFrame = true,
 				},
 				boss17 = {
 					name = 1640, --XT-002 Deconstructor (Nerf Gravity Bombs)
@@ -7255,9 +7326,9 @@ core.Instances = {
 					enabled = true,
 					track = function() core._603:Dwarfageddon(3097) end,
 					partial = true,
+					displayInfoFrame = true,
 					nameWrath = L["Boss_MISSINGNAME67"],
 					tacticsClassic = "",
-					displayInfoFrame = true,
 				},
 				boss2 = {
 					name = L["Instances_Other"], --Unbroken 10 Man
@@ -7464,9 +7535,9 @@ core.Instances = {
 					partial = false,
 					encounterID = 1142,
 					encounterIDWrath = 747,
+					displayInfoFrame = true,
 					nameWrath = L["Boss_XT-002Deconstructor"],
 					tacticsClassic = "",
-					displayInfoFrame = true,
 				},
 				boss17 = {
 					name = 1640, --XT-002 Deconstructor (Nerf Gravity Bombs) 10 Man
@@ -8124,9 +8195,9 @@ core.Instances = {
 					enabled = true,
 					track = function() core._603:Dwarfageddon(3098) end,
 					partial = true,
+					displayInfoFrame = true,
 					nameWrath = L["Boss_MISSINGNAME67"],
 					tacticsClassic = "",
-					displayInfoFrame = true,
 				},
 				boss2 = {
 					name = L["Instances_Other"], --Unbroken 25 Man
@@ -8333,9 +8404,9 @@ core.Instances = {
 					partial = false,
 					encounterID = 1142,
 					encounterIDWrath = 747,
+					displayInfoFrame = true,
 					nameWrath = L["Boss_XT-002Deconstructor"],
 					tacticsClassic = "",
-					displayInfoFrame = true,
 				},
 				boss17 = {
 					name = 1640, --XT-002 Deconstructor (Nerf Gravity Bombs) 25 Man
