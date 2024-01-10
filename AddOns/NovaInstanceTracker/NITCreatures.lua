@@ -194,6 +194,8 @@ NIT.companionCreatures = {
 	[32641] = "Drix Blackwrench", --Tundra mount.
 	[32642] = "Mojodishu", --Tundra mount.
 	[196534] = "Hoplet", --6 month sub.
+	[213605] = "Arfus", --Completing all gamma dungeons.
+	[211025] = "Lil' Wrathion", --Cata preorder pet.
 }
 
 NIT.critterCreatures = {

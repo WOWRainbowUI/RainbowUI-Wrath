@@ -45,28 +45,29 @@ NIT.latestRemoteVersion = version;
 if (NIT.isWrath) then
 	NIT.hourlyLimit = 5;
 	NIT.dailyLimit = 999;  --No limit in prepatch, but maybe a limit later?
-	if (NIT.isPrepatch) then
-		NIT.maxLevel = 70;
-	else
-		NIT.maxLevel = 80;
-	end
+	--if (NIT.isPrepatch) then
+	--	NIT.maxLevel = 70;
+	--else
+	--	NIT.maxLevel = 80;
+	--end
 elseif (NIT.isTBC) then
 	NIT.hourlyLimit = 5;
 	NIT.dailyLimit = 999;
-	NIT.maxLevel = 70;
+	--NIT.maxLevel = 70;
 elseif (NIT.isRetail) then
 	--Retail is 10 per hour and account wide not per character.
 	NIT.hourlyLimit = 10;
 	NIT.dailyLimit = 999;
-	NIT.maxLevel = 70;
+	--NIT.maxLevel = 70;
 	NIT.noDailyLockout = true;
 else
 	NIT.noRaidLockouts = true;
 	NIT.hourlyLimit = 5;
 	NIT.dailyLimit = 999;
-	NIT.maxLevel = 60;
+	--NIT.maxLevel = 60;
 	NIT.noRaidLockout = nil;
 end
+NIT.maxLevel = GetMaxPlayerLevel();
 NIT.prefixColor = "|cFFFF6900";
 NIT.perCharOnly = false; --Per char is gone in TBC, not sure how I didn't notice this earlier tbh, blizz never announced it.
 NIT.loadTime = GetServerTime();
@@ -74,6 +75,7 @@ local GetGossipOptions = GetGossipOptions or C_GossipInfo.GetOptions;
 local floor = floor;
 
 function NIT:OnInitialize()
+	self:loadSpecificOptions();
     self.db = LibStub("AceDB-3.0"):New("NITdatabase", NIT.optionDefaults, "Default");
     LibStub("AceConfig-3.0"):RegisterOptionsTable("NovaInstanceTracker", NIT.options);
 	self.NITOptions = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("NovaInstanceTracker", "NovaInstanceTracker");
@@ -90,6 +92,7 @@ function NIT:OnInitialize()
 	self:ticker();
 	self:tickerCharacterData();
 	self:resetOldLockouts();
+	self:wipeUpgradeData();
 end
 
 NIT.regionFont = "Fonts\\ARIALN.ttf";
@@ -208,19 +211,11 @@ f:SetScript('OnEvent', function(self, event, msg)
 				--Tell the group if we're not announcing this to party so they can get still get a chat window print.
 				cmd = "instanceResetNoMsg";
 			end
-			if (IsInRaid()) then
-				NIT:sendComm("RAID", cmd .. " " .. version .. " " .. instance);
-	  		elseif (IsInGroup()) then
-	  			NIT:sendComm("PARTY", cmd .. " " .. version .. " " .. instance);
-	  		end
+			NIT:sendGroupComm(cmd .. " " .. version .. " " .. instance)
 	  	end
   	end
   	if (NIT.db.global.instanceResetMsg and instance and text) then
-		if (IsInRaid()) then
-  			SendChatMessage("[NIT] " .. NIT:stripColors(text), "RAID");
-  		elseif (IsInGroup()) then
-  			SendChatMessage("[NIT] " .. NIT:stripColors(text), "PARTY");
-		end
+  		NIT:sendGroup("[NIT] " .. NIT:stripColors(text));
   	end
 end)
 
@@ -955,11 +950,74 @@ function NIT:updateMinimapButton(tooltip, frame)
 	if (expires) then
 		tooltip:AddLine(expires .. "\n");
 	end
+	
+	--Phase 4 wrath dailies.
+	local maxLevel = UnitLevel("player") == NIT.maxLevel;
+	if (NIT.isWrath) then
+		if (not IsShiftKeyDown()) then
+			--Only show alts with shift if not max level, this should work fine becaus only max levels can do the dailies.
+			if (maxLevel) then
+				tooltip:AddLine(L["Dailies Completed (Hold Shift For Alts)"] .. ":");
+			end
+		else
+			tooltip:AddLine(L["Dailies Completed (Including Alts)"] .. ":");
+		end
+		local me = UnitName("player");
+		local found, altsFound;
+		for k, v in pairs(NIT.data) do
+			if (type(v) == "table") then
+				if (k == "myChars") then
+					for char, charData in NIT:pairsByKeys(v) do
+						if (IsShiftKeyDown() or char == me) then
+							local found2;
+							local _, _, _, classColorHex = GetClassColor(charData.classEnglish);
+							local text = "|c" .. classColorHex .. char .. "|r";
+							if (charData.questsDaily) then
+								for questName, resetTime in pairs(charData.questsDaily) do
+									if (resetTime > GetServerTime()) then
+										text = text .. "\n  |cFFFFFF00-|r|cFFFFAE42" .. questName .. "|r";
+										found = true;
+										found2 = true;
+										if (char ~= me) then
+											altsFound = true;
+										end
+									end
+								end
+							end
+							if (charData.quests) then
+								if (charData.quests[L["Wrath Raid Boss Weekly"]] and charData.quests[L["Wrath Raid Boss Weekly"]] > GetServerTime()) then
+									text = text .. "\n  |cFFFFFF00-|r|cFFFFAE42" .. L["Wrath Raid Boss Weekly"] .. "|r";
+									found = true;
+									found2 = true;
+									if (char ~= me) then
+										altsFound = true;
+									end
+								end
+							end
+							if (found2) then
+								if (maxLevel or IsShiftKeyDown()) then
+									tooltip:AddLine(text);
+								end
+							elseif (char == me and not IsShiftKeyDown()) then
+								if (maxLevel) then
+									tooltip:AddLine("  |cFFFFFF00-|r|cFFFFAE42No dungeon dailies completed on this char.|r");
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+		if (IsShiftKeyDown() and not found) then
+			tooltip:AddLine("  |cFFFFFF00-|r|cFFFFAE42No alts dungeon dailies completed.|r");
+		end
+	end
 	tooltip:AddLine("|cFF9CD6DELeft-Click|r " .. L["openInstanceFrame"]);
 	tooltip:AddLine("|cFF9CD6DERight-Click|r " .. L["openYourChars"]);
 	tooltip:AddLine("|cFF9CD6DEMiddle-Click|r " .. L["openLockouts"]);
 	tooltip:AddLine("|cFF9CD6DEShift Left-Click|r " .. L["openTradeLog"]);
 	tooltip:AddLine("|cFF9CD6DEShift Right-Click|r " .. L["config"]);
+	tooltip:Show();
 	C_Timer.After(0.1, function()
 		NIT:updateMinimapButton(tooltip, frame);
 	end)
@@ -1913,7 +1971,12 @@ function NIT:buildInstanceLineFrameString(v, count)
 		instance = instance .. mythicPlusString;
 	elseif (v.difficultyID == 174 or v.difficultyID == 2 or v.difficultyID == 5 or v.difficultyID == 6 or v.difficultyID == 11
 			 or v.difficultyID == 15 or v.difficultyID == 39 or v.difficultyID == 149) then
-		instance = instance .. " (|cFFFF2222H|r)";
+		if (v.subDifficulty) then
+			--Display if gamma dung in wrath.
+			instance = instance .. " (|cFFFF2222" .. gsub(v.subDifficulty, "^%l", string.upper) .. "|r)";
+		else
+			instance = instance .. " (|cFFFF2222H|r)";
+		end
 	elseif (v.difficultyID == 8 or v.difficultyID == 16 or v.difficultyID == 23 or v.difficultyID == 40) then
 		instance = instance .. " (|cFFa335eeM|r)";
 	end
@@ -2143,7 +2206,12 @@ function NIT:recalcInstanceLineFramesTooltip(obj)
 			end
 		elseif (data.difficultyID == 174 or data.difficultyID == 2 or data.difficultyID == 5 or data.difficultyID == 6 or data.difficultyID == 11
 				 or data.difficultyID == 15 or data.difficultyID == 39 or data.difficultyID == 149) then
-			heroicString = " (|cFFFF2222H|r)";
+			if (data.subDifficulty) then
+			--Display if gamma dung in wrath.
+				heroicString = " (|cFFFF2222" .. gsub(data.subDifficulty, "^%l", string.upper) .. "|r)";
+			else
+				heroicString = " (|cFFFF2222H|r)";
+			end
 		elseif (data.difficultyID == 8 or data.difficultyID == 16 or data.difficultyID == 23 or data.difficultyID == 40) then
 			heroicString = " (|cFFa335eeM|r)";
 		end
@@ -3891,7 +3959,7 @@ function NIT:recalcAltsLineFramesTooltip(obj)
 					end
 					if (NIT["trackItems" .. data.classEnglish]) then
 						for k, v in ipairs(_G["NIT"]["trackItems" .. data.classEnglish]) do
-							if (not v.minLvl or v.minLvl < data.level) then
+							if (not v.minLvl or v.minLvl <= data.level) then
 								local texture = "";
 								if (v.texture) then
 									texture = "|T" .. v.texture .. ":12:12:0:0|t ";
@@ -4176,6 +4244,21 @@ function NIT:recalcAltsLineFramesTooltip(obj)
 				end
 			end
 			
+			if (data.questsDaily and next(data.questsDaily)) then
+				local header = "\n\n|cFFFFFF00" .. L["dailyQuests"] .. "|r";
+				local foundQuests;
+				local questString = "";
+				for k, v in NIT:pairsByKeys(data.questsDaily) do
+					if (v > GetServerTime()) then
+						questString = questString .. "\n  " .. color1 .. k .. "|r " .. color2 .. "completed.|r";
+						foundQuests = true;
+					end
+				end
+				if (foundQuests) then
+					text = text .. header .. questString;
+				end
+			end
+			
 			if (data.quests and next(data.quests)) then
 				local header = "\n\n|cFFFFFF00" .. L["weeklyQuests"] .. "|r";
 				local foundQuests;
@@ -4344,6 +4427,7 @@ function NIT:openDeleteCharConfirmFrame(realm, char)
 end
 
 --NPC events
+local lastGammaBuffMsg = 0;
 local f = CreateFrame("Frame");
 f:RegisterEvent("GOSSIP_SHOW");
 f:SetScript('OnEvent', function(self, event, ...)
@@ -4396,27 +4480,75 @@ f:SetScript('OnEvent', function(self, event, ...)
 		end
 		if (npcID == "3849" and NIT.db.global.autoSfkDoor) then
 			--Deathstalker Adamant Creature-0-4672-33-573-3849-000012AA57
-			SelectGossipOption(1);
+			NIT:selectGossipOption(1);
 			return;
 		end
 		if (npcID == "17893" and NIT.db.global.autoSlavePens) then
 			--Naturalist Bite Creature-0-4672-547-7775-17893-0000371B0A
-			SelectGossipOption(1);
+			NIT:selectGossipOption(1);
 			return;
 		end
 		if (npcID == "20201" and NIT.db.global.autoBlackMorass and C_QuestLog.IsQuestFlaggedCompleted(10298)) then
 			--Sa'at													--Hero of the Brood
-			SelectGossipOption(1);
+			NIT:selectGossipOption(1);
 			return;
 		end
 		if (npcID == "20142" and NIT.db.global.autoCavernsFlight and C_QuestLog.IsQuestFlaggedCompleted(10279)) then
 			--Steward of Time										--To The Master's Lair
-			SelectGossipOption(1);
+			NIT:selectGossipOption(1);
 			return;
 		end
 		if (npcID == "26499" and NIT.db.global.autoCavernsArthas and isInstance) then
-			SelectGossipOption(1);
+			NIT:selectGossipOption(1);
 			return;
+		end
+		if (NIT.isWrath) then
+			if ((npcID == "211299" or npcID == "211297") and NIT.db.global.autoGammaBuff and isInstance) then
+				local buffType, buffName, role = NIT:getGammaBuffType();
+				if (buffType) then
+					local roleText = "";
+					local _, class = UnitClass("player");
+					if (role and class == "DRUID") then
+						roleText = " (" .. role .. ")";
+					end
+					--Make the icon slightly bigger than the font size, it looks better.
+					local _, fontHeight = DEFAULT_CHAT_FRAME:GetFont();
+					local size = 0; --If 0 then it defaults to fit current text size.
+					if (fontHeight) then
+						--Round up, font is always slightly below round number.
+						--And make it slightly bigger than the text.
+						size = math.floor(fontHeight + 0.5) + 2;
+					end
+					local icon = "";
+					local icons = { --GetTexCoordsForRole("HEALER")
+						["dps"] = "|TInterface\\LFGFrame\\UI-LFG-ICON-ROLES:" .. size .. ":" .. size .. ":0:0:256:256:" .. 0.26171875*255 .. ":" .. 0.5234375*255 .. ":" .. 0.26171875*255 .. ":" .. 0.5234375*255 .. "|t ",
+						["healer"] = "|TInterface\\LFGFrame\\UI-LFG-ICON-ROLES:" .. size .. ":" .. size .. ":0:0:256:256:" .. 0.26171875*255 .. ":" .. 0.5234375*255 .. ":0:" .. 0.26171875*255 .. "|t ",
+						["tank"] = "|TInterface\\LFGFrame\\UI-LFG-ICON-ROLES:" .. size .. ":" .. size .. ":0:0:256:256:0:" .. 0.26171875*255 .. ":" .. 0.26171875*255 .. ":" .. 0.5234375*255 .. "|t ",
+					};
+					if (icons[role]) then
+						icon = icons[role];
+					end
+					local buffNameText = buffName .. roleText;
+					if (role == "dps") then
+						buffNameText = "|cFFEB0000" .. buffName .. roleText .. "|r";
+					elseif (role == "healer") then
+						buffNameText = "|cFF50C878" .. buffName .. roleText .. "|r";
+					elseif (role == "tank") then
+						buffNameText = "|cFF0096FF" .. buffName .. roleText .. "|r";
+					end
+					if (GetTime() - lastGammaBuffMsg > 2) then
+						NIT:print(NIT.prefixColor .. "Gamma Dungeon:|r |cFF9CD6DEAuto getting " .. icon .. buffNameText .. " buff for your current spec (can be changed in config).");
+						lastGammaBuffMsg = GetTime();
+					end
+					NIT:selectGossipOption(buffType);
+				else
+					if (GetTime() - lastGammaBuffMsg > 2) then
+						NIT:print(NIT.prefixColor .. "Gamma Dungeon:|r |cFF9CD6DEError selecting correct gamma buff please let the dev know on curseforge.");
+						lastGammaBuffMsg = GetTime();
+					end
+				end
+				return;
+			end
 		end
 	end
 end)
@@ -4685,4 +4817,283 @@ function NIT:openNITCopyFrame(text)
 	C_Timer.After(0.1, function()
 		NITCopyFrame.EditBox:SetFocus();
 	end)
+end
+
+function NIT:getGammaBuffType()
+	local buffType, buffName, role;
+	local option = NIT:getAutoGammaBuffType();
+	if (option == 1) then
+		--Auto spec detect.
+		local name, icon, talentCount, specType, r = NIT:getActiveSpec();
+		if (specType == "melee") then
+			buffType, buffName, role = 1, MELEE, "dps";
+		elseif (specType == "ranged") then
+			buffType, buffName, role = 2, RANGED, "dps";
+		elseif (specType == "healer") then
+			buffType, buffName, role = 3, HEALER, "healer";
+		elseif (specType == "tank") then
+			buffType, buffName, role = 4, TANK, "tank";
+		end
+	elseif (option == 2) then
+		buffType, buffName, role = 1, MELEE, "dps";
+	elseif (option == 3) then
+		buffType, buffName, role = 2, RANGED, "dps";
+	elseif (option == 4) then
+		buffType, buffName, role = 3, HEALER, "healer";
+	elseif (option == 5) then
+		buffType, buffName, role = 4, TANK, "tank";
+	end
+	return buffType, buffName, role;
+end
+
+
+function NIT:getActiveSpec()
+	local name, icon, talentCount, specType, role, fileName = nil, nil, 0;
+	for tab = 1, GetNumTalentTabs() do
+		local specName, specIcon, pointsSpent, file = GetTalentTabInfo(tab, false, false, GetActiveTalentGroup());
+		if (pointsSpent and pointsSpent > talentCount) then
+			name, icon, talentCount, fileName = specName, specIcon, pointsSpent, file;
+		end
+	end
+	if (name) then
+		local _, class = UnitClass("player");
+		if (class == "ROGUE") then
+			--Melee dps only classes.
+			specType = "melee";
+			role = "dps";
+		elseif (class == "HUNTER" or class == "MAGE" or  class == "WARLOCK") then
+			--Ranged dps only classes.
+			specType = "ranged";
+			role = "dps";
+		else
+			--Multi role classes.
+			if (class == "DRUID") then
+				if (fileName == "DruidFeralCombat") then
+					--Both feral tank and melee dps go down the feral tree, so we use role as backup.
+					--The role system in classic is scuffed but there's no better way I know of to tell the different.
+					--Hopefully feral tanks have thier role properly set.
+					--Try group role first so more accurate in group finder.
+					local r = UnitGroupRolesAssigned("player");
+					if (r == "NONE") then
+						--Fall back to talent window spec choice set by the player.
+						r = GetTalentGroupRole(GetActiveTalentGroup());
+					end
+					if (r == "TANK") then
+						specType = "tank";
+						role = "tank";
+					else
+						specType = "melee";
+						role = "dps";
+					end
+				elseif (fileName == "DruidRestoration") then
+					specType = "healer";
+					role = "healer";
+				else
+					specType = "ranged"; --Balance.
+					role = "dps";
+				end
+			elseif (class == "DEATHKNIGHT") then
+				if (fileName == "DeathKnightBlood") then
+					specType = "tank";
+					role = "tank";
+				else
+					specType = "melee";
+					role = "dps";
+				end
+			elseif (class == "PALADIN") then
+				if (fileName == "PaladinProtection") then
+					specType = "tank";
+					role = "tank";
+				elseif (fileName == "PaladinHoly") then
+					specType = "healer";
+					role = "healer";
+				else
+					specType = "melee";
+					role = "dps";
+				end
+			elseif (class == "PRIEST") then
+				if (fileName == "PriestShadow") then
+					specType = "ranged";
+					role = "dps";
+				else
+					specType = "healer";
+					role = "healer";
+				end
+			elseif (class == "SHAMAN") then
+				if (fileName == "ShamanElementalCombat") then
+					specType = "ranged";
+					role = "dps";
+				elseif (fileName == "ShamanRestoration") then
+					specType = "healer";
+					role = "healer";
+				else
+					specType = "melee";
+					role = "dps";
+				end
+			elseif (class == "WARRIOR") then
+				if (fileName == "WarriorProtection") then
+					specType = "tank";
+					role = "tank";
+				else
+					specType = "melee";
+					role = "dps";
+				end
+			end
+		end
+		if (specType) then
+			return name, icon, talentCount, specType, role;
+		end
+	end
+end
+
+function NIT:sendGroup(msg)
+	if (IsInRaid()) then
+		SendChatMessage(msg, "RAID");
+	elseif (IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
+        SendChatMessage(msg, "INSTANCE_CHAT");
+	elseif (IsInGroup()) then
+		SendChatMessage(msg, "PARTY");
+	end
+end
+
+function NIT:sendGroupComm(msg)
+	if (IsInRaid()) then
+		NIT:sendComm("RAID", msg);
+	elseif (IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
+        NIT:sendComm("INSTANCE_CHAT", msg);
+	elseif (IsInGroup()) then
+		NIT:sendComm("PARTY", msg);
+	end
+end
+
+function NIT:selectGossipOption(id)
+	--A fix so the addon "Immersion" doesn't clash with gossip automation.
+	--SelectGossipOption seems to require the Blizzard dialog open.
+	--C_GossipInfo.SelectOptionByIndex seems to remember the last opened and works after it's closed?
+	if (ImmersionAPI and C_GossipInfo and C_GossipInfo.SelectOptionByIndex) then
+		--C_GossipInfo.SelectOptionByIndex index starts at 0 so we need to minus 1.
+		C_GossipInfo.SelectOptionByIndex(id - 1)
+	else
+		SelectGossipOption(id);
+	end
+end
+	
+function NIT:createPopupString(name)
+	local frame = CreateFrame("Frame", name);
+	frame:SetSize(1, 1);
+	frame:EnableMouse(false);
+	frame.fs = frame:CreateFontString("$parentFS", "ARTWORK");
+	frame.fs:SetPoint("CENTER", 0, 0);
+	frame.fs:SetFontObject(GameFontNormalLarge);
+	--frame.fs:SetFontObject(NumberFontNormalLarge);
+	frame:Hide();
+	return frame;
+end
+
+if (NIT.isWrath) then
+	local dungeonPopTimerFrame = NIT:createPopupString("NIT_DungeonPopTimerFrame");
+	dungeonPopTimerFrame:SetParent(LFGDungeonReadyDialog);
+	--dungeonPopTimerFrame:SetPoint("BOTTOM", LFGDungeonReadyDialogRoleIcon, "TOP", 0, 12);
+	--dungeonPopTimerFrame:SetPoint("CENTER", LFGDungeonReadyDialogRoleIcon, 0, 2);
+	dungeonPopTimerFrame:SetPoint("LEFT", LFGDungeonReadyDialogRoleIcon, "RIGHT", 13, 3);
+	dungeonPopTimerFrame:Show();
+	
+	local dungPopStartTime = 0;
+	LFGDungeonReadyDialog:HookScript("OnShow", function(self, arg)
+		dungPopStartTime = GetTime();
+	end)
+	LFGDungeonReadyDialog:HookScript("OnUpdate", function(self, arg)
+		if (NIT.db.global.dungeonPopTimer) then
+			local timeLeft = (dungPopStartTime + 40) - GetTime();
+			if (timeLeft < 0) then
+				timeLeft = 0;
+			end
+			if (timeLeft > 10) then
+				timeLeft = NIT:round(timeLeft);
+			else
+				timeLeft = NIT:round(timeLeft, 1);
+			end
+			dungeonPopTimerFrame.fs:SetText("|cFFFFFF00" .. timeLeft);
+		end
+	end)
+	LFGDungeonReadyDialog:HookScript("OnHide", function(self, arg)
+		dungeonPopTimerFrame.fs:SetText("");
+	end)
+end
+
+local f = CreateFrame("Frame");
+f:RegisterEvent("GOSSIP_SHOW");
+f:RegisterEvent("QUEST_DETAIL");
+f:RegisterEvent("QUEST_PROGRESS");
+f:RegisterEvent("QUEST_COMPLETE");
+local lastAutoDailyQuestMsg = 0;
+f:SetScript('OnEvent', function(self, event, ...)
+	local npcGUID = UnitGUID("npc");
+	local npcID;
+	if (npcGUID) then
+		_, _, _, _, _, npcID = strsplit("-", npcGUID);
+	end
+	if (not npcID) then
+		return;
+	end
+	if (npcID == "20735" and NIT.db.global.autoWrathDailies) then
+		if (event == "GOSSIP_SHOW") then
+			--Select available quests.
+			local availableQuests = C_GossipInfo.GetAvailableQuests();
+			if (next(availableQuests)) then
+				if (GetTime() - lastAutoDailyQuestMsg > 10) then
+					NIT:print("Auto getting daily quests.");
+					lastAutoDailyQuestMsg = GetTime();
+				end
+				for index, questData in ipairs(availableQuests) do
+					if (questData.questID) then
+						return C_GossipInfo.SelectAvailableQuest(questData.questID);
+					end
+				end
+			end
+			--Select completed quests.
+			local activeQuests = C_GossipInfo.GetActiveQuests();
+			for index, questData in ipairs(activeQuests) do
+				if (questData.questID and questData.isComplete) then
+					return C_GossipInfo.SelectActiveQuest(questData.questID);
+				end
+			end
+		elseif (event == "QUEST_DETAIL") then
+			--Accept quest being viewed.
+			AcceptQuest();
+		elseif (event == "QUEST_PROGRESS") then
+			--Confirm quest is completable and move to final complete window.
+			if (IsQuestCompletable()) then
+				CompleteQuest();
+			end
+		elseif (event == "QUEST_COMPLETE") then
+			--Hand in quest, no reward selection needed for the dailies.
+			--But just incase they add rewards like rep tokens or something, check for reward acounts.
+			--Still accept if only 1 reward.
+			if (GetNumQuestChoices() < 2) then
+				GetQuestReward(GetNumQuestChoices());
+			end
+		end
+	end
+end)
+
+--Sometimes we need to reset some stuff once after an upgrade.
+function NIT:wipeUpgradeData()
+	if (NIT.db.global.wipeUpgradeData) then
+		--Wipe weekly quest data to correct an issue for v1.51
+		for realm, realmData in pairs(NIT.db.global) do
+			if (type(realmData) == "table" and realmData ~= "minimapIcon" and realmData ~= "data") then
+				if (realmData.myChars) then
+					for char, charData in pairs(realmData.myChars) do
+						if (charData.quests) then
+							for k, v in pairs(charData.quests) do
+								NIT.db.global[realm].myChars[char].quests[k] = nil;
+							end
+						end
+					end
+				end
+			end
+		end
+		NIT.db.global.wipeUpgradeData = false;
+	end
 end

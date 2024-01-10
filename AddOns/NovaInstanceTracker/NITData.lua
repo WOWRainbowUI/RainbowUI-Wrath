@@ -166,11 +166,7 @@ function NIT:sendVersion(distribution)
 	if (distribution) then
 		NIT:sendComm(distribution, "version " .. version .. " check");
 	else
-		if (IsInRaid()) then
-			NIT:sendComm("RAID", "version " .. version .. " check");
-		elseif (IsInGroup()) then
-			NIT:sendComm("PARTY", "version " .. version .. " check");
-		end
+		NIT:sendGroupComm("version " .. version .. " check")
 	end
 end
 
@@ -223,6 +219,7 @@ f:RegisterEvent("CHAT_MSG_SKILL");
 f:RegisterEvent("UNIT_RANGEDDAMAGE");
 f:RegisterEvent("LOCALPLAYER_PET_RENAMED");
 f:RegisterEvent("UNIT_PET");
+f:RegisterEvent("PLAYER_LOGOUT");
 if (NIT.expansionNum < 4) then
 	f:RegisterEvent("UNIT_PET_TRAINING_POINTS");
 	f:RegisterEvent("TRADE_SKILL_UPDATE");
@@ -313,6 +310,9 @@ f:SetScript('OnEvent', function(self, event, ...)
 		NIT:combatLogEventUnfiltered(...);
 	elseif (event == "UNIT_TARGET" or event == "PLAYER_TARGET_CHANGED") then
 		NIT:parseGUID("target", nil, "target");
+		if (NIT.inInstance and NIT.isWrath) then
+			NIT:scanDungeonSubDifficulty();
+		end
 	elseif (event == "UPDATE_MOUSEOVER_UNIT") then
 		NIT:parseGUID("mouseover", nil, "mouseover");
 	elseif (event == "NAME_PLATE_UNIT_ADDED") then
@@ -362,6 +362,9 @@ f:SetScript('OnEvent', function(self, event, ...)
 	elseif (event == "QUEST_TURNED_IN") then
 		NIT:throddleEventByFunc(event, 2, "recordPlayerLevelData", ...);
 		NIT:throddleEventByFunc(event, 1, "recordQuests", ...);
+		C_Timer.After(5, function()
+			NIT:recordQuests();
+		end)
 	elseif (event == "CHAT_MSG_SKILL") then
 		NIT:throddleEventByFunc(event, 4, "recordSkillUpData", ...);
 	elseif (event == "UNIT_RANGEDDAMAGE" or event == "LOCALPLAYER_PET_RENAMED" or event == "UNIT_PET"
@@ -396,6 +399,12 @@ f:SetScript('OnEvent', function(self, event, ...)
 			NIT.data.instances[1]["leftTime"] = GetServerTime();
 			NIT:showInstanceStats();
 		end
+		NIT:recordLockoutData();
+		NIT:recordQuests();
+	elseif (event == "PLAYER_LOGOUT") then
+		--Print stats if logging out inside an instance for an offline reset.
+		NIT:recordLockoutData();
+		NIT:recordQuests();
 	elseif (event == "TRADE_SKILL_UPDATE" or event == "TRADE_SKILL_SHOW" or event == "TRADE_SKILL_CLOSE") then
 		NIT:recordCooldowns();
 	elseif (event == "UPDATE_BATTLEFIELD_SCORE") then
@@ -875,6 +884,127 @@ instanceDetectionFrame:SetScript('OnEvent', function(self, event, ...)
 	end
 end)
 
+--No API available to get alpha/beta/gamma difficulty yet.
+--[[local function getDungeonSubDifficulty()
+	if (IsInInstance()) then
+		local diff;
+		--wtb dungeon api for these new difficulties.
+		NIT:print("Getting dungeon difficulty:", diff);
+		return diff;
+	end
+end
+
+function NIT:updateCurrentDungeonSubDifficulty()
+	if (IsInInstance()) then
+		local diff = getDungeonSubDifficulty();
+		if (diff) then
+			NIT.data.instances[1].subDifficulty = diff;
+			NIT:debug("Updated dungeon sub difficulty.");
+		end
+	end
+end]]
+
+--Get dungeon sub difficulty by scanning npc buffs instead.
+local subDiffculties = {
+	--Gamma dungs.
+	[424205] = "gamma", --Gamma Empowered: Titan Rune
+	[424203] = "gamma", --Gamma Empowered: Blood Rune
+	[424210] = "gamma", --Gamma Empowered: Plague Rune
+	[424196] = "gamma", --Gamma Empowered: Arcane Rune
+	[424211] = "gamma", --Gamma Empowered: Gladiator Rune
+	[424194] = "gamma", --Gamma Empowered: Frost Rune
+	[424201] = "gamma", --Gamma Empowered: Shadow Rune
+	--Beta dungs.
+	[413573] = "beta", --Beta Empowered: Gladiator Rune
+	[412770] = "beta", --Beta Empowered: Frost Rune
+	[412991] = "beta", --Beta Empowered: Arcane Rune
+	[412867] = "beta", --Beta Empowered: Plague Rune
+	[413169] = "beta", --Beta Empowered: Blood Rune
+	[412470] = "beta", --Beta Empowered: Shadow Rune
+	--Alpha dungs.
+	[394441] = "alpha", --Alpha Empowered: Titan Rune
+	[392430] = "alpha", --Alpha Empowered: Frost Rune
+	[394444] = "alpha", --Alpha Empowered: Plague Rune
+	[394435] = "alpha", --Alpha Empowered: Arcane Rune
+	[394437] = "alpha", --Alpha Empowered: Shadow Rune
+	[394438] = "alpha", --Alpha Empowered: Blood Rune
+};
+function NIT:scanDungeonSubDifficulty()
+	--Only scan once if we found it.
+	if (NIT.inInstance and not NIT.data.instances[1].subDifficulty) then
+		local found;
+		local guid = UnitGUID("target");
+		if (guid and string.match(guid, "Creature")) then
+			for i = 1, 10 do
+				local name, _, _, _, _, _, _, _, _, spellID = UnitBuff("target", i);
+				if (name) then
+					if (subDiffculties[spellID]) then
+						NIT.data.instances[1].subDifficulty = subDiffculties[spellID];
+						NIT:debug("Updated dungeon sub difficulty:", subDiffculties[spellID]);
+						found = true;
+					elseif (string.match(name, "Gamma Empowered: %w+ Rune")) then
+						--English backups so if they add more it will atleast work for english client without updates.
+						NIT.data.instances[1].subDifficulty = "gamma";
+						found = true;
+					elseif (string.match(name, "Beta Empowered: %w+ Rune")) then
+						NIT.data.instances[1].subDifficulty = "beta";
+						found = true;
+					elseif (string.match(name, "Alpha Empowered: %w+ Rune")) then
+						NIT.data.instances[1].subDifficulty = "alpha";
+						found = true;
+					end
+				else
+					break;
+				end
+			end
+		end
+		if (found and NIT.data.instances[1].subDifficulty == "gamma" and NIT.db.global.autoGammaBuffReminder)then
+			--If we don't have a buff already then remind us, should only fire once per dung.
+			local hasBuff;
+			local gammaBuffs = {
+				[424400] = true, --Melee.
+				[424403] = true, --Ranged.
+				[424405] = true, --Healer.
+				[424407] = true, --Tank.
+			};
+			for i = 1, 32 do
+				local _, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i);
+				if (spellID) then
+					if (gammaBuffs[spellID]) then
+						hasBuff = true;
+						break;
+					end
+				else
+					break;
+				end
+			end
+			if (not hasBuff) then
+				local npcType;
+				if (NIT.faction == "Horde") then
+					npcType = L["Sunreaver Warden"];
+				else
+					npcType = L["Silver Covenant Warden"];
+				end
+				NIT:print("|cFF00FF00" .. string.format(L["autoGammaBuffReminder"], npcType), nil, "[NIT Reminder]");
+				local colorTable = {r = 1, g = 0.96, b = 0.41, id = 41, sticky = 0};
+				RaidNotice_AddMessage(RaidWarningFrame, NIT.prefixColor .. "[NIT Reminder]:|r |cFF00FF00" .. string.format(L["autoGammaBuffReminder"], npcType), colorTable, 6);
+			end
+		end
+	end
+end
+
+function test()
+	local npcType;
+	if (NIT.faction == "Horde") then
+		npcType = L["Sunreaver Warden"];
+	else
+		npcType = L["Silver Covenant Warden"];
+	end
+	NIT:print("|cFF00FF00" .. string.format(L["autoGammaBuffReminder"], npcType), nil, "[NIT Reminder]");
+	local colorTable = {r = 1, g = 0.96, b = 0.41, id = 41, sticky = 0};
+	RaidNotice_AddMessage(RaidWarningFrame, NIT.prefixColor .. "[NIT Reminder]:|r |cFF00FF00" .. string.format(L["autoGammaBuffReminder"], npcType), colorTable, 6);
+end
+
 local isGhost = false;
 NIT.lastInstanceName = "(Unknown Instance)";
 local doneFirstGUIDCheck;
@@ -893,7 +1023,7 @@ function NIT:enteredInstance(isReload, isLogon, checkAgain)
 		if (not type and not checkAgain) then
 			--Sometimes UnitInBattleground() is slow to return true after PEW.
 			--So recheck after a couple of seconds if we're in a pvp instance and both arena and bg wern't found.
-			NIT:debug("PvP type not found, rechecking.")
+			NIT:debug("PvP type not found, rechecking.");
 			C_Timer.After(2, function()
 				NIT:enteredInstance(isReload, isLogon, true);
 			end)
@@ -951,6 +1081,8 @@ function NIT:enteredInstance(isReload, isLogon, checkAgain)
 					group = {},
 					rep = {},
 				};
+				--No API available to get alpha/beta/gamma difficulty yet.
+				--t.subDifficulty = getDungeonSubDifficulty();
 				if (type == "bg") then
 					t.honor = 0;
 				end
@@ -1019,6 +1151,12 @@ function NIT:enteredInstance(isReload, isLogon, checkAgain)
 						end)
 					end
 				end
+				--Changed to when targeting a mob at start of dung.
+				--[[if (t.subDifficulty == "gamma" and NIT.db.global.autoGammaBuffReminder) then
+					C_Timer.After(3, function()
+						NIT:print("|cFF00FF00Gamma Dungeon:|r " .. L["autoGammaBuffReminder"]);
+					end)
+				end]]
 			elseif (isReload) then
 				C_Timer.After(3, function()
 					local texture = "|TInterface\\AddOns\\NovaInstanceTracker\\Media\\redX2:12:12:0:0|t";
@@ -1075,14 +1213,15 @@ function NIT:leftInstance()
 	NIT.lastNpcID = 999999999;
 	NIT.lastInstanceName = "(Unknown Instance)";
 	if (NITAUTORESET) then
-		if (NIT.data.instances[1] and NIT.data.instances[1].mobCount and NIT.data.instances[1].mobCount > 50) then
-			C_Timer.After(3, function()
+	print(1)
+		if (NIT.data.instances[1] and NIT.data.instances[1].mobCount and NIT.data.instances[1].mobCount > 10) then
+print(2)
+			C_Timer.After(2, function()
 				if (UnitIsGroupLeader("player") and not IsInInstance() and not UnitIsGhost("player")) then
+print(3)
 					local msg = "Auto resetting dungeons.";
-					if (IsInRaid()) then
-				  		SendChatMessage("[NIT] " .. msg, "RAID");
-			  		elseif (IsInGroup()) then
-			  			SendChatMessage("[NIT] " .. msg, "PARTY");
+					if (IsInGroup()) then
+			  			NIT:sendGroup("[NIT] " .. msg);
 					else
 						NIT:print(NIT.prefixColor .. msg);
 					end
@@ -1125,6 +1264,9 @@ function NIT:showInstanceStats(id, output, showAll, customPrefix, showDate)
 	--local text = pColor;
 	--local text = sColor .. NIT.lastInstanceName;
 	local text = sColor .. data.instanceName .. "|r";
+	if (data.subDifficulty) then
+		text = sColor .. data.instanceName .. " (|cFFFF2222" .. gsub(data.subDifficulty, "^%l", string.upper) .. "|r)|r"; 
+	end
 	local mobCount = 0;
 	local money = 0;
 	if (showDate) then
@@ -1250,10 +1392,8 @@ function NIT:showInstanceStats(id, output, showAll, customPrefix, showDate)
 		if (output == "copypaste") then
 			NIT:openNITCopyFrame("[NIT] " .. NIT:stripColors(prefix.. " " .. text));
 		elseif (output == "group") then
-			if (IsInRaid()) then
-		  		SendChatMessage("[NIT] " .. NIT:stripColors(prefix.. " " .. text), "RAID");
-	  		elseif (IsInGroup()) then
-	  			SendChatMessage("[NIT] " .. NIT:stripColors(prefix.. " " .. text), "PARTY");
+			if (IsInGroup()) then
+	  			NIT:sendGroup("[NIT] " .. NIT:stripColors(prefix.. " " .. text));
 			else
 				NIT:print(NIT.prefixColor .. prefix.. " " .. text);
 			end
@@ -1833,19 +1973,42 @@ function NIT:recordCharacterData()
 	NIT:recordQuests();
 end
 
-local recordQuests = {
-	[70893] = L["Feast Weekly"],
-	[70866] = L["Siege on Dragonbane Keep"],
-	[70906] = L["Grand Hunt (1st Time)"],
-	[71136] = L["Grand Hunt (2nd Time)"],
-	[71137] = L["Grand Hunt (3rd Time)"],
-	[71995] = L["Trial of Elements"],
-	[71033] = L["Trial of Flood"],
-	[69927] = L["World Boss (Bazual)"],
-	[69928] = L["World Boss (Liskanoth)"],
-	[69929] = L["World Boss (Strunraan)"],
-	[69930] = L["World Boss (Basrikron)"],
-};
+--Weeklys.
+local recordQuests = {};
+if (NIT.isRetail) then
+	recordQuests[70893] = L["Feast Weekly"];
+	recordQuests[70866] = L["Siege on Dragonbane Keep"];
+	recordQuests[70906] = L["Grand Hunt (1st Time)"];
+	recordQuests[71136] = L["Grand Hunt (2nd Time)"];
+	recordQuests[71137] = L["Grand Hunt (3rd Time)"];
+	recordQuests[71995] = L["Trial of Elements"];
+	recordQuests[71033] = L["Trial of Flood"];
+	recordQuests[69927] = L["World Boss (Bazual)"];
+	recordQuests[69928] = L["World Boss (Liskanoth)"];
+	recordQuests[69929] = L["World Boss (Strunraan)"];
+	recordQuests[69930] = L["World Boss (Basrikron)"];
+end
+if (NIT.isWrath) then
+	recordQuests[24590] = "Lord Marrowgar Must Die!";
+	recordQuests[24580] = "Anub'Rekhan Must Die!";
+	recordQuests[24585] = "Flame Leviathan Must Die!";
+	recordQuests[24587] = "Ignis the Furnace Master Must Die!";
+	recordQuests[24582] = "Instructor Razuvious Must Die!";
+	recordQuests[24589] = "Lord Jaraxxus Must Die!";
+	recordQuests[24584] = "Malygos Must Die!";
+	recordQuests[24581] = "Noth the Plaguebringer Must Die!";
+	recordQuests[24583] = "Patchwerk Must Die!";
+	recordQuests[24586] = "Razorscale Must Die!";
+	recordQuests[24579] = "Sartharion Must Die!";
+	recordQuests[24588] = "XT-002 Deconstructor Must Die!";
+end
+
+--Dailys.
+local recordDailyQuests = {};
+if (NIT.isWrath) then
+	recordDailyQuests[78752] = L["Proof of Demise: Titan Rune Protocol Gamma"];
+	recordDailyQuests[78753] = L["Proof of Demise: Threats to Azeroth"];
+end
 
 function NIT:recordQuests()
 	if (not C_DateAndTime or not C_DateAndTime.GetSecondsUntilWeeklyReset) then
@@ -1858,10 +2021,45 @@ function NIT:recordQuests()
 	if (not NIT.data.myChars[char].quests) then
 		NIT.data.myChars[char].quests = {};
 	end
+	--All wrath weeklies are flagged as complete when 1 is so just record 1 and not all.
+	local wrathWeeklyComplete;
+	local wrathWeeklies = {
+		[24590] = "Lord Marrowgar Must Die!";
+		[24580] = "Anub'Rekhan Must Die!";
+		[24585] = "Flame Leviathan Must Die!";
+		[24587] = "Ignis the Furnace Master Must Die!";
+		[24582] = "Instructor Razuvious Must Die!";
+		[24589] = "Lord Jaraxxus Must Die!";
+		[24584] = "Malygos Must Die!";
+		[24581] = "Noth the Plaguebringer Must Die!";
+		[24583] = "Patchwerk Must Die!";
+		[24586] = "Razorscale Must Die!";
+		[24579] = "Sartharion Must Die!";
+		[24588] = "XT-002 Deconstructor Must Die!";
+	};
 	local resetTime = GetServerTime() + C_DateAndTime.GetSecondsUntilWeeklyReset();
 	for k, v in pairs(recordQuests) do
 		if (IsQuestFlaggedCompleted(k)) then
-			NIT.data.myChars[char].quests[v] = resetTime;
+			--There's bugs with this that need more testing before release.
+			if (wrathWeeklies[k]) then
+				if (not wrathWeeklyComplete) then
+					wrathWeeklyComplete = true;
+					NIT.data.myChars[char].quests[L["Wrath Raid Boss Weekly"]] = resetTime;
+					--Wrath raid weekly isn't resetting at normal server time, it's resetting later on in the day so it's still recording as complete until the following week.
+					--Watching this and see if they fix the reset time, maybe they had to manual reset first week due to a bug?
+				end
+			else
+				NIT.data.myChars[char].quests[v] = resetTime;
+			end
+		end
+	end
+	if (not NIT.data.myChars[char].questsDaily) then
+		NIT.data.myChars[char].questsDaily = {};
+	end
+	local resetTime = GetServerTime() + C_DateAndTime.GetSecondsUntilDailyReset();
+	for k, v in pairs(recordDailyQuests) do
+		if (IsQuestFlaggedCompleted(k)) then
+			NIT.data.myChars[char].questsDaily[v] = resetTime;
 		end
 	end
 end
@@ -2159,6 +2357,13 @@ function NIT:resetWeeklyData()
 							end
 						end
 					end
+					if (charData.questsDaily) then
+						for k, v in pairs(charData.questsDaily) do
+							if (v < GetServerTime()) then
+								NIT.db.global[realm].myChars[char].questsDaily[k] = nil;
+							end
+						end
+					end
 					if (charData.keystoneData) then
 						if (resetTime < GetServerTime()) then
 							NIT.db.global[realm].myChars[char].keystoneData = nil;
@@ -2407,6 +2612,7 @@ local currencyItems = {
 	[133408] = "Wintergrasp Mark of Honor",
 	[237235] = "Sidereal Essence",
 	[236246] = "Champion's Seal",
+	[237273] = "Defiler's Scourgestone",
 	--Profession tokens.
 	[134411] = "Epicurean's Award",
 	[134138] = "Dalaran Jewelcrafter's Token",

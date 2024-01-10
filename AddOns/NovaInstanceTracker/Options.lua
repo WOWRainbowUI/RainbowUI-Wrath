@@ -40,13 +40,13 @@ NIT.options = {
 		autoDialogue = {
 			type = "header",
 			name = L["autoDialogueDesc"],
-			order = 4,
+			order = 14,
 		},
 		autoSlavePens = {
 			type = "toggle",
 			name = L["autoSlavePensTitle"],
 			desc = L["autoSlavePensDesc"],
-			order = 5,
+			order = 15,
 			get = "getAutoSlavePens",
 			set = "setAutoSlavePens",
 		},
@@ -54,7 +54,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["autoCavernsFlightTitle"],
 			desc = L["autoCavernsFlightDesc"],
-			order = 6,
+			order = 16,
 			get = "getAutoCavernsFlight",
 			set = "setAutoCavernsFlight",
 		},
@@ -62,7 +62,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["autoCavernsArthasTitle"],
 			desc = L["autoCavernsArthasDesc"],
-			order = 7,
+			order = 17,
 			get = "getAutoCavernsArthas",
 			set = "setAutoCavernsArthas",
 		},
@@ -70,7 +70,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["autoBlackMorassTitle"],
 			desc = L["autoBlackMorassDesc"],
-			order = 8,
+			order = 18,
 			get = "getAutoBlackMorass",
 			set = "setAutoBlackMorass",
 		},
@@ -78,20 +78,20 @@ NIT.options = {
 			type = "toggle",
 			name = L["autoSfkDoorTitle"],
 			desc = L["autoSfkDoorDesc"],
-			order = 9,
+			order = 19,
 			get = "getAutoSfkDoor",
 			set = "setAutoSfkDoor",
 		},
 		colorsHeader = {
 			type = "header",
 			name = L["colorsHeaderDesc"],
-			order = 10,
+			order = 20,
 		},
 		chatColor = {
 			type = "color",
 			name = L["chatColorTitle"],
 			desc = L["chatColorDesc"],
-			order = 11,
+			order = 21,
 			get = "getChatColor",
 			set = "setChatColor",
 			hasAlpha = false,
@@ -100,7 +100,7 @@ NIT.options = {
 			type = "color",
 			name = L["mergeColorTitle"],
 			desc = L["mergeColorDesc"],
-			order = 15,
+			order = 22,
 			get = "getMergeColor",
 			--get = function()
 			--	return 0, 255, 0;
@@ -113,18 +113,18 @@ NIT.options = {
 			name = L["resetColorsTitle"],
 			desc = L["resetColorsDesc"],
 			func = "resetColors",
-			order = 16,
+			order = 23,
 		},
 		generalHeader = {
 			type = "header",
 			name = L["generalHeaderDesc"],
-			order = 17,
+			order = 24,
 		},
 		enteredMsg = {
 			type = "toggle",
 			name = L["enteredMsgTitle"],
 			desc = L["enteredMsgDesc"],
-			order = 18,
+			order = 25,
 			get = "getEnteredMsg",
 			set = "setEnteredMsg",
 		},
@@ -132,7 +132,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["raidEnteredMsgTitle"],
 			desc = L["raidEnteredMsgDesc"],
-			order = 19,
+			order = 26,
 			get = "getRaidEnteredMsg",
 			set = "setRaidEnteredMsg",
 		},
@@ -140,7 +140,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["pvpEnteredMsgTitle"],
 			desc = L["pvpEnteredMsgDesc"],
-			order = 20,
+			order = 27,
 			get = "getPvpEnteredMsg",
 			set = "setPvpEnteredMsg",
 		},
@@ -148,7 +148,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["noRaidInstanceMergeMsgTitle"],
 			desc = L["noRaidInstanceMergeMsgDesc"],
-			order = 21,
+			order = 28,
 			get = "getNoRaidInstanceMergeMsg",
 			set = "setNoRaidInstanceMergeMsg",
 		},
@@ -156,7 +156,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["instanceResetMsgTitle"],
 			desc = L["instanceResetMsgDesc"],
-			order = 22,
+			order = 29,
 			get = "getInstanceResetMsg",
 			set = "setInstanceResetMsg",
 		},
@@ -164,7 +164,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["minimapButtonTitle"],
 			desc = L["minimapButtonDesc"],
-			order = 23,
+			order = 30,
 			get = "getMinimapButton",
 			set = "setMinimapButton",
 		},
@@ -172,7 +172,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["ignore40ManTitle"],
 			desc = L["ignore40ManDesc"],
-			order = 18,
+			order = 31,
 			get = "getIgnore40Man",
 			set = "setIgnore40Man",
 		},]]
@@ -180,7 +180,7 @@ NIT.options = {
 			type = "toggle",
 			name = L["showMoneyTradedChatTitle"],
 			desc = L["showMoneyTradedChatDesc"],
-			order = 24,
+			order = 32,
 			get = "getShowMoneyTradedChat",
 			set = "setShowMoneyTradedChat",
 		},
@@ -196,7 +196,7 @@ NIT.options = {
 				[1] = 12,
 				[2] = 24,
 			},
-			order = 25,
+			order = 33,
 			get = "getTimeStampFormat",
 			set = "setTimeStampFormat",
 		},
@@ -212,7 +212,7 @@ NIT.options = {
 				[1] = "local",
 				[2] = "server",
 			},
-			order = 26,
+			order = 34,
 			get = "getTimeStampZone",
 			set = "setTimeStampZone",
 		},
@@ -220,7 +220,7 @@ NIT.options = {
 			type = "range",
 			name = L["instanceWindowWidthTitle"],
 			desc = L["instanceWindowWidthDesc"],
-			order = 27,
+			order = 35,
 			get = "getInstanceWindowWidth",
 			set = "setInstanceWindowWidth",
 			min = 575,
@@ -234,7 +234,7 @@ NIT.options = {
 			type = "range",
 			name = L["instanceWindowHeightTitle"],
 			desc = L["instanceWindowHeightDesc"],
-			order = 28,
+			order = 36,
 			get = "getInstanceWindowHeight",
 			set = "setInstanceWindowHeight",
 			min = 150,
@@ -248,7 +248,7 @@ NIT.options = {
 			type = "range",
 			name = L["charsWindowWidthTitle"],
 			desc = L["charsWindowWidthDesc"],
-			order = 29,
+			order = 37,
 			get = "getCharsWindowWidth",
 			set = "setCharsWindowWidth",
 			min = 350,
@@ -262,7 +262,7 @@ NIT.options = {
 			type = "range",
 			name = L["charsWindowHeightTitle"],
 			desc = L["charsWindowHeightDesc"],
-			order = 30,
+			order = 38,
 			get = "getCharsWindowHeight",
 			set = "setCharsWindowHeight",
 			min = 150,
@@ -276,7 +276,7 @@ NIT.options = {
 			type = "range",
 			name = L["tradeWindowWidthTitle"],
 			desc = L["tradeWindowWidthDesc"],
-			order = 31,
+			order = 39,
 			get = "getTradeWindowWidth",
 			set = "setTradeWindowWidth",
 			min = 350,
@@ -290,7 +290,7 @@ NIT.options = {
 			type = "range",
 			name = L["tradeWindowHeightTitle"],
 			desc = L["tradeWindowHeightDesc"],
-			order = 32,
+			order = 40,
 			get = "getTradeWindowHeight",
 			set = "setTradeWindowHeight",
 			min = 150,
@@ -305,13 +305,13 @@ NIT.options = {
 			name = L["resetFramesTitle"],
 			desc = L["resetFramesDesc"],
 			func = "resetFrames",
-			order = 33,
+			order = 41,
 		},
 		detectSameInstance = {
 			type = "toggle",
 			name = L["detectSameInstanceTitle"],
 			desc = L["detectSameInstanceDesc"],
-			order = 34,
+			order = 42,
 			get = "getDetectSameInstance",
 			set = "setDetectSameInstance",
 		},
@@ -606,6 +606,78 @@ NIT.options = {
 	},
 };
 
+function NIT:loadSpecificOptions()
+	if (NIT.isWrath) then
+		NIT.options.args["autoGammaBuffHeader"] = {
+			type = "header",
+			name = L["autoGammaBuffDesc"],
+			order = 4,
+		};
+		NIT.options.args["autoGammaBuff"] = {
+			type = "toggle",
+			name = L["autoGammaBuffTitle"],
+			desc = L["autoGammaBuffDesc"],
+			order = 5,
+			get = "getAutoGammaBuff",
+			set = "setAutoGammaBuff",
+		};
+		NIT.options.args["autoGammaBuffReminder"] = {
+			type = "toggle",
+			name = L["autoGammaBuffReminderTitle"],
+			desc = L["autoGammaBuffReminderDesc"],
+			order = 6,
+			get = "getAutoGammaBuffReminder",
+			set = "setAutoGammaBuffReminder",
+		};
+		NIT.options.args["dungeonPopTimer"] = {
+			type = "toggle",
+			name = L["dungeonPopTimerTitle"],
+			desc = L["dungeonPopTimerDesc"],
+			order = 7,
+			get = "getDungeonPopTimer",
+			set = "setDungeonPopTimer",
+		};
+		NIT.options.args["autoGammaBuffType"] = {
+			type = "select",
+			name = L["autoGammaBuffTypeTitle"],
+			desc = L["autoGammaBuffTypeDesc"],
+			values = {
+				[1] = "Auto Select (Spec Based)",
+				[2] = MELEE,
+				[3] = RANGED,
+				[4] = HEALER,
+				[5] = TANK,
+			},
+			sorting = {
+				[1] = 1,
+				[2] = 2,
+				[3] = 3,
+				[4] = 4,
+				[5] = 5,
+			},
+			order = 8,
+			width = 1.7,
+			get = "getAutoGammaBuffType",
+			set = "setAutoGammaBuffType",
+		};
+		NIT.options.args["autoGammaText"] = {
+			type = "description",
+			name = "|cFFFF0000" .. L["note"] .. " |cFF9CD6DE" .. L["gammaConfigWarning"],
+			fontSize = "medium",
+			order = 9,
+		};
+		NIT.options.args["autoWrathDailies"] = {
+			type = "toggle",
+			name = L["autoWrathDailiesTitle"],
+			desc = L["autoWrathDailiesDesc"],
+			order = 10,
+			get = "getAutoWrathDailies",
+			set = "setAutoWrathDailies",
+		};
+	end
+end
+		
+		
 function NIT:getLogExample()
 	--Simulate a log entry.
 	local classLocalized, classEnglish = UnitClass("player");
@@ -690,6 +762,12 @@ NIT.optionDefaults = {
 		showPveLog = true,
 		noRaidInstanceMergeMsg = true,
 		resetCharData = true, --Reset one time to delete data before alt UI stuff was added.
+		autoGammaBuff = true,
+		autoGammaBuffReminder = true,
+		autoGammaBuffType = 1,
+		dungeonPopTimer = true,
+		autoWrathDailies = true,
+		wipeUpgradeData = true,
 	},
 };
 
@@ -714,6 +792,9 @@ function NIT:buildDatabase()
 	end
 	if (not self.db.global[NIT.realm].myChars[UnitName("player")]) then
 		self.db.global[NIT.realm].myChars[UnitName("player")] = {};
+	end
+	if (not self.db.global[NIT.realm].gammaBuffSettings) then
+		self.db.global[NIT.realm].gammaBuffSettings = {};
 	end
 	self.data = self.db.global[NIT.realm];
 end
@@ -1200,4 +1281,57 @@ end
 
 function NIT:getAutoSfkDoor(info)
 	return self.db.global.autoSfkDoor;
+end
+
+--Auto gamma buff dialogue.
+function NIT:setAutoGammaBuff(info, value)
+	self.db.global.autoGammaBuff = value;
+end
+
+function NIT:getAutoGammaBuff(info)
+	return self.db.global.autoGammaBuff;
+end
+
+--Auto gamma buff reminder.
+function NIT:setAutoGammaBuffReminder(info, value)
+	self.db.global.autoGammaBuffReminder = value;
+end
+
+function NIT:getAutoGammaBuffReminder(info)
+	return self.db.global.autoGammaBuffReminder;
+end
+
+--Dungeon pop timer.
+function NIT:setDungeonPopTimer(info, value)
+	self.db.global.dungeonPopTimer = value;
+end
+
+function NIT:getDungeonPopTimer(info)
+	return self.db.global.dungeonPopTimer;
+end
+
+--Auto get daily quests.
+function NIT:setAutoWrathDailies(info, value)
+	self.db.global.autoWrathDailies = value;
+end
+
+function NIT:getAutoWrathDailies(info)
+	return self.db.global.autoWrathDailies;
+end
+
+--Which gamma dung buff to get.
+function NIT:setAutoGammaBuffType(info, value)
+	if (NIT.data.gammaBuffSettings) then
+		NIT.data.gammaBuffSettings[UnitName("player")] = value;
+	else
+		self.db.global.autoGammaBuffType = value;
+	end
+end
+
+function NIT:getAutoGammaBuffType(info)
+	if (NIT.data.gammaBuffSettings and NIT.data.gammaBuffSettings[UnitName("player")]) then
+		return NIT.data.gammaBuffSettings[UnitName("player")];
+	else
+		return self.db.global.autoGammaBuffType;
+	end
 end
