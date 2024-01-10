@@ -108,7 +108,7 @@ do
     L["输出补贴"] = "DPS Subsidy"
     L["放鱼补贴"] = "Fish Subsidy"
     L["人数可自行修改"] = "Number can be modified"
-    L["（ALT+点击可设置为已掉落，SHIFT+点击可发送装备，CTRL+点击可通报历史价格）"] = "(ALT+Click to set as dropped, SHIFT+Click to send equipment, CTRL+Click to report historical price)"
+    L["（SHIFT+点击可发送装备，CTRL+点击可通报历史价格）"] = "(ALT+Click to set as dropped, SHIFT+Click to send equipment, CTRL+Click to report historical price)"
     L["（ALT+点击可关注装备，SHIFT+点击可发送装备，CTRL+点击可通报历史价格）"] = "(ALT+Click to follow item, SHIFT+Click to send equipment, CTRL+Click to report historical price)"
     L["欠款金额"] = "Outstanding Amount"
     L["不在团队，无法通报"] = "Not in the team, cannot report"
@@ -124,7 +124,7 @@ do
     L["交换成功"] = "Trade successful"
     L["（ALT+左键改名，ALT+右键删除表格）"] = "(ALT + Left Click to Rename, ALT + Right Click to Delete)"
     L["保存表格"] = "Save Table"
-    L["把当前表格保存至历史表格\n但不会保存欠款和关注"] = "Save the current table to the historical table\nbut does not save outstanding amounts and attention"
+    L["把当前表格保存至历史表格"] = "Save the current table to the historical table\nbut does not save outstanding amounts and attention"
     L["%m月%d日%H:%M:%S\n"] = "%m/%d/%H:%M:%S\n"
     L["%s %s %s人 工资:%s"] = "%s %s %s players Salary:%s"
     L["分享表格"] = "Share Table"
@@ -152,7 +152,7 @@ do
     L["心愿2"] = "Wish 2"
     L["已掉落"] = "Already Dropped"
     L["恭喜你，该装备已掉落"] = "Congratulations, the item has dropped"
-    L["\n右键取消提示"] = "\nRight-click to cancel the prompt"
+    L["右键取消提示"] = "\nRight-click to cancel the prompt"
     L["当前团队还有 %s 人也许愿该装备！"] = "There are %s more players in the current team wishing for this item!"
     L["查询心愿竞争"] = "Check Wish Competition"
     L["查询团队里，有多少人许愿跟你相同的装备"] = "Check how many people in the team wish for the same item as you"
@@ -238,7 +238,7 @@ do
     L["收入为：%d+。"] = "Income:%d+."
     L["平均每人收入:"] = "Per Member credit:"
     L["感谢使用金团表格"] = "Thank you for using the Raid Table"
-    L["，装备总收入:"] = ",Total item income:"
+    L["，装备总收入"] = ",Total item income:"
     L["-感谢使用大脚金团辅助工具-"] = "-Thank you for using BigFoot Raid Assistant-"
     L["总收入"] = "Total Income"
     L["总支出"] = "Total Expenses"
@@ -252,6 +252,10 @@ do
     L["没有金额"] = "No amount"
     L["———通报流拍装备———"] = "———通報流拍裝備———"
     L["欠"] = true
+	
+	-- 自行加入
+	L["BiaoGe"] = "|cff00BFFFBiaoGe|r"
+
 end
 
 

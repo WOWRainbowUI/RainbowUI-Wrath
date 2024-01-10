@@ -9,54 +9,55 @@
 ## Title-zhTW: |cffFF7F00[團隊]|r 金團表格
 ## Notes-zhTW: <BiaoGe> |n|n好用的金團記錄表單，可設定願望清單，可以通報帳單流拍或消費及欠款等。|n|n|cffffd200使用方法: |r點小地圖按鈕，從Esc>選項>插件>金團表格，進行設定。
 ## X-Category-zhTW: 團隊
+## Version: v1.7.5
 ## DefaultState: disabled
 
 Locales\zhCN.lua
 Locales\zhTW.lua
-# Locales\enUS.lua
 
 Libs\embeds.xml
 
-BiaoGe\DB\DB.lua
-BiaoGe\DB\DB_BossName.lua
-BiaoGe\DB\DB_Loot.lua
+Core\DB\DB.lua
+Core\DB\DB_FilterClassItem.lua
+Core\DB\DB_BossName.lua
+Core\DB\DB_Loot.lua
+Core\DB\DB_Loot_Vanilla_Sod.lua
+Core\DB\DB_Loot_Vanilla_60.lua
+Core\DB\DB_CommerceAuthority_Vanilla.lua
 
-BiaoGe\function.lua
+Core\function1.lua
+Core\function2.lua
 
-BiaoGe\FB\FBUIfunction.lua
-BiaoGe\FB\HistoryUIfunction.lua
-BiaoGe\FB\ReceiveUIfunction.lua
-BiaoGe\FB\DuiZhangUIfunction.lua
+Core\FBUI\FBUI.xml
 
-BiaoGe\FBUI\ICC.lua
-BiaoGe\FBUI\TOC.lua
-BiaoGe\FBUI\ULD.lua
-BiaoGe\FBUI\NAXX.lua
+Core\Module\History.lua
+Core\Module\Receive.lua
+Core\Module\DuiZhang.lua
+Core\Module\RoleOverview.lua
+Core\Module\FilterClassItem.lua
 
-BiaoGe\Module\History.lua
-BiaoGe\Module\Receive.lua
-BiaoGe\Module\Hope.lua
-BiaoGe\Module\DuiZhang.lua
-BiaoGe\Module\RoleOverview.lua
+Core\TongBao\ZhangDan.lua
+Core\TongBao\LiuPai.lua
+Core\TongBao\XiaoFei.lua
+Core\TongBao\QianKuan.lua
+Core\TongBao\WCL.lua
+Core\TongBao\YongShi.lua
 
-BiaoGe\TongBao\ZhangDan.lua
-BiaoGe\TongBao\LiuPai.lua
-BiaoGe\TongBao\XiaoFei.lua
-BiaoGe\TongBao\QianKuan.lua
-BiaoGe\TongBao\WCL.lua
-BiaoGe\TongBao\YongShi.lua
+Core\BiaoGe.lua
 
-BiaoGe\BiaoGe.lua
+Core\Module\ItemLib.lua
+Core\Module\Loot.lua
+Core\Module\Trade.lua
+Core\Module\AuctionMSG.lua
+Core\Module\YY.lua
+Core\Module\MeetingHorn.lua
+Core\Module\AuctionWA.lua
+Core\Module\Auction.lua
+Core\Module\CommerceAuthority_Vanilla.lua
 
-BiaoGe\Module\Loot.lua
-BiaoGe\Module\Trade.lua
-BiaoGe\Module\AuctionMSG.lua
-BiaoGe\Module\YY.lua
-BiaoGe\Module\MeetingHorn.lua
+Core\Boss\Boss.lua
+Core\Boss\ICC.lua
 
-BiaoGe\Boss\Boss.lua
-BiaoGe\Boss\ICC.lua
+Core\Module\minimap.lua
 
-BiaoGe\Module\minimap.lua
-
-BiaoGe\Options.lua
+Core\Options.lua
