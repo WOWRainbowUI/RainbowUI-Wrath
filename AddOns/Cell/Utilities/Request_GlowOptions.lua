@@ -23,6 +23,11 @@ local function CreatePreviewButton()
     previewButton:SetScript("OnShow", nil)
     previewButton:SetScript("OnHide", nil)
     previewButton:SetScript("OnUpdate", nil)
+
+    previewButton.widget.healthBar:SetMinMaxValues(0, 1)
+    previewButton.widget.healthBar:SetValue(1)
+    previewButton.widget.powerBar:SetMinMaxValues(0, 1)
+    previewButton.widget.powerBar:SetValue(1)
     
     local previewButtonBG = Cell:CreateFrame("CellGlowsPreviewButtonBG", previewButton)
     previewButtonBG:SetPoint("TOPLEFT", previewButton, 0, 20)
@@ -294,7 +299,7 @@ local function CreateGlowOptionsFrame()
     glowDuration:SetPoint("TOPLEFT", glowOffsetY, "BOTTOMLEFT", 0, -40)
 
     -- glowFrequency
-    glowFrequency = Cell:CreateSlider(L["Frequency"], glowOptionsFrame, -2, 2, 117, 0.05, function(value)
+    glowFrequency = Cell:CreateSlider(L["Frequency"], glowOptionsFrame, -2, 2, 117, 0.01, function(value)
         SliderValueChanged(5, value)
     end)
     glowFrequency:SetPoint("TOPLEFT", glowLines, "BOTTOMLEFT", 0, -40)

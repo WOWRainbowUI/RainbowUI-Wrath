@@ -8,7 +8,7 @@ function F:Revise()
     F:Debug("DBRevision:", dbRevision)
 
     local charaDbRevision
-    if Cell.isWrath then
+    if Cell.isVanilla or Cell.isWrath then
         charaDbRevision = CellCharacterDB["revise"] and tonumber(string.match(CellCharacterDB["revise"], "%d+")) or 0
         F:Debug("CharaDBRevision:", charaDbRevision)
     end
@@ -2296,7 +2296,75 @@ function F:Revise()
     end
 
     -- r198-release
-    if CellDB["revise"] and dbRevision < 198 then
+    -- if CellDB["revise"] and dbRevision < 198 then
+    --     for _, layout in pairs(CellDB["layouts"]) do
+    --         local index = Cell.defaults.indicatorIndices.targetCounter
+    --         if type(layout["indicators"][index]["filters"]) ~= "table" then
+    --             layout["indicators"][index]["filters"] = {
+    --                 ["outdoor"] = false,
+    --                 ["pve"] = false,
+    --                 ["pvp"] = true,
+    --             }
+    --         end
+    --     end
+    -- end
+
+    -- r199-release
+    if CellDB["revise"] and dbRevision < 199 then
+        if not strfind(CellDB["snippets"][0]["code"], "CELL_SHOW_RAID_PET_OWNER_NAME") then
+            CellDB["snippets"][0]["code"] = CellDB["snippets"][0]["code"].."\n\n-- show raid pet owner name (\"VEHICLE\", \"NAME\", nil)\nCELL_SHOW_RAID_PET_OWNER_NAME = nil"
+        end
+
+        for _, layout in pairs(CellDB["layouts"]) do
+            for i, t in ipairs(layout["indicators"]) do
+                if type(t["castByMe"]) == "boolean" then
+                    t["castBy"] = t["castByMe"] and "me" or "anyone"
+                    t["castByMe"] = nil
+                end
+            end
+        end
+    end
+
+    -- r200-release
+    if CellDB["revise"] and dbRevision < 200 then
+        if #CellDB["tools"]["buffTracker"] ~= 4 then
+            -- move position from 2 to 4
+            CellDB["tools"]["buffTracker"][4] = CellDB["tools"]["buffTracker"][2]
+            -- add orientation
+            CellDB["tools"]["buffTracker"][2] = "left-to-right"
+        end
+        if #CellDB["tools"]["readyAndPull"] ~= 4 then
+            -- add style
+            tinsert(CellDB["tools"]["readyAndPull"], 2, "text_button")
+        end
+    end
+
+    -- r201-release
+    if CellDB["revise"] and dbRevision < 201 then
+        if Cell.isRetail then
+            -- 阿梅达希尔，梦境之愿
+            if not F:TContains(CellDB["targetedSpellsList"], 418637) then -- 狂怒冲锋
+                tinsert(CellDB["targetedSpellsList"], 418637)
+            end
+        end
+    end
+   
+    -- r202-release
+    -- if CellDB["revise"] and dbRevision < 202 then
+    --     -- custom indicator
+    --     for _, layout in pairs(CellDB["layouts"]) do
+    --         for _, indicator in pairs(layout["indicators"]) do
+    --             if indicator["type"] == "icon" or indicator["type"] == "icons" then
+    --                 if type(indicator["showStack"]) ~= "boolean" then
+    --                     indicator["showStack"] = true
+    --                 end
+    --             end
+    --         end
+    --     end
+    -- end
+
+    -- r203-release
+    if CellDB["revise"] and dbRevision < 203 then
         for _, layout in pairs(CellDB["layouts"]) do
             local index = Cell.defaults.indicatorIndices.targetCounter
             if type(layout["indicators"][index]["filters"]) ~= "table" then
@@ -2305,6 +2373,156 @@ function F:Revise()
                     ["pve"] = false,
                     ["pvp"] = true,
                 }
+            end
+        end
+    end
+
+    -- r205-release
+    if CellDB["revise"] and dbRevision < 205 then
+        for _, layout in pairs(CellDB["layouts"]) do
+            local index = Cell.defaults.indicatorIndices.aggroBorder
+            if layout["indicators"][index]["frameLevel"] == 3 then
+                layout["indicators"][index]["frameLevel"] = 7
+            end
+        end
+
+        if not CellDB["general"]["framePriority"] then
+            CellDB["general"]["framePriority"] = "normal_spotlight"
+        end
+    end
+
+    -- r206-release
+    if CellDB["revise"] and dbRevision < 206 then
+        for _, layout in pairs(CellDB["layouts"]) do
+            -- fix showStack for custom indicators
+            for _, indicator in pairs(layout["indicators"]) do
+                if indicator["type"] == "icon" or indicator["type"] == "icons" then
+                    if type(indicator["showStack"]) ~= "boolean" then
+                        indicator["showStack"] = true
+                    end
+                end
+            end
+
+            -- add showTimer for statusText
+            local index = Cell.defaults.indicatorIndices.statusText
+            if type(layout["indicators"][index]["showTimer"]) ~= "boolean" then
+                layout["indicators"][index]["showTimer"] = true
+            end
+            -- add showBackground for statusText
+            if type(layout["indicators"][index]["showBackground"]) ~= "boolean" then
+                layout["indicators"][index]["showBackground"] = true
+            end
+
+            -- swap en/non-en length for name text
+            index = Cell.defaults.indicatorIndices.nameText
+            if layout["indicators"][index]["textWidth"][1] == "length" then
+                if not layout["indicators"][index]["textWidth"][3] then -- en cilents
+                    layout["indicators"][index]["textWidth"][3] = 3
+                else -- aisan cilents
+                    local temp = layout["indicators"][index]["textWidth"][2]
+                    layout["indicators"][index]["textWidth"][2] = layout["indicators"][index]["textWidth"][3]
+                    layout["indicators"][index]["textWidth"][3] = temp
+                end
+            end
+        end
+
+        if CellDB["general"]["framePriority"] == "normal_spotlight" then
+            CellDB["general"]["framePriority"] = "normal_spotlight_quickassist"
+        elseif CellDB["general"]["framePriority"] == "spotlight_normal" then
+            CellDB["general"]["framePriority"] = "spotlight_normal_quickassist"
+        end
+    end
+
+    -- r207-release
+    if CellDB["revise"] and dbRevision < 207 then
+        if Cell.isRetail then
+            for spec, t in pairs(CellDB["quickAssist"]) do
+                -- clickCastings -> buffs
+                if not t["spells"]["mine"]["buffs"] then
+                    t["spells"]["mine"]["buffs"] = t["spells"]["mine"]["clickCastings"]
+                    t["spells"]["mine"]["clickCastings"] = nil
+                    for _, st in pairs(t["spells"]["mine"]["buffs"]) do
+                        if st[1] == -1 then st[1] = 0 end
+                        tinsert(st, 2, "icon")
+                    end
+                end
+                -- add bar options
+                if not t["spells"]["mine"]["bar"] then
+                    t["spells"]["mine"]["bar"] = {
+                        ["position"] = {"TOPRIGHT", "BOTTOMRIGHT", 0, 1},
+                        ["orientation"] = "top-to-bottom",
+                        ["size"] = {75, 4},
+                    }
+                end
+                -- add glow options
+                if not t["spells"]["offensives"]["glow"] then
+                    t["spells"]["offensives"]["glow"] = {
+                        ["fadeOut"] = false,
+                        ["options"] = {"None", {0.95,0.95,0.32,1}},
+                    }
+                end
+                -- add filters
+                if not t["layout"]["filters"] then
+                    t["layout"]["filters"] = {
+                        t["layout"]["filter"],
+                        {"role", {["TANK"] = false, ["HEALER"] = false, ["DAMAGER"] = true}, false},
+                        {"role", {["TANK"] = false, ["HEALER"] = false, ["DAMAGER"] = true}, false},
+                        {"role", {["TANK"] = false, ["HEALER"] = false, ["DAMAGER"] = true}, false},
+                        {"role", {["TANK"] = false, ["HEALER"] = false, ["DAMAGER"] = true}, false},
+                        ["active"] = 1,
+                    }
+                    t["layout"]["filter"] = nil
+                end
+            end
+        end
+    end
+
+    -- r209-release
+    if CellDB["revise"] and dbRevision < 209 then
+        -- add change-over-time to custom Color indicator
+        for _, layout in pairs(CellDB["layouts"]) do
+            for _, indicator in pairs(layout["indicators"]) do
+                if indicator["type"] == "color" and #indicator["colors"] ~= 6 then
+                    indicator["colors"][4] = {0,1,0} -- normal
+                    indicator["colors"][5] = {1,1,0,0.5} -- percent
+                    indicator["colors"][6] = {1,0,0,3} -- second
+                end
+            end
+        end
+    end
+
+    -- r210-release
+    if CellDB["revise"] and dbRevision < 210 then
+        if not CellDB["debuffTypeColor"]["Bleed"] then
+            CellDB["debuffTypeColor"]["Bleed"] = {r=1, g=0.2, b=0.6}
+        end
+    end
+   
+    -- r213-release
+    if CellDB["revise"] and dbRevision < 213 then
+        if Cell.isRetail then
+            for spec, t in pairs(CellDB["quickAssist"]) do
+                if not t["filters"] then
+                    t["filters"] = t["layout"]["filters"]
+                    t["filters"]["active"] = nil
+                    t["filters"][6] = F:Copy(t["filters"][5])
+                    t["filters"][7] = F:Copy(t["filters"][5])
+                    t["layout"]["filters"] = nil
+                end
+                if not t["filterAutoSwitch"] then
+                    t["filterAutoSwitch"] = {
+                        ["party"] = 1,
+                        ["raid"] = 1,
+                        ["mythic"] = 1,
+                        ["arena"] = 1,
+                        ["battleground"] = 1,
+                    }
+                end
+                for _, ft in pairs(t["filters"]) do
+                    if ft[1] == "name" then
+                        ft[3] = false
+                    end
+                end
             end
         end
     end
@@ -2362,7 +2580,7 @@ function F:Revise()
     end
 
     CellDB["revise"] = Cell.version
-    if Cell.isWrath then
+    if Cell.isVanilla or Cell.isWrath then
         CellCharacterDB["revise"] = Cell.version
     end
 end

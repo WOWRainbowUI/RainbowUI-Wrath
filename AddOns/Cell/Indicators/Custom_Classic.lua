@@ -30,19 +30,17 @@ local function UpdateTablesForIndicator(indicatorTable)
             ["isIcons"] = true,
             ["found"] = {},
             ["num"] = indicatorTable["num"],
-            -- ["castByMe"]
         }
     else
         customIndicators[auraType][indicatorName] = {
             ["auras"] = F:ConvertSpellTable(indicatorTable["auras"], indicatorTable["trackByName"]), -- auras to match
             ["top"] = {}, -- top aura details
             ["topOrder"] = {}, -- top aura order
-            -- ["castByMe"]
         }
     end
 
     if auraType == "buff" then
-        customIndicators[auraType][indicatorName]["castByMe"] = indicatorTable["castByMe"]
+        customIndicators[auraType][indicatorName]["castBy"] = indicatorTable["castBy"]
         customIndicators[auraType][indicatorName]["_auras"] = F:Copy(indicatorTable["auras"]) --* wrath
         customIndicators[auraType][indicatorName]["trackByName"] = indicatorTable["trackByName"] --* wrath
     end
@@ -65,6 +63,8 @@ function I:CreateIndicator(parent, indicatorTable, noTableUpdate)
         indicator = I:CreateAura_Color(parent:GetName()..indicatorName, parent)
     elseif indicatorTable["type"] == "texture" then
         indicator = I:CreateAura_Texture(parent:GetName()..indicatorName, parent.widget.overlayFrame)
+    elseif indicatorTable["type"] == "glow" then
+        indicator = I:CreateAura_Glow(parent:GetName()..indicatorName, parent)
     end
     parent.indicators[indicatorName] = indicator
     
@@ -138,11 +138,11 @@ local function UpdateCustomIndicators(layout, indicatorName, setting, value, val
         elseif customIndicators["debuff"][indicatorName] then
             customIndicators["debuff"][indicatorName][value] = value2
         end
-    elseif setting == "num" then
+    else -- num, castBy
         if customIndicators["buff"][indicatorName] then
-            customIndicators["buff"][indicatorName]["num"] = value
+            customIndicators["buff"][indicatorName][setting] = value
         elseif customIndicators["debuff"][indicatorName] then
-            customIndicators["debuff"][indicatorName]["num"] = value
+            customIndicators["debuff"][indicatorName][setting] = value
         end
     end
 end
@@ -156,12 +156,9 @@ function I:ResetCustomIndicators(unitButton, auraType)
 
     for indicatorName, indicatorTable in pairs(customIndicators[auraType]) do
         if enabledIndicators[indicatorName] and unitButton.indicators[indicatorName] then
-            unitButton.indicators[indicatorName]:Hide()
+            unitButton.indicators[indicatorName]:Hide(true)
             if indicatorTable["isIcons"] then
                 indicatorTable["found"][unit] = 0
-                for i = 1, 10 do
-                    unitButton.indicators[indicatorName][i]:Hide()
-                end
             else
                 indicatorTable["topOrder"][unit] = 999
                 if not indicatorTable["top"][unit] then
@@ -177,7 +174,7 @@ end
 -------------------------------------------------
 -- update
 -------------------------------------------------
-local function Update(indicator, indicatorTable, unit, spellId, start, duration, debuffType, icon, count, refreshing)
+local function Update(indicator, indicatorTable, unit, spell, start, duration, debuffType, icon, count, refreshing)
     if indicatorTable["isIcons"] then
         if indicatorTable["found"][unit] < indicatorTable["num"] then
             indicatorTable["found"][unit] = indicatorTable["found"][unit] + 1
@@ -186,8 +183,8 @@ local function Update(indicator, indicatorTable, unit, spellId, start, duration,
             indicator:Show()
         end
     else
-        if indicatorTable["auras"][spellId] < indicatorTable["topOrder"][unit] then
-            indicatorTable["topOrder"][unit] = indicatorTable["auras"][spellId]
+        if indicatorTable["auras"][spell] < indicatorTable["topOrder"][unit] then
+            indicatorTable["topOrder"][unit] = indicatorTable["auras"][spell]
             indicatorTable["top"][unit]["start"] = start
             indicatorTable["top"][unit]["duration"] = duration
             indicatorTable["top"][unit]["debuffType"] = debuffType
@@ -210,10 +207,10 @@ function I:UpdateCustomIndicators(unitButton, auraType, spellId, spellName, star
                 spell = spellId
             end
             
-            if indicatorTable["auras"][spell] or indicatorTable["auras"][0] then -- is in indicator spell list
+            if indicatorTable["auras"][spell] or indicatorTable["auras"][0] or (indicatorTable["auras"][1] and duration ~= 0) then -- is in indicator spell list
                 if auraType == "buff" then
-                    -- check castByMe
-                    if (indicatorTable["castByMe"] and castByMe) or (not indicatorTable["castByMe"]) then
+                    -- check caster
+                    if (indicatorTable["castBy"] == "me" and castByMe) or (indicatorTable["castBy"] == "others" and not castByMe) or (indicatorTable["castBy"] == "anyone") then
                         Update(unitButton.indicators[indicatorName], indicatorTable, unit, spell, start, duration, debuffType, icon, count, refreshing)
                     end
                 else -- debuff

@@ -8,6 +8,7 @@ Cell.funcs = {}
 Cell.iFuncs = {}
 Cell.bFuncs = {}
 Cell.uFuncs = {}
+-- Cell.wFuncs = {} -- TODO: move widget functions
 Cell.animations = {}
 
 local F = Cell.funcs
@@ -18,12 +19,12 @@ local L = Cell.L
 -- sharing version check
 Cell.MIN_VERSION = 189
 Cell.MIN_CLICKCASTINGS_VERSION = 189
-Cell.MIN_LAYOUTS_VERSION = 189
-Cell.MIN_INDICATORS_VERSION = 198
+Cell.MIN_LAYOUTS_VERSION = 209
+Cell.MIN_INDICATORS_VERSION = 209
 Cell.MIN_DEBUFFS_VERSION = 189
 
 --[==[@debug@
--- local debugMode = true
+local debugMode = true
 --@end-debug@]==]
 function F:Debug(arg, ...)
     if debugMode then
@@ -123,14 +124,6 @@ local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("VARIABLES_LOADED")
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
-eventFrame:RegisterEvent("LOADING_SCREEN_ENABLED")
-
-function eventFrame:LOADING_SCREEN_ENABLED()
-    if not InCombatLockdown() and not UnitAffectingCombat("player") then
-        F:Debug("|cffff7777collectgarbage")
-        collectgarbage("collect")
-    end
-end
 
 function eventFrame:VARIABLES_LOADED()
     SetCVar("predictedHealth", 1)
@@ -167,10 +160,15 @@ function eventFrame:ADDON_LOADED(arg1)
                 ["showParty"] = true,
                 ["hideBlizzardParty"] = true,
                 ["hideBlizzardRaid"] = true,
-                ["useCleuHealthUpdater"] = false,
                 ["locked"] = false,
                 ["fadeOut"] = false,
                 ["menuPosition"] = "top_bottom",
+                ["alwaysUpdateBuffs"] = false,
+                ["alwaysUpdateDebuffs"] = false,
+                ["overrideLGF"] = false,
+                ["framePriority"] = "normal_spotlight_quickassist",
+                ["useCleuHealthUpdater"] = false,
+                ["translit"] = false,
             }
         end
 
@@ -188,9 +186,9 @@ function eventFrame:ADDON_LOADED(arg1)
         if type(CellDB["tools"]) ~= "table" then
             CellDB["tools"] = {
                 ["showBattleRes"] = false,
-                ["buffTracker"] = {false, {}, 27},
+                ["buffTracker"] = {false, "left-to-right", 27, {}},
                 ["deathReport"] = {false, 10},
-                ["readyAndPull"] = {false, {"default", 7}, {}},
+                ["readyAndPull"] = {false, "text_button", {"default", 7}, {}},
                 ["marks"] = {false, false, "target_h", {}},
                 ["fadeOut"] = false,
             }
@@ -315,7 +313,6 @@ function eventFrame:ADDON_LOADED(arg1)
             CellDB["appearance"]["scale"] = scale
         end
         P:SetRelativeScale(CellDB["appearance"]["scale"])
-        F:EnableLibHealComm(CellDB["appearance"]["useLibHealComm"])
 
         -- color ---------------------------------------------------------------------------------
         if CellDB["appearance"]["accentColor"] then -- version < r103
@@ -399,6 +396,11 @@ function eventFrame:ADDON_LOADED(arg1)
                     CellCharacterDB["layoutAutoSwitch"][talent][groupType] = "default"
                 end
             end
+
+            if not t["raid10"] then t["raid10"] = "default" end
+            if not t["raid25"] then t["raid25"] = "default" end
+            if not t["battleground15"] then t["battleground15"] = "default" end
+            if not t["battleground40"] then t["battleground40"] = "default" end
         end
 
         Cell.vars.layoutAutoSwitch = CellCharacterDB["layoutAutoSwitch"]
@@ -468,6 +470,8 @@ function eventFrame:ADDON_LOADED(arg1)
         F:CheckWhatsNew()
         F:RunSnippets()
         Cell.loaded = true
+
+        Cell:Fire("AddonLoaded")
     end
 
     -- omnicd -------------------------------------------------------------------------------------
@@ -608,14 +612,14 @@ end
 
 local inInstance
 function eventFrame:PLAYER_ENTERING_WORLD()
-    F:Debug("PLAYER_ENTERING_WORLD")
+    F:Debug("|cffbbbbbb=== PLAYER_ENTERING_WORLD ===")
 
     local isIn, iType = IsInInstance()
     instanceType = iType
     Cell.vars.raidType = nil
 
     if isIn then
-        F:Debug("|cffff1111Entered Instance:|r", iType)
+        F:Debug("|cffff1111*** Entered Instance:|r", iType)
         PreUpdateLayout()
         inInstance = true
 
@@ -641,9 +645,14 @@ function eventFrame:PLAYER_ENTERING_WORLD()
         end
 
     elseif inInstance then -- left insntance
-        F:Debug("|cffff1111Left Instance|r")
+        F:Debug("|cffff1111*** Left Instance|r")
         PreUpdateLayout()
         inInstance = false
+
+        if not InCombatLockdown() and not UnitAffectingCombat("player") then
+            F:Debug("|cffbbbbbb--- LeaveInstance: |cffff7777collectgarbage")
+            collectgarbage("collect")
+        end
     end
 
     if CellDB["firstRun"] then
@@ -665,7 +674,7 @@ local function CheckDivineAegis()
 end
 
 function eventFrame:PLAYER_LOGIN()
-    F:Debug("PLAYER_LOGIN")
+    F:Debug("|cffbbbbbb=== PLAYER_LOGIN ===")
     eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     eventFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
@@ -715,13 +724,17 @@ function eventFrame:PLAYER_LOGIN()
     if CellDB["general"]["hideBlizzardRaid"] then F:HideBlizzardRaid() end
     -- lock & menu
     Cell:Fire("UpdateMenu")
-    -- update pixel perfect
-    Cell:Fire("UpdatePixelPerfect")
     -- update CLEU
     Cell:Fire("UpdateCLEU")
     -- update builtIns and customs
     I:UpdateDefensives(CellDB["defensives"])
     I:UpdateExternals(CellDB["externals"])
+    -- update pixel perfect
+    Cell:Fire("UpdatePixelPerfect")
+    -- overrideLGF
+    F:OverrideLGF(CellDB["general"]["overrideLGF"])
+    -- LibHealComm
+    F:EnableLibHealComm(CellDB["appearance"]["useLibHealComm"])
 end
 
 function eventFrame:UI_SCALE_CHANGED()
@@ -732,7 +745,7 @@ function eventFrame:UI_SCALE_CHANGED()
 end
 
 function eventFrame:ACTIVE_TALENT_GROUP_CHANGED()
-    F:Debug("ACTIVE_TALENT_GROUP_CHANGED")
+    F:Debug("|cffbbbbbb=== ACTIVE_TALENT_GROUP_CHANGED ===")
     -- not in combat & spec CHANGED
     if not InCombatLockdown() and (Cell.vars.activeTalentGroup and Cell.vars.activeTalentGroup ~= GetActiveTalentGroup()) then
         Cell.vars.activeTalentGroup = GetActiveTalentGroup()
@@ -773,12 +786,15 @@ function SlashCmdList.CELL(msg, editbox)
             Cell.frames.anchorFrame:ClearAllPoints()
             Cell.frames.anchorFrame:SetPoint("TOPLEFT", UIParent, "CENTER")
             Cell.vars.currentLayoutTable["position"] = {}
-            Cell.frames.readyAndPullFrame:ClearAllPoints()
+            P:ClearPoints(Cell.frames.readyAndPullFrame)
             Cell.frames.readyAndPullFrame:SetPoint("TOPRIGHT", UIParent, "CENTER")
-            CellDB["tools"]["readyAndPull"][3] = {}
-            Cell.frames.raidMarksFrame:ClearAllPoints()
+            CellDB["tools"]["readyAndPull"][4] = {}
+            P:ClearPoints(Cell.frames.raidMarksFrame)
             Cell.frames.raidMarksFrame:SetPoint("BOTTOMRIGHT", UIParent, "CENTER")
             CellDB["tools"]["marks"][4] = {}
+            P:ClearPoints(Cell.frames.buffTrackerFrame)
+            Cell.frames.buffTrackerFrame:SetPoint("BOTTOMLEFT", UIParent, "CENTER")
+            CellDB["tools"]["buffTracker"][4] = {}
 
         elseif rest == "all" then
             Cell.frames.anchorFrame:ClearAllPoints()
@@ -787,6 +803,8 @@ function SlashCmdList.CELL(msg, editbox)
             Cell.frames.readyAndPullFrame:SetPoint("TOPRIGHT", UIParent, "CENTER")
             Cell.frames.raidMarksFrame:ClearAllPoints()
             Cell.frames.raidMarksFrame:SetPoint("BOTTOMRIGHT", UIParent, "CENTER")
+            Cell.frames.buffTrackerFrame:ClearAllPoints()
+            Cell.frames.buffTrackerFrame:SetPoint("BOTTOMLEFT", UIParent, "CENTER")
             CellDB = nil
             CellCharacterDB = nil
             ReloadUI()
@@ -823,15 +841,15 @@ function SlashCmdList.CELL(msg, editbox)
             F:Print(L["A 0-40 integer is required."])
         end
    
-    elseif command == "buff" then
-        rest = tonumber(rest:format("%d"))
-        if rest and rest > 0 then
-            CellDB["tools"]["buffTracker"][3] = rest
-            F:Print(string.format(L["Buff Tracker icon size is set to %d."], rest))
-            Cell:Fire("UpdateTools", "buffTracker")
-        else
-            F:Print(L["A positive integer is required."])
-        end
+    -- elseif command == "buff" then
+    --     rest = tonumber(rest:format("%d"))
+    --     if rest and rest > 0 then
+    --         CellDB["tools"]["buffTracker"][3] = rest
+    --         F:Print(string.format(L["Buff Tracker icon size is set to %d."], rest))
+    --         Cell:Fire("UpdateTools", "buffTracker")
+    --     else
+    --         F:Print(L["A positive integer is required."])
+    --     end
 
     else
         F:Print(L["Available slash commands"]..":\n"..
