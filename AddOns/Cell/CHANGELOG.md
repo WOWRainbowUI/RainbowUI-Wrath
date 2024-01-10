@@ -1,4 +1,5 @@
-[Full Changelog](https://github.com/enderneko/Cell/compare/r197-release...8eaa4d855902bf89773d05c9224ce1214d696f2e)
+[Full Changelog](https://github.com/enderneko/Cell/compare/r213-release...3a434975181729091a9c3a579a9269d19f9e2890)
 
-- Update Target Counter
-- Update position options of Shield Bar indicator
+- Fix Spell Request
+- Update the priority of dispel types
+- Update zhTW

@@ -277,25 +277,75 @@ end
 -------------------------------------------------
 -- misc
 -------------------------------------------------
-local translitCB, useCleuCB
+local alwaysUpdateBuffsCB, alwaysUpdateDebuffsCB, overrideLGFCB, framePriorityDD, useCleuCB, translitCB
 
 local function CreateMiscPane()
-    local miscPane = Cell:CreateTitledPane(generalTab, L["Misc"], 422, 70)
+    local miscPane = Cell:CreateTitledPane(generalTab, L["Misc"], 422, 140)
     miscPane:SetPoint("TOPLEFT", generalTab, 5, -420)
-    
-    translitCB = Cell:CreateCheckButton(miscPane, L["Translit Cyrillic to Latin"], function(checked, self)
-        CellDB["general"]["translit"] = checked
-        F:IterateAllUnitButtons(function(b)
-            B.UpdateName(b)
-        end, true)
-    end)
-    translitCB:SetPoint("TOPLEFT", 5, -27)
+
+    alwaysUpdateBuffsCB = Cell:CreateCheckButton(miscPane, L["Always Update Buffs"], function(checked, self)
+        CellDB["general"]["alwaysUpdateBuffs"] = checked
+    end, L["Ignore UNIT_AURA payloads"], L["This may help solve issues of indicators not updating correctly"])
+    alwaysUpdateBuffsCB:SetPoint("TOPLEFT", 5, -27)
+    alwaysUpdateBuffsCB:SetEnabled(Cell.isRetail)
+
+    alwaysUpdateDebuffsCB = Cell:CreateCheckButton(miscPane, L["Always Update Debuffs"], function(checked, self)
+        CellDB["general"]["alwaysUpdateDebuffs"] = checked
+    end, L["Ignore UNIT_AURA payloads"], L["This may help solve issues of indicators not updating correctly"])
+    alwaysUpdateDebuffsCB:SetPoint("TOPLEFT", 222, -27)
+    alwaysUpdateDebuffsCB:SetEnabled(Cell.isRetail)
+
+    overrideLGFCB = Cell:CreateCheckButton(miscPane, L["Override"].." LibGetFrame.GetUnitFrame", function(checked, self)
+        CellDB["general"]["overrideLGF"] = checked
+        F:OverrideLGF(checked)
+        framePriorityDD:SetEnabled(checked)
+
+        if not checked then
+            local popup = Cell:CreateConfirmPopup(generalTab, 200, L["A UI reload is required.\nDo it now?"], function()
+                ReloadUI()
+            end, nil, true)
+            popup:SetPoint("TOPLEFT", generalTab, 117, -370)
+        end
+    end, L["Ensure that other addons get the right unit button"], L["This may cause unknown issues"], L["For addons/WAs not dependent on LibGetFrame, use %s"]:format("|cffffb5c5Cell.GetUnitFrame(unit)"))
+    overrideLGFCB:SetPoint("TOPLEFT", alwaysUpdateBuffsCB, "BOTTOMLEFT", 0, -9)
+
+    framePriorityDD = Cell:CreateDropdown(miscPane, 250)
+    framePriorityDD:SetPoint("TOPLEFT", overrideLGFCB, "BOTTOMRIGHT", 5, -5)
+    framePriorityDD:SetItems({
+        {
+            ["text"] = L["Main"].." > "..L["Spotlight"].." > "..L["Quick Assist"],
+            ["value"] = "normal_spotlight_quickassist",
+            ["onClick"] = function()
+                CellDB["general"]["framePriority"] = "normal_spotlight_quickassist"
+            end,
+        },
+        {
+            ["text"] = L["Spotlight"].." > "..L["Main"].." > "..L["Quick Assist"],
+            ["value"] = "spotlight_normal_quickassist",
+            ["onClick"] = function()
+                CellDB["general"]["framePriority"] = "spotlight_normal_quickassist"
+            end,
+        },
+        {
+            ["text"] = L["Quick Assist"].." > "..L["Main"].." > "..L["Spotlight"],
+            ["value"] = "quickassist_normal_spotlight",
+            ["onClick"] = function()
+                CellDB["general"]["framePriority"] = "quickassist_normal_spotlight"
+            end,
+        },
+    })
 
     useCleuCB = Cell:CreateCheckButton(miscPane, L["Increase Health Update Rate"], function(checked, self)
         CellDB["general"]["useCleuHealthUpdater"] = checked
         Cell:Fire("UpdateCLEU")
     end, "|cffff2727"..L["HIGH CPU USAGE"].." (EXPERIMENTAL)", L["Use CLEU events to increase health update rate"])
-    useCleuCB:SetPoint("TOPLEFT", translitCB, "BOTTOMLEFT", 0, -7)
+    useCleuCB:SetPoint("TOPLEFT", overrideLGFCB, "BOTTOMLEFT", 0, -37)
+    
+    translitCB = Cell:CreateCheckButton(miscPane, L["Translit Cyrillic to Latin"], function(checked, self)
+        CellDB["general"]["translit"] = checked
+        Cell:Fire("TranslitNames")
+    end)
+    translitCB:SetPoint("TOPLEFT", useCleuCB, "BOTTOMLEFT", 0, -9)
 end
 
 -------------------------------------------------
@@ -361,8 +411,13 @@ local function ShowTab(tab)
         syncCB:SetChecked(CellDB["nicknames"]["sync"])
 
         -- misc
-        translitCB:SetChecked(CellDB["general"]["translit"])
+        alwaysUpdateBuffsCB:SetChecked(CellDB["general"]["alwaysUpdateBuffs"])
+        alwaysUpdateDebuffsCB:SetChecked(CellDB["general"]["alwaysUpdateDebuffs"])
+        overrideLGFCB:SetChecked(CellDB["general"]["overrideLGF"])
+        framePriorityDD:SetEnabled(CellDB["general"]["overrideLGF"])
+        framePriorityDD:SetSelectedValue(CellDB["general"]["framePriority"])
         useCleuCB:SetChecked(CellDB["general"]["useCleuHealthUpdater"])
+        translitCB:SetChecked(CellDB["general"]["translit"])
 
     else
         generalTab:Hide()

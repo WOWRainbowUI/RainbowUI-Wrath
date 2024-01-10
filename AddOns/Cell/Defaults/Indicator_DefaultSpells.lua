@@ -6,7 +6,7 @@ local F = Cell.funcs
 -------------------------------------------------
 -- dispelBlacklist
 -------------------------------------------------
--- supress dispel highlight
+-- suppress dispel highlight
 local dispelBlacklist = {}
 
 function I:GetDefaultDispelBlacklist()
@@ -55,8 +55,8 @@ local bigDebuffs = {
     -- 226512, -- 鲜血脓液（血池）
     -----------------------------------------------
     -- NOTE: Thundering Affix - Dragonflight Season 1
-    396369, -- 闪电标记
-    396364, -- 狂风标记
+    -- 396369, -- 闪电标记
+    -- 396364, -- 狂风标记
     -----------------------------------------------
     -- NOTE: Shrouded Affix - Shadowlands Season 4
     -- 373391, -- 梦魇
@@ -208,11 +208,19 @@ local externals = { -- true: track by name, false: track by id
 
     ["MAGE"] = {
         [198158] = true, -- 群体隐形
+        [414660] = { -- 群体屏障
+            [414661] = false, -- 寒冰护体
+            [414662] = false, -- 烈焰护体
+            [414663] = false, -- 棱光护体
+            -- [11426] = false, -- 寒冰护体 (self)
+            -- [235313] = false, -- 烈焰护体 (self)
+            -- [235450] = false, -- 棱光护体 (self)
+        },
     },
 
     ["MONK"] = {
         [116849] = true, -- 作茧缚命
-        [202248] = true, -- 偏转冥想
+        [202248] = false, -- 偏转冥想
     },
 
     ["PALADIN"] = {
@@ -259,19 +267,30 @@ end
 local builtInExternals = {}
 local customExternals = {}
 
+local function UpdateExternals(id, trackByName)
+    if trackByName then
+        local name = GetSpellInfo(id)
+        if name then
+            builtInExternals[name] = true
+        end
+    else
+        builtInExternals[id] = true
+    end
+end
+
 function I:UpdateExternals(t)
     -- user disabled
     wipe(builtInExternals)
     for class, spells in pairs(externals) do
-        for id, trackByName in pairs(spells) do
+        for id, v in pairs(spells) do
             if not t["disabled"][id] then -- not disabled
-                if trackByName then
-                    local name = GetSpellInfo(id)
-                    if name then
-                        builtInExternals[name] = true
+                if type(v) == "table" then
+                    builtInExternals[id] = true -- for I:IsExternalCooldown()
+                    for subId, subTrackByName in pairs(v) do
+                        UpdateExternals(subId, subTrackByName)
                     end
                 else
-                    builtInExternals[id] = true
+                    UpdateExternals(id, v)
                 end
             end
         end
@@ -325,8 +344,8 @@ local defensives = { -- true: track by name, false: track by id
         [22812] = true, -- 树皮术
         [61336] = true, -- 生存本能
         [200851] = true, -- 沉睡者之怒
-        -- [102558] = true, -- 化身：乌索克的守护者
-        -- [22842] = true, -- 狂暴回复
+        [102558] = true, -- 化身：乌索克的守护者
+        [22842] = true, -- 狂暴回复
     },
 
     ["EVOKER"] = {
@@ -345,10 +364,11 @@ local defensives = { -- true: track by name, false: track by id
         [414658] = true, -- 深寒凝冰
         [113862] = false, -- Greater Invisibility - 强化隐形术
         [55342] = false, -- 镜像，使用 CLEU 而非 UNIT_AURA
+        [342246] = true, -- 操控时间
     },
 
     ["MONK"] = {
-        [115176] = true, -- 禅悟冥想
+        [115176] = false, -- 禅悟冥想
         [115203] = true, -- 壮胆酒
         [122278] = true, -- 躯不坏
         [122783] = true, -- 散魔功
@@ -361,6 +381,8 @@ local defensives = { -- true: track by name, false: track by id
         [31850] = true, -- 炽热防御者
         [212641] = true, -- 远古列王守卫
         [205191] = true, -- 以眼还眼
+        [389539] = true, -- 戒卫
+        [184662] = true, -- 复仇之盾
     },
 
     ["PRIEST"] = {
@@ -385,6 +407,7 @@ local defensives = { -- true: track by name, false: track by id
     ["WARLOCK"] = {
         [104773] = true, -- 不灭决心
         [212295] = true, -- 虚空守卫
+        [108416] = true, -- 黑暗契约
     },
 
     ["WARRIOR"] = {
@@ -520,11 +543,11 @@ local dispelNodeIDs = {
     
     -- EVOKER ---------------
         -- 1467 - Devastation
-        [1467] = {["Poison"] = 93306},
+        [1467] = {["Curse"] = 93294, ["Disease"] = 93294, ["Poison"] = {93306, 93294}, ["Bleed"] = 93294},
         -- 1468	- Preservation
-        [1468] = {["Magic"] = true, ["Poison"] = true},
+        [1468] = {["Curse"] = 93294, ["Disease"] = 93294, ["Magic"] = true, ["Poison"] = true, ["Bleed"] = 93294},
         -- 1473 - Augmentation
-        [1473] = {["Poison"] = 93306},
+        [1473] = {["Curse"] = 93294, ["Disease"] = 93294, ["Poison"] = {93306, 93294}, ["Bleed"] = 93294},
     -------------------------
         
     -- MAGE -----------------
@@ -565,11 +588,11 @@ local dispelNodeIDs = {
 
     -- SHAMAN ---------------
         -- 262 - Elemental
-        [262] = {["Curse"] = 81075},
+        [262] = {["Curse"] = 81075, ["Poison"] = 81093},
         -- 263 - Enhancement
-        [263] = {["Curse"] = 81077},
+        [263] = {["Curse"] = 81077, ["Poison"] = 81093},
         -- 264 - Restoration
-        [264] = {["Curse"] = 81073, ["Magic"] = true},
+        [264] = {["Curse"] = 81073, ["Magic"] = true, ["Poison"] = 81093},
     -------------------------
 
     -- WARLOCK --------------
@@ -615,6 +638,14 @@ else
             for dispelType, value in pairs(dispelNodeIDs[Cell.vars.playerSpecID]) do
                 if type(value) == "boolean" then
                     dispellable[dispelType] = value
+                elseif type(value) == "table" then -- more than one trait
+                    for _, v in pairs(value) do
+                        local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, v)
+                        if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
+                            dispellable[dispelType] = true
+                            break
+                        end
+                    end
                 else -- number: check node info
                     local nodeInfo = C_Traits.GetNodeInfo(activeConfigID, value)
                     if nodeInfo and nodeInfo.ranksPurchased ~= 0 then
@@ -632,14 +663,6 @@ else
     eventFrame:SetScript("OnEvent", function(self, event)
         if event == "PLAYER_ENTERING_WORLD" then
             eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-            if Cell.vars.playerClass == "EVOKER" and CELL_DISPEL_EVOKER_CAUTERIZING_FLAME then
-                -- 1467 - Devastation
-                dispelNodeIDs[1467] = {["Curse"] = 93294, ["Disease"] = 93294, ["Poison"] = 93306}
-                -- 1468	- Preservation
-                dispelNodeIDs[1468] = {["Curse"] = 93294, ["Disease"] = 93294, ["Magic"] = true, ["Poison"] = true}
-                -- 1473 - Augmentation
-                dispelNodeIDs[1473] = {["Curse"] = 93294, ["Disease"] = 93294, ["Poison"] = 93306}
-            end
         end
 
         if timer then timer:Cancel() end
@@ -761,7 +784,7 @@ function F:FirstRun()
 
         local last = #currentLayoutTable["indicators"]
         if currentLayoutTable["indicators"][last]["type"] == "built-in" then
-            indicatorName = "indicator"..(last+1)
+            indicatorName = "indicator1"
         else
             indicatorName = "indicator"..(tonumber(strmatch(currentLayoutTable["indicators"][last]["indicatorName"], "%d+"))+1)
         end
@@ -780,9 +803,10 @@ function F:FirstRun()
                 {"Cell ".._G.DEFAULT, 11, "Outline", "TOPRIGHT", 2, 1, {1, 1, 1}},
                 {"Cell ".._G.DEFAULT, 11, "Outline", "BOTTOMRIGHT", 2, -1, {1, 1, 1}},
             },
+            ["showStack"] = true,
             ["showDuration"] = false,
             ["auraType"] = "buff",
-            ["castByMe"] = true,
+            ["castBy"] = "me",
             ["auras"] = spells,
         })
         Cell:Fire("UpdateIndicators", Cell.vars.currentLayout, indicatorName, "create", currentLayoutTable["indicators"][last+1])
@@ -862,6 +886,8 @@ local targetedSpells = {
     -- 亚贝鲁斯，焰影熔炉
     401022, -- 灾祸掠击
     407790, -- 身影碎离
+    -- 阿梅达希尔，梦境之愿
+    418637, -- 狂怒冲锋
     -- 红玉新生法池
     372858, -- 灼热打击
     381512, -- 风暴猛击

@@ -10,7 +10,7 @@ Cell.vars.playerFaction = UnitFactionGroup("player")
 Cell.isAsian = LOCALE_zhCN or LOCALE_zhTW or LOCALE_koKR
 
 Cell.isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-Cell.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+Cell.isVanilla = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 -- Cell.isBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_BURNING_CRUSADE
 -- Cell.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC and LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_WRATH_OF_THE_LICH_KING
 Cell.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
@@ -68,9 +68,13 @@ function F:IterateClasses()
     return function()
         i = i + 1
         if i <= GetNumClasses() then
-            return sortedClasses[i], classFileToID[sortedClasses[i]]
+            return sortedClasses[i], classFileToID[sortedClasses[i]], i
         end
     end
+end
+
+function F:GetSortedClasses()
+    return F:Copy(sortedClasses)
 end
 
 -------------------------------------------------
@@ -575,10 +579,10 @@ function F:TableToString(t, sep)
     return table.concat(t, sep)
 end
 
-function F:ConvertTable(t)
+function F:ConvertTable(t, value)
     local temp = {}
     for k, v in ipairs(t) do
-        temp[v] = k
+        temp[v] = value or k
     end
     return temp
 end
@@ -599,6 +603,19 @@ function F:ConvertSpellTable(t, convertIdToName)
     return temp
 end
 
+function F:ConvertSpellTable_WithClass(t)
+    local temp = {}
+    for class, ct in pairs(t) do
+        for _, id in ipairs(ct) do
+            local name = GetSpellInfo(id)
+            if name then
+                temp[id] = true
+            end
+        end
+    end
+    return temp
+end
+
 function F:ConvertSpellDurationTable(t, convertIdToName)
     local temp = {}
     for _, v in ipairs(t) do
@@ -609,6 +626,20 @@ function F:ConvertSpellDurationTable(t, convertIdToName)
                 temp[name] = tonumber(duration)
             else
                 temp[tonumber(id)] = tonumber(duration)
+            end
+        end
+    end
+    return temp
+end
+
+function F:ConvertSpellDurationTable_WithClass(t)
+    local temp = {}
+    for class, ct in pairs(t) do
+        for k, v in ipairs(ct) do
+            local id, duration = strsplit(":", v)
+            local name, _, icon = GetSpellInfo(id)
+            if name then
+                temp[tonumber(id)] = {tonumber(duration), icon}
             end
         end
     end
@@ -717,7 +748,7 @@ end
 -------------------------------------------------
 -- unit buttons
 -------------------------------------------------
-function F:IterateAllUnitButtons(func, updateCurrentGroupOnly)
+function F:IterateAllUnitButtons(func, updateCurrentGroupOnly, updateQuickAssist)
     -- solo
     if not updateCurrentGroupOnly or (updateCurrentGroupOnly and Cell.vars.groupType == "solo") then
         for _, b in pairs(Cell.unitButtons.solo) do
@@ -766,6 +797,12 @@ function F:IterateAllUnitButtons(func, updateCurrentGroupOnly)
     for _, b in pairs(Cell.unitButtons.spotlight) do
         func(b)
     end
+
+    if Cell.isRetail and updateQuickAssist then
+        for i = 1, 40 do
+            func(Cell.unitButtons.quickAssist[i])
+        end
+    end
 end
 
 function F:IterateSharedUnitButtons(func)
@@ -780,10 +817,11 @@ function F:IterateSharedUnitButtons(func)
     end
 end
 
-function F:GetUnitButtonByUnit(unit)
+local spotlights = {}
+function F:GetUnitButtonByUnit(unit, getSpotlights, getQuickAssist)
     if not unit then return end
 
-    local normal, spotlight1, spotlight2, spotlight3, spotlight4, spotlight5
+    local normal, quickAssist
 
     if Cell.vars.groupType == "raid" then
         if Cell.vars.inBattleground == 5 then
@@ -797,31 +835,28 @@ function F:GetUnitButtonByUnit(unit)
         normal = Cell.unitButtons.solo[unit] or Cell.unitButtons.npc.units[unit]
     end
 
-    for _, b in pairs(Cell.unitButtons.spotlight) do
-        if b.state.unit and UnitIsUnit(b.state.unit, unit) then
-            if not spotlight1 then
-                spotlight1 = b
-            elseif not spotlight2 then
-                spotlight2 = b
-            elseif not spotlight3 then
-                spotlight3 = b
-            elseif not spotlight4 then
-                spotlight4 = b
-            elseif not spotlight5 then
-                spotlight5 = b
+    if getSpotlights then
+        wipe(spotlights)
+        for _, b in pairs(Cell.unitButtons.spotlight) do
+            if b.state.unit and UnitIsUnit(b.state.unit, unit) then
+                tinsert(spotlights, b)
             end
         end
     end
+    
+    if getQuickAssist then
+        quickAssist = Cell.unitButtons.quickAssist.units[unit]
+    end
 
-    return normal, spotlight1, spotlight2, spotlight3, spotlight4, spotlight5
+    return normal, spotlights, quickAssist
 end
 
-function F:GetUnitButtonByGUID(guid)
-    return F:GetUnitButtonByUnit(Cell.vars.guids[guid])
+function F:GetUnitButtonByGUID(guid, getSpotlights)
+    return F:GetUnitButtonByUnit(Cell.vars.guids[guid], getSpotlights)
 end
 
-function F:GetUnitButtonByName(name)
-    return F:GetUnitButtonByUnit(Cell.vars.names[name])
+function F:GetUnitButtonByName(name, getSpotlights)
+    return F:GetUnitButtonByUnit(Cell.vars.names[name], getSpotlights)
 end
 
 function F:HandleUnitButton(type, unit, func, ...)
@@ -879,14 +914,10 @@ function F:UpdateTextWidth(fs, text, width, relativeTo)
             end
         end
     elseif width[1] == "length" then
-        if Cell.isAsian then
-            if string.len(text) == string.utf8len(text) then -- en
-                fs:SetText(string.utf8sub(text, 1, width[3] or width[2]))
-            else
-                fs:SetText(string.utf8sub(text, 1, width[2]))
-            end
-        else
+        if string.len(text) == string.utf8len(text) then -- en
             fs:SetText(string.utf8sub(text, 1, width[2]))
+        else -- non-en
+            fs:SetText(string.utf8sub(text, 1, width[3]))
         end
     end
 end
@@ -1196,9 +1227,9 @@ end
 
 function F:UnitInGroup(unit, ignorePets)
     if ignorePets then
-        return UnitInParty(unit) or UnitInRaid(unit)
+        return UnitIsUnit(unit, "player") or UnitInParty(unit) or UnitInRaid(unit)
     else
-        return UnitPlayerOrPetInParty(unit) or UnitPlayerOrPetInRaid(unit)
+        return UnitIsUnit(unit, "player") or UnitIsUnit(unit, "pet") or UnitPlayerOrPetInParty(unit) or UnitPlayerOrPetInRaid(unit)
     end
 end
 
@@ -1326,7 +1357,7 @@ local harmSpells = {
     ["MAGE"] = 116,
     ["MONK"] = 117952,
     ["PALADIN"] = 20271,
-    ["PRIEST"] = 589,
+    ["PRIEST"] = Cell.isRetail and 589 or 585,
     -- ["ROGUE"] = ,
     ["SHAMAN"] = Cell.isRetail and 188196 or 403,
     ["WARLOCK"] = 686,
@@ -1405,17 +1436,48 @@ if playerClass == "EVOKER" then
                 end
             elseif UnitCanAttack("player", unit) then
                 -- print("CanAttack", unit)
-                if harmSpells[playerClass] then
-                    return IsSpellInRange(harmSpells[playerClass], unit) == 1
-                else
-                    return IsItemInRange(harmItems[playerClass], unit)
-                end
-            else
-                -- print("CheckInteractDistance", unit)
-                return CheckInteractDistance(unit, 4) -- 28 yards
+                return IsSpellInRange(harmSpells["EVOKER"], unit) == 1
             end
+           
+            -- print("InRange", unit)
+            return UnitInRange(unit)
         end
     end
+
+elseif Cell.isRetail then
+    function F:IsInRange(unit, check)
+        if not UnitIsVisible(unit) then
+            return false
+        end
+    
+        if UnitIsUnit("player", unit) then
+            return true
+        elseif not check and F:UnitInGroup(unit) then
+            -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
+            local checked
+            inRange, checked = UnitInRange(unit)
+            if not checked then
+                return F:IsInRange(unit, true)
+            end
+            return inRange
+        else
+            if UnitCanAssist("player", unit) then
+                -- print("CanAssist", unit)
+                if friendSpells[playerClass] then
+                    return IsSpellInRange(friendSpells[playerClass], unit) == 1
+                end
+            elseif UnitCanAttack("player", unit) then
+                -- print("CanAttack", unit)
+                if harmSpells[playerClass] then
+                    return IsSpellInRange(harmSpells[playerClass], unit) == 1
+                end
+            end
+
+            -- print("InRange", unit)
+            return UnitInRange(unit)
+        end
+    end
+
 else
     function F:IsInRange(unit, check)
         if not UnitIsVisible(unit) then
@@ -1447,10 +1509,10 @@ else
                 else
                     return IsItemInRange(harmItems[playerClass], unit)
                 end
-            else
-                -- print("CheckInteractDistance", unit)
-                return CheckInteractDistance(unit, 4) -- 28 yards
             end
+            
+            -- print("CheckInteractDistance", unit)
+            return CheckInteractDistance(unit, 4) -- 28 yards
         end
     end
 end
@@ -1459,8 +1521,11 @@ end
 -- LibSharedMedia
 -------------------------------------------------
 Cell.vars.texture = "Interface\\AddOns\\Cell\\Media\\statusbar.tga"
+
 local LSM = LibStub("LibSharedMedia-3.0", true)
 LSM:Register("statusbar", "Cell ".._G.DEFAULT, Cell.vars.texture)
+LSM:Register("font", "visitor", [[Interface\Addons\Cell\Media\Fonts\visitor.ttf]], 255) 
+
 function F:GetBarTexture()
     --! update Cell.vars.texture for further use in UnitButton_OnLoad
     if LSM:IsValid("statusbar", CellDB["appearance"]["texture"]) then
@@ -1469,6 +1534,13 @@ function F:GetBarTexture()
         Cell.vars.texture = "Interface\\AddOns\\Cell\\Media\\statusbar.tga"
     end
     return Cell.vars.texture
+end
+
+function F:GetBarTextureByName(name)
+    if LSM:IsValid("statusbar", name) then
+        return LSM:Fetch("statusbar", name)
+    end
+    return "Interface\\AddOns\\Cell\\Media\\statusbar.tga"
 end
 
 function F:GetFont(font)
@@ -1480,7 +1552,7 @@ function F:GetFont(font)
         if CellDB["appearance"]["useGameFont"] then
             return GameFontNormal:GetFont()
         else
-            return "Interface\\AddOns\\Cell\\Media\\Accidental_Presidency.ttf"
+            return "Interface\\AddOns\\Cell\\Media\\Fonts\\Accidental_Presidency.ttf"
         end
     end
 end
@@ -1491,7 +1563,7 @@ function F:GetFontItems()
     if CellDB["appearance"]["useGameFont"] then
         defaultFont = GameFontNormal:GetFont()
     else
-        defaultFont = "Interface\\AddOns\\Cell\\Media\\Accidental_Presidency.ttf"
+        defaultFont = "Interface\\AddOns\\Cell\\Media\\Fonts\\Accidental_Presidency.ttf"
     end
 
     local items = {}
@@ -1795,5 +1867,51 @@ else
             end
         end
         return debuffs
+    end
+end
+
+-------------------------------------------------
+-- OmniCD
+-------------------------------------------------
+function F:UpdateOmniCDPosition(frame)
+    if OmniCD and OmniCD[1].db.position.uf == frame then
+        C_Timer.After(0.5, function()
+            OmniCD[1].Party:UpdatePosition()
+        end)
+    end
+end
+
+-------------------------------------------------
+-- LibGetFrame
+-------------------------------------------------
+function Cell.GetUnitFrame(unit)
+    local normal, spotlights, quickAssist = F:GetUnitButtonByUnit(unit, true, true)
+    if CellDB["general"]["framePriority"] == "normal_spotlight_quickassist" then
+        if normal then return normal end
+        if spotlights[1] then return spotlights[1] end
+        return quickAssist
+    elseif CellDB["general"]["framePriority"] == "spotlight_normal_quickassist" then
+        if spotlights[1] then return spotlights[1] end
+        if normal then return normal end
+        return quickAssist
+    else -- "quickassist_normal_spotlight"
+        if quickAssist then return quickAssist end
+        if normal then return normal end
+        return spotlights[1]
+    end
+end
+
+function F:OverrideLGF(override)
+    if not override then return end
+
+    -- override LGF
+    local LGF = LibStub("LibGetFrame-1.0", true)
+    if LGF then
+        LGF.GetUnitFrame = Cell.GetUnitFrame
+        LGF.GetFrame = Cell.GetUnitFrame
+    end
+    -- override WA
+    if WeakAuras then
+        WeakAuras.GetUnitFrame = Cell.GetUnitFrame
     end
 end

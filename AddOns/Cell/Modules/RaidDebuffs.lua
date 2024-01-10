@@ -1166,6 +1166,11 @@ local function CreatePreviewButton()
     previewButton:SetScript("OnUpdate", nil)
     previewButton:Hide()
 
+    previewButton.widget.healthBar:SetMinMaxValues(0, 1)
+    previewButton.widget.healthBar:SetValue(1)
+    previewButton.widget.powerBar:SetMinMaxValues(0, 1)
+    previewButton.widget.powerBar:SetValue(1)
+
     local previewButtonBG = Cell:CreateFrame("CellRaidDebuffsPreviewButtonBG", previewButton)
     previewButtonBG:SetPoint("TOPLEFT", previewButton, 0, 20)
     previewButtonBG:SetPoint("BOTTOMRIGHT", previewButton, "TOPRIGHT")
@@ -1656,7 +1661,7 @@ local function CreateDetailsFrame()
     glowDuration:SetPoint("TOPLEFT", glowColor, "BOTTOMLEFT", 0, -25)
 
     -- glowFrequency
-    glowFrequency = Cell:CreateSlider(L["Frequency"], glowOptionsFrame, -2, 2, 117, 0.05, function(value)
+    glowFrequency = Cell:CreateSlider(L["Frequency"], glowOptionsFrame, -2, 2, 117, 0.01, function(value)
         SliderValueChanged(3, value)
     end)
     glowFrequency:SetPoint("TOPLEFT", glowLines, "BOTTOMLEFT", 0, -40)
@@ -1833,6 +1838,7 @@ ShowGlowPreview = function(glowType, glowOptions, refresh)
         LCG.ButtonGlow_Stop(previewButton)
         LCG.PixelGlow_Stop(previewButton)
         LCG.AutoCastGlow_Stop(previewButton)
+        LCG.ProcGlow_Stop(previewButton)
         if previewButton:IsShown() then previewButton.fadeOut:Play() end
         return
     end

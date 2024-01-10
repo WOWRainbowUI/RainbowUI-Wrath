@@ -78,6 +78,7 @@ Cell.defaults.layout = {
     },
     ["spotlight"] = {
         ["enabled"] = false,
+        ["hidePlaceholder"] = false,
         ["units"] = {},
         ["sameSizeAsMain"] = true,
         ["sameArrangementAsMain"] = true,
@@ -134,6 +135,8 @@ Cell.defaults.layout = {
             ["position"] = {"BOTTOM", 0},
             ["frameLevel"] = 30,
             ["font"] = {"Cell ".._G.DEFAULT, 11, "Shadow"},
+            ["showTimer"] = true,
+            ["showBackground"] = true,
             ["colors"] = {
                 ["AFK"] = {1, 0.19, 0.19, 1},
                 ["OFFLINE"] = {1, 0.19, 0.19, 1},
@@ -193,7 +196,7 @@ Cell.defaults.layout = {
             ["type"] = "built-in",
             ["enabled"] = true,
             ["hideInCombat"] = true,
-            ["position"] = {"TOPLEFT", "TOPLEFT", 0, -11},
+            ["position"] = {"TOPLEFT", "TOPLEFT", 1, -10},
             ["size"] = {11, 11},
         }, -- 7
         {
@@ -231,7 +234,7 @@ Cell.defaults.layout = {
             ["enabled"] = true,
             ["position"] = {"TOPLEFT", "TOPLEFT", 0, 0},
             ["frameLevel"] = 3,
-            ["size"] = {10, 10},
+            ["size"] = {11, 11},
         }, -- 11
         {
             ["name"] = "Aggro (bar)",
@@ -247,8 +250,8 @@ Cell.defaults.layout = {
             ["indicatorName"] = "aggroBorder",
             ["type"] = "built-in",
             ["enabled"] = false,
-            ["frameLevel"] = 3,
-            ["thickness"] = 3,
+            ["frameLevel"] = 7,
+            ["thickness"] = 2,
         }, -- 13
         {
             ["name"] = "Shield Bar",
@@ -322,7 +325,7 @@ Cell.defaults.layout = {
             ["indicatorName"] = "tankActiveMitigation",
             ["type"] = "built-in",
             ["enabled"] = true,
-            ["position"] = {"TOPLEFT", "TOPLEFT", 9, 0},
+            ["position"] = {"TOPLEFT", "TOPLEFT", 10, 0},
             ["frameLevel"] = 2,
             ["size"] = {20, 6},
         }, -- 19
@@ -406,6 +409,11 @@ Cell.defaults.layout = {
             ["frameLevel"] = 15,
             ["font"] = {"Cell ".._G.DEFAULT, 15, "Outline"},
             ["color"] = {1, 0.1, 0.1},
+            ["filters"] = {
+                ["outdoor"] = false,
+                ["pve"] = false,
+                ["pvp"] = true,
+            },
         }, -- 25
         {
             ["name"] = "Crowd Controls",

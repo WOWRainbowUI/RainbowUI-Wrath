@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 Cell.unitButtons = {
@@ -19,6 +20,9 @@ Cell.unitButtons = {
     },
     ["arena"] = {},
     ["spotlight"] = {},
+    ["quickAssist"] = {
+        ["units"] = {},
+    },
 }
 
 -- local hoverTop, hoverBottom, hoverLeft, hoverRight
@@ -40,7 +44,7 @@ local hoverFrame = CreateFrame("Frame", nil, cellMainFrame, "BackdropTemplate")
 
 local anchorFrame = CreateFrame("Frame", "CellAnchorFrame", cellMainFrame)
 Cell.frames.anchorFrame = anchorFrame
-anchorFrame:SetPoint("TOPLEFT", UIParent, "CENTER")
+PixelUtil.SetPoint(anchorFrame, "TOPLEFT", UIParent, "CENTER", 1, -1)
 P:Size(anchorFrame, 20, 10)
 anchorFrame:SetMovable(true)
 anchorFrame:SetClampedToScreen(true)
@@ -82,8 +86,14 @@ menuFrame:SetAllPoints(anchorFrame)
 local options = Cell:CreateButton(menuFrame, "", "red", {20, 10}, false, true)
 P:Point(options, "TOPLEFT", menuFrame)
 RegisterButtonEvents(options)
-options:SetScript("OnClick", function()
-    F:ShowOptionsFrame()
+options:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+options:SetScript("OnClick", function(self, button)
+    if button == "LeftButton" then
+        F:ShowOptionsFrame()
+    elseif button == "RightButton" then
+        F:IterateAllUnitButtons(B.UpdateAll, true)
+        F:Print("All unit buttons refreshed.")
+    end
 end)
 options:HookScript("OnEnter", function()
     CellTooltip:SetOwner(options, "ANCHOR_NONE")
@@ -456,7 +466,7 @@ local function UpdatePosition()
 end
 
 local function UpdateMenu(which)
-    F:Debug("|cff00bfffUpdateMenu:|r " .. (which or "nil"))
+    F:Debug("|cff00bfffUpdateMenu:|r", which)
 
     if not which or which == "lock" then
         if CellDB["general"]["locked"] then
@@ -502,7 +512,7 @@ end
 Cell:RegisterCallback("UpdateMenu", "MainFrame_UpdateMenu", UpdateMenu)
 
 local function MainFrame_UpdateLayout(layout, which)
-    F:Debug("|cffff0066UpdateLayout:|r layout:" .. (layout or "nil") .. " which:" .. (which or "nil"))
+    F:Debug("|cffff0066UpdateLayout:|r layout:", layout, " which:", which)
 
     --! NOTE: a reload during pet battle prevents HEADER from CREATING CHILDs (unit buttons), this hide delay is a MUST  
     RegisterStateDriver(cellMainFrame, 'visibility', '[petbattle] hide; show')
@@ -521,7 +531,7 @@ local function MainFrame_UpdateLayout(layout, which)
     if not P:LoadPosition(anchorFrame, layout["main"]["position"]) then
         P:ClearPoints(anchorFrame)
         -- no position, use default
-        anchorFrame:SetPoint("TOPLEFT", UIParent, "CENTER")
+        PixelUtil.SetPoint(anchorFrame, "TOPLEFT", UIParent, "CENTER", 1, -1)
     end
 end
 Cell:RegisterCallback("UpdateLayout", "MainFrame_UpdateLayout", MainFrame_UpdateLayout)
