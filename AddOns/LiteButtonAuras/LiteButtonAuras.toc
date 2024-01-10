@@ -1,0 +1,19 @@
+## Interface: 100200
+## Title: LiteButtonAuras
+## Version: 10.2.0-4
+## Author: Xodiv-Nagrand
+## Email: mib@post.com
+## OptionalDeps: Bartender4, Dominos, ElvUI, Masque
+## SavedVariables: LiteButtonAurasDB
+## X-Curse-Project-ID: 526431
+## X-WoWI-ID: 26528
+
+Libs\embeds.xml
+
+SpellData.lua
+ColorGradient.lua
+BarIntegrations.lua
+SlashCommand.lua
+Options.lua
+Overlay.xml
+Controller.xml
