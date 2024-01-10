@@ -384,5 +384,29 @@ L["mythicPlusShort"] = "Mythic+";
 L["noCurrentRaidLockouts"] = "No current raid lockouts.";
 
 L["weeklyQuests"] = "Weekly Quests";
+L["dailyQuests"] = "Daily Quests";
 
 L["openLockouts"] = "Open Lockouts";
+
+L["autoGammaBuffDesc"] = "Gamma Dungeons";
+
+L["autoGammaBuffTitle"] = "Auto Gamma Buff";
+L["autoGammaBuffDesc"] = "Auto get the right gamma buff for your class when you talk to the buff NPC in a Gamma Dungeon.";
+
+L["autoGammaBuffReminderTitle"] = "Gamma Buff Reminder";
+L["autoGammaBuffReminderDesc"] = "Print a msg to chat at the start of the dung remimding you to get the buff if you don't have it.";
+
+L["autoGammaBuffTypeTitle"] = "Gamma Buff Type";
+L["autoGammaBuffTypeDesc"] = "What buff type fo you want, Auto Select will auto choose between melee/ranged/healer/tank based off your spec. Or you can override it with a different selection. Buff selection is a character specific config option.";
+
+L["dungeonPopTimerTitle"] = "Dungeon Pop Timer";
+L["dungeonPopTimerDesc"] = "Show a timer on the dungeon queue pop window that shows how long left to click enter?";
+
+L["autoWrathDailiesTitle"] = "Auto Get Daily Quests";
+L["autoWrathDailiesDesc"] = "Auto get and hand in wrath daily quests from Archmage Lan'dalock in Dalaran";
+			
+L["gammaConfigWarning"] = "Gamma buff choice is character specific, if you change it on this character it won't effect your other characters.";
+L["autoGammaBuffReminder"] = "Get Gamma Dungeon buff from %s.";
+L["Sunreaver Warden"] = "Sunreaver Warden";
+L["Silver Covenant Warden"] = "Silver Covenant Warden";
+L["note"] = "Note:"
