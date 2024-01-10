@@ -603,7 +603,7 @@ end
 
 function NIT:openConfig()
 	--Opening the frame needs to be run twice to avoid a bug.
-	InterfaceOptionsFrame_OpenToCategory("NovaInstanceTracker");
+	InterfaceOptionsFrame_OpenToCategory(L["NovaInstanceTracker"]);
 	--Hack to fix the issue of interface options not opening to menus below the current scroll range.
 	--This addon name starts with N and will always be closer to the middle so just scroll to the middle when opening.
 	if (InterfaceOptionsFrameAddOnsListScrollBar) then
