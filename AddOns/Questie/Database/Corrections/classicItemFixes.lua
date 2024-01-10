@@ -359,6 +359,9 @@ function QuestieItemFixes:Load()
         [5251] = {
             [itemKeys.questRewards] = {960,961},
         },
+        [5359] = {
+            [itemKeys.objectDrops] = {13949}
+        },
         [5411] = {
             [itemKeys.class] = itemClasses.QUEST,
         },
@@ -1148,6 +1151,30 @@ function QuestieItemFixes:Load()
         [20464] = {
             [itemKeys.class] = 12,
         },
+        [20490] = {
+            [itemKeys.npcDrops] = {5111},
+        },
+        [20491] = {
+            [itemKeys.npcDrops] = {6741},
+        },
+        [20492] = {
+            [itemKeys.npcDrops] = {6740},
+        },
+        [20493] = {
+            [itemKeys.npcDrops] = {6929},
+        },
+        [20494] = {
+            [itemKeys.npcDrops] = {6826},
+        },
+        [20495] = {
+            [itemKeys.npcDrops] = {11814},
+        },
+        [20496] = {
+            [itemKeys.npcDrops] = {6735},
+        },
+        [20497] = {
+            [itemKeys.npcDrops] = {6746},
+        },
         [20708] = {
             [itemKeys.objectDrops] = {},
         },
@@ -1198,6 +1225,9 @@ function QuestieItemFixes:Load()
         },
         [21228] = {
             [itemKeys.objectDrops] = {},
+        },
+        [21314] = {
+            [itemKeys.npcDrops] = {},
         },
         [21557] = {
             [itemKeys.relatedQuests] = {8867},

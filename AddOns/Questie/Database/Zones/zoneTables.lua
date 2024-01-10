@@ -180,6 +180,12 @@ ZoneDB.private.areaIdToUiMapId = {
     [4819] = 134, -- Utgarde Keep - Middle Level (fake ID for Utgarde Keep)
     [4820] = 185, -- Halls of Reflection - Dungeon
     [4821] = 135, -- Utgarde Keep - Upper Level (fake ID for Utgarde Keep)
+    [4830] = 190, -- Icecrown Citadel - Upper Spire (fake ID for ICC)
+    [4831] = 191, -- Icecrown Citadel - Queen Lana'thel (fake ID for ICC)
+    [4834] = 189, -- Icecrown Citadel - Sindragosa (fake ID for ICC)
+    [4835] = 187, -- Icecrown Citadel - Rampart of Skulls (fake ID for ICC)
+    [4836] = 188, -- Icecrown Citadel - Deathbringer's Rise (fake ID for ICC)
+    [4837] = 192, -- Icecrown Citadel - The Frozen Throne (fake ID for ICC)
     [4987] = 200, -- The Ruby Sanctum - Raid
     --- These should not be needed from my limited testing
     -- [14284] = 114, -- Borean Tundra - Battleground
@@ -428,16 +434,16 @@ ZoneDB.private.uiMapIdToAreaId = {
     [171] = 4723, -- Trial of the Champion - Dungeon
     [170] = 4742, -- Hrothgar's Landing
     [183] = 4809, -- The Forge of Souls - Dungeon
-    [186] = 4812, -- Icecrown Citadel - Raid
-    [187] = 4812, -- Icecrown Citadel - Raid
-    [188] = 4812, -- Icecrown Citadel - Raid
-    [189] = 4812, -- Icecrown Citadel - Raid
-    [190] = 4812, -- Icecrown Citadel - Raid
-    [191] = 4812, -- Icecrown Citadel - Raid
-    [192] = 4812, -- Icecrown Citadel - Raid
-    [193] = 4812, -- Icecrown Citadel - Raid
     [184] = 4813, -- Pit of Saron - Dungeon
     [185] = 4820, -- Halls of Reflection - Dungeon
+    [186] = 4812, -- Icecrown Citadel - Raid
+    [187] = 4835, -- Icecrown Citadel - Rampart of Skulls (fake ID for ICC)
+    [188] = 4836, -- Icecrown Citadel - Deathbringer's Rise (fake ID for ICC)
+    [189] = 4834, -- Icecrown Citadel - Sindragosa (fake ID for ICC)
+    [190] = 4830, -- Icecrown Citadel - Uppe Spire (fake ID for ICC)
+    [191] = 4831, -- Icecrown Citadel - Queen Lana'thel (fake ID for ICC)
+    [192] = 4837, -- Icecrown Citadel - The Frozen Throne (fake ID for ICC)
+    [193] = 4812, -- Icecrown Citadel - Raid
     [200] = 4987, -- The Ruby Sanctum - Raid
 }
 
@@ -517,15 +523,15 @@ ZoneDB.private.dungeons = {
 --- {"name", alternative areaId (a sub zone), parentId}
 ---@type table<AreaId, { [1]: Name, [2]: AreaId, [3]: AreaId }>
 ZoneDB.private.dungeonLocations = {
-    [206] = {{495, 57.3, 46.8}},
+    [206] = {{495, 58.8, 48.3}},
     [209] = {{130, 45, 68.7}},
     [491] = {{17, 42.3, 89.9}},
     [717] = {(Questie.IsWotlk and {1519, 52.4, 70}) or {1519, 40.5, 55.9}},
     [718] = {{17, 46, 36.5}},
-    [719] = {{331, 14.1, 14.4}},
+    [719] = {{331, 14.5, 14.2}},
     [721] = {{1, 24.4, 39.8}},
     [722] = {{17, 50.8, 92.8}},
-    [796] = {{85, 83, 34}},
+    [796] = {{85, 82.6, 33.8}},
     [1176] = {{440, 38.7, 20.1}},
     [1196] = {{495, 57.3, 46.8}},
     [1337] = {{3, 44.4, 12.2}, {3, 65.2, 43.5}},
@@ -539,7 +545,7 @@ ZoneDB.private.dungeonLocations = {
     [2017] = {{139, 27.2, 15.5}, {139, 43.5, 19.5}},
     [2057] = {{28, 69.7, 73.2}},
     [2100] = {{405, 29.5, 62.5}},
-    [2159] = {{15, 52.4, 76.4}},
+    [2159] = {{15, 52.6, 76.8}},
     [2257] = {Questie.IsWotlk and {1519, 72, 28} or {1519, 67.6, 4.1}, {1537, 84.1, 53.1}},
     [2366] = {{440, 65.7, 49.8}},
     [2367] = {{440, 65.7, 49.8}},
@@ -574,7 +580,7 @@ ZoneDB.private.dungeonLocations = {
     [3849] = {{3523, 70.6, 69.7}},
     [3923] = {{3522, 68.7, 24.3}},
     [3959] = {{3520, 71.1, 46.3}},
-    [4075] = {{4080, 44.5, 45.3}},
+    [4075] = {{4080, 44.3, 45.5}},
     [4100] = {{440, 65.7, 49.8}},
     [4131] = {{4080, 61.2, 30.9}},
     [4196] = {{66, 29.0, 83.9},{394, 17.5, 27.0}},
@@ -603,16 +609,17 @@ ZoneDB.private.dungeonLocations = {
 -- [dungeonZone] = parentZone
 ---@type table<AreaId, AreaId>
 ZoneDB.private.dungeonParentZones = {
-    [236] = 209,
-    [1717] = 491,
-    [2797] = 719,
     [133] = 721,
-    [1316] = 722,
+    [236] = 209,
     [978] = 1176,
-    [1517] = 1337,
+    [1316] = 722,
     [1417] = 1477,
+    [1517] = 1337,
+    [1585] = 1584,
+    [1717] = 491,
     [2279] = 2017,
     [2577] = 2557,
+    [2797] = 719,
 }
 
 --? If you want to add something overwrite the data after the table
@@ -2721,6 +2728,12 @@ ZoneDB.private.subZoneToParentZone = {
   [4823] = 4196, -- Drak'Tharon Keep - Upper Level (fake ID for Drak'Tharon Keep)
   [4824] = 4416, -- Gundrak - Upper Level (fake ID for Gundrak)
   [4825] = 4416, -- Gundrak - Lower Level (fake ID for Gundrak)
+  [4830] = 4812, -- Upper Spire -> Icecrown Citadel (fake ID for ICC)
+  [4831] = 4812, -- Blood Queen Lana'thel -> Icecrown Citadel (fake ID for ICC)
+  [4834] = 4812, -- Sindragosa -> Icecrown Citadel (fake ID for ICC)
+  [4835] = 4812, -- Sindragosa -> Rampart of Skulls (fake ID for ICC)
+  [4836] = 4812, -- Sindragosa -> Deathbringer's Rise (fake ID for ICC)
+  [4837] = 4812, -- Sindragosa -> The Frozen Throne (fake ID for ICC)
   [4859] = 4896, -- The Frozen Throne -> The Frozen Throne
   [4862] = 210, -- The Frozen Halls -> Icecrown
   [4889] = 4893, -- The Frost Queen's Lair -> The Frost Queen's Lair
@@ -2833,6 +2846,7 @@ ZoneDB.private.zoneIDs = {
     DESOLACE = 405,
     STONETALON_MOUNTAINS = 406,
     TANARIS = 440,
+    AUBERDINE = 442,
     UN_GORO_CRATER = 490,
     RAZORFEN_KRAUL = 491,
     MOONGLADE = 493,
@@ -2936,6 +2950,13 @@ ZoneDB.private.zoneIDs = {
     TRIAL_OF_THE_CHAMPION = 4723,
     HROTHGARS_LANDING = 4742,
     ICECROWN_CITADEL = 4812,
+    -- Fake IDS for ICC
+    ICECROWN_CITADEL_SINDRAGOSA = 4834, -- UiMapID 189
+    ICECROWN_CITADEL_UPPER_SPIRE = 4830, -- UiMapID 190
+    ICECROWN_CITADEL_QUEEN_LANA_THEL = 4831, -- UiMapID 191
+    ICECROWN_CITADEL_RAMPART_OF_SKULLS = 4835, -- UiMapID 187
+    ICECROWN_CITADEL_DEATHBRINGERS_RISE = 4836, -- UiMapID 188
+    ICECROWN_CITADEL_THE_FROZEN_THRONE = 4837, -- UiMapID 192
     -- Fake IDs for Ulduar
     THE_DESCENT_OF_MADNESS = 4659,
     THE_SPARK_OF_IMAGINATION = 4660,
@@ -2955,10 +2976,12 @@ ZoneDB.private.zoneIDs = {
     THE_NEXUS_MAP = 4805,
     -- Fake IDs for Ahn'Kahet: The Old Kingdom
     AHNKAHET_MAP = 4808,
+    FORGE_OF_SOULS = 4809,
     -- Fake IDs for Halls of Stone
     HALLS_OF_STONE_MAP = 4810,
     -- Fake IDs for The Culling of Stratholme
     THE_CULLING_OF_STRATHOLME_VILLAGE = 4811,
+    PIT_OF_SARON = 4813,
     THE_CULLING_OF_STRATHOLME_CITY = 4814,
     -- Fake IDs for Utgarde Pinnacle
     UTGARDE_PINNACLE_LOWER_LEVEL = 4816,
@@ -2966,6 +2989,7 @@ ZoneDB.private.zoneIDs = {
     -- Fake IDs for Utgarde Keep
     UTGARDE_KEEP_LOWER_LEVEL = 4818,
     UTGARDE_KEEP_MIDDLE_LEVEL = 4819,
+    HALLS_OF_REFLECTION = 4820,
     UTGARDE_KEEP_UPPER_LEVEL = 4821,
     -- Fake IDs for Drak'tharon Keep
     DRAKTHARON_KEEP_LOWER_LEVEL = 4822,

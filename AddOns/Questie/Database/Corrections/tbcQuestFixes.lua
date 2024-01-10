@@ -39,6 +39,9 @@ function QuestieTBCQuestFixes:Load()
         [77] = {
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
+        [100] = {
+            [questKeys.childQuests] = {},
+        },
         [171] = {
             [questKeys.questLevel] = -1,
         },
@@ -233,6 +236,9 @@ function QuestieTBCQuestFixes:Load()
         [1805] = {
             [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.UNDEAD + raceIDs.BLOOD_ELF,
         },
+        [1858] = {
+            [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.TROLL,
+        },
         [1859] = {
             [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.TROLL,
         },
@@ -244,6 +250,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [1899] = {
             [questKeys.requiredRaces] = raceIDs.UNDEAD,
+        },
+        [1963] = {
+            [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.TROLL,
         },
         [1978] = {
             [questKeys.requiredRaces] = raceIDs.UNDEAD,
@@ -275,12 +284,12 @@ function QuestieTBCQuestFixes:Load()
         [2841] = {
             [questKeys.childQuests] = {},
         },
-        [2861] = {
-            [questKeys.startedBy] = {{4568,5144,5497,5885,16651,17514}}
-        },
         [2842] = {
             [questKeys.requiredLevel] = 20,
             [questKeys.parentQuest] = 0,
+        },
+        [2861] = {
+            [questKeys.startedBy] = {{4568,5144,5497,5885,16651,17514}}
         },
         [2880] = {
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
@@ -502,6 +511,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [8122] = {
             [questKeys.triggerEnd] = {"Hold Five Bases in Arathi Basin", {[zoneIDs.ARATHI_HIGHLANDS]={{73.2,30}}}},
+        },
+        [8183] = {
+            [questKeys.startedBy] = {{15069},nil,{19802}},
         },
         [8259] = {
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
@@ -1121,7 +1133,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.requiredSkill] = {202,305},
         },
         [9645] = {
-            [questKeys.triggerEnd] = {"Journal Entry Read", {[zoneIDs.DEADWIND_PASS]={{46.57,70.49},{46.77,74.5}}}},
+            [questKeys.triggerEnd] = {"Journal Entry Read", {[3457]={{-1,-1}}}},
         },
         [9666] = {
             [questKeys.objectives] = {{{17701}},nil,nil,nil,{{{17701},17701,"Declaration of Power"}}},
@@ -2403,7 +2415,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.preQuestSingle] = {10942},
         },
         [10946] = {
-            [questKeys.triggerEnd] = {"Ruse of the Ashtongue", {[zoneIDs.NETHERSTORM]={{73.88,63.76}}}},
+            [questKeys.objectives] = {{{19514,"Ruse of the Ashtongue"}}},
         },
         [10950] = {
             [questKeys.questLevel] = -1,
@@ -2509,6 +2521,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [10985] = {
             [questKeys.triggerEnd] = {"Help Akama and Maiev enter the Black Temple.", {[zoneIDs.SHADOWMOON_VALLEY]={{71.05,46.11},{66.29,44.06}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Let Xi'ri know you're ready to battle"), 1, {{"monster", 18528}}}},
         },
         [10987] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_LOOT, l10n("Use the Sparrowhawk Net to capture a Wild Sparrowhawk"), 0, {{"monster", 22979}}}},
@@ -2548,6 +2561,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [11003] = {
             [questKeys.startedBy] = {{17257},nil,{33102,},},
+        },
+        [11007] = {
+            [questKeys.startedBy] = {{19622},nil,{32405}},
         },
         [11010] = {
             [questKeys.requiredClasses] = classIDs.WARLOCK + classIDs.ROGUE + classIDs.MAGE + classIDs.PRIEST + classIDs.WARRIOR + classIDs.PALADIN + classIDs.HUNTER + classIDs.SHAMAN,
@@ -2842,7 +2858,9 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.preQuestSingle] = {},
         },
         [11131] = {
-            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUN_MOROGH]={{53.1,51.4}},[zoneIDs.ELWYNN_FOREST]={{42,66.5}},[zoneIDs.AZUREMYST_ISLE]={{49.3,51.5}}}},
+            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUN_MOROGH]={{44.8,52.1},{47.5,51.6}},[zoneIDs.ELWYNN_FOREST]={{41.3,65.2},{43.6,65.8}},[zoneIDs.AZUREMYST_ISLE]={{49.8,52.3},{48.8,50}}}},
+            [questKeys.requiredSourceItems] = {32971},
+            [questKeys.exclusiveTo] = {12133},
         },
         [11140] = {
             [questKeys.requiredSourceItems] = {33040,33044},
@@ -2920,9 +2938,16 @@ function QuestieTBCQuestFixes:Load()
         [11216] = {
             [questKeys.nextQuestInChain] = 9824,
         },
+        [11219] = {
+            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUROTAR]={{52.12,43.59},{53.21,42.56},{51.58,42.08}},[zoneIDs.TIRISFAL_GLADES]={{60.32,53.29},{61.11,51.25},{61.64,51.97}},[zoneIDs.EVERSONG_WOODS]={{47.76,47.3},{48.21,46.16}}}},
+            [questKeys.requiredSourceItems] = {32971},
+            [questKeys.exclusiveTo] = {12155},
+        },
         [11242] = {
             [questKeys.startedBy] = {{23904},nil,nil},
             [questKeys.finishedBy] = {{24519},nil},
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+            [questKeys.preQuestSingle] = {11135},
         },
         [11335] = {
             [questKeys.triggerEnd] = {"Victory in Arathi Basin", {
@@ -2977,13 +3002,18 @@ function QuestieTBCQuestFixes:Load()
             }},
         },
         [11356] = {
-            [questKeys.exclusiveTo] = {11360},
+            [questKeys.exclusiveTo] = {11360,11439,11440},
         },
         [11357] = {
-            [questKeys.exclusiveTo] = {11361},
+            [questKeys.exclusiveTo] = {11361,11449,11450},
+        },
+        [11360] = {
+            [questKeys.exclusiveTo] = {11439,11440},
+            [questKeys.requiredSourceItems] = {32971},
         },
         [11361] = {
-            [questKeys.questLevel] = -1,
+            [questKeys.exclusiveTo] = {11449,11450},
+            [questKeys.requiredSourceItems] = {32971},
         },
         [11379] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Cook Demon Broiled Surprise in the remains of a Abyssal Flamebringer in Blade's Edge Mountains"), 0, {{"monster", 19973}}}},
@@ -2997,6 +3027,18 @@ function QuestieTBCQuestFixes:Load()
         [11403] = {
             [questKeys.startedBy] = {{23904},nil,nil},
             [questKeys.finishedBy] = {{23973},nil},
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+            [questKeys.preQuestSingle] = {11220},
+        },
+        [11439] = {
+            [questKeys.startedBy] = {},
+            [questKeys.exclusiveTo] = {11360,11440},
+            [questKeys.requiredSourceItems] = {32971},
+        },
+        [11440] = {
+            [questKeys.startedBy] = {},
+            [questKeys.exclusiveTo] = {11360,11439},
+            [questKeys.requiredSourceItems] = {32971},
         },
         [11441] = {
             [questKeys.startedBy] = {{18927,19148,19171,19172,19173,20102},nil,nil},
@@ -3017,6 +3059,16 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.objectivesText] = {},
             [questKeys.startedBy] = {{24711}},
             [questKeys.finishedBy] = {{24711}},
+        },
+        [11449] = {
+            [questKeys.startedBy] = {},
+            [questKeys.exclusiveTo] = {11361,11450},
+            [questKeys.requiredSourceItems] = {32971},
+        },
+        [11450] = {
+            [questKeys.startedBy] = {},
+            [questKeys.exclusiveTo] = {11361,11449},
+            [questKeys.requiredSourceItems] = {32971},
         },
         [11481] = {
             [questKeys.requiredMinRep] = {932,0},
@@ -3907,32 +3959,39 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.sourceItemId] = 36876,
             [questKeys.zoneOrSort] = -22,
             [questKeys.specialFlags] = 1,
+            [questKeys.questFlags] = 4224,
         },
         [12135] = {
-            [questKeys.name] = "Let the Fires Come!",
+            [questKeys.name] = "\"Let the Fires Come!\"",
             [questKeys.startedBy] = {{24519},nil,nil,},
             [questKeys.finishedBy] = {{24519,},nil,},
             [questKeys.requiredLevel] = 1,
             [questKeys.questLevel] = -1,
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
             [questKeys.objectivesText] = {"The Costumed Orphan Matron wants you to help put out all the village fires after the Headless Horseman lights them. When they are out, speak again to the Costumed Orphan Matron.",},
-            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUN_MOROGH]={{53.1,51.4}},[zoneIDs.ELWYNN_FOREST]={{42,66.5}},[zoneIDs.AZUREMYST_ISLE]={{49.3,51.5}}}},
-            [questKeys.preQuestSingle] = {11360},
+            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUN_MOROGH]={{44.8,52.1},{47.5,51.6}},[zoneIDs.ELWYNN_FOREST]={{41.3,65.2},{43.6,65.8}},[zoneIDs.AZUREMYST_ISLE]={{49.8,52.3},{48.8,50}}}},
+            [questKeys.preQuestSingle] = {11360,11439,11440},
             [questKeys.zoneOrSort] = -22,
             [questKeys.specialFlags] = 1,
+            [questKeys.requiredSourceItems] = {32971},
+            [questKeys.questFlags] = 4224,
+            [questKeys.exclusiveTo] = {12133},
         },
         [12139] = {
-            [questKeys.name] = "Let the Fires Come!",
+            [questKeys.name] = "\"Let the Fires Come!\"",
             [questKeys.startedBy] = {{23973},nil,nil,},
             [questKeys.finishedBy] = {{23973,},nil,},
             [questKeys.requiredLevel] = 1,
             [questKeys.questLevel] = -1,
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
             [questKeys.objectivesText] = {"The Masked Orphan Matron wants you to help put out all the village fires. When they are out, speak again to the Masked Orphan Matron in town.",},
-            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUROTAR]={{52.6,41.7}},[zoneIDs.TIRISFAL_GLADES]={{60.8,52.5}},[zoneIDs.EVERSONG_WOODS]={{47.4,47}}}},
-            [questKeys.preQuestSingle] = {11361},
+            [questKeys.triggerEnd] = {"Put Out the Fires", {[zoneIDs.DUROTAR]={{52.12,43.59},{53.21,42.56},{51.58,42.08}},[zoneIDs.TIRISFAL_GLADES]={{60.32,53.29},{61.11,51.25},{61.64,51.97}},[zoneIDs.EVERSONG_WOODS]={{47.76,47.3},{48.21,46.16}}}},
+            [questKeys.preQuestSingle] = {11361,11449,11450},
             [questKeys.zoneOrSort] = -22,
             [questKeys.specialFlags] = 1,
+            [questKeys.requiredSourceItems] = {32971},
+            [questKeys.questFlags] = 4224,
+            [questKeys.exclusiveTo] = {12155},
         },
         [12155] = {
             [questKeys.name] = "Smash the Pumpkin",
@@ -3945,6 +4004,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.sourceItemId] = 36876,
             [questKeys.zoneOrSort] = -22,
             [questKeys.specialFlags] = 1,
+            [questKeys.questFlags] = 4224,
         },
         [12192] = {
             [questKeys.name] = "This One Time, When I Was Drunk...",
@@ -4699,36 +4759,6 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.startedBy] = {{28126},nil},
             [questKeys.finishedBy] = {{28126},nil},
             [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.NIGHT_ELF + raceIDs.DRAENEI + raceIDs.TROLL + raceIDs.TAUREN + raceIDs.UNDEAD + raceIDs.BLOOD_ELF,
-        },
-        [12771] = {
-            [questKeys.preQuestSingle] = {12753},
-        },
-        [12773] = {
-            [questKeys.preQuestSingle] = {12772},
-        },
-        [12774] = {
-            [questKeys.preQuestSingle] = {12775},
-        },
-        [12776] = {
-            [questKeys.preQuestSingle] = {12777},
-        },
-        [12785] = {
-            [questKeys.preQuestSingle] = {12783},
-        },
-        [12786] = {
-            [questKeys.preQuestSingle] = {12784},
-        },
-        [12787] = {
-            [questKeys.preQuestSingle] = {12752},
-        },
-        [12788] = {
-            [questKeys.preQuestSingle] = {12782},
-        },
-        [12809] = {
-            [questKeys.preQuestSingle] = {12808},
-        },
-        [12812] = {
-            [questKeys.preQuestSingle] = {12811},
         },
 
         -- Below are quests that were not originally in TBC or in a different form

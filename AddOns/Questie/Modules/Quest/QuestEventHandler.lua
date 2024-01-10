@@ -57,6 +57,8 @@ function QuestEventHandler:RegisterEvents()
     eventFrame:RegisterEvent("QUEST_WATCH_UPDATE")
     eventFrame:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
     eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    eventFrame:RegisterEvent("NEW_RECIPE_LEARNED") -- Spell objectives; Runes in SoD count as recipes because "Engraving" is a profession?
+    --eventFrame:RegisterEvent("SPELLS_CHANGED") -- Spell objectives
 
     if Questie.IsWotlk then
         -- Quest Related Frames - Wrath Only
@@ -510,7 +512,7 @@ function _QuestEventHandler:ZoneChangedNewArea()
     if isInInstance then
         C_Timer.After(8, function()
             Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] ZONE_CHANGED_NEW_AREA: Entering Instance")
-            if Questie.db.global.hideTrackerInDungeons then
+            if Questie.db.profile.hideTrackerInDungeons then
                 trackerMinimizedByDungeon = true
 
                 QuestieCombatQueue:Queue(function()
@@ -523,7 +525,7 @@ function _QuestEventHandler:ZoneChangedNewArea()
     elseif (not Questie.db.char.isTrackerExpanded and not UnitIsGhost("player")) and trackerMinimizedByDungeon == true then
         C_Timer.After(8, function()
             Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] ZONE_CHANGED_NEW_AREA: Exiting Instance")
-            if Questie.db.global.hideTrackerInDungeons then
+            if Questie.db.profile.hideTrackerInDungeons then
                 trackerMinimizedByDungeon = false
 
                 QuestieCombatQueue:Queue(function()

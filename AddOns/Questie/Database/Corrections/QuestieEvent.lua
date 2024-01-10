@@ -101,7 +101,7 @@ function QuestieEvent:Load()
         endMonth = tonumber(endMonth)
 
         if _WithinDates(startDay, startMonth, endDay, endMonth) and (eventCorrections[eventName] ~= false) then
-            print(Questie:Colorize("[Questie]", "yellow"), l10n("The '%s' world event is active!", eventName))
+            print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
             activeEvents[eventName] = true
         end
     end
@@ -132,72 +132,105 @@ function QuestieEvent:Load()
         end
     end
 
-    -- Darkmoon Faire is quite special because of its setup days where just two quests are available
-    -- ** Disable DMF fully now as Dates are calculated wrong **
-    --if Questie.IsEra then -- load DMF only on Era realms, not on TBC, not on SoM
-    --    _LoadDarkmoonFaire()
-    --end
+    -- TODO: Also handle WotLK which has a different starting schedule
+    if Questie.IsClassic then
+        _LoadDarkmoonFaire()
+    end
 
     -- Clear the quests to save memory
     QuestieEvent.eventQuests = nil
 end
 
----@param day number
----@param weekDay number
+---@param dayOfMonth number
 ---@return boolean
-_IsDarkmoonFaireActive = function(day, weekDay)
-    -- The 16 is the highest date the faire can possibly end
-    -- And on a Monday (weekDay == 2) the faire ended, when it's the second Monday after the first Friday of the month
-    if day > 16 or
-        (weekDay == 2 and day >= 11) or
-        (weekDay ~= 6 and (day - weekDay < 1)) or
-        (weekDay ~= 6 and (day - weekDay == 1)) or
-        (weekDay ~= 1 and (day - weekDay == 9)) then -- Sometimes the 1th is a Friday
-        return false
+_IsDarkmoonFaireActive = function(dayOfMonth)
+    local baseInfo = C_Calendar.GetMonthInfo() -- In Era+SoD this returns `GetMinDate` (November 2004)
+    local currentDate = C_DateAndTime.GetCurrentCalendarTime()
+    -- Calculate the offset in months from GetMinDate to make C_Calendar.GetMonthInfo return the correct month
+    local monthOffset = (currentDate.year - baseInfo.year) * 12 + (currentDate.month - baseInfo.month)
+    local firstWeekday = C_Calendar.GetMonthInfo(monthOffset).firstWeekday
+
+    if firstWeekday == 1 then
+        -- The 1st is a Sunday
+        if dayOfMonth >= 9 and dayOfMonth < 15 or (Questie.IsSoD and dayOfMonth >= 23 and dayOfMonth < 29) then
+            return true
+        end
+    elseif firstWeekday == 2 then
+        -- The 1st is a Monday
+        if dayOfMonth >= 8 and dayOfMonth < 14 or (Questie.IsSoD and dayOfMonth >= 22 and dayOfMonth < 28) then
+            return true
+        end
+    elseif firstWeekday == 3 then
+        -- The 1st is a Tuesday
+        if dayOfMonth >= 7 and dayOfMonth < 13 or (Questie.IsSoD and dayOfMonth >= 21 and dayOfMonth < 27) then
+            return true
+        end
+    elseif firstWeekday == 4 then
+        -- The 1st is a Wednesday
+        if dayOfMonth >= 6 and dayOfMonth < 12 or (Questie.IsSoD and dayOfMonth >= 20 and dayOfMonth < 26) then
+            return true
+        end
+    elseif firstWeekday == 5 then
+        -- The 1st is a Thursday
+        if dayOfMonth >= 5 and dayOfMonth < 11 or (Questie.IsSoD and dayOfMonth >= 19 and dayOfMonth < 25) then
+            return true
+        end
+    elseif firstWeekday == 6 then
+        -- The 1st is a Friday
+        if dayOfMonth >= 4 and dayOfMonth < 10 or (Questie.IsSoD and dayOfMonth >= 18 and dayOfMonth < 24) then
+            return true
+        end
+    elseif firstWeekday == 7 then
+        -- The 1st is a Saturday
+        if dayOfMonth >= 10 and dayOfMonth < 16 or (Questie.IsSoD and dayOfMonth >= 24 and dayOfMonth < 30) then
+            return true
+        end
     end
 
-    return true
+    return false
 end
 
 --- https://classic.wowhead.com/guides/classic-darkmoon-faire#darkmoon-faire-location-and-schedule
 --- Darkmoon Faire starts its setup the first Friday of the month and will begin the following Monday.
 --- The faire ends the sunday after it has begun.
---- Sunday is the first weekday
 _LoadDarkmoonFaire = function()
-    local date = (C_DateAndTime.GetTodaysDate or C_DateAndTime.GetCurrentCalendarTime)()
-    local weekDay = date.weekDay or date.weekday -- lol come on
-    local day = date.day or date.monthDay
-    local month = date.month
+    local currentDate = C_DateAndTime.GetCurrentCalendarTime()
 
-    local isInMulgore = (month % 2) == 0
-
-    if (not _IsDarkmoonFaireActive(day, weekDay)) then
+    if (not _IsDarkmoonFaireActive(currentDate.monthDay)) then
         return
     end
 
-    -- The faire is setting up right now or is already up
-    local annoucingQuestId = 7905 -- Alliance announcement quest
-    if isInMulgore then
-        annoucingQuestId = 7926 -- Horde announcement quest
+    -- TODO: Also handle Terrokar Forest starting with TBC
+    local isInMulgore
+    if Questie.IsSoD then
+        -- The first event of a month is always in Mulgore, the second in Elwynn Forest
+        isInMulgore = currentDate.monthDay < 16
+    else
+        isInMulgore = (currentDate.month % 2) == 0
     end
-    QuestieCorrections.hiddenQuests[annoucingQuestId] = nil
-    QuestieEvent.activeQuests[annoucingQuestId] = true
 
-    if (weekDay >= 2 and day >= 5) or (weekDay == 1 and day >= 10 and day <= 16) then
-        -- The faire is up right now
-        for _, questData in pairs(QuestieEvent.eventQuests) do
-            if questData[1] == "Darkmoon Faire" then
-                local questId = questData[2]
-                QuestieCorrections.hiddenQuests[questId] = nil
-                QuestieEvent.activeQuests[questId] = true
+    -- The faire is setting up right now or is already up
+    local announcingQuestId = 7905 -- Alliance announcement quest
+    if isInMulgore then
+        announcingQuestId = 7926 -- Horde announcement quest
+    end
+    QuestieCorrections.hiddenQuests[announcingQuestId] = nil
+    QuestieEvent.activeQuests[announcingQuestId] = true
 
-                -- Update the NPC spawns based on the place of the faire
-                for id, data in pairs(QuestieNPCFixes:LoadDarkmoonFixes(isInMulgore)) do
-                    QuestieDB.npcDataOverrides[id] = data
-                end
+    for _, questData in pairs(QuestieEvent.eventQuests) do
+        if questData[1] == "Darkmoon Faire" then
+            local questId = questData[2]
+            QuestieCorrections.hiddenQuests[questId] = nil
+            QuestieEvent.activeQuests[questId] = true
+
+            -- Update the NPC spawns based on the place of the faire
+            for id, data in pairs(QuestieNPCFixes:LoadDarkmoonFixes(isInMulgore)) do
+                QuestieDB.npcDataOverrides[id] = data
             end
         end
     end
+
+    print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n("Darkmoon Faire")))
 end
 
 --- Checks wheather the current date is within the given date range
@@ -459,6 +492,15 @@ tinsert(QuestieEvent.eventQuests, {"Winter Veil", 8799}) -- The Hero of the Day
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 6964}) -- The Reason for the Season
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 8762}) -- Metzen the Reindeer
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 8746}) -- Metzen the Reindeer
+-- New SoD quests
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79482}) -- Stolen Winter Veil Treats
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79483}) -- Stolen Winter Veil Treats
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79484}) -- You're a Mean One...
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79485}) -- You're a Mean One...
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79486}) -- A Smokywood Pastures' Thank You!
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79487}) -- A Smokywood Pastures' Thank You!
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79492}) -- Metzen the Reindeer
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 79495}) -- Metzen the Reindeer
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 8744, "25/12", "2/1"}) -- A Carefully Wrapped Present
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 8767, "25/12", "2/1"}) -- A Gently Shaken Gift
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 8768, "25/12", "2/1"}) -- A Gaily Wrapped Present
@@ -541,18 +583,18 @@ tinsert(QuestieEvent.eventQuests, {"Darkmoon Faire", 10939}) -- Darkmoon Storms 
 tinsert(QuestieEvent.eventQuests, {"Darkmoon Faire", 10940}) -- Darkmoon Furies Deck
 tinsert(QuestieEvent.eventQuests, {"Darkmoon Faire", 10941}) -- Darkmoon Lunacy Deck
 
---tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11450}) -- Fire Training
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11450}) -- Fire Training
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11356}) -- Costumed Orphan Matron
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11357}) -- Masked Orphan Matron
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11131}) -- Stop the Fires!
-tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11135}) -- The Headless Horseman
-tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11220}) -- The Headless Horseman
---tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11219}) -- Stop the Fires!
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11135, nil, nil, QuestieCorrections.TBC_ONLY}) -- The Headless Horseman
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11220, nil, nil, QuestieCorrections.TBC_ONLY}) -- The Headless Horseman
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11219}) -- Stop the Fires!
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11361}) -- Fire Training
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11360}) -- Fire Brigade Practice
---tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11449}) -- Fire Training
---tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11440}) -- Fire Brigade Practice
---tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11439}) -- Fire Brigade Practice
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11449}) -- Fire Training
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11440}) -- Fire Brigade Practice
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11439}) -- Fire Brigade Practice
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12133}) -- Smash the Pumpkin
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12135}) -- Let the Fires Come!
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12139}) -- Let the Fires Come!
@@ -637,10 +679,10 @@ tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12407}) -- Candy Bucket
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12408}) -- Candy Bucket
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12409}) -- Candy Bucket
 --tinsert(QuestieEvent.eventQuests, {"Hallow's End", 12410}) -- Candy Bucket -- doesn't exist
-tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11392}) -- Call the Headless Horseman
-tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11401}) -- Call the Headless Horseman
-tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11403, nil, nil, QuestieCorrections.CLASSIC_ONLY}) -- Free at Last!
-tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11242, nil, nil, QuestieCorrections.CLASSIC_ONLY}) -- Free at Last!
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11392, nil, nil, QuestieCorrections.TBC_ONLY}) -- Call the Headless Horseman
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11401, nil, nil, QuestieCorrections.TBC_ONLY}) -- Call the Headless Horseman
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11403}) -- Free at Last!
+tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11242}) -- Free at Last!
 --tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11404}) -- Call the Headless Horseman
 --tinsert(QuestieEvent.eventQuests, {"Hallow's End", 11405}) -- Call the Headless Horseman
 
@@ -856,6 +898,8 @@ tinsert(QuestieEvent.eventQuests, {"Midsummer", 11971}) -- The Spinner of Summer
 tinsert(QuestieEvent.eventQuests, {"Midsummer", 12012}) -- Inform the Elder
 
 tinsert(QuestieEvent.eventQuests, {"Winter Veil", 11528, "25/12", "2/1"}) -- A Winter Veil Gift
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 13203, "25/12", "2/1"}) -- A Winter Veil Gift
+tinsert(QuestieEvent.eventQuests, {"Winter Veil", 13966, "25/12", "2/1"}) -- A Winter Veil Gift
 
 --- Wotlk event quests
 
@@ -975,16 +1019,32 @@ tinsert(QuestieEvent.eventQuests, {"Hallow's End", 13474}) -- Candy Bucket
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 13501}) -- Candy Bucket
 tinsert(QuestieEvent.eventQuests, {"Hallow's End", 13548}) -- Candy Bucket
 
-tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14036}) -- Pilgrim's Bounty
-tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14022}) -- Pilgrim's Bounty
+--tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14036}) -- Pilgrim's Bounty
+--tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14022}) -- Pilgrim's Bounty
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14023}) -- Spice Bread Stuffing
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14024}) -- Pumpkin Pie
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14028}) -- Cranberry Chutney
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14030}) -- They're Ravenous In Darnassus
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14033}) -- Candied Sweet Potatoes
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14035}) -- Slow-roasted Turkey
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14037}) -- Spice Bread Stuffing
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14040}) -- Pumpkin Pie
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14041}) -- Cranberry Chutney
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14043}) -- Candied Sweet Potatoes
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14044}) -- Undersupplied in the Undercity
 tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14047}) -- Slow-roasted Turkey
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14048}) -- Can't Get Enough Turkey
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14051}) -- Don't Forget The Stuffing
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14053}) -- We're Out of Cranberry Chutney Again?
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14054}) -- Easy As Pie
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14055}) -- She Says Potato
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14058}) -- She Says Potato
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14059}) -- We're Out of Cranberry Chutney Again?
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14060}) -- Easy As Pie
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14061}) -- Can't Get Enough Turkey
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14062}) -- Don't Forget The Stuffing
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14064}) -- Sharing a Bountiful Feast
+tinsert(QuestieEvent.eventQuests, {"Pilgrim's Bounty", 14065}) -- Sharing a Bountiful Feast
 
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 13931}) -- Another Year, Another Souvenir. -- Doesn't seem to be in the game
 tinsert(QuestieEvent.eventQuests, {"Brewfest", 13932}) -- Another Year, Another Souvenir. -- Doesn't seem to be in the game
