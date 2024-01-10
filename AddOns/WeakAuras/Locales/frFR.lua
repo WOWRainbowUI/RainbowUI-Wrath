@@ -22,6 +22,8 @@ L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."] = "|cffeda55
 L["|cffeda55fRight-Click|r to toggle performance profiling window."] = "|cffeda55fClic-Droit|r pour basculer la fenêtre de profilage des performances."
 L["|cffeda55fShift-Click|r to pause addon execution."] = "|cffeda55fMaj-Clic|r Pour suspendre l'exécution de l'addon."
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "ID du bonus de l'objet |cFFFF0000non|r équipé"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Item Equipped"] = "|cFFFF0000Not|r Item Equipped"
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000Not|r Nom du joueur / serveur"
 --[[Translation missing --]]
 L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
@@ -101,8 +103,6 @@ L["Afk"] = "Afk"
 L["Aggro"] = "Aggro"
 L["Agility"] = "Agilité"
 L["Ahn'Qiraj"] = "Ahn'Qiraj"
---[[Translation missing --]]
-L["Alchemy Cast Bar"] = "Alchemy Cast Bar"
 L["Alert Type"] = "Type d'alerte"
 --[[Translation missing --]]
 L["Algalon the Observer"] = "Algalon the Observer"
@@ -124,6 +124,8 @@ L["Amount"] = "Quantité"
 L["Anchoring"] = "Anchoring"
 --[[Translation missing --]]
 L["And Talent"] = "And Talent"
+--[[Translation missing --]]
+L["Angle and Radius"] = "Angle and Radius"
 L["Animations"] = "Animations"
 L["Anticlockwise"] = "Sens anti-horaire"
 --[[Translation missing --]]
@@ -204,7 +206,8 @@ L["Background"] = "Arrière-plan"
 L["Background Color"] = "Couleur d'arrière-plan"
 --[[Translation missing --]]
 L["Baltharus the Warborn"] = "Baltharus the Warborn"
-L["Bar Color"] = "Couleur de barre"
+--[[Translation missing --]]
+L["Bar Color/Gradient Start"] = "Bar Color/Gradient Start"
 L["Baron Geddon"] = "Baron Geddon"
 --[[Translation missing --]]
 L["Battle for Azeroth"] = "Battle for Azeroth"
@@ -225,9 +228,6 @@ L["BigWigs Stage"] = "BigWigs Stage"
 L["BigWigs Timer"] = "Temps BigWigs"
 --[[Translation missing --]]
 L["Black Wing Lair"] = "Black Wing Lair"
---[[Translation missing --]]
-L["Blacksmithing Cast Bar"] = "Blacksmithing Cast Bar"
-L["Blizzard (2h | 3m | 10s | 2.4)"] = "Blizzard (2h | 3m | 10s | 2.4)"
 L["Blizzard Combat Text"] = "Texte de Combat Blizzard"
 --[[Translation missing --]]
 L["Blizzard Cooldown Reduction"] = "Blizzard Cooldown Reduction"
@@ -284,6 +284,12 @@ https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=] ] = [=[Cannot c
 https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=]
 --[[Translation missing --]]
 L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."] = "Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."
+--[[Translation missing --]]
+L["Capped"] = "Capped"
+--[[Translation missing --]]
+L["Capped at Season Max"] = "Capped at Season Max"
+--[[Translation missing --]]
+L["Capped at Weekly Max"] = "Capped at Weekly Max"
 L["Cast"] = "Incantation"
 L["Cast Bar"] = "Barre d'incantation"
 L["Cast Failed"] = "Incantation ratée"
@@ -294,26 +300,21 @@ L["Caster"] = "Lanceur de sort"
 L["Caster Name"] = "Nom du Lanceur de sort "
 L["Caster Realm"] = "Royaume du Lanceur de sort"
 L["Caster Unit"] = "Unité lanceur de sort"
+--[[Translation missing --]]
+L["Casters Name/Realm"] = "Casters Name/Realm"
 L["Caster's Target"] = "Cible du Lanceur de sort"
 --[[Translation missing --]]
 L["Cataclysm"] = "Cataclysm"
 L["Ceil"] = "Cellule"
 L["Center"] = "Centre"
---[[Translation missing --]]
-L["Center, then alternating bottom and top"] = "Center, then alternating bottom and top"
---[[Translation missing --]]
-L["Center, then alternating left and right"] = "Center, then alternating left and right"
---[[Translation missing --]]
-L["Center, then alternating right and left"] = "Center, then alternating right and left"
---[[Translation missing --]]
-L["Center, then alternating top and bottom"] = "Center, then alternating top and bottom"
-L["Centered Horizontal"] = "Centré horizontalement"
---[[Translation missing --]]
-L["Centered Horizontal, then Centered Vertical"] = "Centered Horizontal, then Centered Vertical"
---[[Translation missing --]]
-L["Centered Horizontal, then Down"] = "Centered Horizontal, then Down"
---[[Translation missing --]]
-L["Centered Horizontal, then Up"] = "Centered Horizontal, then Up"
+L["Center, then alternating bottom and top"] = "Centrer, puis alterner bas et haut"
+L["Center, then alternating left and right"] = "Centrer, puis alterner gauche et droite"
+L["Center, then alternating right and left"] = "Centrer, puis alterner droite et gauche"
+L["Center, then alternating top and bottom"] = "Centrer, puis alterner haut et bas"
+L["Centered Horizontal"] = "Centrer horizontalement"
+L["Centered Horizontal, then Centered Vertical"] = "Centrer horizontalement, puis centrer verticalement"
+L["Centered Horizontal, then Down"] = "Centrer horizontalement, puis vers le haut"
+L["Centered Horizontal, then Up"] = "Centrer horizontalement, puis vers le bas"
 L["Centered Vertical"] = "Centré verticalement"
 --[[Translation missing --]]
 L["Centered Vertical, then Centered Horizontal"] = "Centered Vertical, then Centered Horizontal"
@@ -400,6 +401,10 @@ L["Critical Rating"] = "Évaluation Critique"
 L["Crowd Controlled"] = "Contrôlé"
 L["Crushing"] = "Ecrasant"
 L["C'thun"] = "C'thun"
+--[[Translation missing --]]
+L["Currency"] = "Currency"
+--[[Translation missing --]]
+L["Current Combo Point charged"] = "Current Combo Point charged"
 --[[Translation missing --]]
 L["Current Essence"] = "Current Essence"
 --[[Translation missing --]]
@@ -492,6 +497,8 @@ L["Difficulty"] = "Difficulty"
 L["Disable Spell Known Check"] = "Disable Spell Known Check"
 --[[Translation missing --]]
 L["Disabled Spell Known Check"] = "Disabled Spell Known Check"
+--[[Translation missing --]]
+L["Discovered"] = "Discovered"
 L["Disease"] = "Maladie"
 L["Dispel"] = "Dissipation"
 L["Dispel Failed"] = "Dissipation échouée"
@@ -575,15 +582,15 @@ L["Enchant Missing"] = "Enchantement manquant"
 L["Enchant Name or ID"] = "Nom ou ID de l'Enchantement"
 L["Enchant Removed"] = "Enchantement retiré"
 L["Enchanted"] = "Enchanté"
---[[Translation missing --]]
-L["Enchanting Cast Bar"] = "Enchanting Cast Bar"
 L["Encounter ID(s)"] = "ID de la Rencontre"
 L["Energize"] = "Gain d'énergie"
 L["Enrage"] = "Enrager"
 --[[Translation missing --]]
+L["Enter a name or a spellId"] = "Enter a name or a spellId"
+--[[Translation missing --]]
 L["Enter static or relative values with %"] = "Enter static or relative values with %"
 L["Entering"] = "Entrer"
-L["Entering/Leaving Combat"] = "Entrer/Sortir de Combat"
+L["Entering/Leaving Combat"] = "Entrer / sortir de combat"
 --[[Translation missing --]]
 L["Entering/Leaving Encounter"] = "Entering/Leaving Encounter"
 --[[Translation missing --]]
@@ -759,9 +766,9 @@ L["Golemagg the Incinerator"] = "Golemagg the Incinerator"
 L["Gothik the Harvester"] = "Gothik the Harvester"
 L["Gradient"] = "Dégradé"
 --[[Translation missing --]]
-L["Gradient Color"] = "Gradient Color"
---[[Translation missing --]]
 L["Gradient Enabled"] = "Gradient Enabled"
+--[[Translation missing --]]
+L["Gradient End"] = "Gradient End"
 --[[Translation missing --]]
 L["Gradient Orientation"] = "Gradient Orientation"
 L["Gradient Pulse"] = "Pulsation dégradée"
@@ -773,23 +780,9 @@ L["Grobbulus"] = "Grobbulus"
 L["Group"] = "Groupe"
 L["Group Arrangement"] = "Arrangement du Groupe"
 --[[Translation missing --]]
-L["Group Finder Eye"] = "Group Finder Eye"
---[[Translation missing --]]
-L["Group Finder Eye Initial"] = "Group Finder Eye Initial"
---[[Translation missing --]]
-L["Group Finder Found"] = "Group Finder Found"
---[[Translation missing --]]
-L["Group Finder Found Initial"] = "Group Finder Found Initial"
---[[Translation missing --]]
-L["Group Finder Mouse Over"] = "Group Finder Mouse Over"
---[[Translation missing --]]
-L["Group Finder Poke"] = "Group Finder Poke"
---[[Translation missing --]]
-L["Group Finder Poke End"] = "Group Finder Poke End"
---[[Translation missing --]]
-L["Group Finder Poke Initial"] = "Group Finder Poke Initial"
---[[Translation missing --]]
 L["Group Leader/Assist"] = "Group Leader/Assist"
+--[[Translation missing --]]
+L["Group Size"] = "Group Size"
 --[[Translation missing --]]
 L["Group Type"] = "Group Type"
 L["Grow"] = "Grandir"
@@ -860,6 +853,8 @@ L["Icon"] = "Icône"
 L["Icon Function"] = "Icon Function"
 --[[Translation missing --]]
 L["Icon Function (fallback state)"] = "Icon Function (fallback state)"
+--[[Translation missing --]]
+L["ID"] = "ID"
 --[[Translation missing --]]
 L["Id"] = "Id"
 --[[Translation missing --]]
@@ -953,16 +948,12 @@ L["Item Slot String"] = "Item Slot String"
 L["Item Type"] = "Type d'objet"
 L["Item Type Equipped"] = "Type d'objet équipé"
 --[[Translation missing --]]
-L["Jewelcrafting Cast Bar"] = "Jewelcrafting Cast Bar"
---[[Translation missing --]]
 L["Jin'do the Hexxer"] = "Jin'do the Hexxer"
 --[[Translation missing --]]
 L["Journal Stage"] = "Journal Stage"
 L["Keep Inside"] = "Garder à l'Intérieur"
 --[[Translation missing --]]
 L["Kel'Thuzad"] = "Kel'Thuzad"
---[[Translation missing --]]
-L["Key"] = "Key"
 --[[Translation missing --]]
 L["Kologarn"] = "Kologarn"
 --[[Translation missing --]]
@@ -977,8 +968,6 @@ L["Latency"] = "Latency"
 --[[Translation missing --]]
 L["Leader"] = "Leader"
 L["Least remaining time"] = "Moins de temps restant"
---[[Translation missing --]]
-L["Leatherworking Cast Bar"] = "Leatherworking Cast Bar"
 L["Leaving"] = "Quitter"
 L["Leech"] = "Drain"
 L["Leech (%)"] = "Ponction (%)"
@@ -1008,6 +997,8 @@ L["Location"] = "Location"
 --[[Translation missing --]]
 L["Looking for Raid"] = "Looking for Raid"
 L["Loop"] = "Boucle"
+--[[Translation missing --]]
+L["Loot"] = "Loot"
 --[[Translation missing --]]
 L["Lord Jaraxxus"] = "Lord Jaraxxus"
 --[[Translation missing --]]
@@ -1055,6 +1046,8 @@ L["Max Charges"] = "Charges Max"
 L["Max Health"] = "Max Health"
 --[[Translation missing --]]
 L["Max Power"] = "Max Power"
+--[[Translation missing --]]
+L["Max Quantity"] = "Max Quantity"
 L["Maximum"] = "Maximum"
 L["Maximum Estimate"] = "Estimation Maximale"
 --[[Translation missing --]]
@@ -1310,8 +1303,6 @@ L["Player Faction"] = "Faction joueur"
 L["Player Level"] = "Niveau du joueur"
 L["Player Name/Realm"] = "Nom du joueur / serveur"
 L["Player Race"] = "Race du joueur"
---[[Translation missing --]]
-L["Player Rest"] = "Player Rest"
 L["Player(s) Affected"] = "Joueur(s) affecté(s)"
 L["Player(s) Not Affected"] = "Joueur(s) non affecté(s)"
 --[[Translation missing --]]
@@ -1350,6 +1341,12 @@ L["PvP Talent %i"] = "Talent JcJ %i"
 L["PvP Talent selected"] = "Talent JcJ sélectionné"
 --[[Translation missing --]]
 L["PvP Talent Selected"] = "PvP Talent Selected"
+--[[Translation missing --]]
+L["Quality Id"] = "Quality Id"
+--[[Translation missing --]]
+L["Quantity"] = "Quantity"
+--[[Translation missing --]]
+L["Quantity earned this week"] = "Quantity earned this week"
 --[[Translation missing --]]
 L["Queued Action"] = "Queued Action"
 L["Radius"] = "Rayon"
@@ -1426,8 +1423,7 @@ L["Resting"] = "Repos"
 L["Resurrect"] = "Résurrection"
 L["Right"] = "Droite"
 L["Right to Left"] = "Droite à Gauche"
---[[Translation missing --]]
-L["Right, then Centered Vertical"] = "Right, then Centered Vertical"
+L["Right, then Centered Vertical"] = "Droite, puis centrer verticalement"
 L["Right, then Down"] = "Droite, puis bas"
 L["Right, then Up"] = "Droite, puis haut"
 L["Role"] = "Rôle"
@@ -1592,6 +1588,8 @@ L["Spec Position"] = "Spec Position"
 L["Spec Role"] = "Spec Role"
 --[[Translation missing --]]
 L["Specialization"] = "Specialization"
+--[[Translation missing --]]
+L["Specific Currency"] = "Specific Currency"
 L["Specific Type"] = "Type spécifique"
 L["Specific Unit"] = "Unité spécifique"
 L["Spell"] = "Sort"
@@ -1676,8 +1674,6 @@ L["Swipe"] = "Balayage"
 L["System"] = "Système"
 L["Tab "] = "Onglet"
 --[[Translation missing --]]
-L["Tailoring Cast Bar"] = "Tailoring Cast Bar"
---[[Translation missing --]]
 L["Talent"] = "Talent"
 --[[Translation missing --]]
 L["Talent |cFFFF0000Not|r Known"] = "Talent |cFFFF0000Not|r Known"
@@ -1685,8 +1681,8 @@ L["Talent |cFFFF0000Not|r Known"] = "Talent |cFFFF0000Not|r Known"
 L["Talent |cFFFF0000Not|r Selected"] = "Talent |cFFFF0000Not|r Selected"
 --[[Translation missing --]]
 L["Talent Known"] = "Talent Known"
-L["Talent Selected"] = "Talent sélectionné"
 L["Talent selected"] = "Talent sélectionné"
+L["Talent Selected"] = "Talent sélectionné"
 L["Talent Specialization"] = "Spécialisation"
 L["Tanking And Highest"] = "Tank et le plus haut"
 L["Tanking But Not Highest"] = "Tank mais pas le plus haut"
@@ -1713,7 +1709,7 @@ L["The Eye of Eternity"] = "The Eye of Eternity"
 --[[Translation missing --]]
 L["The Four Horsemen"] = "The Four Horsemen"
 --[[Translation missing --]]
-L["The 'Key' value can be found in the BigWigs options of a specific spell"] = "The 'Key' value can be found in the BigWigs options of a specific spell"
+L["The 'ID' value can be found in the BigWigs options of a specific spell"] = "The 'ID' value can be found in the BigWigs options of a specific spell"
 --[[Translation missing --]]
 L["The Lich King"] = "The Lich King"
 --[[Translation missing --]]
@@ -1776,6 +1772,8 @@ L["Torghast"] = "Torghast"
 L["Total"] = "Total"
 L["Total Duration"] = "Duration Totale"
 --[[Translation missing --]]
+L["Total Earned in this Season"] = "Total Earned in this Season"
+--[[Translation missing --]]
 L["Total Essence"] = "Total Essence"
 --[[Translation missing --]]
 L["Total Experience"] = "Total Experience"
@@ -1801,6 +1799,8 @@ L["Tracking Charge %i"] = "Suivi de charge %i"
 L["Tracking Charge CDs"] = "Suivi des CD de charge"
 L["Tracking Only Cooldown"] = "Suivi du temps de recharge"
 L["Transmission error"] = "Erreur de transmission"
+--[[Translation missing --]]
+L["Treat charged combo point as 7 combo points"] = "Treat charged combo point as 7 combo points"
 --[[Translation missing --]]
 L["Trial of the Crusader"] = "Trial of the Crusader"
 L["Trigger"] = "Déclencheur"
@@ -1846,13 +1846,16 @@ L["Unit Name"] = "Nom de l'Unité"
 L["Unit Name/Realm"] = "Unit Name/Realm"
 L["Units Affected"] = "Unités Concernés"
 --[[Translation missing --]]
+L["Units of affected Players in a table format"] = "Units of affected Players in a table format"
+--[[Translation missing --]]
+L["Units of unaffected Players in a table format"] = "Units of unaffected Players in a table format"
+--[[Translation missing --]]
 L["unknown location"] = "unknown location"
 L["Unlimited"] = "Illimité"
 --[[Translation missing --]]
 L["Untrigger %s"] = "Untrigger %s"
 L["Up"] = "Haut"
---[[Translation missing --]]
-L["Up, then Centered Horizontal"] = "Up, then Centered Horizontal"
+L["Up, then Centered Horizontal"] = "Haut, puis centrer horizontalement"
 L["Up, then Left"] = "Haut, puis gauche"
 L["Up, then Right"] = "Haut, puis droite"
 --[[Translation missing --]]

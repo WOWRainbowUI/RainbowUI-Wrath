@@ -22,6 +22,8 @@ L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."] = "|cffeda55
 L["|cffeda55fRight-Click|r to toggle performance profiling window."] = "|cffeda55f우-클릭|r 으로 성능 프로파일링 창을 켜고 끕니다."
 L["|cffeda55fShift-Click|r to pause addon execution."] = "|cffeda55f쉬프트-클릭|r 으로 애드온 실행을 일시 중지합니다."
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000착용하지 않은|r 아이템 보너스 ID"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Item Equipped"] = "|cFFFF0000Not|r Item Equipped"
 L["|cFFFF0000Not|r Player Name/Realm"] = "플레이어 이름/서버 |cFFFF0000불일치|r"
 --[[Translation missing --]]
 L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
@@ -105,8 +107,6 @@ L["Afk"] = "자리 비움"
 L["Aggro"] = "어그로"
 L["Agility"] = "민첩성"
 L["Ahn'Qiraj"] = "안퀴라즈"
---[[Translation missing --]]
-L["Alchemy Cast Bar"] = "Alchemy Cast Bar"
 L["Alert Type"] = "경보 유형"
 L["Algalon the Observer"] = "관찰자 알갈론"
 L["Alive"] = "생존"
@@ -126,6 +126,8 @@ L["Amount"] = "수량"
 --[[Translation missing --]]
 L["Anchoring"] = "Anchoring"
 L["And Talent"] = "및 특성"
+--[[Translation missing --]]
+L["Angle and Radius"] = "Angle and Radius"
 L["Animations"] = "애니메이션"
 L["Anticlockwise"] = "반시계 방향"
 L["Anub'arak"] = "아눕아락"
@@ -197,7 +199,8 @@ L["Back and Forth"] = "왕복"
 L["Background"] = "배경"
 L["Background Color"] = "배경 색상"
 L["Baltharus the Warborn"] = "전쟁의 아들 발타루스"
-L["Bar Color"] = "바 색상"
+--[[Translation missing --]]
+L["Bar Color/Gradient Start"] = "Bar Color/Gradient Start"
 L["Baron Geddon"] = "남작 게돈"
 L["Battle for Azeroth"] = "격전의 아제로스"
 L["Battle.net Whisper"] = "Battle.net 귓속말"
@@ -213,9 +216,6 @@ L["BigWigs Message"] = "BigWigs 메시지"
 L["BigWigs Stage"] = "BigWigs 단계"
 L["BigWigs Timer"] = "BigWigs 타이머"
 L["Black Wing Lair"] = "검은날개 둥지"
---[[Translation missing --]]
-L["Blacksmithing Cast Bar"] = "Blacksmithing Cast Bar"
-L["Blizzard (2h | 3m | 10s | 2.4)"] = "블리자드 (2시간 | 3분 | 10초 | 2.4)"
 L["Blizzard Combat Text"] = "블리자드 전투 문자"
 L["Blizzard Cooldown Reduction"] = "블리자드 재사용 대기시간 감소"
 L["Block"] = "방어함"
@@ -265,6 +265,12 @@ https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=] ] = [=[Cannot c
 https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=]
 --[[Translation missing --]]
 L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."] = "Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."
+--[[Translation missing --]]
+L["Capped"] = "Capped"
+--[[Translation missing --]]
+L["Capped at Season Max"] = "Capped at Season Max"
+--[[Translation missing --]]
+L["Capped at Weekly Max"] = "Capped at Weekly Max"
 L["Cast"] = "시전"
 L["Cast Bar"] = "시전바"
 L["Cast Failed"] = "시전 실패"
@@ -275,6 +281,8 @@ L["Caster"] = "시전자"
 L["Caster Name"] = "시전자 이름"
 L["Caster Realm"] = "시전자 서버"
 L["Caster Unit"] = "시전 유닛"
+--[[Translation missing --]]
+L["Casters Name/Realm"] = "Casters Name/Realm"
 L["Caster's Target"] = "시전자의 대상"
 L["Cataclysm"] = "대격변"
 L["Ceil"] = "천장"
@@ -377,6 +385,10 @@ L["Crowd Controlled"] = "군중 제어됨"
 L["Crushing"] = "강타"
 L["C'thun"] = "쑨"
 --[[Translation missing --]]
+L["Currency"] = "Currency"
+--[[Translation missing --]]
+L["Current Combo Point charged"] = "Current Combo Point charged"
+--[[Translation missing --]]
 L["Current Essence"] = "Current Essence"
 L["Current Experience"] = "현재 경험치"
 L["Current Movement Speed (%)"] = "현재 이동 속도 (%)"
@@ -447,6 +459,8 @@ L["Difficulty"] = "Difficulty"
 L["Disable Spell Known Check"] = "Disable Spell Known Check"
 --[[Translation missing --]]
 L["Disabled Spell Known Check"] = "Disabled Spell Known Check"
+--[[Translation missing --]]
+L["Discovered"] = "Discovered"
 L["Disease"] = "질병"
 L["Dispel"] = "무효화"
 L["Dispel Failed"] = "무효화 실패"
@@ -527,11 +541,11 @@ L["Enchant Name or ID"] = "마법부여 이름 또는 ID"
 L["Enchant Removed"] = "마법부여 사라짐"
 --[[Translation missing --]]
 L["Enchanted"] = "Enchanted"
---[[Translation missing --]]
-L["Enchanting Cast Bar"] = "Enchanting Cast Bar"
 L["Encounter ID(s)"] = "교전 ID(s)"
 L["Energize"] = "마력 얻음"
 L["Enrage"] = "격노"
+--[[Translation missing --]]
+L["Enter a name or a spellId"] = "Enter a name or a spellId"
 --[[Translation missing --]]
 L["Enter static or relative values with %"] = "Enter static or relative values with %"
 L["Entering"] = "시작"
@@ -682,9 +696,9 @@ L["Golemagg the Incinerator"] = "초열의 골레마그"
 L["Gothik the Harvester"] = "영혼의 착취자 고딕"
 L["Gradient"] = "색상 전환"
 --[[Translation missing --]]
-L["Gradient Color"] = "Gradient Color"
---[[Translation missing --]]
 L["Gradient Enabled"] = "Gradient Enabled"
+--[[Translation missing --]]
+L["Gradient End"] = "Gradient End"
 --[[Translation missing --]]
 L["Gradient Orientation"] = "Gradient Orientation"
 L["Gradient Pulse"] = "색상 전환(깜빡임)"
@@ -694,23 +708,9 @@ L["Grobbulus"] = "그라불루스"
 L["Group"] = "그룹"
 L["Group Arrangement"] = "그룹 편성"
 --[[Translation missing --]]
-L["Group Finder Eye"] = "Group Finder Eye"
---[[Translation missing --]]
-L["Group Finder Eye Initial"] = "Group Finder Eye Initial"
---[[Translation missing --]]
-L["Group Finder Found"] = "Group Finder Found"
---[[Translation missing --]]
-L["Group Finder Found Initial"] = "Group Finder Found Initial"
---[[Translation missing --]]
-L["Group Finder Mouse Over"] = "Group Finder Mouse Over"
---[[Translation missing --]]
-L["Group Finder Poke"] = "Group Finder Poke"
---[[Translation missing --]]
-L["Group Finder Poke End"] = "Group Finder Poke End"
---[[Translation missing --]]
-L["Group Finder Poke Initial"] = "Group Finder Poke Initial"
---[[Translation missing --]]
 L["Group Leader/Assist"] = "Group Leader/Assist"
+--[[Translation missing --]]
+L["Group Size"] = "Group Size"
 L["Group Type"] = "그룹 유형"
 L["Grow"] = "성장"
 L["GTFO Alert"] = "GTFO 경보"
@@ -765,6 +765,8 @@ L["Icon Function"] = "Icon Function"
 L["Icon Function (fallback state)"] = "Icon Function (fallback state)"
 --[[Translation missing --]]
 L["Id"] = "Id"
+--[[Translation missing --]]
+L["ID"] = "ID"
 L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/weakauras!"] = "추가 지원이 필요한 경우, GitHub에서 티켓을 열거나 Discord( https://discord.gg/weakauras )를 방문해 주세요!"
 L["Ignis the Furnace Master"] = "용광로 군주 이그니스"
 L["Ignore Dead"] = "죽음 무시"
@@ -840,14 +842,10 @@ L["Item Slot"] = "아이템 칸"
 L["Item Slot String"] = "아이템 칸 문자열"
 L["Item Type"] = "아이템 유형"
 L["Item Type Equipped"] = "착용한 아이템 유형"
---[[Translation missing --]]
-L["Jewelcrafting Cast Bar"] = "Jewelcrafting Cast Bar"
 L["Jin'do the Hexxer"] = "주술사 진도"
 L["Journal Stage"] = "도감 단계"
 L["Keep Inside"] = "내부에 보관"
 L["Kel'Thuzad"] = "켈투자드"
---[[Translation missing --]]
-L["Key"] = "Key"
 L["Kologarn"] = "콜로간"
 L["Koralon the Flame Watcher"] = "화염 감시자 코랄론"
 L["Kurinnaxx"] = "쿠린낙스"
@@ -858,8 +856,6 @@ L["Latency"] = "Latency"
 --[[Translation missing --]]
 L["Leader"] = "Leader"
 L["Least remaining time"] = "최소 남은 시간"
---[[Translation missing --]]
-L["Leatherworking Cast Bar"] = "Leatherworking Cast Bar"
 L["Leaving"] = "종료"
 L["Leech"] = "마력 흡수"
 L["Leech (%)"] = "생기흡수 (%)"
@@ -885,6 +881,8 @@ L["Loatheb"] = "로데브"
 L["Location"] = "Location"
 L["Looking for Raid"] = "공격대 찾기"
 L["Loop"] = "반복"
+--[[Translation missing --]]
+L["Loot"] = "Loot"
 L["Lord Jaraxxus"] = "군주 자락서스"
 L["Lord Marrowgar"] = "군주 매로우가르"
 L["Lost"] = "손실"
@@ -919,6 +917,8 @@ L["Max Charges"] = "최대 충전량"
 L["Max Health"] = "Max Health"
 --[[Translation missing --]]
 L["Max Power"] = "Max Power"
+--[[Translation missing --]]
+L["Max Quantity"] = "Max Quantity"
 L["Maximum"] = "최대"
 L["Maximum Estimate"] = "최대 예상치"
 --[[Translation missing --]]
@@ -1163,8 +1163,6 @@ L["Player Faction"] = "플레이어 진영"
 L["Player Level"] = "플레이어 레벨"
 L["Player Name/Realm"] = "플레이어 이름/서버"
 L["Player Race"] = "플레이어 종족"
---[[Translation missing --]]
-L["Player Rest"] = "Player Rest"
 L["Player(s) Affected"] = "영향 받은 플레이어"
 L["Player(s) Not Affected"] = "영향 받지 않은 플레이어"
 L["Player/Unit Info"] = "플레이어/유닛 정보"
@@ -1198,6 +1196,12 @@ L["PvP Flagged"] = "PvP 활성"
 L["PvP Talent %i"] = "PvP 특성 %i"
 L["PvP Talent selected"] = "선택된 명예 특성"
 L["PvP Talent Selected"] = "선택된 명예 특성"
+--[[Translation missing --]]
+L["Quality Id"] = "Quality Id"
+--[[Translation missing --]]
+L["Quantity"] = "Quantity"
+--[[Translation missing --]]
+L["Quantity earned this week"] = "Quantity earned this week"
 --[[Translation missing --]]
 L["Queued Action"] = "Queued Action"
 L["Radius"] = "반경"
@@ -1408,6 +1412,8 @@ L["Spark"] = "섬광"
 L["Spec Position"] = "Spec Position"
 L["Spec Role"] = "전문화 역할"
 L["Specialization"] = "전문화"
+--[[Translation missing --]]
+L["Specific Currency"] = "Specific Currency"
 L["Specific Type"] = "특정 유형"
 L["Specific Unit"] = "특정 유닛"
 L["Spell"] = "주문"
@@ -1485,14 +1491,12 @@ L["Swipe"] = "Swipe"
 L["System"] = "시스템"
 --[[Translation missing --]]
 L["Tab "] = "Tab "
---[[Translation missing --]]
-L["Tailoring Cast Bar"] = "Tailoring Cast Bar"
 L["Talent"] = "특성"
 L["Talent |cFFFF0000Not|r Known"] = "|cFFFF0000배우지 않은|r 특성"
 L["Talent |cFFFF0000Not|r Selected"] = "|cFFFF0000선택하지 않은|r 특성"
 L["Talent Known"] = "배운 특성"
-L["Talent Selected"] = "선택된 특성"
 L["Talent selected"] = "선택된 특성"
+L["Talent Selected"] = "선택된 특성"
 L["Talent Specialization"] = "특성 전문화"
 L["Tanking And Highest"] = "탱커이면서 제일 높을 때"
 L["Tanking But Not Highest"] = "탱커지만 제일 높지 않을 때"
@@ -1515,7 +1519,7 @@ L["The effective level differs from the level in e.g. Time Walking dungeons."] =
 L["The Eye of Eternity"] = "영원의 눈"
 L["The Four Horsemen"] = "4기사단"
 --[[Translation missing --]]
-L["The 'Key' value can be found in the BigWigs options of a specific spell"] = "The 'Key' value can be found in the BigWigs options of a specific spell"
+L["The 'ID' value can be found in the BigWigs options of a specific spell"] = "The 'ID' value can be found in the BigWigs options of a specific spell"
 L["The Lich King"] = "리치 왕"
 L["The Obsidian Sanctum"] = "흑요석 성소"
 L["The Prophet Skeram"] = "예언자 스케람"
@@ -1562,6 +1566,8 @@ L["Torghast"] = "토르가스트"
 L["Total"] = "전체"
 L["Total Duration"] = "총 지속시간"
 --[[Translation missing --]]
+L["Total Earned in this Season"] = "Total Earned in this Season"
+--[[Translation missing --]]
 L["Total Essence"] = "Total Essence"
 L["Total Experience"] = "전체 경험치"
 L["Total Match Count"] = "총 일치 횟수"
@@ -1584,6 +1590,8 @@ L["Tracking Charge CDs"] = "Tracking Charge CDs"
 --[[Translation missing --]]
 L["Tracking Only Cooldown"] = "Tracking Only Cooldown"
 L["Transmission error"] = "전송 오류"
+--[[Translation missing --]]
+L["Treat charged combo point as 7 combo points"] = "Treat charged combo point as 7 combo points"
 L["Trial of the Crusader"] = "십자군의 시험장"
 L["Trigger"] = "활성 조건"
 L["Trigger %i"] = "활성 조건 %i"
@@ -1616,6 +1624,10 @@ L["Unit is Unit"] = "유닛 = 유닛"
 L["Unit Name"] = "유닛 이름"
 L["Unit Name/Realm"] = "유닛 이름/서버"
 L["Units Affected"] = "영향 받은 유닛"
+--[[Translation missing --]]
+L["Units of affected Players in a table format"] = "Units of affected Players in a table format"
+--[[Translation missing --]]
+L["Units of unaffected Players in a table format"] = "Units of unaffected Players in a table format"
 L["unknown location"] = "알 수 없는 위치"
 L["Unlimited"] = "무제한"
 --[[Translation missing --]]

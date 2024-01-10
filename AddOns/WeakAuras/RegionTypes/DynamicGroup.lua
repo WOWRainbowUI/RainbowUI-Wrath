@@ -29,6 +29,7 @@ local default = {
   yOffset = 0,
   radius = 200,
   rotation = 0,
+  stepAngle = 15,
   fullCircle = true,
   arcLength = 360,
   constantFactor = "RADIUS",
@@ -718,6 +719,7 @@ local growers = {
     local constantFactor = data.constantFactor
     local space = data.space or 0
     local radius = data.radius or 0
+    local stepAngle = (data.stepAngle or 0) * math.pi / 180
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
@@ -735,7 +737,7 @@ local growers = {
       for frame, regionDatas in pairs(frames) do
         local numVisible = min(limit, #regionDatas)
         local r
-        if constantFactor == "RADIUS" then
+        if constantFactor == "RADIUS" or constantFactor == "ANGLE" then
           r = radius
         else
           if numVisible <= 1 then
@@ -748,6 +750,8 @@ local growers = {
         local dAngle
         if numVisible == 1 then
           dAngle = 0
+        elseif constantFactor == "ANGLE" then
+          dAngle = stepAngle
         elseif not data.fullCircle then
           dAngle = arc / (numVisible - 1)
         else
@@ -769,6 +773,7 @@ local growers = {
     local constantFactor = data.constantFactor
     local space = data.space or 0
     local radius = data.radius or 0
+    local stepAngle = (data.stepAngle or 0) * math.pi / 180
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
@@ -786,7 +791,7 @@ local growers = {
       for frame, regionDatas in pairs(frames) do
         local numVisible = min(limit, #regionDatas)
         local r
-        if constantFactor == "RADIUS" then
+        if constantFactor == "RADIUS" or constantFactor == "ANGLE" then
           r = radius
         else
           if numVisible <= 1 then
@@ -799,6 +804,8 @@ local growers = {
         local dAngle
         if numVisible == 1 then
           dAngle = 0
+        elseif constantFactor == "ANGLE" then
+          dAngle = -stepAngle
         elseif not data.fullCircle then
           dAngle = arc / (1 - numVisible)
         else
@@ -1135,12 +1142,6 @@ local function modify(parent, region, data)
     region.controlledChildren[childID] = region.controlledChildren[childID] or {}
     region.controlledChildren[childID][cloneID] = controlPoint
     childRegion:SetAnchor(data.selfPoint, controlPoint, data.selfPoint)
-    if(childData.frameStrata == 1) then
-      childRegion:SetFrameStrata(region:GetFrameStrata());
-    else
-      childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
-    end
-    Private.ApplyFrameLevel(childRegion)
     return regionData
   end
 
@@ -1384,10 +1385,22 @@ local function modify(parent, region, data)
         end
         if parent and parent.IsObjectType and parent:IsObjectType("Frame") then
           controlPoint:SetParent(parent)
+          controlPoint:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
         end
       else
         controlPoint:SetParent(self)
+        controlPoint:SetScale(1)
       end
+
+      local childData = controlPoint.regionData.data
+      local childRegion = controlPoint.regionData.region
+      if(childData.frameStrata == 1) then
+        childRegion:SetFrameStrata(region:GetFrameStrata());
+      else
+        childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
+      end
+      Private.ApplyFrameLevel(childRegion)
+
       if self.anchorPerUnit == "UNITFRAME" then
         Private.dyngroup_unitframe_monitor[regionData] = frame
       end
