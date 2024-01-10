@@ -383,6 +383,36 @@ L["All Instance log data has been deleted."] = "所有副本紀錄已經被刪�
 L["resetAllInstancesTitle"] = "重置紀錄資料";
 L["resetAllInstancesDesc"] = "這將會重置所有紀錄資料並移除所以紀錄。這不會重置交易。";
 
+L["noCurrentRaidLockouts"] = "目前沒有副本進度。";
+
+L["weeklyQuests"] = "每週任務";
+L["dailyQuests"] = "每日任務";
+
+L["openLockouts"] = "打開副本進度";
+
+L["autoGammaBuffDesc"] = "伽瑪地城";
+
+L["autoGammaBuffTitle"] = "自動伽瑪增益";
+L["autoGammaBuffDesc"] = "和伽瑪地城中的增益 NPC 對話時，自動取得適合你的職業的伽瑪增益效果。";
+
+L["autoGammaBuffReminderTitle"] = "伽瑪增益提醒";
+L["autoGammaBuffReminderDesc"] = "開始地城之前，在聊天視窗顯示訊息，提醒你如果沒有增益效果的話要記得去拿。";
+
+L["autoGammaBuffTypeTitle"] = "伽瑪增益類型";
+L["autoGammaBuffTypeDesc"] = "你想要哪種增益效果？自動選擇將根據你的職業特性自動選擇近戰/遠程/治療/坦克之一。或者也可以用其他選項取代。增益效果的選擇是角色專用的選項。";
+
+L["dungeonPopTimerTitle"] = "進本計時";
+L["dungeonPopTimerDesc"] = "在副本佇列的彈出視窗上顯示還剩多少時間可以點擊進入?";
+
+L["autoWrathDailiesTitle"] = "自動取得每日任務";
+L["autoWrathDailiesDesc"] = "自動從達拉然的大法師蘭達洛克接取和提交每日任務。";
+			
+L["gammaConfigWarning"] = "伽瑪增益選擇是角色專用的，在此角色上進行更改不會影響其他角色。";
+L["autoGammaBuffReminder"] = "從 %s 取得伽瑪地城增益。";
+L["Sunreaver Warden"] = "Sunreaver Warden";
+L["Silver Covenant Warden"] = "Silver Covenant Warden";
+L["note"] = "備註:"
+
 --增加
 L["Nova Instance Tracker"] = "Nova 副本進度追蹤";
 L["NovaInstanceTracker"] = "副本-進度";
@@ -405,7 +435,5 @@ L["Server Time"] = "伺服器時間";
 L["Long"] = "長";
 L["Medium"] = "中";
 L["Short"] = "短";
-L["Lockouts"] = "副本紀錄";
-L["weeklyQuests"] = "每周任務";
-L["openLockouts"] = "打開副本進度"; 
+L["Lockouts"] = "副本進度";
 L["Raid Lockouts (Including Alts)"] = "副本進度 (包括分身}";
