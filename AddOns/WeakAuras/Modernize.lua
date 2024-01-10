@@ -1734,13 +1734,14 @@ function Private.Modernize(data)
     end
   end
 
-  if data.internalVersion < 67 then
-    local function migrateToTable(tab, field)
-      local value = tab[field]
-      if value ~= nil and type(value) ~= "table" then
-        tab[field] = { value }
-      end
+  local function migrateToTable(tab, field)
+    local value = tab[field]
+    if value ~= nil and type(value) ~= "table" then
+      tab[field] = { value }
     end
+  end
+
+  if data.internalVersion < 67 then
     do
       local trigger_migration = {
         ["Cast"] = {
@@ -1962,6 +1963,28 @@ function Private.Modernize(data)
       if parentData and parentData.regionType == "dynamicgroup" then
         if data.anchorFrameParent == nil then
           data.anchorFrameParent = false
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 69 then
+    migrateToTable(data.load, "itemequiped")
+  end
+
+  if data.internalVersion < 70 then
+    local trigger_migration = {
+      Power = {
+        "power",
+        "power_operator"
+      }
+    }
+    for _, triggerData in ipairs(data.triggers) do
+      local t = triggerData.trigger
+      local fieldsToMigrate = trigger_migration[t.event]
+      if fieldsToMigrate then
+        for _, field in ipairs(fieldsToMigrate) do
+          migrateToTable(t, field)
         end
       end
     end

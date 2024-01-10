@@ -723,7 +723,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     },
     useAffected = {
       type = "toggle",
-      name = L["Fetch Affected/Unaffected Names"],
+      name = L["Fetch Affected/Unaffected Names and Units"],
       width = WeakAuras.doubleWidth,
       order = 65.1,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
@@ -1000,9 +1000,9 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Npc ID"],
-      validate = ValidateNumeric,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useNpcId) end,
-      order = 69.32
+      order = 69.32,
+      desc = L["Supports multiple entries, separated by commas"]
     },
     npcIdSpace = {
       type = "description",

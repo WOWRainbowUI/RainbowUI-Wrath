@@ -1,7 +1,7 @@
-## Interface: 100107
+## Interface: 100200
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
-## Version: 5.8.2
+## Version: 5.9.0
 ## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Model paths for WeakAuras
 ## X-Category: Interface Enhancements

@@ -1,7 +1,7 @@
 ## Interface: 30403
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
-## Version: 5.8.2
+## Version: 5.9.0
 ## Notes: Model paths for WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras
