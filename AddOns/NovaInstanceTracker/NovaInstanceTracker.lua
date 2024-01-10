@@ -1012,11 +1012,11 @@ function NIT:updateMinimapButton(tooltip, frame)
 			tooltip:AddLine("  |cFFFFFF00-|r|cFFFFAE42No alts dungeon dailies completed.|r");
 		end
 	end
-	tooltip:AddLine("|cFF9CD6DELeft-Click|r " .. L["openInstanceFrame"]);
-	tooltip:AddLine("|cFF9CD6DERight-Click|r " .. L["openYourChars"]);
-	tooltip:AddLine("|cFF9CD6DEMiddle-Click|r " .. L["openLockouts"]);
-	tooltip:AddLine("|cFF9CD6DEShift Left-Click|r " .. L["openTradeLog"]);
-	tooltip:AddLine("|cFF9CD6DEShift Right-Click|r " .. L["config"]);
+	tooltip:AddLine(L["|cFF9CD6DELeft-Click|r "] .. L["openInstanceFrame"]);
+	tooltip:AddLine(L["|cFF9CD6DERight-Click|r "] .. L["openYourChars"]);
+	tooltip:AddLine(L["|cFF9CD6DEMiddle-Click|r "] .. L["openLockouts"]);
+	tooltip:AddLine(L["|cFF9CD6DEShift Left-Click|r "] .. L["openTradeLog"]);
+	tooltip:AddLine(L["|cFF9CD6DEShift Right-Click|r "] .. L["config"]);
 	tooltip:Show();
 	C_Timer.After(0.1, function()
 		NIT:updateMinimapButton(tooltip, frame);

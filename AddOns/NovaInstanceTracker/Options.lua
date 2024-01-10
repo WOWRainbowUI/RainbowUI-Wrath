@@ -15,7 +15,7 @@ NIT.options = {
 	args = {
 		titleText = {
 			type = "description",
-			name = "        " .. NIT.prefixColor .. "NovaInstanceTracker (v" .. GetAddOnMetadata("NovaInstanceTracker", "Version") .. ")",
+			name = "        " .. NIT.prefixColor .. L["Nova Instance Tracker"].. " (v" .. GetAddOnMetadata("NovaInstanceTracker", "Version") .. ")",
 			fontSize = "large",
 			order = 1,
 		},
@@ -642,7 +642,7 @@ function NIT:loadSpecificOptions()
 			name = L["autoGammaBuffTypeTitle"],
 			desc = L["autoGammaBuffTypeDesc"],
 			values = {
-				[1] = "Auto Select (Spec Based)",
+				[1] = L["Auto Select (Spec Based)"],
 				[2] = MELEE,
 				[3] = RANGED,
 				[4] = HEALER,
