@@ -4,6 +4,9 @@ if not AL then return end
 
 -- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
 -- DungeonsAndRaids
+AL["BFD Tier Sets"] = "BFD套装"
+AL["Lorgus Jett"] = "洛古斯·杰特"
+AL["10 Raids"] = "10 人团队"
 AL["%s killed last"] = "最后杀死 %s"
 AL["20 Raids"] = "20人团队"
 AL["40 Raids"] = "40人团队"

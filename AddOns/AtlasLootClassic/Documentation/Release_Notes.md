@@ -2,12 +2,11 @@
 
 This mod is distributed under Version 2 of the GPL.  A copy of the GPL is included in this zip file with links to non-english translations.
 
-
 ## v3.1.4 (Oct. 10, 2023)
 
 - Add Defiler Scourgestone Vendor
 - Update Dalaran Vendor
-- #397, #388 Update to use new Mount API 
+- #397, #388 Update to use new Mount API
 - #396 Added "Maiden of Grief" Missing items in Titan Rune Beta - Halls of Stone
 - #395 Fixed "King Dred" Wrong loot in Titan Rune Beta - Drak'Tharon Keep
 - #394 Fixed "The Prophet Tharon'ja" Wrong loot in Titan Rune Beta - Drak'Tharon Keep

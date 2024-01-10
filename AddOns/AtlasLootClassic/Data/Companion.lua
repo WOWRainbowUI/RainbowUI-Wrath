@@ -666,26 +666,24 @@ local EventFrame = CreateFrame("FRAME")
 EventFrame:RegisterEvent("COMPANION_LEARNED")
 EventFrame:RegisterEvent("COMPANION_UNLEARNED")
 EventFrame:RegisterEvent("COMPANION_UPDATE")
+
 local function UpdateKnownCompanions(typ)
     if GetNumCompanions(typ) <= 0 then return end
-    
-	if typ == "MOUNT" then
-	  
-      mountIDs = C_MountJournal.GetMountIDs() --List of all avalible MountIDs
-      mountCounter = 1 --loop counter
-      while mountCounter <= #mountIDs do
-        name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[mountCounter])
-        COLLECTED_COMPANIONS[mountID] = isCollected
-		mountCounter = mountCounter + 1
-	  end
-	else
-      for i = 1, GetNumCompanions(typ) do
-        local creatureID = GetCompanionInfo(typ, i) -- creatureID, creatureName, spellID, icon, active
-        
-	  	COLLECTED_COMPANIONS[creatureID] = true
-      end
-	end
+
+    if typ == "MOUNT" then
+        local mountIDs = C_MountJournal.GetMountIDs()
+        for i = 1, #mountIDs do
+            local _, _, _, _, _, _, _, _, _, _, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
+            COLLECTED_COMPANIONS[mountID] = isCollected
+        end
+    else
+        for i = 1, GetNumCompanions(typ) do
+            local creatureID = GetCompanionInfo(typ, i)
+            COLLECTED_COMPANIONS[creatureID] = true
+        end
+    end
 end
+
 local function EventFrame_OnEvent(frame, event, arg1)
     if event == "COMPANION_UNLEARNED" then
         wipe(COLLECTED_COMPANIONS)
@@ -700,4 +698,5 @@ EventFrame:SetScript("OnEvent", EventFrame_OnEvent)
 local function OnInit()
     EventFrame_OnEvent()
 end
+
 AtlasLoot:AddInitFunc(OnInit)

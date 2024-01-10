@@ -635,7 +635,7 @@ data["EmblemofFrost"] = {
 			},
 		},
 		{
-			name = ALIL["Cloak"],
+			name = ALIL["Back"],
 			[NORMAL_DIFF] = {
 				{ 1, 50468 }, -- Drape of the Violet Tower
 				{ 2, 50467 }, -- Might of the Ocean Serpent
@@ -735,7 +735,7 @@ data["SiderealEssence"] = {
 			},
 		},
 		{
-			name = ALIL["Cloak"],
+			name = ALIL["Back"],
 			[NORMAL_DIFF] = {
 				{ 1, 46032 }, -- Drape of the Faceless General
 				{ 16, 46042 }, -- Drape of the Messenger
@@ -932,7 +932,7 @@ data["DefilersScourgestone"] = {
 			)
 		},
 		{
-			name = ALIL["Cloak"],
+			name = ALIL["Back"],
 			[NORMAL_DIFF] = AtlasLoot:GetRetByFaction(
 				{ -- horde
 					-- caster
@@ -1073,7 +1073,7 @@ data["DefilersScourgestone"] = {
 					-- tank
 					{ 24, 47080 }, --Satrina's Impeding Scarab
 				}
-			)	
+			)
 		},
 		{
 			name = ALIL["Weapon"],
@@ -1137,7 +1137,7 @@ data["DefilersScourgestone"] = {
 					-- tank
 					{ 16, 46963 }, --Crystal Plated Vanguard
 				}
-			)	
+			)
 		},
 		{
 			name = AL["Misc"],
@@ -1752,11 +1752,11 @@ data["HalloweenWrath"] = {
 		{ -- SMHeadlessHorseman
 			name = C_Map_GetAreaInfo(796).." - "..AL["Headless Horseman"],
 			[NORMAL_DIFF] = {
-                { 1, 49121 }, -- Ring of Ghoulish Glee
-                { 2, 49123 }, -- The Horseman's Seal
-                { 3, 49124 }, -- Wicked Witch's Band
-                { 5, 49126 }, -- The Horseman's Horrific Helm
-                { 6, 49128 }, -- The Horseman's Baleful Blade
+                { 1, 211817 }, -- Ring of Ghoulish Glee
+                { 2, 211844 }, -- The Horseman's Seal
+                { 3, 211847 }, -- Wicked Witch's Band
+                { 5, 211850 }, -- The Horseman's Horrific Helm
+                { 6, 211851 }, -- The Horseman's Baleful Blade
                 { 8, 33292 }, -- Hallowed Helm
                 { 10, 34068 }, -- Weighted Jack-o'-Lantern
                 { 12, 33277 }, -- Tome of Thomas Thomson

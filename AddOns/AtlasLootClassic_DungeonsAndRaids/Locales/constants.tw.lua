@@ -4,7 +4,10 @@ if not AL then return end
 
 -- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
 				   
+AL["BFD Tier Sets"] = "BFD套裝"
+AL["Lorgus Jett"] = "洛古斯·傑特"
 AL["%s killed last"] = "最後殺死 %s"
+AL["10 Raids"] = "10 人團隊"
 AL["20 Raid"] = "20 人團隊"
 AL["20 Raids"] = "20 人團隊"
 AL["40 Raid"] = "40 人團隊"
@@ -672,6 +675,3 @@ AL["Tier Token iLvl200"] = "200裝等T裝套件"
 AL["Tier Token iLvl225"] = "225裝等T裝套件"
 AL["Above Tier is iLVL 200"] = "上方為200裝等"
 AL["Tier to right is iLVL 225"] = "右方為225裝等"
-AL["UMA"] = "作者角色尋找強力衝分隊伍"
-AL["UMA2"] = "請聯絡kokusho@in4team.com"
-AL["UMA3"] = "請聯絡kokusho@in4team.com"
