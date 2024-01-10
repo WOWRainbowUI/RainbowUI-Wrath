@@ -42,7 +42,7 @@ local function ValidateSpellValue(_, v)
     if v == "" or GetSpellInfo(v) ~= nil then
         return true
     else
-        return format(L["Invalid spell: %s.\n\nFor spells that aren't in your spell book use the spell ID number."], ORANGE_FONT_COLOR:WrapTextInColorCode(v))
+        return format(L["無效的法術: %s.\n\n不在你的法術書裡面的法術請使用法術 ID 數字。"], ORANGE_FONT_COLOR:WrapTextInColorCode(v))
     end
 end
 
@@ -57,6 +57,7 @@ local addDenyAbility
 
 local options = {
     type = "group",
+	name = "光環時間 (快捷列)",
     childGroups = "tab",
     args = {
         GeneralGroup = {
@@ -72,7 +73,7 @@ local options = {
                 },
                 showTimers = {
                     type = "toggle",
-                    name = L["Display aura duration timers."],
+                    name = L["顯示光環持續時間"],
                     order = order(),
                     width = "full",
                     get = Getter,
@@ -80,7 +81,7 @@ local options = {
                 },
                 colorTimers = {
                     type = "toggle",
-                    name = L["Color aura duration timers based on remaining time."],
+                    name = L["依據剩餘時間變化文字顏色"],
                     order = order(),
                     width = "full",
                     get = Getter,
@@ -88,7 +89,7 @@ local options = {
                 },
                 decimalTimers = {
                     type = "toggle",
-                    name = L["Show fractions of a second on timers."],
+                    name = L["時間顯示小數點"],
                     order = order(),
                     width = "full",
                     get = Getter,
@@ -96,7 +97,7 @@ local options = {
                 },
                 showStacks = {
                     type = "toggle",
-                    name = L["Show aura stacks."],
+                    name = L["顯示光環層數"],
                     order = order(),
                     width = "full",
                     get = Getter,
@@ -104,7 +105,7 @@ local options = {
                 },
                 showSuggestions = {
                     type = "toggle",
-                    name = L["Highlight buttons for interrupt and soothe."],
+                    name = L["斷法和安撫按鈕發光"],
                     order = order(),
                     width = "full",
                     get = Getter,
@@ -112,12 +113,12 @@ local options = {
                 },
                 FontHeader = {
                     type = "header",
-                    name = L["Font"],
+                    name = L["文字大小"],
                     order = order(),
                 },
                 fontPath = {
                     type = "select",
-                    name = L["Font name"],
+                    name = L["字體"],
                     order = order(),
                     dialogControl = 'LSM30_Font',
                     values = ALL_FONTS,
@@ -132,7 +133,7 @@ local options = {
                 },
                 fontSize = {
                     type = "range",
-                    name = L["Font size"],
+                    name = L["文字大小"],
                     order = order(),
                     min = 6,
                     max = 24,
@@ -143,12 +144,12 @@ local options = {
             },
         },
         MappingGroup = {
-            name = L["Extra Aura Displays"],
+            name = L["額外顯示光環"],
             type = "group",
             inline = false,
             args = {
                 showAura = {
-                    name = L["Show aura"],
+                    name = L["顯示光環"],
                     type = "input",
                     width = 1,
                     order = order(),
@@ -173,7 +174,7 @@ local options = {
                     order = order(),
                 },
                 onAbility = {
-                    name = L["On ability"],
+                    name = L["於技能"],
                     type = "input",
                     width = 1,
                     order = order(),
@@ -222,7 +223,7 @@ local options = {
                         end,
                 },
                 Mappings = {
-                    name = L["Extra Aura Displays"],
+                    name = L["額外顯示光環"],
                     type = "group",
                     order = order(),
                     inline = true,
@@ -232,12 +233,12 @@ local options = {
             }
         },
         IgnoreGroup = {
-            name = L["Ignored Abilities"],
+            name = L["忽略技能"],
             type = "group",
             inline = false,
             args = {
                 denyAbility = {
-                    name = L["Ignore ability"],
+                    name = L["忽略技能"],
                     type = "input",
                     width = 1,
                     order = order(),
@@ -262,7 +263,7 @@ local options = {
                         end,
                 },
                 Abilities = {
-                    name = L["Abilities"],
+                    name = L["技能"],
                     type = "group",
                     order = order(),
                     inline = true,
@@ -290,7 +291,7 @@ local function UpdateDynamicOptions()
         }
         auraMaps["onText"..i] = {
             order = 10*i+2,
-            name = GRAY_FONT_COLOR:WrapTextInColorCode(L["on"]),
+            name = GRAY_FONT_COLOR:WrapTextInColorCode(L["於"]),
             type = "description",
             width = 0.15,
         }
@@ -371,12 +372,12 @@ local AceDBOptions =  LibStub("AceDBOptions-3.0")
 -- appear in the right order, add the main panel when loaded.
 
 AceConfig:RegisterOptionsTable(addonName, options, { "litebuttonauras", "lba" })
-local optionsPanel, category = AceConfigDialog:AddToBlizOptions(addonName)
+local optionsPanel, category = AceConfigDialog:AddToBlizOptions(addonName, "光環時間")
 
 function LBA.InitializeGUIOptions()
     local profileOptions = AceDBOptions:GetOptionsTable(LBA.db)
     AceConfig:RegisterOptionsTable(addonName.."Profiles", profileOptions)
-    AceConfigDialog:AddToBlizOptions(addonName.."Profiles", profileOptions.name, addonName)
+    AceConfigDialog:AddToBlizOptions(addonName.."Profiles", profileOptions.name, "光環時間")
     LBA.db.RegisterCallback(LBA, "OnProfileChanged", UpdateDynamicOptions)
     LBA.db.RegisterCallback(LBA, "OnProfileCopied", UpdateDynamicOptions)
     LBA.db.RegisterCallback(LBA, "OnProfileReset", UpdateDynamicOptions)
