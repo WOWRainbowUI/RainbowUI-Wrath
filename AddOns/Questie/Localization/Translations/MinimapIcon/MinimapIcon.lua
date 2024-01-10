@@ -86,17 +86,17 @@ local minimapIconLocales = {
         ["esES"] = "Misión trivial",
         ["frFR"] = "Quêtes de bas niveau",
     },
-	["Questie will open after combat ends."] = {
-        ["ptBR"] = false,
-        ["ruRU"] = false,
+    ["Questie will open after combat ends."] = {
+        ["ptBR"] = "Questie será aberta após o término do combate.",
+        ["ruRU"] = "Questie откроется по завершении боя.",
         ["deDE"] = false,
-        ["koKR"] = false,
+        ["koKR"] = "전투 종료 후 퀘스티가 열립니다",
         ["esMX"] = "Questie abrirá cuando estés fuera de combate.",
         ["enUS"] = true,
         ["zhCN"] = false,
         ["zhTW"] = "Questie 會在戰鬥結束後開啟。",
         ["esES"] = "Questie abrirá cuando estés fuera de combate.",
-        ["frFR"] = false,
+        ["frFR"] = "La quête s'ouvrira après la fin du combat.",
     },
 }
 

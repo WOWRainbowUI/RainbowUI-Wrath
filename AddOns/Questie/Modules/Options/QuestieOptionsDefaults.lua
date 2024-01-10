@@ -198,6 +198,7 @@ function QuestieOptionsDefaults:Load()
             lastDailyRequestDate = "",
             questieLocale = 'enUS',
             questieLocaleDiff = false,
+            sod = {}, -- Special place for the SoD database
         }
     }
 end
