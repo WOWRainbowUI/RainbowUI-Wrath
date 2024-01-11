@@ -9,7 +9,7 @@
 ## X-WoWI-ID: 24756
 ## X-Wago-ID: RBKpXaKE
 
-## Title-zhTW: |cffFF7F00[成就]|r 副本成就追蹤
+## Title-zhTW: |cffFFCC99[成就]|r 副本成就追蹤
 ## Notes-zhTW: Instance Achievement Tracker |n|n追蹤副本成就達成/失敗，並提供相關戰術。|n|n|cffffd200使用方法: |r進入副本時會自動開始掃描 (遊戲可能會停頓幾秒)，點小地圖按鈕開啟主視窗。
 ## X-Category-zhTW: 團隊
 ## DefaultState: disabled
