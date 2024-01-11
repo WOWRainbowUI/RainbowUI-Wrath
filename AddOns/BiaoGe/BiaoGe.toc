@@ -9,7 +9,7 @@
 ## Title-zhTW: |cffFF7F00[團隊]|r 金團表格
 ## Notes-zhTW: <BiaoGe> |n|n好用的金團記錄表單，可設定願望清單，可以通報帳單流拍或消費及欠款等。|n|n|cffffd200使用方法: |r點小地圖按鈕，從Esc>選項>插件>金團表格，進行設定。
 ## X-Category-zhTW: 團隊
-## Version: v1.7.5
+## Version: v1.7.5b
 ## DefaultState: disabled
 
 Locales\zhCN.lua
