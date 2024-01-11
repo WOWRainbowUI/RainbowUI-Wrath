@@ -371,7 +371,7 @@ end
 do
     local FB = "ICC"
     BG.Loot[FB].Quest.N = {
-        FBname = "ICC",
+        FBname = FB,
         color = "00BFFF",
         players = 25,
         itemID = { 49888, 49623 }
@@ -385,7 +385,7 @@ do
 
     local FB = "ULD"
     BG.Loot[FB].Quest.N = {
-        FBname = "ULD",
+        FBname = FB,
         color = "00BFFF",
         players = 25,
         itemID = { 46017 }

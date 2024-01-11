@@ -1014,9 +1014,9 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei5"]:SetText(L["人均工资"])
     if BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:GetText() == "" then
         if BG.IsVanilla() then
-            BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetText(BG.maxplayers[FB] or "10")
+            BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetText(BG.GetFBinfo(FB, "maxplayers") or "10")
         else
-            BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetText(BG.maxplayers[FB] or "25")
+            BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetText(BG.GetFBinfo(FB, "maxplayers") or "25")
         end
     end
     for i = 1, 5, 1 do

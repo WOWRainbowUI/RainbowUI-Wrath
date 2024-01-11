@@ -18,11 +18,23 @@ do --繁体说明书
     text = text .. "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n"
     text = text .. "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n"
 
+    update = update .. "|cff00FF00" .. "1月10日更新1.7.5b版本" .. "|r\n"
+    update = update .. [[-買家下拉清單的格子新增至40個]] .. "\n"
+    update = update .. [[-<WLK>裝備庫現在會顯示海里昂的裝備]] .. "\n\n"
+
     update = update .. "|cff00FF00" .. "1月6日更新1.7.5版本" .. "|r\n"
     update = update .. [[-插件現在支持永久60服，每個團本都已添加表格]] .. "\n"
     update = update .. [[-優化可堆疊物品的記錄方式]] .. "\n"
     update = update .. [[-繁體端的字體用回<blei00d.TTF>，以解決界面顯示錯誤的問題]] .. "\n"
     update = update .. [[-<賽季/60服>裝備過濾詞綴刪除"擊中"、"暴擊"，增加"你擊中目標"、"你造成致命一擊"、"你的法術擊中"、"你的法術造成致命一擊"、"法術傷害"]] .. "\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
+
+    ADDONSELF.instructionsText = text
+end
+do --繁体更新内容
+    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "1月1日更新1.7.4c版本" .. "|r\n"
     update = update .. [[-在聊天頻道的玩家右鍵菜單裡增加<一鍵舉報騷擾>和<一鍵舉報RMT>按鈕]] .. "\n"
@@ -43,14 +55,6 @@ do --繁体说明书
     update = update .. [[-如果你安裝了Auctionator插件，裝備庫的裝綁裝備會顯示拍賣行價格]] .. "\n"
     update = update .. [[-裝備庫現在也會顯示裝備是否已掉落]] .. "\n"
     update = update .. [[-<賽季服>集結號的密語模板功能現在可以使用了]] .. "\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
-
-    ADDONSELF.instructionsText = text
-end
-do --繁体更新内容
-    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "12月20日更新1.7.3b版本" .. "|r\n"
     update = update .. [[-通報歷史價格功能已被刪除，現在CTRL+點擊裝備會跳轉至裝備庫查看該部位的所有可選裝備]] .. "\n"
@@ -76,7 +80,7 @@ do --繁体更新内容
     update = update .. "|cff00FF00" .. "12月10日更新1.7.1d版本" .. "|r\n"
     update = update .. [[-<賽季服>修復報錯]] .. "\n\n"
 
-    ADDONSELF.upDateText = update
+    ADDONSELF.updateText = update
 end
 
 local L = setmetatable({}, {

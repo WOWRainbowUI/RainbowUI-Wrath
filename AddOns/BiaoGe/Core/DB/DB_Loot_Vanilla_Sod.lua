@@ -142,7 +142,7 @@ do
     -- 黑暗深渊
     do
         BG.Loot[FB].Quest.N = {
-            FBname = BG[FB .. "name"],
+            FBname = BG.GetFBinfo(FB, "localName"),
             color = "00BFFF",
             players = 10,
         }
@@ -156,7 +156,7 @@ do
 
         -- 全阵营任务
         BG.Loot[FB].Quest.All = {
-            FBname = BG[FB .. "name"],
+            FBname = BG.GetFBinfo(FB, "localName"),
             color = "00BFFF",
             players = 10,
         }

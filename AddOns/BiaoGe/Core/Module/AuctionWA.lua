@@ -161,7 +161,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         _G.BGA.FontWhile15:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     end
 
-    function aura_env.UpDateRaidRosterInfo()
+    function aura_env.UpdateRaidRosterInfo()
         wipe(aura_env.raidRosterInfo)
         aura_env.raidLeader = nil
         if IsInRaid(1) then
@@ -871,7 +871,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         aura_env.Auctioning(AuctionFrame, duration)
     end
 
-    aura_env.UpDateRaidRosterInfo()
+    aura_env.UpdateRaidRosterInfo()
     aura_env.GetAuctioningFromRaid()
 
     -- 主界面
@@ -1000,7 +1000,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         elseif even == "GROUP_ROSTER_UPDATE" or even == "PLAYER_ENTERING_WORLD" then
             C_Timer.After(0.5, function()
-                aura_env.UpDateRaidRosterInfo()
+                aura_env.UpdateRaidRosterInfo()
             end)
             if even == "PLAYER_ENTERING_WORLD" then
                 C_Timer.After(2, function()

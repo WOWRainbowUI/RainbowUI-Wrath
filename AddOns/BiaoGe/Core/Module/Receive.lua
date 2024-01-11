@@ -132,7 +132,7 @@ function BG.ReceiveUI()
             if type == L["当前表格"] then
                 local DT = tonumber(date("%y%m%d%H%M%S"))
                 local DTcn = date(L["%m月%d日%H:%M:%S\n"])
-                local tx = " " .. BG.FBcn(FB) .. " " .. playername
+                local tx = " " .. BG.GetFBinfo(FB, "localName") .. " " .. playername
 
                 BG.SendBiaoGe.DT = DT
                 BG.SendBiaoGe.BiaoTi = DTcn .. tx
@@ -165,7 +165,7 @@ function BG.ReceiveUI()
                         DT = tonumber(BiaoGe.HistoryList[FB][key][1])
                         BG.SendBiaoGe.DT = DT
                         local DTcn = strsplit("\n", BiaoGe.HistoryList[FB][key][2]) .. "\n"
-                        local tx = " " .. BG.FBcn(FB) .. " " .. playername
+                        local tx = " " .. BG.GetFBinfo(FB, "localName") .. " " .. playername
                         BG.SendBiaoGe.BiaoTi = DTcn .. tx
                     end
                 end

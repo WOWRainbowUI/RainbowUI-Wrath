@@ -119,7 +119,7 @@ local function BiaoGeUI()
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             if IsAltKeyDown() then
-                GameTooltip:SetText(BG.upDateText)
+                GameTooltip:SetText(BG.updateText)
             else
                 GameTooltip:SetText(BG.instructionsText)
             end
@@ -141,42 +141,16 @@ local function BiaoGeUI()
         -- FB1 是UI当前选择的副本
         -- FB2 是玩家当前所处的副本
         if BiaoGe.FB then
-            if BG.IsVanilla_Sod() then
-                local yes
-                for k, FB in pairs(BG.FBtable) do
-                    if BiaoGe.FB == FB then
-                        BG.FB1 = BiaoGe.FB
-                        yes = true
-                        break
-                    end
+            local yes
+            for k, FB in pairs(BG.FBtable) do
+                if BiaoGe.FB == FB then
+                    BG.FB1 = BiaoGe.FB
+                    yes = true
+                    break
                 end
-                if not yes then
-                    BiaoGe.FB = BG.FB1
-                end
-            elseif BG.IsVanilla_60() then
-                local yes
-                for k, FB in pairs(BG.FBtable) do
-                    if BiaoGe.FB == FB then
-                        BG.FB1 = BiaoGe.FB
-                        yes = true
-                        break
-                    end
-                end
-                if not yes then
-                    BiaoGe.FB = BG.FB1
-                end
-            else
-                local yes
-                for k, FB in pairs(BG.FBtable) do
-                    if BiaoGe.FB == FB then
-                        BG.FB1 = BiaoGe.FB
-                        yes = true
-                        break
-                    end
-                end
-                if not yes then
-                    BiaoGe.FB = BG.FB1
-                end
+            end
+            if not yes then
+                BiaoGe.FB = BG.FB1
             end
         else
             BiaoGe.FB = BG.FB1
@@ -814,14 +788,15 @@ local function BiaoGeUI()
             local FB = BG.FB1
 
             local function OnClick(self)
-                local FB = BG.FB1
                 if self:GetChecked() then
                     BiaoGe.options[self.name] = 1
                 else
                     BiaoGe.options[self.name] = 0
                 end
-                BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.SumGZ())
-                BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetCursorPosition(0)
+                for i, FB in ipairs(BG.FBtable) do
+                    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.SumGZ())
+                    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetCursorPosition(0)
+                end
                 PlaySound(BG.sound1, "Master")
             end
             local function OnEnter(self)
@@ -1911,6 +1886,12 @@ local function BiaoGeUI()
         local targetName, targetGUID
         local ChatPlayerGUIDs = {}
         local CLICKBUTTONTIME = 0.01
+        -- local record = {
+        --     type = "",
+        --     liyou = "",
+        --     xiangmu = "",
+        --     edit = "",
+        -- }
 
         -- 重置
         local function ReSet()
@@ -1959,15 +1940,21 @@ local function BiaoGeUI()
         end
 
         hooksecurefunc(ReportFrame, "InitiateReport", function(self, reportInfo, name, playerLocation)
+            -- wipe(record)
+            -- record.type = reportInfo.reportType
             if not (yes and BiaoGe.options["report"] == 1) then return end
             if reportInfo.reportType == 1 then
                 ToggleDropDownMenu(nil, nil, ReportFrameButton:GetParent())
+                -- record.liyou = DropDownList1Button2:GetText()
+                -- pt(DropDownList1Button2:GetText())
                 UIDropDownMenuButton_OnClick(DropDownList1Button2)
                 if ReportFrame.Comment.EditBox then
                     ReportFrame.Comment.EditBox:SetText("自动脚本\n自動腳本\nAutomatic Scripting")
                 end
             elseif reportInfo.reportType == 0 then
                 ToggleDropDownMenu(nil, nil, ReportFrameButton:GetParent())
+                -- record.liyou = DropDownList1Button1:GetText()
+                -- pt(DropDownList1Button1:GetText())
                 UIDropDownMenuButton_OnClick(DropDownList1Button1)
                 if chattype == "saorao" then
                     if ReportFrame.Comment.EditBox then
@@ -1988,17 +1975,20 @@ local function BiaoGeUI()
         hooksecurefunc(ReportingFrameMinorCategoryButtonMixin, "SetupButton", function(self)
             if not (yes and BiaoGe.options["report"] == 1) then return end
             if SetCategoryButtonChecked(self, 64) then
+                -- pt(self:GetText())
                 ReportButton_OnClick(self)
                 return
             end
             if chattype == "saorao" then
                 SetCategoryButtonChecked(self, 1)
+                -- pt(self.Text:GetText())
                 SetCategoryButtonChecked(self, 4)
                 SetCategoryButtonChecked(self, 256)
                 ReportButton_OnClick(self)
                 return
             elseif chattype == "RMT" then
                 SetCategoryButtonChecked(self, 1)
+                -- pt(self.Text:GetText())
                 SetCategoryButtonChecked(self, 4)
                 SetCategoryButtonChecked(self, 256)
                 SetCategoryButtonChecked(self, 2)
@@ -2213,12 +2203,12 @@ local function BiaoGeUI()
             BG.ButtonQingKong = bt
             -- 按钮触发
             bt:SetScript("OnClick", function()
-                local num = BG.QingKong("biaoge", BG.FB1, BG.maxplayers[BG.FB1])
+                local num = BG.QingKong("biaoge", BG.FB1)
                 local name = "autoQingKong"
                 if BiaoGe.options[name] == 1 then
-                    SendSystemMessage(BG.STC_b1(format(L["已清空表格< %s >，分钱人数已改为%s人"], BG.FBcn(BG.FB1), num)))
+                    SendSystemMessage(BG.STC_b1(format(L["已清空表格< %s >，分钱人数已改为%s人"], BG.GetFBlocalName(BG.FB1), num)))
                 else
-                    SendSystemMessage(BG.STC_b1(format(L["已清空表格< %s >"], BG.FBcn(BG.FB1))))
+                    SendSystemMessage(BG.STC_b1(format(L["已清空表格< %s >"], BG.GetFBlocalName(BG.FB1))))
                 end
                 FrameHide(0)
                 PlaySound(BG.sound1, "Master")
@@ -2241,13 +2231,7 @@ local function BiaoGeUI()
                 BG.After(2, function()
                     local _, _, _, _, maxPlayers, _, _, instanceID = GetInstanceInfo()
 
-                    local FB
-                    for id, value in pairs(BG.FBIDtable) do -- 把副本ID转换为副本英文简写
-                        if instanceID == id then
-                            FB = value
-                            break
-                        end
-                    end
+                    local FB = BG.FBIDtable[instanceID]
                     if not FB then return end
 
                     local havedCD
@@ -2262,10 +2246,10 @@ local function BiaoGeUI()
                     if not havedCD and not BG.BiaoGeIsEmpty(FB, "onlyboss") then
                         BG.ClickFBbutton(FB)
                         BG.SaveBiaoGe(FB)
-                        local num = BG.QingKong("biaoge", FB, maxPlayers)
+                        local num = BG.QingKong("biaoge", FB)
                         local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGe:" .. L["撤回清空"] .. ":" .. FB .. ":" .. time() ..
                             "|h[" .. L["撤回清空"] .. "]|h|r"
-                        SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"], BG.FBcn(FB), num)) .. link)
+                        SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"], BG.GetFBinfo(FB, "localName"), num)) .. link)
                         PlaySoundFile(BG.sound_qingkong, "Master")
                     end
                 end)
@@ -2297,7 +2281,7 @@ local function BiaoGeUI()
             -- 按钮触发
             bt:SetScript("OnClick", function()
                 BG.QingKong("hope", BG.FB1)
-                SendSystemMessage(BG.STC_g1(format(L["已清空心愿< %s >"], BG.FBcn(BG.FB1))))
+                SendSystemMessage(BG.STC_g1(format(L["已清空心愿< %s >"], BG.GetFBlocalName(BG.FB1))))
                 FrameHide(0)
                 PlaySound(BG.sound1, "Master")
             end)
@@ -2412,7 +2396,7 @@ do
     BG.raidRosterInfo = {}
     BG.groupRosterInfo = {}
 
-    function BG.UpDateRaidRosterInfo()
+    function BG.UpdateRaidRosterInfo()
         wipe(BG.raidRosterInfo)
         wipe(BG.groupRosterInfo)
 
@@ -2466,14 +2450,14 @@ do
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
     f:SetScript("OnEvent", function(self, even, ...)
         C_Timer.After(1, function()
-            BG.UpDateRaidRosterInfo()
+            BG.UpdateRaidRosterInfo()
         end)
     end)
     local f = CreateFrame("Frame")
     f:RegisterEvent("GROUP_ROSTER_UPDATE")
     f:SetScript("OnEvent", function(self, even, ...)
         C_Timer.After(0.5, function()
-            BG.UpDateRaidRosterInfo()
+            BG.UpdateRaidRosterInfo()
         end)
     end)
 
@@ -2487,7 +2471,7 @@ do
             max = #BG.groupRosterInfo
         end
         if tonumber(num) and tonumber(max) and tonumber(num) ~= tonumber(max) then
-            BG.UpDateRaidRosterInfo()
+            BG.UpdateRaidRosterInfo()
         end
     end)
 end
@@ -2567,32 +2551,7 @@ end)
 /run  C_ChatInfo.SendAddonMessage("BiaoGeAuction","GetAuctioning","RAID")
  ]]
 
---[[ local targetitem = {
-    "护卫之弓", "斥候之刃", "军团士兵之剑", "顾问的木节法杖",
-    "义务符文", "完美贡献符文",
-}
 
-local targetitem = {
-    "侍从之弓", "哨兵之刃", "保护者之剑", "博学者法杖",
-    "斥候徽章", "战地治疗者披风", "顾问之戒", "军团士兵指环",
-    "义务符文", "完美贡献符文",
-}
-local function item()
-    for i = 200000, 230000 do
-        local name, link, quality, level, _, _, _, _, _, Texture, _, typeID, _, bindType = GetItemInfo(i)
-        if name then
-            for k, itemname in pairs(targetitem) do
-                if name == itemname then
-                    print("ID:" .. i .. ",Name:" .. name .. ",Level:" .. level)
-                end
-            end
-        end
-    end
-end
-BG.RegisterEvent("PLAYER_ENTERING_WORLD", function()
-    item()
-    C_Timer.After(1, item)
-end) ]]
 
 --[[
 -- 快速更换符文

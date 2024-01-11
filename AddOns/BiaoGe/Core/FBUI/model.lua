@@ -123,63 +123,77 @@ do
     end
 end
 
-local function updateModel(model, NPCID)
-    BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
-        if not (isLogin or isReload) then return end
+local function UpdateModel(model, NPCID)
+    -- BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
+    --     if not (isLogin or isReload) then return end
+    --     model:SetCreature(NPCID)
+    --     self:UnregisterAllEvents()
+    --     self:Hide()
+    -- end)
+    model:SetScript("OnShow", function(self)
         model:SetCreature(NPCID)
-        self:UnregisterAllEvents()
-        self:Hide()
     end)
 end
 
 -- BOSS模型
-local function CreateBossModel(FB, bossnum, point_x, point_y, NPCID, scale, facing, pitch, roll, z, x, y, PortraitZoom)
+local function CreateBossModel(FB, bossnum, point_x, point_y, NPCID, scale, PortraitZoom, CamDistanceScale)
     local model = CreateFrame("PlayerModel", nil, BG["Frame" .. FB], "BackdropTemplate")
     model:SetSize(500, 500)
     model:SetPoint("CENTER", BG.Frame[FB]["boss" .. bossnum].name, "CENTER", point_x, point_y)
     model:SetFrameLevel(101)
     model:SetAlpha(0.8)
-    model:SetPortraitZoom(PortraitZoom or 0)
-
     model:SetCreature(NPCID)
-    model:SetPosition(z, x, y)
-    model:SetScale(scale)
-    model:SetFacing(facing)
-    model:SetPitch(pitch)
-    model:SetRoll(roll)
-    updateModel(model, NPCID)
+    model:SetScale(scale or 1)
+    model:SetPortraitZoom(PortraitZoom or 0)
+    model:SetCamDistanceScale(CamDistanceScale or 1)
+    UpdateModel(model, NPCID)
     return model
 end
 function BG.CreateBossModel()
     if BG.IsVanilla_60() then
-        local model = CreateBossModel("MC", 10, 0, -10, 11502, 1, -0.3, 0, 0, -30, 0, -7)
-        local model = CreateBossModel("BWL", 8, 50, 0, 11583, 1, -0.6, 0.8, -0.5, -50, 0, 60)
-        local model = CreateBossModel("ZUG", 10, 0, 10, 14834, 1, -0.5, 0.1, 0, 15, -2.5, -1)
-        local model = CreateBossModel("AQL", 6, 5, 30, 15339, 1, -0.3, 0.5, -0.12, -7, 0, 5)
-        local model = CreateBossModel("TAQ", 9, 10, 0, 15727, 0.6, 0, 0, 0, -8, 0, -5) -- 底下
-        local model = CreateBossModel("TAQ", 9, 0, 0, 15589, 0.8, 0, 0, 0, -37, 0, -3) -- 眼睛
-        local model = CreateBossModel("NAXX", 15, -15, -130, 15990, 1.2, -0.3, 0.3, -0.1, -16, 0, 9.5)
+        local model = CreateBossModel("MC", 10, 0, -10, 11502, 1)
+        model:SetPosition(-30, 0, -7) -- Z,X,Y
+        model:SetFacing(-0.3)         -- 左右
+        model:SetPitch(0)             -- 上下
+        model:SetRoll(0)              -- 倾斜
+        local model = CreateBossModel("BWL", 8, 50, 0, 11583, 1)
+        model:SetPosition(-50, 0, 60)
+        model:SetFacing(-0.6)
+        model:SetPitch(0.8)
+        model:SetRoll(-0.5)
+        local model = CreateBossModel("ZUG", 10, 0, 10, 14834, 1)
+        model:SetPosition(15, -2.5, -1)
+        model:SetFacing(-0.5)
+        model:SetPitch(0.1)
+        model:SetRoll(0)
+        local model = CreateBossModel("AQL", 6, 5, 30, 15339, 1)
+        model:SetPosition(-7, 0, 5)
+        model:SetFacing(-0.3)
+        model:SetPitch(0.5)
+        model:SetRoll(-0.12)
+        local model = CreateBossModel("TAQ", 9, 10, 0, 15727, 0.6) -- 底下
+        model:SetPosition(-8, 0, -5)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        local model = CreateBossModel("TAQ", 9, 0, 0, 15589, 0.8) -- 眼睛
+        model:SetPosition(-37, 0, -3)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        local model = CreateBossModel("NAXX", 15, -15, -130, 15990, 1.2)
+        model:SetPosition(-16, 0, 9.5)
+        model:SetFacing(-0.3)
+        model:SetPitch(0.3)
+        model:SetRoll(-0.1)
         -- CreateAllTestButton(model)
     elseif BG.IsVanilla_Sod() then
-        local FB = "BD"
-        do
-            local model = CreateFrame("PlayerModel", nil, BG["Frame" .. FB], "BackdropTemplate")
-            -- model:SetBackdrop({
-            --     edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-            --     edgeSize = 2,
-            -- })
-            model:SetSize(400, 400)
-            model:SetPoint("CENTER", BG.Frame[FB].boss7.name, "CENTER", 60, -10)
-            model:SetFrameLevel(101)
-            model:SetAlpha(0.8)
-            model:SetPortraitZoom(0)
-
-            local unitID = 213334
-            model:SetCreature(213334)
-            model:SetPosition(-2, 0, 0)
-            model:SetFacing(6.2)
-            updateModel(model, unitID)
-        end
+        local model = CreateBossModel("BD", 7, 80, -10, 213334, 0.6)
+        model:SetPosition(0, 0, 0)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
     else
         local FB = "ICC"
         do
@@ -195,7 +209,7 @@ function BG.CreateBossModel()
             model:SetCreature(unitID)
             -- model:SetCreature(31301, 25337)
             -- model:SetDisplayInfo(25337)
-            updateModel(model, unitID)
+            UpdateModel(model, unitID)
         end
         local FB = "TOC"
         do
@@ -210,7 +224,7 @@ function BG.CreateBossModel()
 
             local unitID = 34564
             model:SetCreature(unitID)
-            updateModel(model, unitID)
+            UpdateModel(model, unitID)
 
             local time = GetTime()
             local c = 1
@@ -258,7 +272,7 @@ function BG.CreateBossModel()
 
             local unitID = 32871
             model:SetCreature(unitID)
-            updateModel(model, unitID)
+            UpdateModel(model, unitID)
 
             local time = GetTime()
             local c = 1
