@@ -6,11 +6,11 @@
 ## Notes: Quality of life addon.
 ## Notes-zhCN: 哆啦A梦的百宝袋
 
-## Version: 3.0.155
+## Version: 3.0.172
 ## Author: Leatrix
 ## SavedVariables: LeaPlusDB
 
-## OptionalDeps: Leatrix_enUS, ElvUI, Glass
+## OptionalDeps: Leatrix_enUS, ElvUI, Glass, CharacterStatsWRATH, totalRP3, TitanClassic, SexyMap, BtWQuests
 
 ## X-Curse-Project-ID: 463863
 

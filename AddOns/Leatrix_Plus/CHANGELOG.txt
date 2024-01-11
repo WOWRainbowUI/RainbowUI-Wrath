@@ -1,3 +1,57 @@
+3.0.172 - 10th January 2024
+- Added a new command '/ltp quest wipe' which will clear the quest log.
+- Added flight times.
+
+3.0.171 - 3rd January 2024
+- Updated 'Automate gossip' ('Automation') for soft targeting.
+- For 'Enhance quest log', fixed a situational issue with quest prefix translations.
+- For the minimap button, holding CTRL and SHIFT will now toggle windowed mode.  Holding CTRL and ALT will toggle the Zygor addon (if installed).
+- Fixed an issue with the Zygor addon toggle.
+- Added flight times.
+
+3.0.170 - 27th December 2023
+- Updated 'Automate quests' ('Automation') for soft targeting.
+- Added flight times.
+
+3.0.169 - 20th December 2023
+- Added flight times.
+
+3.0.168 - 11th December 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue which caused some minimap addon buttons to not be placed correctly.
+- Added flight times.
+
+3.0.167 - 6th December 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue with 'Combine addon buttons' and the BtWQuests minimap button (if installed).
+- Added flight times.
+
+3.0.166 - 29th November 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue which caused a button to be created for SexyMap (if installed).
+- Added flight times.
+
+3.0.165 - 22nd November 2023
+- Added flight times.
+
+3.0.164 - 15th November 2023
+- Code updates.
+- Added flight times.
+
+3.0.163 - 8th November 2023
+- For 'Enhance tooltip' ('Interface'), the scale slider now applies to the game settings panel tooltips.
+- Added flight times.
+
+3.0.162 - 1st November 2023
+- For 'Enhance tooltip' ('Interface'), the scale slider now applies to LibDBIcon (most addons with a minimap button use this) and Dungeon Finder eye icon tooltips.
+- General code updates.
+- Added flight times.
+
+3.0.161 - 25th October 2023
+- Added flight times.
+
+3.0.158 - 18th October 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue with the consolidated buffs frame layering.
+- For 'Automate quests' ('Automation'), fixed an issue which caused a Lua error to be shown when interacting with a quest giver using an interaction key (soft targeting).  The error is a game bug and not caused by Leatrix Plus.
+- Added flight times.
+
 3.0.155 - 11th October 2023
 - Fixed a Lua error issue with 'Recent chat window' ('Chat').
 
