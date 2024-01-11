@@ -1032,7 +1032,7 @@ D["GatherMate2"] = {
 	defaultEnable = 0,
 	tags = { "PROFESSION" },
 	title = "採集助手",
-	desc = "採草、挖礦、釣魚的好幫手。``收集草、礦、考古學、寶藏和釣魚的位置，在世界地圖和小地圖上顯示採集點的位置。`",
+	desc = "採草、挖礦、釣魚的好幫手。``收集草、礦、考古學、寶藏和釣魚的位置，在世界地圖和小地圖上顯示採集點的位置。``|cffFF2D2D特別注意: 經典版的資料庫中不包含釣魚和氣雲的位置。|r`",
 	modifier = "alpha2009, arith, BNS, chenyuli, ibmibmibm, icearea, jerry99spkk, kagaro, laxgenius, machihchung, morphlings, scars377, sheahoi, soso15, titanium0107, wxx011, zhTW",
 	--icon = "Interface\\Icons\\inv_herbalism_70_starlightrosepetals",
 	img = true,
@@ -1342,23 +1342,8 @@ D["LiteButtonAuras"] = {
 	desc = "直接在快捷列的技能圖示上面顯示增益和減益效果的時間，方便監控。``對敵方目標施放的 DOT 會顯示紅色邊框，自己身上的 HOT/BUFF 會顯示綠色邊框。`",
 	modifier = "彩虹ui",
 	{
-        text = "時間數字大小",
-		type = "spin",
-		range = {6, 60, 1},
-		default	= 16,
-        callback = function(cfg, v, loading) SlashCmdList["LiteButtonAuras"]("font default "..v.." THICKOUTLINE") end,
-    },
-	{
-        text = "/lba 指令說明",
-        callback = function(cfg, v, loading) SlashCmdList["LiteButtonAuras"]("help") end,
-    },
-	{
-        text = "光環設定說明",
-        callback = function(cfg, v, loading) SlashCmdList["LiteButtonAuras"]("aura help") end,
-    },
-	{
-        text = "不顯示時間設定說明",
-        callback = function(cfg, v, loading) SlashCmdList["LiteButtonAuras"]("deny help") end,
+        text = "設定選項",
+        callback = function(cfg, v, loading) Settings.OpenToCategory("光環時間") end,
     },
 };
 D["LootMonitor"] = {
