@@ -1,0 +1,57 @@
+## Interface: 30403
+## Title: <BiaoGe> |cff00BFFF金团表格|r
+## Notes: 插件命令：/BiaoGe 或 /GBG
+## Author: 苍穹之霜
+## SavedVariables: BiaoGe
+## SavedVariablesPerCharacter: BiaoGeA 
+# BiaoGeA的数据现在全部合并到BiaoGe里，不再分开每个角色保存了，统一保存在账号文件夹
+
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Libs\embeds.xml
+
+Core\DB\DB.lua
+Core\DB\DB_FilterClassItem.lua
+Core\DB\DB_BossName.lua
+Core\DB\DB_Loot.lua
+Core\DB\DB_Loot_Vanilla_Sod.lua
+Core\DB\DB_Loot_Vanilla_60.lua
+Core\DB\DB_CommerceAuthority_Vanilla.lua
+
+Core\function1.lua
+Core\function2.lua
+
+Core\FBUI\FBUI.xml
+
+Core\Module\History.lua
+Core\Module\Receive.lua
+Core\Module\DuiZhang.lua
+Core\Module\RoleOverview.lua
+Core\Module\FilterClassItem.lua
+
+Core\TongBao\ZhangDan.lua
+Core\TongBao\LiuPai.lua
+Core\TongBao\XiaoFei.lua
+Core\TongBao\QianKuan.lua
+Core\TongBao\WCL.lua
+Core\TongBao\YongShi.lua
+
+Core\BiaoGe.lua
+
+Core\Module\ItemLib.lua
+Core\Module\Loot.lua
+Core\Module\Trade.lua
+Core\Module\AuctionMSG.lua
+Core\Module\YY.lua
+Core\Module\MeetingHorn.lua
+Core\Module\AuctionWA.lua
+Core\Module\Auction.lua
+Core\Module\CommerceAuthority_Vanilla.lua
+
+Core\Boss\Boss.lua
+Core\Boss\ICC.lua
+
+Core\Module\minimap.lua
+
+Core\Options.lua
