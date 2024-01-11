@@ -629,6 +629,12 @@ D["ClassicCastbars"] = {
         callback = function(cfg, v, loading) SlashCmdList["CLASSICCASTBARS"]("") end,
     },
 };
+D["ClassicSpellActivations"] = {
+	defaultEnable = 1,
+	tags = { "ACTIONBAR" },
+	title = "技能發光 (快捷列)",
+	desc = "技能觸發時快捷列上的技能圖示會發光。``目前支援戰士、聖騎士、盜賊、獵人和術士的特定幾個技能。`|r",
+};
 D["ColorPickerPlus"] = {
 	defaultEnable = 1,
 	tags = { "ENHANCEMENT" },
@@ -717,9 +723,9 @@ D["DBM-StatusBarTimers"] = {
 		text = " ",
 	},
 };
-D["DBM-CountPack-Overwatch"] = { defaultEnable = 1};
-D["DBM-VPSaha"] = { defaultEnable = 1};
-D["DBM-VPYike"] = { defaultEnable = 1};
+D["DBM-CountPack-Overwatch"] = {defaultEnable = 1,};
+D["DBM-VPSaha"] = {defaultEnable = 1,};
+D["DBM-VPSahaJh"] = {defaultEnable = 1,};
 D["Decursive"] = {
 	defaultEnable = 0,
 	tags = { "CLASSALL" },
@@ -1967,7 +1973,7 @@ D["SharedMedia_BNS"] = {
     defaultEnable = 1,
 	tags = { "MISC" },
 	title = "BNS 音效材質包",
-	desc = "讓不同的插件能夠共享材質、背景、邊框、字體和音效，也提供了多種中英文字體、音效和材質可供 WA 和其他插件使用。`",
+	desc = "讓不同的插件能夠共享材質、背景、邊框、音效和字體，也提供了多種音效、材質和字體可供 WA 和其他插件使用。`",
 };
 D["ShinyBuffs"] = {
 	defaultEnable = 1,
@@ -2281,12 +2287,19 @@ D["TinyChat"] = {
 	},
 };
 D["MerInspect"] = {
+    defaultEnable = 0,
+	tags = { "ITEM" },
+	title = "(請刪除) 裝備觀察",
+	desc = "這個插件的資料夾已更改名稱。``請刪除舊的資料夾 (AddOns 裡面的 MerInspect) 以避免發生衝突。`",
+	modifier = "彩虹ui",
+};
+D["MerInspect-classic-era"] = {
     defaultEnable = 1,
 	tags = { "ITEM" },
 	title = "裝備觀察",
 	desc = "觀察其他玩家和自己時會在角色資訊視窗右方列出已裝備的物品清單，方便查看裝備和物品等級。`",
 	modifier = "彩虹ui",
-	-- --icon = "Interface\\Icons\\inv_helmet_leather_raiddruid_q_01",
+	-- icon = "Interface\\Icons\\inv_helmet_leather_raiddruid_q_01",
 	img = true,
 	{
         text = "設定選項",
