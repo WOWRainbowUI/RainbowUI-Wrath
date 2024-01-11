@@ -74,7 +74,7 @@ local function UpdateFonts()
 	SetFont(_G.InvoiceFont_Med,                    	GMFONTS["I"], 13, "", 0.15, 0.09, 0.04)
 	SetFont(_G.InvoiceFont_Small,                  	GMFONTS["I"], 13, "", 0.15, 0.09, 0.04)
 	SetFont(_G.MailFont_Large,                     	GMFONTS["I"], 15, "", 0.15, 0.09, 0.04, 0.54, 0.4, 0.1, 1, -1)
-	SetFont(_G.NumberFontNormal, 					GMFONTS["N"], 9, "OUTLINE")
+	SetFont(_G.NumberFontNormal, 					GMFONTS["N"], 9, "THICKOUTLINE")
 	SetFont(_G.NumberFont_OutlineThick_Mono_Small, 	GMFONTS["NR"], 11, "THICKOUTLINE")
 	SetFont(_G.NumberFont_Outline_Huge,            	GMFONTS["NR"], 30, "THICKOUTLINE", 0.30)
 	SetFont(_G.NumberFont_Outline_Large,           	GMFONTS["NR"], 17, "OUTLINE")
@@ -151,10 +151,12 @@ local function UpdateFonts()
 	SetFont(_G.SystemFont_Small2,                  GMFONTS["N"], 13, "") -- SharedFonts.xml
 	
 	
-	for i=1,7 do
+	for i=1,NUM_CHAT_WINDOWS do
 		local f = _G["ChatFrame"..i]
-		local font, size, flags = f:GetFont()
-		f:SetFont(GMFONTS["N"], size, flags)
+		if f then 
+			local font, size, flags = f:GetFont()
+			f:SetFont([[Interface\Addons\SharedMedia_BNS\font\ChironHeiHK-M.ttf]], size, flags)
+		end
 	end
 
 	-- for _,butt in pairs(PaperDollTitlesPane.buttons) do butt.text:SetFontObject(GameFontHighlightSmallLeft) end
