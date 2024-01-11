@@ -3,7 +3,7 @@ if WOW_PROJECT_ID ~= (WOW_PROJECT_MAINLINE or 1) then -- Added in BfA
 end
 local mod	= DBM:NewMod("z1191", "DBM-PvP")
 
-mod:SetRevision("20230110015806")
+mod:SetRevision("20231215150010")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -24,15 +24,21 @@ do
 				"QUEST_PROGRESS",
 				"QUEST_COMPLETE"
 			)
-			local generalMod = DBM:GetModByName("PvPGeneral")
-			generalMod:TrackHealth(82876, "Tremblade")
-			generalMod:TrackHealth(82877, "Volrath")
-			generalMod:TrackHealth(81859, "Fangraal")
-			generalMod:TrackHealth(82201, "Kronus")
+			if not self.tracker then
+				local generalMod = DBM:GetModByName("PvPGeneral")
+				self.tracker = generalMod:NewHealthTracker()
+				self.tracker:TrackHealth(82876, "Tremblade", BLUE_FONT_COLOR)
+				self.tracker:TrackHealth(81859, "Fangraal", BLUE_FONT_COLOR)
+				self.tracker:TrackHealth(82877, "Volrath", RED_FONT_COLOR)
+				self.tracker:TrackHealth(82201, "Kronus", RED_FONT_COLOR)
+			end
 		elseif bgzone and zoneID ~= 1191 then
 			bgzone = false
 			self:UnregisterShormTermEvents()
-			DBM:GetModByName("PvPGeneral"):StopTrackHealth()
+			if self.tracker then
+				self.tracker:Cancel()
+				self.tracker = nil
+			end
 		end
 	end
 

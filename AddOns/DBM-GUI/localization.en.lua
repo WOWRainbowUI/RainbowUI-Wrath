@@ -6,15 +6,19 @@ L.MainFrame							= "Deadly Boss Mods"
 
 L.TranslationByPrefix				= "Translated by "
 L.TranslationBy 					= nil -- your name here, localizers!
-L.Website							= "Visit us on discord at |cFF73C2FBhttps://discord.gg/deadlybossmods|r. Follow on twitter @deadlybossmods or @MysticalOS"
+L.Website							= "Visit us on discord at |cFF73C2FBhttps://discord.gg/deadlybossmods|r. Follow on most socials @deadlybossmods or @mysticalos"
 L.WebsiteButton						= "Website"
 
 L.OTabBosses						= "Boss Options"--Deprecated and will be deleted once tabs no longer use this
-L.OTabRaids							= "Raid"--Raids & PVP
-L.OTabDungeons						= "Party/Solo"--1-5 person content (Dungeons, MoP Scenarios, World Events, Brawlers, Proving Grounds, Visions, Torghast, etc)
-L.OTabPlugins						= "Core Plugins"
+L.OTabRaids							= "Raids"--Just pve raids
+L.OTabDungeons						= "Dungeons"--Just dungeons
+L.OTabWorld							= "World Bosses"--Since there are so many world mods, enough to get their own tab
+L.OTabScenarios						= "Scenarios"--Future use, will be used for scenarios and delves, likely after there are more than 2 mods (so probably 12.x or later)
+L.OTabPlugins						= "Other"--Scenarios, PVP, Delves (11.x), Solo/Challenge content (torghast, mage tower, etc)
 L.OTabOptions						= "Core Options"
 L.OTabAbout							= "About"
+
+L.TabCategory_CURRENT_SEASON		= "Current Season"
 
 L.TabCategory_OTHER					= "Other Mods"
 L.TabCategory_AFFIXES				= "Affixes"
@@ -31,7 +35,7 @@ L.MoveMe 							= "Move me"
 L.Button_OK 						= "OK"
 L.Button_Cancel 					= "Cancel"
 L.Button_LoadMod 					= "Load AddOn"
-L.Mod_Enabled						= "Enable boss mod"
+L.Mod_Enabled						= "Enable: %s"
 L.Mod_Reset							= "Load default options"
 L.Reset 							= "Reset"
 L.Import							= "Import"
@@ -85,28 +89,18 @@ L.Editbox_WindowWidth				= "GUI window width"
 L.Editbox_WindowHeight				= "GUI window height"
 
 L.UIGroupingOptions					= "UI Grouping Options (changing these require UI reload for any mod that's already loaded)"
-L.GroupOptionsExcludeIcon			= "Exclude 'Set Icon on' options from getting grouped by spell (they will be grouped together in 'icons' category like before)"
+L.GroupOptionsExcludeIcon			= "Exclude 'Set Icon on' options from getting grouped by spell (they will be grouped together in their own 'Icons' category instead)"
 L.AutoExpandSpellGroups				= "Auto expand options that are grouped by spell"
 L.ShowWAKeys						= "Show WeakAuras keys next to spell names to assist in writing WeakAuras using Boss Mod triggers."
 --L.ShowSpellDescWhenExpanded	= "Continue showing spell description when groups are expanded"--Might not be used
 L.NoDescription						= "This ability has no description"
 L.CustomOptions						= "This category contains custom options for an ability or event that has no spell or journal ID of it's own. These options have been grouped together using a custom manual ID for the ease of creating WeakAuras"
 
--- Panel: Extra Features
-L.Panel_ExtraFeatures				= "Extra Features"
+--
 
-L.Area_SoundAlerts					= "Sound/Flash Alert Options"
-L.LFDEnhance						= "Play ready check sound and flash application icon for role checks &amp; BG/LFG proposals in Master or Dialog audio channel (I.E. sounds work even if SFX are off and are generally louder)"
-L.WorldBossNearAlert				= "Play ready check sound and flash application icon when world bosses you are near to are pulled that you need"
-L.RLReadyCheckSound					= "When a ready check is performed, play sound through Master or Dialog audio channel and flash application icon."
-L.AFKHealthWarning					= "Play alert sound and flash application icon if you are losing health while AFK"
-L.AutoReplySound					= "Play alert sound and flash application icon when receiving DBM auto reply whisper"
---
-L.TimerGeneral 						= "Timer Options"
-L.SKT_Enabled						= "Show record victory timer for current fight if available"
-L.ShowRespawn						= "Show boss respawn timer after a wipe"
-L.ShowQueuePop						= "Show time remaining to accept a queue pop (LFG,BG,etc)"
---
+-- Panel: Auto Logging
+L.Panel_AutoLogging					= "Auto Logging"
+
 --Auto Logging: Logging toggles/types
 L.Area_AutoLogging					= "Auto Logging Toggles"
 L.AutologBosses						= "Automatically record selected content using blizzard combat log"
@@ -125,6 +119,22 @@ L.LogCurrentMPlus					= "Current level M+ dungeons"--Retail Only
 L.LogCurrentMythicZero				= "Current level Mythic 0 dungeons"--Retail Only
 L.LogTWDungeons						= "Timewalking or Chromie Time dungeons"--Retail Only
 L.LogCurrentHeroic					= "Current level Heroic dungeons (Note: if you are doing heroic via queuing and want it logged, turn off LFG filter)"
+
+-- Panel: Extra Features
+L.Panel_ExtraFeatures				= "Extra Features"
+
+L.Area_SoundAlerts					= "Sound/Flash Alert Options"
+L.LFDEnhance						= "Play ready check sound and flash application icon for role checks &amp; BG/LFG proposals in Master or Dialog audio channel (I.E. sounds work even if SFX are off and are generally louder)"
+L.WorldBossNearAlert				= "Play ready check sound and flash application icon when world bosses you are near to are pulled that you need"
+L.RLReadyCheckSound					= "When a ready check is performed, play sound through Master or Dialog audio channel and flash application icon."
+L.AFKHealthWarning					= "Play alert sound and flash application icon if you are losing health while AFK"
+L.AutoReplySound					= "Play alert sound and flash application icon when receiving DBM auto reply whisper"
+--
+L.TimerGeneral 						= "Timer Options"
+L.SKT_Enabled						= "Show record victory timer for current fight if available"
+L.ShowRespawn						= "Show boss respawn timer after a wipe"
+L.ShowQueuePop						= "Show time remaining to accept a queue pop (LFG,BG,etc)"
+L.ShowBerserkWarnings				= "Show announcements at 10/5/3/1 minutes and at 30/10 seconds remaining on $spell:26662 timer"
 --
 L.Area_3rdParty						= "3rd Party Addon Options"
 L.oRA3AnnounceConsumables			= "Announce oRA3 consumables check on combat start"
@@ -220,7 +230,14 @@ L.SpecialWarnHeader4				= "Type 4: Set options for HIGH priority run away specia
 L.SpecialWarnHeader5				= "Type 5: Set options for announcements with notes containing your player name"
 
 -- Panel: Generalwarnings
-L.Tab_GeneralMessages 				= "Chatframe Messages"
+L.Tab_GeneralMessages 				= "Chat Frame Messages"
+L.SelectChatFrameArea				= "Chat Frame Options"
+L.SelectChatFrameButton				= "Select chat frame"
+L.SelectChatFrameInfoIdle			= "Messages are shown in %s."
+L.SelectChatFrameDefaultName		= "the default chat frame"
+L.SelectChatFrameInfoDone			= "Messages will be shown in this chat frame."
+L.SelectChatFrameInfoSelect			= "Click on a chat frame to select it."
+L.SelectChatFrameInfoSelectNow		= "Click to select %s."
 L.CoreMessages						= "Core Message Options"
 L.ShowPizzaMessage 					= "Show timer broadcast messages in chat frame"
 L.ShowAllVersions	 				= "Show boss mod versions for all group members in chat frame when doing a version check. (If disabled, still does out of date/current summery)"
@@ -242,7 +259,7 @@ L.Area_BugAlerts					= "Bug Reporting Alert Options"
 L.BadTimerAlert						= "Show chat message when DBM detects a bad timer with at least 1 second of incorrectness"
 
 -- Panel: Spoken Alerts Frame
-L.Panel_SpokenAlerts				= "Spoken Alerts"
+L.Panel_SpokenAlerts				= "Countdowns & Voice Packs"
 L.Area_VoiceSelection				= "Voice Selections"
 L.CountdownVoice					= "Set primary voice for count sounds"
 L.CountdownVoice2					= "Set secondary voice for count sounds"
@@ -271,8 +288,8 @@ L.Area_BrowseOtherCT				= "Browse countdown packs on curse"
 L.BrowseOtherCTs					= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+count+pack|r"
 
 -- Panel: Event Sounds
-L.Panel_EventSounds					= "Event Sounds"
-L.Area_SoundSelection				= "Sound Selections (scroll selection menus with mouse wheel)"
+L.Panel_EventSounds					= "Event Sounds (Victory, Wipe, etc)"
+L.Area_SoundSelection				= "Sound Selections for Victory, Wipe, Pull, and background music"
 L.EventVictorySound					= "Set sound played for encounter victory"
 L.EventWipeSound					= "Set sound played for encounter wipe"
 L.EventEngagePT						= "Set sound played for pull timer start"
@@ -286,7 +303,7 @@ L.EventFilterDungMythicMusic		= "Do not play dungeon music on Mythic/Mythic+ dif
 L.EventFilterMythicMusic			= "Do not play encounter music on Mythic/Mythic+ difficulty"
 
 -- Tab: Timers
-L.TabCategory_Timers				= "Timers"
+L.TabCategory_Timers				= "Timer Bars"
 L.Area_ColorBytype					= "Color bars by type guide"
 -- Panel: Color by Type
 L.Panel_ColorByType	 				= "Bar Colors"
@@ -349,7 +366,7 @@ L.CVoiceOne							= "Count Voice 1"
 L.CVoiceTwo							= "Count Voice 2"
 L.CVoiceThree						= "Count Voice 3"
 
--- Panel: Timers
+-- Panel: Bar Appearance
 L.Panel_Appearance	 				= "Bar Appearance"
 L.Panel_Behavior	 				= "Bar Behavior"
 L.AreaTitle_BarSetup				= "Bar Appearance Options"
@@ -380,12 +397,17 @@ L.KeepBar2							= "(when supported by mod)"
 L.FadeBar							= "Fade timers for out of range abilities"
 L.BarSkin							= "Bar skin"
 
+-- Panel: Pull, Break, Combat
+L.Panel_PullBreakCombat				= "Pull & Break"
+
+L.Area_SoundOptions					= "Sound Options"
+
 -- Tab: Global Disables & Filters
 L.TabCategory_Filters	 			= "Global Disables & Filters"
 L.Area_DBMFiltersSetup				= "DBM Filters guide"
 L.Area_BlizzFiltersSetup			= "Blizzard Filters guide"
 -- Panel: Toggle DBM Features
-L.Panel_SpamFilter					= "Toggle DBM Features"
+L.Panel_SpamFilter					= "Disable DBM Features"
 
 L.Area_SpamFilter_SpecFeatures		= "Announce Features"
 L.SpamBlockNoShowAnnounce			= "Do not show text or play sound for ANY general (non emphasized) announcements"
@@ -393,26 +415,25 @@ L.SpamBlockNoSpecWarnText			= "Do not show special announce text"
 L.SpamBlockNoSpecWarnFlash			= "Do not show special announce screen flash"
 L.SpamBlockNoSpecWarnVibrate		= "Do not vibrate controller on special announce"
 L.SpamBlockNoSpecWarnSound			= "Do not play special announce sounds (still permits voice packs, if one is enabled in Spoken Alerts panel)"
+L.SpamBlockNoPrivateAuraSound		= "Do not register private aura sounds"
 
-L.Area_SpamFilter_Timers			= "Timer Global Disable & Filter Options"
+L.Area_SpamFilter_Timers			= "Timer Features"
 L.SpamBlockNoShowBossTimers			= "Do not show timers for dungeon/raid bosses"
 L.SpamBlockNoShowTrashTimers		= "Do not show timers for dungeon/raid trash (Note: this also disables nameplate CDs)"
 L.SpamBlockNoShowEventTimers		= "Do not show timers for events or prompts (Queue pop, boss respawn, etc)"
 L.SpamBlockNoShowUTimers			= "Do not show user sent timers (Custom/Pull/Break)"
 L.SpamBlockNoCountdowns				= "Do not play countdown sounds"
 
-L.Area_SpamFilter_Nameplates		= "Nameplate Global Disable & Filter Options"
-L.SpamBlockNoNameplate				= "Do not show Nameplate Auras"
-L.SpamBlockNoBossGUIDs				= "Do not show main boss (boss1) timers on Plater nameplates as Nameplate Auras\n(you will still see trash/boss adds timers if feature is enabled in Plater)"
-L.SpamBlockTimersWithNameplates		= "Do not show timer bars for trash mods if Plater Nameplate Aura CDs are enabled in Plater options (does not apply to boss fights, which will always show timer bars)"
-L.NameplateFooter					= "Additional features available here if Plater Nameplates is enabled"
+L.Area_SpamFilter_Nameplates		= "Nameplate Features"
+L.SpamBlockNoNameplate				= "Do not show nameplate icons for special boss mechanics"
+L.SpamBlockNoNameplateCD			= "Do not show nameplate icons for ability cooldown timers"
+L.SpamBlockNoBossGUIDs				= "Do not show nameplate icons for ability cooldowns for one enemy bosses\n(you will still see icons for trash or multi target bosses if this checkbox is enabled)"
 
-L.Area_SpamFilter_Misc				= "Misc Global Disable & Filter Options"
-L.SpamBlockNoSetIcon				= "Do not set icons on targets"
-L.SpamBlockNoRangeFrame				= "Do not show range frame"
-L.SpamBlockNoInfoFrame				= "Do not show info frame"
+L.Area_SpamFilter_Misc				= "Misc Features"
+L.SpamBlockNoSetIcon				= "Do not automatically set icons on targets"
+L.SpamBlockNoRangeFrame				= "Do not automatically show range frame"
+L.SpamBlockNoInfoFrame				= "Do not automatically show info frame"
 L.SpamBlockNoHudMap					= "Do not show HudMap"
-
 L.SpamBlockNoYells					= "Do not send chat yells"
 L.SpamBlockNoNoteSync				= "Do not accept shared notes"
 L.SpamBlockAutoGossip				= "Do not automatically handle gossip dialogs"
@@ -421,13 +442,13 @@ L.Area_Restore						= "DBM Restore Options (Whether DBM restores previous user s
 L.SpamBlockNoIconRestore			= "Do not save icon states and restore them on combat end"
 L.SpamBlockNoRangeRestore			= "Do not restore range frame to previous state when mods call 'hide'"
 
-L.Area_PullTimer					= "Pull, Break, Combat, & Custom Timer Filter Options"
+L.Area_PullTimer					= "Pull, Break, & Custom Timer Filter Options"
 L.DontShowPTNoID					= "Block DBM Pull Timers if not sent from same zone as you (will never block BigWigs timers that are sent with no zone ID)"
 L.DontShowPT						= "Do not show Pull/Break Timer bar"
 L.DontShowPTText					= "Do not show announce text for Pull/Break Timer"
 L.DontShowPTCountdownText			= "Do not show Pull countdown text"
-L.DontPlayPTCountdown				= "Do not play Pull/Break/Combat/Custom Timer countdown audio at all"
-L.PT_Threshold						= "Do not play Pull/Break/Combat/Custom Timer countdown audio above: %d"
+L.DontPlayPTCountdown				= "Do not play Pull/Break/Custom Timer countdown audio at all"
+L.PT_Threshold						= "Do not play Pull/Break/Custom Timer countdown audio above: %d"
 
 -- Panel: Reduce Information
 L.Panel_ReducedInformation			= "Reduce Information"
@@ -457,7 +478,7 @@ L.Area_TInterruptFilter				= "Trash Interrupt Filter Options"--Reuses above 3 st
 -- Panel: DBM Handholding
 L.Panel_HandFilter					= "Reduce DBM Handholding"
 L.Area_SpamFilter_SpecRoleFilters	= "Special Announce Type Filters (control how much handholding DBM does)"
-L.SpamSpecInformationalOnly			= "Remove all instructional text/spoken alerts from special announcements (Requires UI Reload). Alerts still show and play audio but will be generic and non directive"
+L.SpamSpecInformationalOnly			= "Remove all instructional text/spoken alerts from special announcements (Requires UI Reload). Alerts still show and play audio but will be generic and less directive"
 L.SpamSpecRoleDispel				= "Filter 'dispel' alerts entirely (No text or sound at all)"
 L.SpamSpecRoleInterrupt				= "Filter 'interrupt' alerts (No text or sound at all)"
 L.SpamSpecRoleDefensive				= "Filter 'defensive' alerts (No text or sound at all)"
@@ -468,8 +489,8 @@ L.SpamSpecRoleSwitch				= "Filter 'target swap' &amp; 'adds' alerts (No text or 
 L.SpamSpecRoleGTFO					= "Filter 'gtfo' alerts (No text or sound at all)"
 
 -- Panel: Blizzard Features
-L.Panel_HideBlizzard				= "Toggle Blizzard Features"
-L.Area_HideBlizzard					= "Blizzard Disable & Hide Options"
+L.Panel_HideBlizzard				= "Block Blizzard Features"
+L.Area_HideBlizzard					= "Disable & Hide Blizzard Features"
 L.HideBossEmoteFrame				= "Hide raid boss emote frame during boss fights"
 L.HideWatchFrame					= "Hide watch (objectives) frame during boss fights if no achievements are being tracked and if not in a Mythic+"
 L.HideGarrisonUpdates				= "Hide follower toasts during boss fights"
@@ -515,7 +536,7 @@ L.ReceivingFooter3					= "If you enable the 'replace my mod configuration' your 
 L.TabFooter							= "All options in this panel only work if you are group leader in a non dungeon/LFR group"
 
 -- Panel: Privacy
-L.Tab_Privacy 						= "Privacy Controls"
+L.Tab_Privacy 						= "Auto Reply & Privacy"
 L.Area_WhisperMessages				= "Whisper Message Options"
 L.AutoRespond 						= "Auto-respond to whispers while fighting"
 L.WhisperStats 						= "Include kill/wipe stats in whisper responses"
@@ -535,9 +556,15 @@ L.Panel_Range						= "Rangeframe"
 
 -- Panel: Nameplate
 L.Panel_Nameplates					= "Nameplates"
-L.UseNameplateHandoff				= "Hand off nameplate aura requests to supported nameplate addons (KuiNameplates, Threat Plates, Plater) instead of handling internally. This is recommended option as it allows more advanced features and configuration to be done via nameplate addon"
 L.Area_NPStyle						= "Style (Note: Only configures style when DBM is handling nameplates.)"
-L.NPAuraSize						= "Aura Pixel size (squared): %d"
+L.NPAuraText						= "Show timer text on nameplate icons"
+L.NPAuraSize						= "Icon Pixel size (squared): %d"
+L.NPIcon_BarOffSetX 				= "Icon Offset X: %d"
+L.NPIcon_BarOffSetY 				= "Icon Offset Y: %d"
+L.NPIcon_GrowthDirection 			= "Icon Growth Direction"
+L.NPDemo							= "Test (Be near nameplates)"
+
+L.TabCategory_Plugins				= "Plugins"
 
 -- Misc
 L.Area_General						= "General"

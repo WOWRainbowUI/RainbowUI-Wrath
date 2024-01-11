@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Faerlina", "DBM-Raids-WoTLK", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231010191814")
+mod:SetRevision("20240108061716")
 mod:SetCreatureID(15953)
 mod:SetEncounterID(1110)
 mod:SetModelID(15940)
@@ -35,7 +35,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(28798, 54100) then			-- Frenzy
 		self.vb.enraged = true
-		if self:IsClassic() and self:IsTanking("player", nil, nil, nil, args.destGUID) or self:IsTanking("player", "boss1", nil, true) then
+		if self:IsClassic() and self:IsTanking("player", nil, nil, true, args.destGUID) or self:IsTanking("player", "boss1", nil, true) then
 			specWarnEnrage:Show()
 			specWarnEnrage:Play("defensive")
 		else

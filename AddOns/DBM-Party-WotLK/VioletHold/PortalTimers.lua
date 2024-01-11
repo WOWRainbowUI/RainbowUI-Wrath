@@ -1,7 +1,7 @@
 local mod = DBM:NewMod("PortalTimers", "DBM-Party-WotLK", 12)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20231010191422")
+mod:SetRevision("20221012010932")
 mod:SetCreatureID(30658)
 
 mod:RegisterEvents(

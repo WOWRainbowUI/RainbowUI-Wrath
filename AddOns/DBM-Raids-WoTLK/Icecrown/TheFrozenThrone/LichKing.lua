@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20231010191814")
+mod:SetRevision("20240108061716")
 mod:SetCreatureID(36597)
 mod:SetEncounterID(mod:IsClassic() and 856 or 1106)
 mod:DisableEEKillDetection()--EE fires at 10%
@@ -60,7 +60,7 @@ local specWarnDefileCast			= mod:NewSpecialWarningMoveAway(72762, nil, nil, nil,
 local yellDefile					= mod:NewYell(72762)
 local specWarnDefileNear			= mod:NewSpecialWarningClose(72762, nil, nil, nil, 1, 2) --Phase 2+ Ability
 local specWarnHarvestSoul			= mod:NewSpecialWarningYou(68980, nil, nil, nil, 1, 2) --Phase 3+ Ability
-local specWarnInfest				= mod:NewSpecialWarningSpell(70541, nil, nil, nil, 2) --Phase 1+ Ability
+local specWarnInfest				= mod:NewSpecialWarningSpell(70541, "Healer", nil, 2, 2, 2) --Phase 1+ Ability
 local specWarnSoulreaperOtr			= mod:NewSpecialWarningTaunt(69409, nil, nil, nil, 1, 2) --phase 2+
 local specWarnTrap					= mod:NewSpecialWarningYou(73539, nil, nil, nil, 3, 2) --Heroic Ability
 local yellTrap						= mod:NewYell(73539)
@@ -73,7 +73,7 @@ local timerCombatStart				= mod:NewCombatTimer(53.5)
 local timerPhaseTransition			= mod:NewTimer(62.5, "PhaseTransition", 72262, nil, nil, 6)
 local timerSoulreaper	 			= mod:NewTargetTimer(5.1, 69409, nil, "Tank|Healer")
 local timerSoulreaperCD	 			= mod:NewNextTimer(30.5, 69409, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerHarvestSoul	 			= mod:NewTargetTimer(6, 68980)
+local timerHarvestSoul	 			= mod:NewTargetTimer(6, 68980, nil, nil, nil, 5)
 local timerHarvestSoulCD			= mod:NewNextTimer(75, 68980, nil, nil, nil, 6)
 local timerInfestCD					= mod:NewNextTimer(22.5, 70541, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 local timerNecroticPlagueCleanse 	= mod:NewTimer(5, "TimerNecroticPlagueCleanse", 70337, "Healer", nil, 5, DBM_COMMON_L.HEALER_ICON, nil, nil, nil, nil, nil, nil, 70541)
@@ -175,11 +175,12 @@ function mod:DefileTarget(targetname, uId)
 		specWarnDefileCast:Show()
 		specWarnDefileCast:Play("runout")
 		yellDefile:Yell()
-	else
+	elseif self:IsClassic() then--Not possible in combat on retail
 		if uId then
 			local inRange = CheckInteractDistance(uId, 2)
 			if inRange then
 				specWarnDefileNear:Show(targetname)
+				specWarnDefileNear:Play("runaway")
 			end
 		end
 	end
@@ -195,7 +196,7 @@ function mod:TrapTarget(targetname, uId)
 		specWarnTrap:Show()
 		specWarnTrap:Play("watchstep")
 		yellTrap:Yell()
-	else
+	elseif self:IsClassic() then--Not possible in combat on retail
 		if uId then
 			local inRange = CheckInteractDistance(uId, 2)
 			if inRange then
@@ -237,6 +238,7 @@ function mod:SPELL_CAST_START(args)
 		timerVileSpirit:Start()
 	elseif args.spellId == 70541 then -- Infest
 		specWarnInfest:Show()
+		specWarnInfest:Play("healall")
 		timerInfestCD:Start()
 	elseif args.spellId == 72762 then -- Defile
 		if self:IsTank() then

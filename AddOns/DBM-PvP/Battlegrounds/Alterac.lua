@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("z30", "DBM-PvP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230913205647")
+mod:SetRevision("20231215150010")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -31,17 +31,23 @@ do
 			end
 			local generalMod = DBM:GetModByName("PvPGeneral")
 			generalMod:SubscribeAssault(assaultID, 0)
-			generalMod:TrackHealth(11946, "HordeBoss")
-			generalMod:TrackHealth(11948, "AllianceBoss")
-			generalMod:TrackHealth(11947, "Galvangar")
-			generalMod:TrackHealth(11949, "Balinda")
-			generalMod:TrackHealth(13419, "Ivus")
-			generalMod:TrackHealth(13256, "Lokholar")
+			if not self.tracker then
+				self.tracker = generalMod:NewHealthTracker()
+				self.tracker:TrackHealth(11948, "AllianceBoss", BLUE_FONT_COLOR)
+				self.tracker:TrackHealth(11949, "Balinda", BLUE_FONT_COLOR)
+				self.tracker:TrackHealth(13419, "Ivus", BLUE_FONT_COLOR)
+				self.tracker:TrackHealth(11946, "HordeBoss", RED_FONT_COLOR)
+				self.tracker:TrackHealth(11947, "Galvangar", RED_FONT_COLOR)
+				self.tracker:TrackHealth(13256, "Lokholar", RED_FONT_COLOR)
+			end
 		elseif bgzone and (zoneID ~= 30 and zoneID ~= 2197) then
 			bgzone = false
 			self:UnregisterShortTermEvents()
 			self:Stop()
-			DBM:GetModByName("PvPGeneral"):StopTrackHealth()
+			if self.tracker then
+				self.tracker:Cancel()
+				self.tracker = nil
+			end
 		end
 	end
 

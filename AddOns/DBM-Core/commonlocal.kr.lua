@@ -25,6 +25,7 @@ CL.UP								= "위쪽"
 CL.DOWN								= "아래쪽"
 CL.LEFT						= "왼쪽"
 CL.RIGHT						= "오른쪽"
+CL.CENTER							= "가운데"
 CL.BOTH						= "양쪽"
 CL.BEHIND					= "뒤쪽"
 CL.BACK						= "뒤쪽"--Back as in back of the room, not back as in body part
@@ -76,6 +77,7 @@ CL.DODGES							= "피하기"
 CL.POOL								= "바닥"
 CL.POOLS							= "바닥"
 CL.DEBUFFS							= "디버프"
+CL.DISPELS							= "해제"
 CL.PUSHBACK							= "밀어내기"
 CL.FRONTAL							= "전방 시전"
 CL.LASER							= "레이저"
@@ -84,6 +86,9 @@ CL.RIFT								= "균열"--Often has auto localized alternatives, but still tran
 CL.RIFTS							= "균열"--Often has auto localized alternatives, but still translated for BW aura matching when needed
 CL.TRAPS							= "함정"--Doesn't have a direct auto localize so has to be manually localized, unlike non plural version
 CL.ROOTS							= "이동 불가"
+CL.MARK								= "징표"--As in short text for all the encounter mechanics that start or end in "Mark"
+CL.MARKS							= "징표"--Plural of above
 --NOTE, many common locals are auto localized:
 --Bomb (37859), Bombs (167180), Scream (31295), Breath (17088), Beam (173303), Beams (207544), Charge (100), Knockback (28405), Portal (161722), Portals (109400)
 --Fixate (12021), Trap (181341), Meteor (28884), Shield (151702), Teleport (4801), Fear (5782), Roar (140459), Leap (47482), Orb (265315), Tornados (86189)
+--Pull (193997), Push (359132)

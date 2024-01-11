@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Archavon", "DBM-Raids-WoTLK", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231010191814")
+mod:SetRevision("20240108061716")
 mod:SetCreatureID(31125)
 mod:SetEncounterID(mod:IsClassic() and 772 or 1126)
 mod:SetModelID(26967)

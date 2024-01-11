@@ -5,15 +5,19 @@ local L = DBM_GUI_L
 
 L.TranslationByPrefix		= "번역: "
 L.TranslationBy 			= "Elnarfim"
-L.Website					= "디스코드 채널 |cFF73C2FBhttps://discord.gg/deadlybossmods|r를 방문해 보세요. 트위터 팔로우 @deadlybossmods 또는 @MysticalOS"
+L.Website					= "디스코드 |cFF73C2FBhttps://discord.gg/deadlybossmods|r를 방문해 보세요. SNS에서 @deadlybossmods 또는 @MysticalOS를 팔로우하세요"
 L.WebsiteButton				= "웹사이트"
 
 L.OTabBosses					= "보스 설정"--Deprecated and will be deleted once tabs no longer use this
-L.OTabRaids						= "공격대"--Raids & PVP
-L.OTabDungeons						= "파티/1인"--1-5 person content (Dungeons, MoP Scenarios, World Events, Brawlers, Proving Grounds, Visions, Torghast, etc)
-L.OTabPlugins					= "핵심 플러그인"
+L.OTabRaids						= "공격대"--Just pve raids
+L.OTabDungeons						= "던전"--Just dungeons
+L.OTabWorld						= "필드 보스"--Since there are so many world mods, enough to get their own tab
+L.OTabScenarios						= "시나리오"--Future use, will be used for scenarios and delves, likely after there are more than 2 mods (so probably 12.x or later)
+L.OTabPlugins						= "기타"--Scenarios, PVP, Delves (11.x), Solo/Challenge content (torghast, mage tower, etc)
 L.OTabOptions					= "핵심 설정"
 L.OTabAbout						= "소개"
+
+L.TabCategory_CURRENT_SEASON		= "현재 시즌"
 
 L.TabCategory_OTHER			= "기타 모드"
 L.TabCategory_AFFIXES		= "어픽스"
@@ -30,7 +34,7 @@ L.MoveMe 					= "위치 이동"
 L.Button_OK					= "확인"
 L.Button_Cancel				= "취소"
 L.Button_LoadMod			= "애드온 로드"
-L.Mod_Enabled				= "보스 모드 활성화"
+L.Mod_Enabled				= "활성화: %s"
 L.Mod_Reset					= "설정 기본값 로드"
 L.Reset						= "초기화"
 L.Import					= "가져오기"
@@ -84,28 +88,19 @@ L.Editbox_WindowWidth		= "설정 창 너비"
 L.Editbox_WindowHeight		= "설정 창 높이"
 
 L.UIGroupingOptions			= "UI 그룹 설정 (이미 로딩이 된 모드는 UI 재시작을 해야 변경됩니다)"
-L.GroupOptionsExcludeIcon	= "주문별로 형성된 그룹에서 '공격대 징표 설정'은 제외 (이전처럼 관련 설정은 '공격대 징표' 카테고리에 배치됩니다)"
+L.GroupOptionsExcludeIcon	= "주문별로 형성된 그룹에서 '공격대 징표' 설정은 제외 (대신 '공격대 징표' 카테고리로 배치됩니다)"
+
 L.AutoExpandSpellGroups		= "주문별로 그룹이 형성된 설정들을 자동으로 펼치기"
 L.ShowWAKeys				= "보스 모드 활성 조건을 이용한 WeakAuras 제작을 지원하기 위해 주문 이름 옆에 WeakAuras 키를 표시합니다."
 --L.ShowSpellDescWhenExpanded	= "설정 그룹이 펼쳐진 상태에서도 주문 설명 계속 표시"--Might not be used
 L.NoDescription				= "이 능력에 대한 설명이 없습니다"
 L.CustomOptions				= "이 항목에는 주문이나 도감 ID가 없는 능력이나 이벤트에 대한 사용자 정의 설정이 있습니다. WeakAuras 제작에 활용할 사용자 정의 ID 사용에 관한 설정들이 분류되어 있습니다"
 
--- Panel: Extra Features
-L.Panel_ExtraFeatures		= "기타 기능"
+--
 
-L.Area_SoundAlerts			= "효과음/점멸 알림 설정"
-L.LFDEnhance				= "역할 확인 및 전장/공격대 찾기가 열릴 때 전투 준비 효과음 재생(주 오디오 또는 대화 채널) 및 작업 표시줄 아이콘 점멸 (참고: 소리 채널이 꺼져있어도 작동하며, 다른 때보다 더 크게 들립니다)"
-L.WorldBossNearAlert		= "근처에서 필드 보스 전투가 시작된 경우 전투 준비 효과음 재생 및 작업 표시줄 아이콘 점멸"
-L.RLReadyCheckSound			= "전투 준비 효과음을 주 오디오나 대화 채널을 통해 재생하고 작업 표시줄 아이콘 점멸"
-L.AFKHealthWarning			= "자리 비움 상태 도중 체력이 줄면 경고음 재생 및 작업 표시줄 아이콘 점멸"
-L.AutoReplySound			= "DBM 자동 응답 귓속말을 받을 때 경고음 재생 및 작업 표시줄 아이콘 점멸"
---
-L.TimerGeneral 				= "타이머 설정"
-L.SKT_Enabled				= "가능할 경우 현재 전투의 최고 승리 기록 타이머 표시"
-L.ShowRespawn				= "전멸 후 보스 재생성 타이머 표시"
-L.ShowQueuePop				= "입장 수락 남은 시간 타이머 표시 (공격대 찾기,전장 등)"
---
+-- Panel: Auto Logging
+L.Panel_AutoLogging			= "자동 기록"
+
 --Auto Logging: Logging toggles/types
 L.Area_AutoLogging			= "자동 전투 기록 켜기/끄기"
 L.AutologBosses				= "블리자드 전투 로그를 사용해 선택한 콘텐트를 자동으로 기록"
@@ -124,6 +119,22 @@ L.LogCurrentMPlus			= "현재 확장팩 신화+ 던전"--Retail Only
 L.LogCurrentMythicZero		= "현재 확장팩 신화 0단 던전"--Retail Only
 L.LogTWDungeons				= "시간여행 또는 크로미의 시간 레이드"--Retail Only
 L.LogCurrentHeroic			= "현재 확장팩 영웅 던전 (알림: 던전 찾기를 통해 영던을 돌면서 로그를 기록하고 싶다면 던전 찾기 기록 안함 옵션을 끄세요)"
+
+-- Panel: Extra Features
+L.Panel_ExtraFeatures		= "기타 기능"
+
+L.Area_SoundAlerts			= "효과음/점멸 알림 설정"
+L.LFDEnhance				= "역할 확인 및 전장/공격대 찾기가 열릴 때 전투 준비 효과음 재생(주 오디오 또는 대화 채널) 및 작업 표시줄 아이콘 점멸 (참고: 소리 채널이 꺼져있어도 작동하며, 다른 때보다 더 크게 들립니다)"
+L.WorldBossNearAlert		= "근처에서 필드 보스 전투가 시작된 경우 전투 준비 효과음 재생 및 작업 표시줄 아이콘 점멸"
+L.RLReadyCheckSound			= "전투 준비 효과음을 주 오디오나 대화 채널을 통해 재생하고 작업 표시줄 아이콘 점멸"
+L.AFKHealthWarning			= "자리 비움 상태 도중 체력이 줄면 경고음 재생 및 작업 표시줄 아이콘 점멸"
+L.AutoReplySound			= "DBM 자동 응답 귓속말을 받을 때 경고음 재생 및 작업 표시줄 아이콘 점멸"
+--
+L.TimerGeneral 				= "타이머 설정"
+L.SKT_Enabled				= "가능할 경우 현재 전투의 최고 승리 기록 타이머 표시"
+L.ShowRespawn				= "전멸 후 보스 재생성 타이머 표시"
+L.ShowQueuePop				= "입장 수락 남은 시간 타이머 표시 (공격대 찾기,전장 등)"
+L.ShowBerserkWarnings				= "$spell:26662 타이머가 10/5/3/1분 30/10초 남았을 때 알림"
 --
 L.Area_3rdParty				= "써드파티 애드온 설정"
 L.oRA3AnnounceConsumables	= "전투 시작시 oRA3 버프 검사 알림"
@@ -210,7 +221,6 @@ L.SpecWarn_FlashColor		= "점멸 색상 %d"
 L.SpecWarn_FlashDur			= "점멸 지속시간: %0.1f"
 L.SpecWarn_FlashAlpha		= "점멸 투명도: %0.1f"
 L.SpecWarn_DemoButton		= "예제 보기"
-L.SpecWarn_MoveMe			= "위치 설정"
 L.SpecWarn_ResetMe			= "기본값으로 초기화"
 L.SpecialWarnSoundOption	= "기본 효과음 설정"
 L.SpecialWarnHeader1		= "유형 1: 당신이 뭔가 걸렸거나 취해야 할 행동에 대한 보통 수준 알림 설정 세트"
@@ -221,6 +231,13 @@ L.SpecialWarnHeader5		= "유형 5: 메모에 당신의 이름이 있을 때 알�
 
 -- Panel: Generalwarnings
 L.Tab_GeneralMessages 		= "대화창 메시지"
+L.SelectChatFrameArea				= "대화창 설정"
+L.SelectChatFrameButton				= "대화창 선택"
+L.SelectChatFrameInfoIdle			= "%s에 메시지가 표시됩니다."
+L.SelectChatFrameDefaultName		= "기본 대화창"
+L.SelectChatFrameInfoDone			= "이 대화창에 메시지가 표시됩니다."
+L.SelectChatFrameInfoSelect			= "대화창을 클릭해서 선택합니다."
+L.SelectChatFrameInfoSelectNow		= "클릭해서 %s|1을;를; 선택하세요."
 L.CoreMessages				= "기본 메시지 설정"
 L.ShowPizzaMessage 			= "대화창에 전송받은 타이머 표시"
 L.ShowAllVersions	 		= "버전 검사시 대화창에 모든 파티/공격대원의 보스 모드 버전을 표시합니다. (설정을 꺼도 구버전/신버전으로 간략하게 표시됨)"
@@ -235,27 +252,22 @@ L.ShowGuildMessagesPlus		= "길드팟 신화+ 전투 시작/보스 처치/전멸
 L.Area_ChatAlerts			= "기타 알림 설정"
 L.RoleSpecAlert				= "공격대에 들어왔을 때 현재 전문화와 설정된 전리품 전문화가 맞지 않으면 알림 메시지 표시"
 L.CheckGear					= "풀링 타이머가 나오면 착용 장비 알림 메시지 표시 (착용 아이템 레벨이 소지한 아이템 레벨보다 40 이상 낮거나 주무기가 없을 경우)"
-L.WorldBossAlert			= "현재 서버에서 길드원이나 친구가 필드 보스 전투를 시작하면 알림 메시지 표시 (전송자가 연합 서버에 있다면 부정확합니다)"
-
-L.WhisperMessages			= "귓속말 메시지 설정"
-L.AutoRespond 				= "전투중 귓속말 자동 응답"
-L.WhisperStats 				= "귓속말 응답에 처치/전멸 통계 포함"
-L.DisableStatusWhisper 		= "전체 파티/공격대의 귓속말 응답을 끕니다. (파티/공대장 권한 필요) 일반/영웅/신화 레이드 및 신화+ 던전에만 적용됩니다"
-L.DisableGuildStatus 		= "길드에 진행 상황 알림 메시지를 전송하지 않습니다. (파티/공대장 권한 필요)"
+L.WorldBossAlert			= "같은 서버의 길드원이나 친구가 필드 보스 전투를 시작하면 알림 메시지 표시 (전송자가 연합 서버에 있다면 부정확합니다)"
+L.WorldBuffAlert			= "내 서버에서 월드 버프가 시작되면 알림 메시지 표시"
 
 L.Area_BugAlerts			= "버그 제보 알림 설정"
 L.BadTimerAlert				= "DBM이 최소 1초 이상 맞지 않는 불량 타이머를 감지했을 때 대화창에 메시지 표시"
 
 -- Panel: Spoken Alerts Frame
-L.Panel_SpokenAlerts		= "음성 경고"
+L.Panel_SpokenAlerts			= "초읽기와 음성팩"
 L.Area_VoiceSelection		= "음성 선택"
 L.CountdownVoice			= "1순위 초읽기 음성 설정"
 L.CountdownVoice2			= "2순위 초읽기 음성 설정"
 L.CountdownVoice3			= "3순위 초읽기 음성 설정"
 L.PullVoice					= "풀링 타이머 음성 설정"
 L.VoicePackChoice			= "음성 경고에 쓸 음성팩 설정"
+L.MissingVoicePack				= "음성팩 찾을 수 없음 (%s)"
 L.Area_CountdownOptions		= "초읽기 설정"
-L.Area_VoicePackOptions		= "음성팩 설정"
 L.Area_VoicePackReplace		= "기본 효과음 음성팩 대체 설정 (음성팩이 대체하는 경고의 기본 효과음이 재생되지 않습니다)"
 L.VPReplaceNote				= "알림: 음성팩은 절대 경고음을 변경하거나 삭제하지 않습니다.\n음성팩이 대체하는 효과음만 재생되지 않을 뿐입니다."
 L.ReplacesAnnounce			= "알림 효과음 대체 (알림: 페이즈 변경과 쫄 등장 이외에는 음성팩에서 사용되는 효과음이 극히 적습니다)"
@@ -273,8 +285,8 @@ L.Area_BrowseOtherVP		= "Curse에 올라와있는 다른 음성팩 보기"
 L.Area_BrowseOtherCT		= "Curse에 올라와있는 카운트다운 팩 보기"
 
 -- Panel: Event Sounds
-L.Panel_EventSounds			= "이벤트 효과음"
-L.Area_SoundSelection		= "효과음 선택 (마우스 휠로 스크롤)"
+L.Panel_EventSounds			= "이벤트 효과음 (승리, 전멸, 기타)"
+L.Area_SoundSelection				= "승리, 전멸, 풀링, 배경음악에 사용할 효과음 선택"
 L.EventVictorySound			= "보스를 잡았을 때 재생할 효과음 설정"
 L.EventWipeSound			= "전멸했을 때 재생할 효과음 설정"
 L.EventEngagePT				= "풀링 타이머 시작시 재생할 효과음 설정"
@@ -288,7 +300,7 @@ L.EventFilterDungMythicMusic		= "신화/신화+ 난이도에선 던전 배경음
 L.EventFilterMythicMusic		= "신화/신화+ 난이도에선 보스 전투 배경음을 재생하지 않음"
 
 -- Tab: Timers
-L.TabCategory_Timers		= "타이머"
+L.TabCategory_Timers			= "타이머 바"
 L.Area_ColorBytype			= "속성별 바 색상 가이드"
 -- Panel: Color by Type
 L.Panel_ColorByType	 		= "바 색상"
@@ -353,7 +365,7 @@ L.CVoiceOne						= "초읽기 음성 1"
 L.CVoiceTwo						= "초읽기 음성 2"
 L.CVoiceThree					= "초읽기 음성 3"
 
--- Panel: Timers
+-- Panel: Bar Appearance
 L.Panel_Appearance	 		= "바 외형"
 L.Panel_Behavior	 		= "바 작동 방식"
 L.AreaTitle_BarSetup		= "바 외형 설정"
@@ -384,12 +396,17 @@ L.KeepBar2					= "(모드에서 지원할 경우에만)"
 L.FadeBar					= "사정거리 밖의 스킬에 대한 타이머 바 숨김"
 L.BarSkin					= "바 스킨"
 
+-- Panel: Pull, Break, Combat
+L.Panel_PullBreakCombat				= "풀링과 휴식"
+
+L.Area_SoundOptions					= "효과음 설정"
+
 -- Tab: Global Disables & Filters
 L.TabCategory_Filters	 	= "기능 끄기 및 필터"
 L.Area_DBMFiltersSetup		= "DBM 기능 필터 가이드"
 L.Area_BlizzFiltersSetup	= "블리자드 기능 필터 가이드"
 -- Panel: Toggle DBM Features
-L.Panel_SpamFilter			= "DBM 기능 켜고 끄기"
+L.Panel_SpamFilter			= "DBM 기능 끄기"
 
 L.Area_SpamFilter_SpecFeatures		= "알림 기능"
 L.SpamBlockNoShowAnnounce	= "모든 알림 및 효과음 재생 안함"
@@ -397,26 +414,25 @@ L.SpamBlockNoSpecWarnText	= "특수 알림 텍스트 표시 안함"
 L.SpamBlockNoSpecWarnFlash	= "특수 알림에 화면 점멸 사용 안함"
 L.SpamBlockNoSpecWarnVibrate		= "특수 알림에 컨트롤러 진동 안함"
 L.SpamBlockNoSpecWarnSound	= "특수 알림 효과음 재생 안함 (음성 경고 메뉴에서 설정했다면 음성팩은 계속 작동)"
+L.SpamBlockNoPrivateAuraSound		= "비공개 오라 효과음 등록 안함"
 
-L.Area_SpamFilter_Timers	= "타이머 관련 기능 끄기 및 필터 설정"
+L.Area_SpamFilter_Timers	= "타이머"
 L.SpamBlockNoShowBossTimers		= "던전/레이드 보스 타이머 표시 안함"
 L.SpamBlockNoShowTrashTimers		= "던전/레이드 일반몹 타이머 표시 안함 (알림: 이름표의 쿨타임도 표시되지 않습니다)"
 L.SpamBlockNoShowEventTimers		= "이벤트나 알림 타이머 표시 안함 (대기열, 보스 재생성 등)"
 L.SpamBlockNoShowUTimers	= "사용자 전송 타이머 표시 안함 (사용자 지정/풀링/휴식)"
 L.SpamBlockNoCountdowns		= "초읽기 음성 재생 안함"
 
-L.Area_SpamFilter_Nameplates		= "이름표 애드온 전체적인 기능 끄기 및 필터 설정"
-L.SpamBlockNoNameplate		= "이름표 오라 표시 안함"
-L.SpamBlockNoBossGUIDs			= "메인 보스 (boss1)의 타이머를 Plater 이름표 오라로 표시 안함\n(Plater에서 해당 기능을 활성화 했다면 일반몹/보스 쫄의 타이머는 볼 수 있습니다)"
-L.SpamBlockTimersWithNameplates		= "Plater에서 오라 쿨타임 설정을 활성화 했을 때 일반몹에선 DBM 타이머 바 보지 않음 (보스 전투에는 적용되지 않고 항상 타이머 바가 표시됩니다)"
-L.NameplateFooter					= "Plater Nameplates를 사용중이라면 이 메뉴에서 추가로 기능을 설정할 수 있습니다"
+L.Area_SpamFilter_Nameplates		= "이름표"
+L.SpamBlockNoNameplate				= "특수한 보스 패턴에선 이름표 아이콘을 표시 안함"
+L.SpamBlockNoNameplateCD			= "스킬 쿨타임 타이머의 이름표 아이콘을 표시 안함"
+L.SpamBlockNoBossGUIDs				= "단일 보스 전투시엔 스킬 쿨타임 이름표 아이콘을 표시 안함\n(이 설정을 활성화했어도 일반몹이나 다중 대상 보스 전투에선 아이콘이 표시됩니다)"
 
-L.Area_SpamFilter_Misc		= "기타 여러 기능 끄기 및 필터 설정"
-L.SpamBlockNoSetIcon		= "대상에 공격대 징표를 설정하지 않음"
-L.SpamBlockNoRangeFrame		= "거리 창 표시 안함"
-L.SpamBlockNoInfoFrame		= "정보 창 표시 안함"
+L.Area_SpamFilter_Misc		= "기타"
+L.SpamBlockNoSetIcon		= "대상에 공격대 징표를 자동으로 설정하지 않음"
+L.SpamBlockNoRangeFrame		= "거리 창을 자동으로 표시 안함"
+L.SpamBlockNoInfoFrame		= "정보 창을 자동으로 표시 안함"
 L.SpamBlockNoHudMap			= "HUD 표시 안함"
-
 L.SpamBlockNoYells			= "말풍선 알림 사용 안함"
 L.SpamBlockNoNoteSync		= "메모 공유 수락 안함"
 L.SpamBlockAutoGossip		= "NPC 대화 자동 수락 안함"
@@ -425,13 +441,13 @@ L.Area_Restore				= "DBM 복구 설정 (DBM이 보스 모드 종료시 이전 �
 L.SpamBlockNoIconRestore	= "아이콘 설정 상태를 저장하지 않고 전투 종료시 원래대로 복구"
 L.SpamBlockNoRangeRestore	= "모드가 '숨김' 명령을 내렸을 때 이전 설정 상태로 거리 창 복구 안함"
 
-L.Area_PullTimer			= "풀링, 휴식, 전투, 사용자 지정 바 관련 필터 설정"
+L.Area_PullTimer			= "풀링, 휴식, 사용자 지정 바 관련 필터 설정"
 L.DontShowPTNoID			= "같은 지역에 없는 사용자가 보낸 DBM 풀링 타이머 차단 (지역 ID 없이 전송된 BigWigs 타이머는 차단하지 않습니다)"
 L.DontShowPT				= "풀링/휴식 타이머 표시 안함"
 L.DontShowPTText			= "풀링/휴식 알림 텍스트 표시 안함"
 L.DontShowPTCountdownText	= "풀링 초읽기 숫자 표시 안함"
-L.DontPlayPTCountdown		= "풀링/휴식/전투/사용자 지정 초읽기 전구간 음성 재생 안함"
-L.PT_Threshold				= "휴식/전투/사용자 지정 타이머 초읽기 음성 재생 안함: %d초 까지"
+L.DontPlayPTCountdown		= "풀링/휴식/사용자 지정 초읽기 전구간 음성 재생 안함"
+L.PT_Threshold				= "풀링/휴식/사용자 지정 타이머 초읽기 음성 재생 안함: %d초 까지"
 
 -- Panel: Reduce Information
 L.Panel_ReducedInformation			= "정보량 줄이기"
@@ -461,7 +477,7 @@ L.Area_TInterruptFilter				= "일반몹 차단 알림 필터 설정"--Reuses abo
 -- Panel: DBM Handholding
 L.Panel_HandFilter					= "DBM 관할 알림 줄이기"
 L.Area_SpamFilter_SpecRoleFilters	= "특수 알림 유형 필터 (DBM이 관할하는 알림의 정보량 조정)"
-L.SpamSpecInformationalOnly			= "특수 알림에서 행동 지시 텍스트/음성 알림을 전부 삭제합니다. (UI 재시작 필요) 알림은 여전히 표시되며 음성도 출력되지만 일반적인 사항만 보여주며 직접적인 지시 사항은 없습니다"
+L.SpamSpecInformationalOnly			= "특수 알림에서 행동 지시 텍스트/음성 알림을 전부 삭제합니다. (UI 재시작 필요) 알림은 여전히 표시되며 음성도 출력되지만 일반적인 사항만 보여주며 직접적인 지시 사항은 줄어듭니다"
 L.SpamSpecRoleDispel				= "'해제' 경고 완전히 빼기 (텍스트와 효과음 전부)"
 L.SpamSpecRoleInterrupt				= "'차단' 경고 빼기 (텍스트와 효과음 전부)"
 L.SpamSpecRoleDefensive				= "'생존기' 경고 빼기 (텍스트와 효과음 전부)"
@@ -472,8 +488,8 @@ L.SpamSpecRoleSwitch				= "'대상 변경' &amp; '쫄 등장' 경고 빼기 (텍
 L.SpamSpecRoleGTFO					= "'바닥 피하기' 경고 빼기 (텍스트와 효과음 전부)"
 
 -- Panel: Blizzard Features
-L.Panel_HideBlizzard		= "블리자드 기능 켜고 끄기"
-L.Area_HideBlizzard			= "블리자드 기능 끄기 및 숨김 설정"
+L.Panel_HideBlizzard		= "블리자드 기능 차단"
+L.Area_HideBlizzard			= "블리자드 기능 끄기 및 숨김"
 L.HideBossEmoteFrame		= "보스 전투중 보스 감정표현 숨기기"
 L.HideWatchFrame			= "추적중인 업적이 없고 신화+ 난이도가 아니라면 보스 전투시 퀘스트 추적 프레임을 숨깁니다."
 L.HideGarrisonUpdates		= "보스 전투중 추종자 팝업 알림 숨기기"
@@ -519,7 +535,7 @@ L.ReceivingFooter3					= "'내 모드 설정을 대체'를 활성화하면 당�
 L.TabFooter							= "이 패널의 모든 설정은 당신이 공격대/공찾 공대장일때만 작동합니다"
 
 -- Panel: Privacy
-L.Tab_Privacy 				= "사생활 보호 수위 조정"
+L.Tab_Privacy 				= "자동 응답과 사생활 보호"
 L.Area_WhisperMessages		= "귓속말 설정"
 L.AutoRespond 				= "전투중 자동 귓속말 답변"
 L.WhisperStats 				= "귓속말 답변에 처치/전멸 통계 포함"
@@ -539,9 +555,13 @@ L.Panel_Range				= "거리 창"
 
 -- Panel: Nameplate
 L.Panel_Nameplates			= "이름표"
-L.UseNameplateHandoff		= "이름표 오라에 대한 요청이 발생하면 DBM 내부에서 처리하지 않고 지원되는 이름표 애드온으로 넘깁니다. (KuiNameplates, Threat Plates, Plater) 이름표 애드온을 통해 보다 발전된 기능과 설정이 가능하므로 권장하는 설정입니다"
-L.Area_NPStyle				= "외형 (알림: DBM이 이름표를 관리할 때만 설정하세요.)"
-L.NPAuraSize				= "오라 픽셀 크기 (정사각형): %d"
+L.Area_NPStyle				= "외형 (알림: DBM이 이름표를 관리할 때만 적용됩니다)"
+L.NPAuraText					= "이름표 아이콘에 타이머 텍스트 표시"
+L.NPAuraSize				= "아이콘 픽셀 크기 (정사각형): %d"
+L.NPIcon_BarOffSetX 				= "아이콘 위치 조정 X: %d"
+L.NPIcon_BarOffSetY 				= "아이콘 위치 조정 Y: %d"
+L.NPIcon_GrowthDirection 			= "아이콘 생성 방향"
+L.NPDemo							= "테스트 (이름표 근처에서 실행)"
 
 -- Misc
 L.Area_General				= "일반"

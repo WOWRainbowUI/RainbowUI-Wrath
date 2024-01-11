@@ -28,7 +28,10 @@ L:SetMiscLocalization({
 	ExprFlagCaptured	= "(.+) hat die Flagge der (%w+) errungen!",
 	ExprFlagReturn		= "Die Flagge der (%w+) wurde von (.+) zu ihrem Stützpunkt zurückgebracht!",
 	Vulnerable1			= "Eure Angriffe verursachen nun schwerere Verletzungen bei Flaggenträgern!",
-	Vulnerable2			= "Eure Angriffe verursachen nun sehr schwere Verletzungen bei Flaggenträgern!"
+	Vulnerable2			= "Eure Angriffe verursachen nun sehr schwere Verletzungen bei Flaggenträgern!",
+	InfoFrameHeader		= "[DBM] Boss HP",
+	HordeBoss			= "Horde-Boss",
+	AllianceBoss		= "Allianz-Boss",
 })
 ----------------------
 --  Alterac Valley  --
@@ -101,4 +104,21 @@ L = DBM:GetModLocalization("z998")
 L:SetMiscLocalization({
 	OrbTaken	= "(%S+) hat die (%S+) Kugel genommen!",
 	OrbReturn	= "Die (%S+) Kugel wurde zurückgebracht!"
+})
+
+----------------
+--  Ashenvale --
+----------------
+L = DBM:GetModLocalization("m1440")
+
+L:SetOptionLocalization({
+	EstimatedStartTimer = "Zeige Timer für geschätzte Startzeit des Events",
+	HealthFrame         = "Zeige Infoframe mit Lebenspunkten der Bosses. Das Infoframe wird über deinen Raid und den Yell Chat mit anderen Raids synchronisiert. Diese Option funktioniert nur zuverlässig wenn mindestens ein Raid in der Zone über mehrere Bosse verteilt ist und genug Spieler DBM-PvP installiert haben."
+})
+
+L:SetMiscLocalization({
+	TimerEstimate   = "Event startet",
+	TimerSoon       = "Event startet gleich!",
+	ErrorSuddenDrop = "Fortschritt für das Event ist plötzlich stark abgefallen, der Timer wird neu berechnet, dies kann ca. 2 bis 3 Minuten dauern.",
+	InfoMsgPrefix   = "DBM-PvP",
 })

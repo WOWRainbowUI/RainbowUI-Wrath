@@ -9,12 +9,17 @@ L.TranslationBy 			= "三皈依@暗影之月 & Imbav@聖光之願"
 L.Website					= "拜訪討論/支援論壇:|cFF73C2Fhttps://discord.gg/deadlybossmods|r. 請在推特上關注@deadlybossmods或@MysticalOS"
 L.WebsiteButton				= "論壇"
 
-L.OTabBosses				= "模組"
+L.OTabBosses				= "首領選項"
 L.OTabRaids					= "團隊"
 L.OTabDungeons				= "隊伍/單獨"
+L.OTabWorld					= "世界首領"
+L.OTabScenarios				= "事件"
+L.OTabPlugins				= "其他"
 L.OTabPlugins				= "核心插件"
-L.OTabOptions				= "選項"
+L.OTabOptions				= "核心選項"
 L.OTabAbout					= "關於"
+
+L.TabCategory_CURRENT_SEASON		= "當前賽季"
 
 L.TabCategory_OTHER			= "其它模組"
 L.TabCategory_AFFIXES		= "詞綴"
@@ -85,10 +90,34 @@ L.Editbox_WindowWidth		= "GUI視窗寬度"
 L.Editbox_WindowHeight		= "GUI視窗高度"
 
 L.UIGroupingOptions			= "界面分組選項 (更改這些需要輸入 /reload 來重載界面)"
-L.GroupOptionsExcludeIcon	= "按照技能分組排除“設置標記圖示”選項 (它們將像以前一樣在“圖示”類中顯示)"
+L.GroupOptionsExcludeIcon	= "按照技能分組排除“設置標記圖示”選項 (它們將一起分類為為自己的“圖示”類別)"
 L.AutoExpandSpellGroups		= "按照技能分組自動擴展選項"
+L.ShowWAKeys				= "在法術名稱旁顯示WeakAuras鍵來使用首領模組觸發器協助編寫WeakAuras。"
 --L.ShowSpellDescWhenExpanded	= "分組擴展時繼續顯示技能描述"
 L.NoDescription				= "此技能無描述說明"
+L.CustomOptions				= "此類別包含一個技能或事件本身不具有法術或冒險指南ID的自定義選項。 這些選項已使用自定義手動ID組合在一起，以便於創建WA。"
+
+-- Panel: Auto Logging
+L.Panel_AutoLogging					= "自動記錄"
+
+--Auto Logging: Logging toggles/types
+L.Area_AutoLogging					= "自動記錄切換"
+L.AutologBosses						= "自動使用暴雪戰鬥日誌記錄所選內容"
+L.AdvancedAutologBosses				= "自動使用Transcriptor紀錄所選內容"
+--Auto Logging: Global filter Options
+L.Area_AutoLoggingFilters			= "自動記錄過濾"
+L.RecordOnlyBosses					= "不記錄小怪的戰鬥 (只記錄首領。請於首領開打前使用 /dbm pull 以獲取數據)"
+L.DoNotLogLFG						= "不記錄地城搜尋器或團隊搜尋器 (佇列的內容)"
+--Auto Logging: Recorded Content types
+L.Area_AutoLoggingContent			= "自動記錄內容"
+L.LogCurrentMythicRaids		= "當前等級傳奇團隊副本"--Retail Only
+L.LogCurrentRaids			= "當前等級團隊"
+L.LogTWRaids				= "時光漫遊 或 克羅米時光團隊副本"--Retail Only
+L.LogTrivialRaids			= "低等團隊副本 (低於角色等級)"
+L.LogCurrentMPlus			= "當前等級傳奇+地下城"--Retail Only
+L.LogCurrentMythicZero		= "當前等級傳奇0層地下城"--Retail Only
+L.LogTWDungeons				= "時光漫遊 或 克羅米時光地下城"--Retail Only
+L.LogCurrentHeroic			= "當前等級英雄地下城 (注意：如果您通過地城搜尋器佇列英雄並想要記錄，請關閉地城搜尋器過濾)"
 
 -- Panel: Extra Features
 L.Panel_ExtraFeatures		= "額外功能"
@@ -104,25 +133,7 @@ L.TimerGeneral 				= "計時器選項"
 L.SKT_Enabled				= "顯示目前戰鬥的最佳紀錄勝利計時器"
 L.ShowRespawn				= "顯示下一次首領重生計時器"
 L.ShowQueuePop				= "顯示接受彈出佇列的剩餘時間(尋求組隊、戰場..等)"
---
---Auto Logging: Logging toggles/types
-L.Area_AutoLogging			= "自動記錄切換"
-L.AutologBosses				= "自動使用暴雪戰鬥日誌記錄所選內容"
-L.AdvancedAutologBosses		= "自動使用Transcriptor紀錄所選內容"
---Auto Logging: Global filter Options
-L.Area_AutoLoggingFilters	= "自動記錄過濾"
-L.RecordOnlyBosses			= "不記錄小怪的戰鬥 (只記錄首領。請於首領開打前使用 /dbm pull 以獲取數據)"
-L.DoNotLogLFG				= "不記錄地城搜尋器或團隊搜尋器 (佇列的內容)"
---Auto Logging: Recorded Content types
-L.Area_AutoLoggingContent	= "自動記錄內容"
-L.LogCurrentMythicRaids		= "當前等級傳奇團隊副本"--Retail Only
-L.LogCurrentRaids			= "當前等級團隊"
-L.LogTWRaids				= "時光漫遊 或 克羅米時光團隊副本"--Retail Only
-L.LogTrivialRaids			= "低等團隊副本 (低於角色等級)"
-L.LogCurrentMPlus			= "當前等級傳奇+地下城"--Retail Only
-L.LogCurrentMythicZero		= "當前等級傳奇0層地下城"--Retail Only
-L.LogTWDungeons				= "時光漫遊 或 克羅米時光地下城"--Retail Only
-L.LogCurrentHeroic			= "當前等級英雄地下城 (注意：如果您通過地城搜尋器佇列英雄並想要記錄，請關閉地城搜尋器過濾)"
+L.ShowBerserkWarnings		= "在10/5/3/1分鐘顯示通告並且在 $spell:26662 計時器剩餘30/10秒時"
 --
 L.Area_3rdParty				= "協力插件選項"
 L.oRA3AnnounceConsumables	= "在戰鬥開始時通告oRA3消耗品檢查"
@@ -218,11 +229,18 @@ L.SpecialWarnHeader4		= "類型4: 設置高優先級運行特別提示的選擇"
 L.SpecialWarnHeader5		= "類型5: 設置提示選項，並在註釋中包含您的玩家名稱"
 
 -- Panel: Generalwarnings
-L.Tab_GeneralMessages 		= "聊天訊息"
-L.CoreMessages				= "核心訊息選項"
-L.ShowPizzaMessage 			= "在聊天視窗顯示計時器廣播訊息"
-L.ShowAllVersions	 		= "當運行版本檢查時在聊天視窗顯示所有隊伍成員的首領模組版本。(如果停用，依舊顯示過期/目前總結)"
-L.ShowReminders				= "顯示有關缺少子模組、禁用子模組、子模組修復、子模組過期以及仍啟用靜音模式的提醒訊息。"
+L.Tab_GeneralMessages 			= "聊天訊息"
+L.SelectChatFrameArea			= "聊天視窗選項"
+L.SelectChatFrameButton			= "選擇聊天視窗"
+L.SelectChatFrameInfoIdle		= "訊息顯示在 %s。"
+L.SelectChatFrameDefaultName	= "預設聊天視窗"
+L.SelectChatFrameInfoDone		= "訊息將顯示在聊天視窗。"
+L.SelectChatFrameInfoSelect		= "點擊一個聊天視窗來選擇它。"
+L.SelectChatFrameInfoSelectNow	= "點擊選擇 %s。"
+L.CoreMessages					= "核心訊息選項"
+L.ShowPizzaMessage 				= "在聊天視窗顯示計時器廣播訊息"
+L.ShowAllVersions	 			= "當運行版本檢查時在聊天視窗顯示所有隊伍成員的首領模組版本。(如果停用，依舊顯示過期/目前總結)"
+L.ShowReminders					= "顯示有關缺少子模組、禁用子模組、子模組修復、子模組過期以及仍啟用靜音模式的提醒訊息。"
 
 L.CombatMessages			= "戰鬥訊息選項"
 L.ShowEngageMessage 		= "在聊天視窗顯示開戰訊息"
@@ -269,8 +287,8 @@ L.Area_BrowseOtherCT		= "在Curse上瀏覽倒數包"
 L.BrowseOtherCTs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+count+pack|r"
 
 -- Panel: Event Sounds
-L.Panel_EventSounds				= "事件音效"
-L.Area_SoundSelection			= "音效選擇 (使用滑鼠滾輪捲動選單)"
+L.Panel_EventSounds				= "事件音效 (勝利、滅團..等等)"
+L.Area_SoundSelection			= "音效選擇，包含勝利、滅團、開怪以及背景音樂"
 L.EventVictorySound				= "設定戰鬥勝利時的音效"
 L.EventWipeSound				= "設定滅團或重置時的音效"
 L.EventEngagePT					= "設定開怪倒數開始的音效"
@@ -347,7 +365,7 @@ L.CVoiceOne					= "倒數語音 1"
 L.CVoiceTwo					= "倒數語音 2"
 L.CVoiceThree				= "倒數語音 3"
 
--- Panel: Timers
+-- Panel: Bar Appearance
 L.Panel_Appearance	 		= "計時條外觀"
 L.Panel_Behavior	 		= "計時條動作"
 L.AreaTitle_BarSetup		= "計時條外觀選項"
@@ -371,11 +389,17 @@ L.Highest					= "頂部最高"
 L.Lowest					= "頂部最低"
 L.NoBarFade					= "使用開始/結束顏色作為小型/大型顏色，而不是逐漸改變顏色"
 L.BarInlineIcons			= "顯示嵌入圖示"
+L.DisableRightClickBar		= "停用右鍵點擊來取消計時器"
 L.ShortTimerText			= "使用較短的計時器文字(如果可用時)"
 L.KeepBar					= "保持計時器啟用直到技能施放"
 L.KeepBar2					= "(當有支援的模組時)"
 L.FadeBar					= "隱藏已超出距離技能的計時器"
 L.BarSkin					= "計時條外觀"
+
+-- Panel: Pull, Break, Combat
+L.Panel_PullBreakCombat			= "開怪 & 休息"
+
+L.Area_SoundOptions				= "聲音選項"
 
 -- Tab: Global Disables & Filters
 L.TabCategory_Filters	 	= "全局禁用及過濾"
@@ -390,6 +414,7 @@ L.SpamBlockNoSpecWarnText			= "不顯示特別提示文字"
 L.SpamBlockNoSpecWarnFlash			= "特別提示時不閃爍螢幕"
 L.SpamBlockNoSpecWarnVibrate		= "特別提示時不震動控制器"
 L.SpamBlockNoSpecWarnSound			= "不播放特別提示音效 (如果在“語音警告”面板中啟用了語音包，則仍允許語音包)"
+L.SpamBlockNoPrivateAuraSound		= "Do not register private aura sounds"
 
 L.Area_SpamFilter_Timers			= "全局計時禁用及過濾選項"
 L.SpamBlockNoShowBossTimers			= "不顯示地城/團隊首領的計時器"
@@ -400,9 +425,8 @@ L.SpamBlockNoCountdowns				= "不播放倒數音效"
 
 L.Area_SpamFilter_Nameplates		= "名條通用禁止 & 過濾選項"
 L.SpamBlockNoNameplate				= "不要顯示名條光環"
+L.SpamBlockNoNameplateCD			= "不要顯示技能冷卻計時的名條圖示"
 L.SpamBlockNoBossGUIDs				= "不要在plater名條上顯示主要首領(首領1)計時器作為名條光環\n(如果在Plater中啟用了功能，您仍然會看到小怪/首領計時器）"
-L.SpamBlockTimersWithNameplates		= "如果在Plater選項中啟用了Plaster名條光環 CD，不要顯示小怪的計時條(不適用於首領戰，這將始終顯示計時條）"
-L.NameplateFooter					= "可用的其他功能，如果啟用了Plater名條"
 
 L.Area_SpamFilter_Misc				= "全局其他禁用及過濾選項"
 L.SpamBlockNoSetIcon				= "不設置標記在目標上"
@@ -532,9 +556,12 @@ L.Panel_Range				= "距離框架"
 
 -- Panel: Nameplate
 L.Panel_Nameplates			= "名條"
-L.UseNameplateHandoff		= "將名條光環請求移交給支持的名條插件 (KuiNameplates, Threat Plates, Plater) 而不是內部處理。 推薦使用此選項，因為它允許通過名條插件完成更高級的功能和配置"
 L.Area_NPStyle				= "風格 (注意：僅在DBM處理名條時配置風格。)"
+L.NPAuraText				= "在名條圖示上顯示計時文字"
 L.NPAuraSize				= "光環像素大小 (平方): %d"
+L.NPIcon_BarOffSetX 		= "圖示水平偏移：%d"
+L.NPIcon_BarOffSetY 		= "圖示垂直偏移：%d"
+L.NPIcon_GrowthDirection 	= "圖示增長方向"
 
 -- Misc
 L.Area_General				= "一般"
@@ -547,4 +574,4 @@ L.FontColor					= "文字顏色"
 L.FontShadow				= "陰影"
 L.FontType					= "選擇字型"
 
-L.FontHeight	= 18
+L.FontHeight	= 16

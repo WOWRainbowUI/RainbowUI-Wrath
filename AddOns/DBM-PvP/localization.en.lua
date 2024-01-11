@@ -52,19 +52,29 @@ L:SetMiscLocalization({
 	ExprFlagReturn		= "The (%w+) Flag was returned to its base by (.+)!", -- Unused
 	Vulnerable1			= "The flag carriers have become vulnerable to attack!",
 	Vulnerable2			= "The flag carriers have become increasingly vulnerable to attack!",
-	-- Alterac/IsleOfConquest bosses
-	InfoFrameHeader		= "Boss Health",
+	-- Alterac/IsleOfConquest/Ashenvale bosses
+	InfoFrameHeader		= "[DBM] Boss Health",
 	HordeBoss			= "Horde Boss",
 	AllianceBoss		= "Alliance Boss",
 	Galvangar			= "Galvangar",
 	Balinda				= "Balinda",
 	Ivus				= "Ivus",
 	Lokholar			= "Lokholar",
+	RunestoneBoss		= "Runestone",
+	GlaiveBoss			= "Glaive",
+	ResearchBoss		= "Research",
+	MoonwellBoss		= "Moonwell",
+	ShredderBoss		= "Shredder",
+	CatapultBoss		= "Catapult",
+	LumberBoss			= "Lumber",
+	BonfireBoss			= "Bonfire",
 	-- Ashran bosses
 	Tremblade			= "Grand Marshall Tremblade",
 	Volrath				= "High WArlord Volrath",
 	Fangraal			= "Fangraal",
-	Kronus				= "Kronus"
+	Kronus				= "Kronus",
+	-- Health sync frame
+	Stale               = "(stale) ",
 })
 
 ----------------------
@@ -175,4 +185,21 @@ L:SetOptionLocalization({
 L:SetMiscLocalization({
 	OrbTaken	= "(%S+) has taken the (%S+) orb!",
 	OrbReturn	= "The (%S+) orb has been returned!"
+})
+
+----------------
+--  Ashenvale --
+----------------
+L = DBM:GetModLocalization("m1440")
+
+L:SetOptionLocalization({
+	EstimatedStartTimer = "Show timer for estimated event start time",
+	HealthFrame         = "Show info frame with boss health, this works by syncing health across your raid and via yell chat to other raids. This means this only works if there are at least some raids distributed across bosses with DBM-PvP installed."
+})
+
+L:SetMiscLocalization({
+	TimerEstimate   = "Event starts",
+	TimerSoon       = "Event starts soon!",
+	ErrorSuddenDrop = "Detected sudden drop in event progress, re-calculating estimate, timer will update in 2-3 minutes.",
+	InfoMsgPrefix   = "DBM-PvP", -- Default for :AddMsg is the mod name which is just "Ashenvale" which doesn't look like a message from DBM
 })

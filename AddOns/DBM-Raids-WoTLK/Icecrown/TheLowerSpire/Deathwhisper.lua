@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20231010191814")
+mod:SetRevision("20240108061716")
 mod:SetCreatureID(36855)
 mod:SetEncounterID(mod:IsClassic() and 846 or 1100)
 mod:SetModelID(30893)
@@ -47,7 +47,9 @@ local berserkTimer					= mod:NewBerserkTimer(600)
 mod:AddSetIconOption("SetIconOnDominateMind", 71289, true, 0, {1, 2, 3})
 mod:AddSetIconOption("SetIconOnDeformedFanatic", 70900, true, 5, {8})
 mod:AddSetIconOption("SetIconOnEmpoweredAdherent", 70901, true, 5, {7})
-mod:AddInfoFrameOption(70842, true)
+if mod:IsRetail() then
+	mod:AddInfoFrameOption(70842, true)
+end
 
 local dominateMindTargets = {}
 mod.vb.dominateMindIcon = 1
@@ -86,14 +88,14 @@ function mod:OnCombatStart(delay)
 	end
 	table.wipe(dominateMindTargets)
 	self.vb.dominateMindIcon = 6
-	if self.Options.InfoFrame then
+	if self.Options.InfoFrame and self:IsRetail() then
 		DBM.InfoFrame:SetHeader(shieldName)
 		DBM.InfoFrame:Show(2, "enemyabsorb", nil, UnitGetTotalAbsorbs("boss1"))
 	end
 end
 
 function mod:OnCombatEnd()
-	if self.Options.InfoFrame then
+	if self.Options.InfoFrame and self:IsRetail() then
 		DBM.InfoFrame:Hide()
 	end
 end
