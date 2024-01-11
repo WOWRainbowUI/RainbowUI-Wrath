@@ -2,7 +2,7 @@
 
 ## Title: VuhDo ['vu:du:]
 ## Author: Iza@Gilneas, humfras, Ivaria@Hyjal
-## Version: 3.157-wotlkc
+## Version: 3.158-wotlkc
 ## Notes: Raid Frames providing click-heal functionality, buff and debuff control, main tank management and much more
 ## Title-zhTW: |cffFF7F00[團隊]|r 框架 (巫毒)-主程式
 ## Notes-zhTW: VuhDo ['vu:du:] |n|n用來取代隊伍/團隊框架，滑鼠點一下就能快速施放法術/補血，是補師的好朋友!|n 可以自訂框架的外觀，提供治療、驅散、施放增益效果、使用飾品、距離檢查和仇恨提示的功能。|n|n|cffffd200使用方法: |r點小地圖按鈕開啟設定。

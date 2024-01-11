@@ -2,7 +2,7 @@
 
 ## Title: VuhDo ['vu:du:] - Options
 ## Author: Iza@Gilneas, humfras, Ivaria@Hyjal
-## Version: 3.157-wotlkc
+## Version: 3.158-wotlkc
 ## Notes: VuhDo Options
 ## Title-zhTW: |cffFF7F00[團隊]|r 框架 (巫毒)-設定選項
 ## Notes-zhTW: VuhDo ['vu:du:] - Options |n|n巫毒治療框架的設定選項。|n|n|cffffd200使用方法: |r點小地圖按鈕開啟設定。
