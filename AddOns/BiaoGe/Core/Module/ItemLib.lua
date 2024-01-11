@@ -75,7 +75,7 @@ local function FiltertHard(FB, hard, ii) -- 过滤不存在的副本难度
     if (FB == "ULD" and strfind(hard, "H"))
         or (FB == "NAXX" and strfind(hard, "H"))
         or (BG.Boss[FB]["boss" .. ii].name == L["奥\n妮\n克\n希\n亚"] and strfind(hard, "H"))
-        or (BG.Boss[FB]["boss" .. ii].name == L["海\n里\n昂"])
+    -- or (BG.Boss[FB]["boss" .. ii].name == L["海\n里\n昂"])
     then
         return true
     end
@@ -144,10 +144,7 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
                 bossname = L["小怪"]
             end
             if BG.IsVanilla() then
-                -- if BG.IsVanilla_Sod() then
-                get = color .. BG[FB .. "name"] .. " " .. bossname .. AddPrice(itemID)
-                -- elseif BG.IsVanilla_60() then
-                --     get = color .. FB .. " " .. bossname .. AddPrice(itemID)
+                get = color .. BG.GetFBinfo(FB, "localName") .. " " .. bossname .. AddPrice(itemID)
             else
                 get = color .. FB .. " " .. hard .. " " .. bossname .. AddPrice(itemID)
             end
@@ -160,7 +157,7 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
 
             local players
             if BG.IsVanilla() then
-                players = BG.maxplayers[FB] or 10
+                players = BG.GetFBinfo(FB, "maxplayers") or 10
             else
                 players = tonumber(strmatch(hard, "%d+")) -- 副本规模10人/25人
             end
@@ -800,7 +797,7 @@ local function UpdateTiptext(num, itemtbale)
         BG.ItemLibMainFrame[num]["noItem"]:Hide()
     end
 
-    local P = BG.phase[FB]
+    local P = BG.GetFBinfo(FB, "phase")
     local B = ""
     for i, v in ipairs(BG.invtypetable) do
         if v.key[1] == BiaoGe["ItemLibInvType"][num][1] then

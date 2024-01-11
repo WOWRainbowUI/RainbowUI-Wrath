@@ -279,14 +279,36 @@ local function FrameHide(num)
 end
 ADDONSELF.FrameHide = FrameHide
 
-------------------把副本英文转换为中文------------------
-function BG.FBcn(FB)
-    for i, v in pairs(BG.FBtable2) do
-        if FB == v.FB then
-            return v.localName
+------------------获取FBtable2数据内容------------------
+--[[
+do
+    -- 获取副本本地化名称
+    function BG.GetFBinfo(FB,"localName")
+        for i, v in pairs(BG.FBtable2) do
+            if FB == v.FB then
+                return v.localName
+            end
         end
     end
-end
+
+    -- 获取副本最大玩家数量
+    function BG.GetFBinfo(FB,"maxplayers")
+        for i, v in ipairs(BG.FBtable2) do
+            if FB == v.FB then
+                return v.maxplayers
+            end
+        end
+    end
+
+    -- 获取副本所属阶段
+    function BG.GetFBinfo(FB,"phase")
+        for i, v in ipairs(BG.FBtable2) do
+            if FB == v.FB then
+                return v.phase
+            end
+        end
+    end
+end ]]
 
 ------------------当前表格是否空白------------------  -- true 是空白，false 不是空白
 function BG.BiaoGeIsEmpty(FB, _type)

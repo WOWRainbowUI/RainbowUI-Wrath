@@ -2030,7 +2030,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         i = i + 1
     end
 
-    -- 禁止玩家点击频道
+        -- 禁止玩家点击频道
     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)
         if not frame.checkBoxTable or not frame.checkBoxTable[1] or not frame.checkBoxTable[1].channelID then
             return

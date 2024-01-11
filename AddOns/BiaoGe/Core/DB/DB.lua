@@ -76,22 +76,23 @@ end
 
 local RealmId = GetRealmID()
 local player = UnitName("player")
-local FB
 local vanillaAllFB = { "BD", "NAXX", "TAQ", "AQL", "ZUG", "BWL", "MC", }
 
 BG.FBtable = {}
 BG.FBtable2 = {}
 BG.FBIDtable = {}
-BG.maxplayers = {}
-BG.phase = {}
 do
     function AddDB(FB, FBid, phase, maxplayers)
-        BG[FB .. "name"] = GetRealZoneText(FBid)
         tinsert(BG.FBtable, FB)
-        tinsert(BG.FBtable2, { FB = FB, ID = FBid, localName = GetRealZoneText(FBid) })
+        tinsert(BG.FBtable2,
+            {
+                FB = FB,
+                ID = FBid,
+                localName = GetRealZoneText(FBid),
+                phase = phase,
+                maxplayers = maxplayers,
+            })
         BG.FBIDtable[FBid] = FB
-        BG.phase[FB] = phase
-        BG.maxplayers[FB] = maxplayers
     end
 
     if BG.IsVanilla_Sod() then
@@ -128,7 +129,6 @@ do
             [724] = "ICC",  -- 红玉圣殿
         }
     end
-    FB = BG.FBtable
 
     BG.Movetable = {}
     BG.options = {}
@@ -140,12 +140,22 @@ do
 
     BG.ver = ADDONSELF.ver
     BG.instructionsText = ADDONSELF.instructionsText
-    BG.upDateText = ADDONSELF.upDateText
+    BG.updateText = ADDONSELF.updateText
+
+    ---------- 获取副本tbl某个value ----------
+    function BG.GetFBinfo(FB, info)
+        for i, v in ipairs(BG.FBtable2) do
+            if FB == v.FB then
+                return v[info]
+            end
+        end
+    end
+
     -- 表格
     do
         -- 表格UI
         BG.Frame = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             BG.Frame[value] = {}
             for b = 1, 22 do
                 BG.Frame[value]["boss" .. b] = {}
@@ -154,7 +164,7 @@ do
 
         -- 底色
         BG.FrameDs = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             for i = 1, 3, 1 do
                 BG.FrameDs[value .. i] = {}
                 for b = 1, 22 do
@@ -165,7 +175,7 @@ do
 
         -- 心愿UI
         BG.HopeFrame = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             BG.HopeFrame[value] = {}
             for n = 1, 4 do
                 BG.HopeFrame[value]["nandu" .. n] = {}
@@ -177,7 +187,7 @@ do
 
         -- 心愿底色
         BG.HopeFrameDs = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             for t = 1, 3, 1 do
                 BG.HopeFrameDs[value .. t] = {}
                 for n = 1, 4 do
@@ -191,7 +201,7 @@ do
 
         -- 历史UI
         BG.HistoryFrame = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             BG.HistoryFrame[value] = {}
             for b = 1, 22 do
                 BG.HistoryFrame[value]["boss" .. b] = {}
@@ -200,7 +210,7 @@ do
 
         -- 历史底色
         BG.HistoryFrameDs = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             for i = 1, 3, 1 do
                 BG.HistoryFrameDs[value .. i] = {}
                 for b = 1, 22 do
@@ -211,7 +221,7 @@ do
 
         -- 接收UI
         BG.ReceiveFrame = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             BG.ReceiveFrame[value] = {}
             for b = 1, 22 do
                 BG.ReceiveFrame[value]["boss" .. b] = {}
@@ -220,7 +230,7 @@ do
 
         -- 接收底色
         BG.ReceiveFrameDs = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             for i = 1, 3, 1 do
                 BG.ReceiveFrameDs[value .. i] = {}
                 for b = 1, 22 do
@@ -231,7 +241,7 @@ do
 
         -- 对账UI
         BG.DuiZhangFrame = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             BG.DuiZhangFrame[value] = {}
             for b = 1, 22 do
                 BG.DuiZhangFrame[value]["boss" .. b] = {}
@@ -240,7 +250,7 @@ do
 
         -- 对账底色
         BG.DuiZhangFrameDs = {}
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             for i = 1, 3, 1 do
                 BG.DuiZhangFrameDs[value .. i] = {}
                 for b = 1, 22 do
@@ -500,7 +510,7 @@ local function DataBase()
         if not BiaoGe.BossFrame then
             BiaoGe.BossFrame = {}
         end
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             if not BiaoGe[value] then
                 BiaoGe[value] = {}
             end
@@ -514,7 +524,7 @@ local function DataBase()
         if not BiaoGe.HistoryList then
             BiaoGe.HistoryList = {}
         end
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             if not BiaoGe.HistoryList[value] then
                 BiaoGe.HistoryList[value] = {}
             end
@@ -523,13 +533,13 @@ local function DataBase()
         if not BiaoGe.History then
             BiaoGe.History = {}
         end
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             if not BiaoGe.History[value] then
                 BiaoGe.History[value] = {}
             end
         end
 
-        for index, value in ipairs(FB) do
+        for index, value in ipairs(BG.FBtable) do
             if not BiaoGe.BossFrame[value] then
                 BiaoGe.BossFrame[value] = {}
             end
@@ -573,16 +583,16 @@ local function DataBase()
         if not BiaoGe.Hope[RealmId][player] then
             BiaoGe.Hope[RealmId][player] = {}
         end
-        for index, fb in ipairs(FB) do
-            if not BiaoGe.Hope[RealmId][player][fb] then
-                BiaoGe.Hope[RealmId][player][fb] = {}
+        for index, FB in ipairs(BG.FBtable) do
+            if not BiaoGe.Hope[RealmId][player][FB] then
+                BiaoGe.Hope[RealmId][player][FB] = {}
             end
             for n = 1, 4 do
-                if not BiaoGe.Hope[RealmId][player][fb]["nandu" .. n] then
-                    BiaoGe.Hope[RealmId][player][fb]["nandu" .. n] = {}
+                if not BiaoGe.Hope[RealmId][player][FB]["nandu" .. n] then
+                    BiaoGe.Hope[RealmId][player][FB]["nandu" .. n] = {}
                     for b = 1, 22 do
-                        if not BiaoGe.Hope[RealmId][player][fb]["nandu" .. n]["boss" .. b] then
-                            BiaoGe.Hope[RealmId][player][fb]["nandu" .. n]["boss" .. b] = {}
+                        if not BiaoGe.Hope[RealmId][player][FB]["nandu" .. n]["boss" .. b] then
+                            BiaoGe.Hope[RealmId][player][FB]["nandu" .. n]["boss" .. b] = {}
                         end
                     end
                 end

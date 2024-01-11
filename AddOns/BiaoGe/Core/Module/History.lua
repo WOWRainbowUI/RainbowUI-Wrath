@@ -147,7 +147,7 @@ function BG.HistoryUI()
                     end
                 end
             end
-            local d = { DT, format(L["%s %s %s人 工资:%s"], DTcn, BG.FBcn(FB), BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(), BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 5]:GetText()) }
+            local d = { DT, format(L["%s %s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"), BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(), BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 5]:GetText()) }
             table.insert(BiaoGe.HistoryList[FB], 1, d)
             UpdateHistoryButton()
             BG.CreatHistoryListButton(FB)

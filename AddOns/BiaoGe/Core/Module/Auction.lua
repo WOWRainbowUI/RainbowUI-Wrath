@@ -58,8 +58,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             for name, ver in pairs(self.table) do
                 if v.name == name then
                     Ver = ver
+                    break
                 end
             end
+            local notVerTex = ""
+            if Ver == L["无"] then
+                notVerTex = AddTexture("interface/raidframe/readycheck-notready")
+            end
+
             local role = ""
             local y
             if v.rank == 2 then
@@ -71,7 +77,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 role = role .. AddTexture("interface/groupframe/ui-group-masterlooter", y)
             end
             local c1, c2, c3 = GetClassRGB(v.name)
-            GameTooltip:AddDoubleLine(v.name .. role, Ver, c1, c2, c3, 1, 1, 1)
+            GameTooltip:AddDoubleLine(notVerTex .. v.name .. role, Ver, c1, c2, c3, 1, 1, 1)
         end
         GameTooltip:Show()
     end

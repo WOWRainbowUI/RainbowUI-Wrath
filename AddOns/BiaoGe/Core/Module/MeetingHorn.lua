@@ -130,8 +130,8 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                         CreateHistory()
                     else
                         edit:SetText(v)
-                        PlaySound(BG.sound1, "Master")
                     end
+                    PlaySound(BG.sound1, "Master")
                 end)
             end
         end

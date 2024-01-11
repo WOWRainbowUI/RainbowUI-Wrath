@@ -454,8 +454,8 @@ do
 
                     if GetItemInfo(bt.itemID) then
                         SetButtonText(bt)
-                    else
-                        pt(bt.itemID)
+                        -- else
+                        --     pt(bt.itemID) -- 测试新添加的装备ID是否有错误
                     end
                 end
 
@@ -699,7 +699,7 @@ function BG.SetListmaijia(maijia, focus, guolv)
     -- 背景框
     local frame = BG.MainFrame
     BG.FrameMaijiaList = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    BG.FrameMaijiaList:SetWidth(300)
+    BG.FrameMaijiaList:SetWidth(395)
     BG.FrameMaijiaList:SetHeight(230)
     BG.FrameMaijiaList:SetFrameLevel(120)
     BG.FrameMaijiaList:SetBackdrop({
@@ -717,7 +717,7 @@ function BG.SetListmaijia(maijia, focus, guolv)
     local framedown
     local frameright = BG.FrameMaijiaList
     local raid = BG.PaiXuRaidRosterInfo(guolv)
-    for t = 1, 3 do
+    for t = 1, 4 do
         for i = 1, 10 do
             local button = CreateFrame("EditBox", nil, BG.FrameMaijiaList, "InputBoxTemplate")
             button:SetSize(90, 20)
@@ -898,7 +898,7 @@ end
 ADDONSELF.FrameDongHua = FrameDongHua
 
 ------------------函数：清空表格------------------
-function BG.QingKong(_type, FB, maxPlayers)
+function BG.QingKong(_type, FB)
     if BG.DeBug and not FB then
         FB = BG.FB1
     end
@@ -955,7 +955,7 @@ function BG.QingKong(_type, FB, maxPlayers)
 
         local num -- 分钱人数
         if BG.IsVanilla() then
-            num = maxPlayers or 10
+            num = BG.GetFBinfo(FB, "maxplayers") or 10
         else
             num = 25
             local nanduID = GetRaidDifficultyID()

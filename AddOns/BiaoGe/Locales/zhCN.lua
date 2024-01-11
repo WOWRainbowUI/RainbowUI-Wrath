@@ -1,6 +1,6 @@
 local AddonName, ADDONSELF = ...
 
-ADDONSELF.ver = "v1.7.5"
+ADDONSELF.ver = "v1.7.5b"
 
 if (GetLocale() == "zhTW") then return end
 
@@ -20,11 +20,27 @@ do --简体说明书
     text = text .. "|cffFFFFFF-更多功能介绍可在设置里查看|r\n\n"
     text = text .. "-BUG反馈：邮箱buick_hbj@163.com，Q群322785325\n\n"
 
+    update = update .. "|cff00FF00" .. "1月10日更新1.7.5b版本" .. "|r\n"
+    update = update .. [[-买家下拉列表的格子增加至40个]] .. "\n"
+    update = update .. [[-<WLK>装备库现在会显示海里昂的装备]] .. "\n\n"
+
     update = update .. "|cff00FF00" .. "1月6日更新1.7.5版本" .. "|r\n"
     update = update .. [[-插件现在支持永久60服，每个团本都已添加表格]] .. "\n"
     update = update .. [[-优化可堆叠物品的记录方式]] .. "\n"
     update = update .. [[-繁体端的字体用回<blei00d.TTF>，以解决界面显示错误的问题]] .. "\n"
     update = update .. [[-<赛季/60服>装备过滤词缀删除"击中"、"暴击"，增加"你击中目标"、"你造成爆击"、"你的法术击中"、"你的法术造成爆击"、"法术伤害"]] .. "\n\n"
+
+    -- update = update .. "|cff00FF00" .. "" .. "|r\n"
+    -- update = update .. [[]] .. "\n"
+    -- update = update .. [[]] .. "\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ADDONSELF.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "1月1日更新1.7.4c版本" .. "|r\n"
     update = update .. [[-在聊天频道的玩家右键菜单里增加<一键举报骚扰>和<一键举报RMT>按钮]] .. "\n"
@@ -45,18 +61,6 @@ do --简体说明书
     update = update .. [[-如果你安装了Auctionator插件，装备库的装绑装备会显示拍卖行价格]] .. "\n"
     update = update .. [[-装备库现在也会显示装备是否已掉落]] .. "\n"
     update = update .. [[-<赛季服>集结号的密语模板功能现在可以使用了]] .. "\n\n"
-
-    -- update = update .. "|cff00FF00" .. "" .. "|r\n"
-    -- update = update .. [[]] .. "\n"
-    -- update = update .. [[]] .. "\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ADDONSELF.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "12月20日更新1.7.3b版本" .. "|r\n"
     update = update .. [[-通报历史价格功能已被删除，现在CTRL+点击装备会跳转至装备库查看该部位的所有可选装备]] .. "\n"
@@ -82,7 +86,7 @@ do --简体更新内容
     update = update .. "|cff00FF00" .. "12月10日更新1.7.1d版本" .. "|r\n"
     update = update .. [[-<赛季服>修复报错]] .. "\n\n"
 
-    ADDONSELF.upDateText = update
+    ADDONSELF.updateText = update
 end
 
 local L = setmetatable({}, {

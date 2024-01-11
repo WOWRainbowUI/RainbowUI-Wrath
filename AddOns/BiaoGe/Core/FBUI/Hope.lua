@@ -648,7 +648,7 @@ function BG.HopeUI(FB)
             -- 鼠标悬停提示
             bt:SetScript("OnEnter", function(self)
                 local text = "|cffffffff" .. L["< 我 的 心 愿 >"] .. RN
-                text = text .. L["副本: "] .. (BG[FB .. "name"] .. " " .. xinyuan[n].name2) .. "\n"
+                text = text .. L["副本: "] .. (BG.GetFBinfo(FB, "localName") .. " " .. xinyuan[n].name2) .. "\n"
                 for b = 1, HopeMaxb[FB] do
                     local link = {}
                     for i = 1, HopeMaxi do
@@ -716,7 +716,7 @@ function BG.HopeUI(FB)
                 local channel = BiaoGe["HopeSendChannel"]
                 local text = L["————我的心愿————"]
                 SendChatMessage(text, channel, nil, UnitName("target"))
-                text = L["副本: "] .. BG[FB .. "name"] .. " " .. xinyuan[n].name2
+                text = L["副本: "] .. BG.GetFBinfo(FB, "localName") .. " " .. xinyuan[n].name2
                 SendChatMessage(text, channel, nil, UnitName("target"))
                 for b = 1, HopeMaxb[FB] do
                     local link = {}
@@ -736,8 +736,6 @@ function BG.HopeUI(FB)
                         SendChatMessage(text, channel, nil, UnitName("target"))
                     end
                 end
-                -- text = L["——感谢使用金团表格——"]
-                -- SendChatMessage(text, channel, nil, UnitName("target"))
                 PlaySoundFile(BG.sound2)
             end)
         end
