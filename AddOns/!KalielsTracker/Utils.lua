@@ -10,7 +10,6 @@ local addonName, KT = ...
 local floor = math.floor
 local fmod = math.fmod
 local format = string.format
-local ipairs = ipairs
 local next = next
 local pairs = pairs
 local strfind = string.find
@@ -121,11 +120,6 @@ function KT.QuestUtils_GetQuestZone(id)
     return nil
 end
 
-function KT.GetQuestRewardSpells(questID)
-    local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}
-    return #spellRewards, spellRewards
-end
-
 function KT_GetQuestWatchInfo(questLogIndex)
     local title, level, _, _, _, isComplete, _, questID, startEvent, _, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden = GetQuestLogTitle(questLogIndex)
     local numObjectives = GetNumQuestLeaderBoards(questLogIndex)
@@ -201,7 +195,7 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
     local artifactXP = 0  -- GetQuestLogRewardArtifactXP(questID)
     local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
     local numQuestRewards = GetNumQuestLogRewards(questID)
-    local numQuestSpellRewards, questSpellRewards = KT.GetQuestRewardSpells(questID)
+    local QuestSpellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}
     local numQuestChoices = GetNumQuestLogChoices()
     local honor = GetQuestLogRewardHonor(questID)
     local playerTitle = GetQuestLogRewardTitle()
@@ -210,7 +204,7 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
             artifactXP > 0 or
             numQuestCurrencies > 0 or
             numQuestRewards > 0 or
-            numQuestSpellRewards > 0 or
+            #QuestSpellRewards > 0 or
             numQuestChoices > 0 or
             honor > 0 or
             playerTitle then
@@ -233,13 +227,10 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
             end
         end
         -- spells
-        if numQuestSpellRewards > 0 then
-            for _, spellID in ipairs(questSpellRewards) do
-                local spellInfo = C_QuestInfoSystem.GetQuestRewardSpellInfo(questID, spellID)
-                local knownSpell = IsSpellKnownOrOverridesKnown(spellID)
-                if spellInfo and spellInfo.texture and spellInfo.name and not knownSpell and (not spellInfo.isBoostSpell or IsCharacterNewlyBoosted()) and (not spellInfo.garrFollowerID or not C_Garrison.IsFollowerCollected(spellInfo.garrFollowerID)) then
-                    tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_FORMAT, spellInfo.texture, spellInfo.name), 1, 1, 1)
-                end
+        for i, spellID in ipairs(QuestSpellRewards) do
+            local spellInfo = C_QuestInfoSystem.GetQuestRewardSpellInfo(questID, spellID)
+            if spellInfo and spellInfo.name and spellInfo.texture then
+                tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_FORMAT, spellInfo.texture, spellInfo.name), 1, 1, 1)
             end
         end
         -- items

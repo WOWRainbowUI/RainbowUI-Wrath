@@ -48,7 +48,7 @@ local function SetHooks()
 	-- Quest Log -------------------------------------------------------------------------------------------------------
 
 	function _QuestLog_ToggleQuestWatch(questIndex)  -- R
-		if KT_GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
+		if KT_GetNumQuestWatches() < MAX_WATCHABLE_QUESTS and not db.filterAuto[1] then
 			local questID = GetQuestIDFromLogIndex(questIndex)
 			if IsQuestWatched(questIndex) then
 				KT_RemoveQuestWatch(questID)
@@ -58,7 +58,8 @@ local function SetHooks()
 		end
 	end
 
-	function QuestLogTitleButton_OnClick(self, button)  -- R
+
+  --[[function QuestLogTitleButton_OnClick(self, button)  -- R
 		if ( self.isHeader ) then
 			return;
 		end
@@ -76,7 +77,7 @@ local function SetHooks()
 		end
 		QuestLog_SetSelection(questIndex)
 		QuestLog_Update()
-	end
+	end]]
 
 	-- Quest Watch -----------------------------------------------------------------------------------------------------
 

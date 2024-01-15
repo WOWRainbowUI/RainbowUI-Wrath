@@ -35,7 +35,7 @@ local function GetQuestieData()
         QuestieMap = QuestieLoader:ImportModule("QuestieMap")
         TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
 
-        Questie.db.char.trackerEnabled = false
+        Questie.db.global.trackerEnabled = false
 
         initTicker = C_Timer.NewTicker(0.1, function()
             if Questie.started then
@@ -55,7 +55,7 @@ local function SetHooks()
         local link, item, charges, showItemWhenComplete
         if isQuestieDBLoaded then
             local questID = KT.GetIDByQuestLogIndex(questLogIndex)
-            local quest = QuestieDB.GetQuest(questID)
+            local quest = QuestieDB:GetQuest(questID)
 
             if quest and quest.sourceItemId then
                 for bag = 0, NUM_BAG_SLOTS do
@@ -80,7 +80,7 @@ local function SetHooks()
         local result
         if isQuestieDBLoaded then
             local questID = KT.GetIDByQuestLogIndex(questLogIndex)
-            local quest = QuestieDB.GetQuest(questID)
+            local quest = QuestieDB:GetQuest(questID)
 
             if quest and quest.sourceItemId then
                 local itemName = GetItemInfo(quest.sourceItemId)
@@ -235,7 +235,7 @@ end
 
 local function GetQuestZones(questID)
     local zones = {}
-    local quest = QuestieDB.GetQuest(questID)
+    local quest = QuestieDB:GetQuest(questID)
     if not quest then return zones end
     if quest:IsComplete() == 0 then
         if quest.Objectives then
@@ -290,7 +290,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoaded = (KT:CheckAddOn("Questie", "8.10.5") and db.addonQuestie)
+    self.isLoaded = (KT:CheckAddOn("Questie", "7.4.10") and db.addonQuestie)
 end
 
 function M:OnEnable()
@@ -301,7 +301,7 @@ end
 
 function M:CreateMenu(info, questID)
     if not self.isLoaded or not isQuestieDBLoaded then return end
-    local quest = QuestieDB.GetQuest(questID)
+    local quest = QuestieDB:GetQuest(questID)
 
     MSA_DropDownMenu_AddSeparator(info)
 

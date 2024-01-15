@@ -503,9 +503,10 @@ local function SetHooks()
 			text, colorStyle = GetTaskTimeLeftData(block.id)
 			self:FreeProgressBar(block, block.currentLine)	-- fix ProgressBar duplicity
 		end
-		if self == ACHIEVEMENT_TRACKER_MODULE and text == "" then
+		if self == ACHIEVEMENT_TRACKER_MODULE and text == "" or not text then
 			text = "..."	-- fix Blizz bug
 		end
+		if not text then return end
 		local _, _, leftText, colon, progress, numHave, numNeed, rightText = strfind(text, "(.-)(%s?:?%s?)((%d+)%s?/%s?(%d+))(.*)")
 		if progress then
 			if tonumber(numHave) > 0 and tonumber(numHave) < tonumber(numNeed) then
@@ -1025,12 +1026,12 @@ local function SetHooks()
 		bck_UIErrorsFrame_OnEvent(self, event, ...)
 	end)
 
-	function QuestMapFrame_OpenToQuestDetails(questID)	-- R
+	--[[function QuestMapFrame_OpenToQuestDetails(questID)	-- R
 		local mapID = GetQuestUiMapID(questID);
 		if ( mapID == 0 ) then mapID = nil; end
-		OpenQuestLog(mapID);	-- fix Blizz bug
+		if OpenQuestLog then OpenQuestLog(mapID); end	-- fix Blizz bug
 		QuestMapFrame_ShowQuestDetails(questID);
-	end
+	end]]
 
 	-- Item handler functions
 	function QuestObjectiveItem_OnEnter(self)  -- R
@@ -1097,8 +1098,12 @@ local function SetHooks()
 
 	function QUEST_TRACKER_MODULE:OnBlockHeaderClick(block, mouseButton)  -- R
 		if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
-			local questName = KT.QuestUtils_GetQuestName(block.id);
-			ChatEdit_InsertLink("["..gsub(questName, " *(.*)", "%1").." ("..block.id..")]")
+			local questLink = GetQuestLink(GetQuestIDFromLogIndex(block.id));
+			if ( questLink ) then
+				ChatEdit_InsertLink(questLink);
+			end
+			--[[local questName = KT.QuestUtils_GetQuestName(block.id);
+			ChatEdit_InsertLink("["..gsub(questName, " *(.*)", "%1").." ("..block.id..")]")]]
 		elseif ( mouseButton ~= "RightButton" ) then
 			MSA_CloseDropDownMenus();
 			if ( IsModifiedClick("QUESTWATCHTOGGLE") ) then

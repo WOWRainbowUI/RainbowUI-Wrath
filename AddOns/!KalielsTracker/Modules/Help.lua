@@ -242,14 +242,14 @@ local function SetupTutorials()
 		},
 		{	-- 9
 			text = cTitle.."         What's NEW|r\n\n"..
-					cTitle.."Version 3.4.0|r\n"..
-					"- ADDED - Support for WoW 3.4.2\n"..
-					"- UPDATED - Addon support - Questie 8.10.5\n"..
-					"- UPDATED - Addon support - ElvUI 13.43, Tukui 20.40\n"..
-					"- UPDATED - Help - Supporters (Patreon)\n"..
-					"- UPDATED - Libs\n\n"..
+					cTitle.."Version 3.3.0|r\n"..
+					"- ADDED - Support for WoW 3.4.1\n"..
+					"- FIXED - Error when displaying Notification messages\n"..
+					"- UPDATED - Addon support - Questie 7.4.10\n"..
+					"- UPDATED - Addon support - ElvUI 13.21, Tukui 20.37\n"..
+					"- UPDATED - Help - Supporters (Patreon)\n\n"..
 
-					cTitle.."WoW 3.4.2 - Known issues w/o solution|r\n"..
+					cTitle.."WoW 3.4.1 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n\n"..
 
@@ -315,28 +315,20 @@ local function SetupTutorials()
 					"of time that addon development requires.\n\n"..
 					"                                    Many thanks to all supporters  |T"..helpPath.."help_patreon:16:16:0:0:256:32:157:173:0:16|t\n\n"..
 					cTitle.."Patrons|r\n"..
-                    SetFormatedPatronName("Legendary", "FrankN'Furter")..
-                    SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
-                    SetFormatedPatronName("Epic", "Haekwon", "Elune")..
-                    SetFormatedPatronName("Epic", "Monty", "Winterhoof")..
-                    SetFormatedPatronName("Epic", "Squishses", "Area 52")..
-                    SetFormatedPatronName("Rare", "Liothen", "Emerald Dream")..
-                    SetFormatedPatronName("Uncommon", "Anaara", "Auchindoun")..
-                    SetFormatedPatronName("Uncommon", "Charles Howarth")..
-                    SetFormatedPatronName("Uncommon", "Chris J")..
-                    SetFormatedPatronName("Uncommon", "Flex (drantor)")..
-                    SetFormatedPatronName("Uncommon", "Jason")..
-                    SetFormatedPatronName("Uncommon", "Kevin Costa")..
-                    SetFormatedPatronName("Uncommon", "Kyle Fuller")..
-                    SetFormatedPatronName("Uncommon", "Pablo Sebastián Molina Silva")..
-                    SetFormatedPatronName("Uncommon", "Semy", "Ravencrest")..
-                    SetFormatedPatronName("Uncommon", "Sopleb")..
-                    SetFormatedPatronName("Uncommon", "Xeelee", "Razorfen")..
-                    SetFormatedPatronName("Common", "Darren Divecha")..
-                    "\n"..
-                    cTitle.."Testers|r\n"..
-                    SetFormatedPlayerName("Asimeria", "Drak'thul")..
-                    SetFormatedPlayerName("Torresman", "Drak'thul"),
+					SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
+					SetFormatedPatronName("Epic", "Squishses", "Area 52")..
+					SetFormatedPatronName("Uncommon", "Charles Howarth")..
+					SetFormatedPatronName("Uncommon", "Flex (drantor)")..
+					SetFormatedPatronName("Uncommon", "Kyle Fuller")..
+					SetFormatedPatronName("Uncommon", "Pablo Sebastián Molina Silva")..
+					SetFormatedPatronName("Uncommon", "Semy", "Ravencrest")..
+					SetFormatedPatronName("Uncommon", "Torresman", "Drak'thul")..
+					SetFormatedPatronName("Uncommon", "Xeelee", "Razorfen")..
+					SetFormatedPatronName("Common", "Darren Divecha")..
+					"\n"..
+					cTitle.."Testers|r\n"..
+					SetFormatedPlayerName("Asimeria", "Drak'thul")..
+					SetFormatedPlayerName("Torresman", "Drak'thul"),
 			textY = -20,
 		},
 	})
@@ -368,13 +360,13 @@ function M:OnEnable()
 end
 
 function M:ShowHelp(index)
-	HideUIPanel(SettingsPanel)
+	InterfaceOptionsFrame:Hide()
 	T.ResetTutorial(helpName)
 	T.TriggerTutorial(helpName, helpNumPages, index or false)
 end
 
 function M:ShowSupporters()
-	HideUIPanel(SettingsPanel)
+	InterfaceOptionsFrame:Hide()
 	T.ResetTutorial(supportersName)
 	T.TriggerTutorial(supportersName, supportersNumPages)
 end

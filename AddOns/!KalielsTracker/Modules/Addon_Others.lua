@@ -35,7 +35,7 @@ StaticPopupDialogs[addonName.."_ReloadUI"] = {
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "13.43", true) then
+    if KT:CheckAddOn("ElvUI", "13.21", true) then
         KT.frame:SetScale(1)
         KT.frame.Buttons:SetScale(1)
         local E = unpack(_G.ElvUI)
@@ -47,7 +47,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.40", true) then
+    if KT:CheckAddOn("Tukui", "20.37", true) then
         KT.frame:SetScale(1)
         KT.frame.Buttons:SetScale(1)
         local T = unpack(_G.Tukui)

@@ -49,8 +49,8 @@ local OverlayFrameUpdate, OverlayFrameHide, GetModulesOptionsTable, MoveModule, 
 local defaults = {
 	profile = {
 		anchorPoint = "TOPRIGHT",
-		xOffset = -115,
-		yOffset = -280,
+		xOffset = -85,
+		yOffset = -200,
 		maxHeight = 400,
 		frameScrollbar = true,
 		frameStrata = "LOW",
@@ -151,7 +151,7 @@ local options = {
 							order = 0.12,
 						},
 						slashCmd = {
-							name = cBold.." /kt|r  |cff808080..............|r  Toggle (expand/collapse) the tracker\n"..
+							name = cBold.." /kt|r  |cff808080...............|r  Toggle (expand/collapse) the tracker\n"..
 									cBold.." /kt config|r  |cff808080...|r  Show this config window\n",
 							type = "description",
 							width = "double",
@@ -1238,7 +1238,9 @@ function KT:CheckAddOn(addon, version, isUI)
 end
 
 function KT:OpenOptions()
-	Settings.OpenToCategory(self.optionsFrame.general.name, true)
+	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame.profiles)
+	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame.profiles)
+	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame.general)
 end
 
 function KT:InitProfile(event, database, profile)
@@ -1321,7 +1323,21 @@ function KT:SetupOptions()
 	self.db.RegisterCallback(self, "OnProfileReset", "InitProfile")
 end
 
-SettingsPanel:HookScript("OnHide", function(self)
+KT.settings = {}
+InterfaceOptionsFrame:HookScript("OnHide", function(self)
+	for k, v in pairs(KT.settings) do
+		if strfind(k, "Save") then
+			KT.settings[k] = false
+		else
+			db[k] = v
+		end
+	end
+	ACR:NotifyChange(addonName)
+
+	OverlayFrameHide()
+end)
+
+hooksecurefunc("OptionsList_SelectButton", function(listFrame, button)
 	OverlayFrameHide()
 end)
 
@@ -1441,6 +1457,6 @@ end
 -- Init
 OTF:HookScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" and not KT.initialized then
-		modules.sec1.args = GetModulesOptionsTable()
+		modules.sec1.args = GetModulesOptionsTable() or {}
 	end
 end)
