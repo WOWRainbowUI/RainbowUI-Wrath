@@ -58,6 +58,7 @@ local function SetHooks()
 		end
 	end
 
+--[[
 	function QuestLogTitleButton_OnClick(self, button)  -- R
 		if ( self.isHeader ) then
 			return;
@@ -77,6 +78,7 @@ local function SetHooks()
 		QuestLog_SetSelection(questIndex)
 		QuestLog_Update()
 	end
+--]]
 
 	-- Quest Watch -----------------------------------------------------------------------------------------------------
 

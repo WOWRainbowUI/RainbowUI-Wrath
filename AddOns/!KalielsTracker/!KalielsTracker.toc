@@ -1,16 +1,17 @@
 ## Interface: 30403
 ## Title: Kaliel's Tracker
 ## Notes: WoW WotLK Classic Objective Tracker
-## Title-zhTW: |cff00FFFF[任務]|r 追蹤清單增強
-## Notes-zhTW: Kaliel's Tracker |n|n增強畫面右方任務追蹤清單的功能。|n|n|cffffd200使用方法: |r從Esc>介面>插件>任務-追蹤清單，進行設定和移動位置。
-## X-Category-zhTW: 任務
-## DefaultState: disabled
-## Version: 3.4.0
+## Version: 3.4.0 Fix
 ## Author: Kaliel (Marouan Sabbagh)
 
 ## SavedVariables: KalielsTrackerDB
 ## Dependencies: Blizzard_UIWidgets
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0, MSA-DropDownMenu-1.0, Questie
+
+## Title-zhTW: |cff00FFFF[任務]|r 追蹤清單增強
+## Notes-zhTW: Kaliel's Tracker |n|n增強畫面右方任務追蹤清單的功能。|n|n|cffffd200使用方法: |r從Esc>選項>插件>任務-追蹤清單，進行設定和移動位置。
+## X-Category-zhTW: 任務
+## IconTexture: Interface\Icons\inv_inscription_armorscroll02
 
 Blizzard_Core.xml
 
