@@ -343,22 +343,31 @@ function QuestObjectiveTracker_DoQuestObjectives(block, numObjectives, questComp
 	return objectiveCompleting;
 end
 
+-- Sync POI numbers with World Map
+local LOCAL_MAP_POI_NUMBERS = {}
+hooksecurefunc(QuestPinMixin, "AssignQuestNumber", function(self, questNumber)
+	LOCAL_MAP_POI_NUMBERS[self.questID] = questNumber
+end)
+
 function QUEST_TRACKER_MODULE:Update()
 
 	QUEST_TRACKER_MODULE:BeginLayout();
 	QUEST_TRACKER_MODULE.lastBlock = nil;
 
 	local numPOINumeric = 0;
+	QuestPOI_ResetUsage(ObjectiveTrackerFrame.BlocksFrame);
 
 	local _, instanceType = IsInInstance();
 	if ( instanceType == "arena" ) then
 		-- no quests in arena
+		QuestPOI_HideUnusedButtons(ObjectiveTrackerFrame.BlocksFrame);
 		QUEST_TRACKER_MODULE:EndLayout();
 		return;
 	end
 
 	local playerMoney = GetMoney();
 	local watchMoney = false;
+	local showPOIs = GetCVarBool("questPOI");
 
 	EnumQuestWatchData(
 		function(questWatchInfoTable)
@@ -441,6 +450,24 @@ function QUEST_TRACKER_MODULE:Update()
 					block.questCompleted = isComplete;
 					block:Show();
 					QUEST_TRACKER_MODULE:FreeUnusedLines(block);
+					-- quest POI icon
+					if ( showPOIs ) then
+						local poiButton;
+						if ( hasLocalPOI ) then
+							if ( isComplete ) then
+								poiButton = QuestPOI_GetButton(ObjectiveTrackerFrame.BlocksFrame, questID, "completed", nil);
+							else
+								numPOINumeric = LOCAL_MAP_POI_NUMBERS[questID] or numPOINumeric + 1;
+								poiButton = QuestPOI_GetButton(ObjectiveTrackerFrame.BlocksFrame, questID, "numeric", numPOINumeric);
+							end
+						elseif ( isComplete ) then
+							poiButton = QuestPOI_GetButton(ObjectiveTrackerFrame.BlocksFrame, questID, "completed", nil);
+						end
+						if ( poiButton ) then
+							poiButton:SetParent(block);
+							poiButton:SetPoint("TOPRIGHT", block.HeaderText, "TOPLEFT", -6, 2);
+						end
+					end
 				else
 					block.used = false;
 					return true;
@@ -451,5 +478,7 @@ function QUEST_TRACKER_MODULE:Update()
 	);
 
 	ObjectiveTracker_WatchMoney(watchMoney, OBJECTIVE_TRACKER_UPDATE_MODULE_QUEST);
+	QuestPOI_SelectButtonByQuestID(ObjectiveTrackerFrame.BlocksFrame, GetSuperTrackedQuestID());
+	QuestPOI_HideUnusedButtons(ObjectiveTrackerFrame.BlocksFrame);
 	QUEST_TRACKER_MODULE:EndLayout();
 end

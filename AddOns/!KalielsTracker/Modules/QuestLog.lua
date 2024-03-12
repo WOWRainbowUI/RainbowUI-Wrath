@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2023, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2024, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -45,41 +45,58 @@ local function RemoveQuestFromList(questID)
 end
 
 local function SetHooks()
-	-- Quest Log -------------------------------------------------------------------------------------------------------
-
+	-- QuestLogFrame.lua
 	function _QuestLog_ToggleQuestWatch(questIndex)  -- R
-		if KT_GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
+		if not db.filterAuto[1] and KT_GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
 			local questID = GetQuestIDFromLogIndex(questIndex)
 			if IsQuestWatched(questIndex) then
 				KT_RemoveQuestWatch(questID)
 			else
 				KT_AddQuestWatch(questID)
 			end
+			QuestMapFrame_UpdateAll()
 		end
 	end
 
 	function QuestLogTitleButton_OnClick(self, button)  -- R
-		if ( self.isHeader ) then
-			return;
-		end
-		local questName = self:GetText()
-		local questIndex = self:GetID()
-		local questID = GetQuestIDFromLogIndex(questIndex)
 		if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
-			-- Trim leading whitespace and put it into chat
-			ChatEdit_InsertLink("["..gsub(questName, " *(.*)", "%1").." ("..questID..")]")
+			-- If header then return
+			if ( self.isHeader ) then
+				return;
+			end
+
+			local questIndex = self:GetID() + FauxScrollFrame_GetOffset(QuestLogListScrollFrame);
+			local questLink = GetQuestLink(GetQuestIDFromLogIndex(questIndex));
+			if ( questLink ) then
+				ChatEdit_InsertLink(questLink);
+			end
 		elseif ( IsShiftKeyDown() ) then
+			-- If header then return
+			if ( self.isHeader ) then
+				return;
+			end
+
 			-- Shift-click toggles quest-watch on this quest.
 			if not db.filterAuto[1] then
-			    _QuestLog_ToggleQuestWatch(questIndex)
+				_QuestLog_ToggleQuestWatch(self:GetID());
+			else
+				return;
 			end
 		end
-		QuestLog_SetSelection(questIndex)
-		QuestLog_Update()
+		QuestLog_SetSelection(self:GetID())
+		QuestLog_Update();
 	end
 
-	-- Quest Watch -----------------------------------------------------------------------------------------------------
+	-- QuestMapFrame.lua
+	hooksecurefunc("QuestMapFrame_UpdateAll", function(numPOIs)
+		if db.filterAuto[1] then
+			WorldMapTrackQuest:Disable()
+		else
+			WorldMapTrackQuest:Enable()
+		end
+	end)
 
+	-- WatchFrame.lua
 	function IsQuestWatched(questLogIndex)  -- R
 		local questID = GetQuestIDFromLogIndex(questLogIndex)
 		return IsQuestInList(questID)

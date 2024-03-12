@@ -626,6 +626,7 @@ function ObjectiveTracker_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	UIDropDownMenu_Initialize(self.BlockDropDown, nil, "MENU");
+	QuestPOI_Initialize(self.BlocksFrame, function(self) self:SetScale(0.9); self:RegisterForClicks("LeftButtonUp", "RightButtonUp"); end );
 end
 
 function ObjectiveTracker_Initialize(self)
@@ -647,6 +648,7 @@ function ObjectiveTracker_Initialize(self)
 	self:RegisterEvent("TRACKED_ACHIEVEMENT_UPDATE");
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 	self:RegisterEvent("ZONE_CHANGED");
+	self:RegisterEvent("QUEST_POI_UPDATE");
 	self:RegisterEvent("VARIABLES_LOADED");
 	self:RegisterEvent("QUEST_TURNED_IN");
 	self:RegisterEvent("PLAYER_MONEY");
@@ -682,9 +684,13 @@ function ObjectiveTracker_OnEvent(self, event, ...)
 		end
 	elseif ( event == "QUEST_WATCH_LIST_CHANGED" ) then
 		local questID, added = ...;
+	elseif ( event == "QUEST_POI_UPDATE" ) then
+		QuestPOIUpdateIcons();
+		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_QUEST);
 	elseif ( event == "SUPER_TRACKED_QUEST_CHANGED" ) then
 		local questID = ...;
 		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_SUPER_TRACK_CHANGED, questID);
+		QuestPOI_SelectButtonByQuestID(self.BlocksFrame, questID);
 	elseif ( event == "ZONE_CHANGED" ) then
 		local lastMapID = C_Map.GetBestMapForUnit("player");
 		if ( lastMapID ~= self.lastMapID ) then

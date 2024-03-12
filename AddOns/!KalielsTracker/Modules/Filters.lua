@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2023, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2024, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -161,6 +161,7 @@ end
 
 local function Filter_Quests(spec, idx)
 	if not spec then return end
+	ExpandQuestHeader(0)
 	local numEntries, _ = GetNumQuestLogEntries()
 
 	KT.stopUpdate = true
@@ -519,6 +520,7 @@ local function GetInlineFactionIcon()
 end
 
 function DropDown_Initialize(self, level)
+	ExpandQuestHeader(0)
 	local numEntries, numQuests = GetNumQuestLogEntries()
 	local info = MSA_DropDownMenu_CreateInfo()
 	info.isNotRadio = true

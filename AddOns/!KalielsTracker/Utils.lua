@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2023, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2024, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -106,6 +106,7 @@ function KT.QuestUtils_GetQuestName(questID)
 end
 
 function KT.QuestUtils_GetQuestZone(id)
+    ExpandQuestHeader(0)
     local numEntries, _ = GetNumQuestLogEntries()
     local headerName
     for i=1, numEntries do
@@ -302,6 +303,17 @@ end
 function KT.ConvertPixelsToUI(pixels, frameScale)
     local physicalScreenHeight = select(2, GetPhysicalScreenSize());
     return (pixels * 768.0)/(physicalScreenHeight * frameScale);
+end
+
+-- WotLK Classic -------------------------------------------------------------------------------------------------------
+
+-- TODO: Test after every WoW update
+GetSuperTrackedQuestID = function()
+    local questID = 0
+    if WorldMapFrame and WorldMapFrame:IsShown() then
+        questID = QuestMapFrame_GetFocusedQuestID()
+    end
+    return questID
 end
 
 -- Classic - removed functions -----------------------------------------------------------------------------------------

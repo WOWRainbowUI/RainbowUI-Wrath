@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2023, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2024, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -35,7 +35,7 @@ local function GetQuestieData()
         QuestieMap = QuestieLoader:ImportModule("QuestieMap")
         TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
 
-        Questie.db.char.trackerEnabled = false
+        Questie.db.profile.trackerEnabled = false
 
         initTicker = C_Timer.NewTicker(0.1, function()
             if Questie.started then
@@ -290,7 +290,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoaded = (KT:CheckAddOn("Questie", "8.10.5") and db.addonQuestie)
+    self.isLoaded = (KT:CheckAddOn("Questie", "9.4.9") and db.addonQuestie)
 end
 
 function M:OnEnable()
