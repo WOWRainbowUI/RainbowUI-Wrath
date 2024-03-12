@@ -67,7 +67,7 @@ local format = string.format
 local strfind = string.find
 local round = function(n) return floor(n + 0.5) end
 
-local Lib = LibStub:NewLibrary('MSA-Tutorials-1.0', 11)
+local Lib = LibStub:NewLibrary('MSA-Tutorials-1.0', 13)
 if Lib then
 	Lib.NewFrame, Lib.NewButton, Lib.UpdateFrame = nil
 	Lib.numFrames = Lib.numFrames or 1
@@ -288,10 +288,6 @@ end
 
 local function NewFrame(data)
 	local frame = CreateFrame('Frame', 'Tutorials'..Lib.numFrames, UIParent, 'ButtonFrameTemplate')
-	if UIParent:GetScale() < 0.65 then
-		local scale = ConvertPixelsToUI(1, frame:GetEffectiveScale())
-		frame:SetScale(scale)  -- UIParent 0.64 scale correction
-	end
 	local portrait = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and frame:GetPortrait() or frame.portrait
 	portrait:SetPoint('TOPLEFT', -3, 5)
 	portrait:SetTexture(data.icon or 'Interface\\TutorialFrame\\UI-HELP-PORTRAIT')
@@ -323,6 +319,13 @@ local function NewFrame(data)
 			frame.data.onHide()
 		end
 	end)
+	frame:SetScript("OnEvent", function(self, event)
+		if event == "PLAYER_ENTERING_WORLD" then
+			UpdateFrame(self, self.i)  -- for update textHeight (UI Scale)
+			self:UnregisterEvent(event)
+		end
+	end)
+	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	frame.button = CreateFrame('Button', nil, frame, 'UIPanelButtonTemplate')
 	frame.button:SetSize(100, 22)
