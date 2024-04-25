@@ -96,7 +96,7 @@ if MSQ then
 	end
 
 
-	hb.MSQ_Button = MSQ:Group(addon, L["DataBroker Buttons"], "DataBroker")
+	hb.MSQ_Button = MSQ:Group(L["HidingBar "], L["DataBroker Buttons"], "DataBroker")
 	hb.MSQ_Button:RegisterCallback(function(self)
 		for btn in pairs(self.Buttons) do
 			hb:MSQ_CoordUpdate(btn)
@@ -107,10 +107,10 @@ if MSQ then
 		end
 	end)
 
-	hb.MSQ_MButton = MSQ:Group(addon, L["Minimap Buttons"], "MinimapButtons")
+	hb.MSQ_MButton = MSQ:Group(L["HidingBar "], L["Minimap Buttons"], "MinimapButtons")
 	hb.MSQ_MButton:RegisterCallback(hb.MSQ_UpdateGroupBtns)
 
-	hb.MSQ_CGButton = MSQ:Group(addon, L["Manually Grabbed Buttons"], "CGButtons")
+	hb.MSQ_CGButton = MSQ:Group(L["HidingBar "], L["Manually Grabbed Buttons"], "CGButtons")
 	hb.MSQ_CGButton:RegisterCallback(hb.MSQ_UpdateGroupBtns)
 
 
