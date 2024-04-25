@@ -270,12 +270,16 @@ if MSQ then
 				data._Highlight.SetAtlas = void
 				data._Highlight.SetTexture = void
 			end
+			if data._IconCircleMask then
+				btn.__MSQ_Icon:RemoveMaskTexture(data._IconCircleMask)
+				data._IconCircleMask = nil
+			end
 		end
 	end
 
 
 	function hb:setMButtonRegions(btn, iconCoords, MSQ_Group)
-		local name, texture, tIsString, layer, border, background, icon, highlight
+		local name, texture, tIsString, layer, border, background, icon, iconMask, highlight
 		local isButton = btn:IsObjectType("Button")
 
 		for _, region in ipairs({btn:GetRegions()}) do
@@ -332,6 +336,15 @@ if MSQ then
 				self:setTexCurCoord(icon, icon:GetTexCoord())
 			end
 			icon.SetTexCoord = self.setTexCoord
+
+			for i = 1, icon:GetNumMaskTextures() do
+				local mask = icon:GetMaskTexture(i)
+				local texture = mask:GetTexture()
+				if texture == 130924 or type(texture) == "string" and texture:lower():find("tempportraitalphamask", 1, true) then
+					iconMask = mask
+					break
+				end
+			end
 		else
 			background = nil
 		end
@@ -344,12 +357,13 @@ if MSQ then
 		MSQ_Group:AddButton(btn, data, "Legacy", true)
 
 		local pushed = isButton and btn:GetPushedTexture()
-		if border or background or pushed or normal or btnHighlight then
+		if border or background or pushed or normal or btnHighlight or iconMask then
 			self.MSQ_Button_Data[btn] = {
 				_Border = border,
 				_Background = background,
 				_Pushed = pushed,
 				_Highlight = btnHighlight,
+				_IconCircleMask = iconMask,
 			}
 			if normal then
 				local data = self.MSQ_Button_Data[btn]
@@ -1725,8 +1739,7 @@ do
 		self.ldb_icon = ldb:NewDataObject(self.ombName, {
 			type = "data source",
 			text = self.ombName,
-			icon = "Interface/MINIMAP/Vehicle-SilvershardMines-Arrow",
-			-- icon = "Interface/AddOns/HidingBar/media/achievement_doublerainbow",
+			icon = "Interface/ICONS/achievement_doublerainbow",
 			OnClick = OnClick,
 			OnEnter = OnEnter,
 			OnLeave = OnLeave,
@@ -1746,7 +1759,7 @@ function hidingBarMixin:initOwnMinimapButton()
 
 	if MSQ then
 		if not hb.MSQ_OMB then
-			hb.MSQ_OMB = MSQ:Group(addon, L["Own Minimap Button"], "OMB")
+			hb.MSQ_OMB = MSQ:Group(L["HidingBar "], L["Own Minimap Button"], "OMB")
 			hb.MSQ_OMB:RegisterCallback(hb.MSQ_UpdateGroupBtns)
 		end
 		hb:setMButtonRegions(self.omb, nil, hb.MSQ_OMB)
@@ -2421,16 +2434,16 @@ function hidingBarMixin:setBarTypePosition(typePosition)
 
 		if self.config.omb.anchor == "left" then
 			secondPosition = btnSize + self.config.omb.distanceToBar
-			self.omb.icon:SetRotation(-math.pi/2)
+			self.ldb_icon.icon = "Interface/ICONS/achievement_doublerainbow"
 		elseif self.config.omb.anchor == "right" then
 			secondPosition = -btnSize - self.config.omb.distanceToBar
-			self.omb.icon:SetRotation(math.pi/2)
+			self.ldb_icon.icon = "Interface/ICONS/achievement_doublerainbow"
 		elseif self.config.omb.anchor == "top" then
 			secondPosition = -btnSize - self.config.omb.distanceToBar
-			self.omb.icon:SetRotation(math.pi)
+			self.ldb_icon.icon = "Interface/ICONS/achievement_doublerainbow"
 		else
 			secondPosition = btnSize + self.config.omb.distanceToBar
-			self.omb.icon:SetRotation(0)
+			self.ldb_icon.icon = "Interface/ICONS/achievement_doublerainbow"
 		end
 
 		self.anchorObj = self.config.omb
