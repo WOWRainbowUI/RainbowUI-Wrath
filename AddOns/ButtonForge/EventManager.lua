@@ -261,7 +261,7 @@ function Full:InitialOnEvent(Event, Arg1)
 		if (LibStub) then
 			Util.LBF = LibStub("Masque", true);
 			if (Util.LBF) then
-				Util.LBFMasterGroup = Util.LBF:Group("Button Forge");
+				Util.LBFMasterGroup = Util.LBF:Group(Util.GetLocaleString("Button Forge"));
 				--Util.LBF:RegisterSkinCallback("Button Forge", Util.ButtonFacadeCallback, Util);
 			end
 		end

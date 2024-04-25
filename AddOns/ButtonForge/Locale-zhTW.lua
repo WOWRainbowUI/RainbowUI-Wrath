@@ -79,7 +79,7 @@ Locale.BoolTable["off"] 	= false;
 Locale.BoolTable["1"] 		= true;
 Locale.BoolTable["0"] 		= false;
 
-Locale.BoolTable["toggle"]	= "切換";
+Locale.BoolTable["toggle"]	= "toggle";
 
 --Instructions for using the slash commands
 Locale["SlashHelpFormatted"]	=
@@ -218,3 +218,5 @@ Locale["DeletedProfile"] = "更多快捷列已刪除設定檔";
 Locale["BindInCombat"] = "戰鬥中無法更新按鍵設定"
 Locale["BindPressKey"] = "按下要設定給這個按鈕的按鍵"
 Locale["BindSuccess"] = "按鍵設定成功"
+
+Locale["Button Forge"] = "更多快捷列"
