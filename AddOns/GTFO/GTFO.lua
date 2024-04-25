@@ -1992,7 +1992,7 @@ function GTFO_CheckCasterMode()
 			return true;
 		end
 
-		if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode) then
+		if not (GTFO.CataclysmMode or GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode) then -- 暫時修正
 			-- Get the exact specialization role as defined by the class
 			local spec = GetSpecialization();
 			if (spec) then
