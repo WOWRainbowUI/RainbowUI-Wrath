@@ -47,25 +47,29 @@ end
 local function SetHooks()
 	-- QuestLogFrame.lua
 	function _QuestLog_ToggleQuestWatch(questIndex)  -- R
-		if not db.filterAuto[1] and KT_GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
+		if not db.filterAuto[1] then
 			local questID = GetQuestIDFromLogIndex(questIndex)
 			if IsQuestWatched(questIndex) then
 				KT_RemoveQuestWatch(questID)
 			else
-				KT_AddQuestWatch(questID)
+				if KT_GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
+					KT_AddQuestWatch(questID)
+				end
 			end
-			QuestMapFrame_UpdateAll()
+			if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+				QuestMapFrame_UpdateAll()
+			end
 		end
 	end
 
 	function QuestLogTitleButton_OnClick(self, button)  -- R
+		local questIndex = self:GetID() + FauxScrollFrame_GetOffset(QuestLogListScrollFrame);
 		if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
 			-- If header then return
 			if ( self.isHeader ) then
 				return;
 			end
 
-			local questIndex = self:GetID() + FauxScrollFrame_GetOffset(QuestLogListScrollFrame);
 			local questLink = GetQuestLink(GetQuestIDFromLogIndex(questIndex));
 			if ( questLink ) then
 				ChatEdit_InsertLink(questLink);
@@ -78,23 +82,25 @@ local function SetHooks()
 
 			-- Shift-click toggles quest-watch on this quest.
 			if not db.filterAuto[1] then
-				_QuestLog_ToggleQuestWatch(self:GetID());
+				_QuestLog_ToggleQuestWatch(questIndex);
 			else
 				return;
 			end
 		end
-		QuestLog_SetSelection(self:GetID())
+		QuestLog_SetSelection(questIndex)
 		QuestLog_Update();
 	end
 
 	-- QuestMapFrame.lua
-	hooksecurefunc("QuestMapFrame_UpdateAll", function(numPOIs)
-		if db.filterAuto[1] then
-			WorldMapTrackQuest:Disable()
-		else
-			WorldMapTrackQuest:Enable()
-		end
-	end)
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		hooksecurefunc("QuestMapFrame_UpdateAll", function(numPOIs)
+			if db.filterAuto[1] then
+				WorldMapTrackQuest:Disable()
+			else
+				WorldMapTrackQuest:Enable()
+			end
+		end)
+	end
 
 	-- WatchFrame.lua
 	function IsQuestWatched(questLogIndex)  -- R
@@ -102,7 +108,15 @@ local function SetHooks()
 		return IsQuestInList(questID)
 	end
 
-	WatchFrame_Update = function() end
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		WatchFrame_Update = function() end
+	else
+		QuestWatch_OnLogin = function() end
+		QuestWatch_Update = function() end
+		AutoQuestWatch_CheckDeleted = function() end
+		AutoQuestWatch_Update = function() end
+		AutoQuestWatch_OnUpdate = function() end
+	end
 end
 
 --------------

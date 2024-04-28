@@ -1,6 +1,6 @@
-## Interface: 30403
+## Interface: 11502
 ## Title: Kaliel's Tracker
-## Notes: WotLK Classic Objective Tracker
+## Notes: Classic Era Objective Tracker
 ## Version: 3.6.0
 ## Author: Kaliel (Marouan Sabbagh)
 
@@ -9,7 +9,7 @@
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibSink-2.0, MSA-DropDownMenu-1.0, Questie
 
 Compatibility.lua
-Blizzard_Core.xml
+Blizzard_Core_Vanilla.xml
 
 Libs.xml
 Constants.lua

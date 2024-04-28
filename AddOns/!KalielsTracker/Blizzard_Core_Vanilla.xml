@@ -3,5 +3,4 @@
     <Include file="Blizzard_Core\Blizzard_ObjectiveTrackerShared.xml"/>
     <Include file="Blizzard_Core\Blizzard_ObjectiveTracker.xml"/>
     <Include file="Blizzard_Core\Blizzard_QuestObjectiveTracker.xml"/>
-    <Include file="Blizzard_Core\Blizzard_AchievementObjectiveTracker.lua"/>
 </Ui>

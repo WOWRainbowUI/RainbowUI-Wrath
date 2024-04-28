@@ -83,9 +83,10 @@ local function SetupTutorials()
 		imageHeight = 256,
 		{	-- 1
 			image = helpPath.."help_kaliels-tracker",
-			text = cTitle..KT.title.." (Classic)|r replaces default tracker and adds some features from WoW Retail to WoW WotLK Classic.\n\n"..
+			text = cTitle..KT.title.." (Classic)|r replaces default tracker and adds some features from WoW Retail to WoW Classic.\n\n"..
 					"Some features:\n"..
-					"- Tracking Quests and Achievements\n"..
+					"- Tracking Quests\n"..
+					"- Tracking Achievements (not in Classic Era)\n"..
 					"- Change tracker position\n"..
 					"- Expand / Collapse tracker relative to selected position (direction)\n"..
 					"- Auto set trackers height by content with max. height limit\n"..
@@ -102,13 +103,14 @@ local function SetupTutorials()
 			image = helpPath.."help_header-buttons",
 			imageHeight = 128,
 			text = cTitle.."Header buttons|r\n\n"..
-					"Minimize button:                                Other buttons:\n"..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:0:14:209:170:0|t "..cDots.."...|r Expand Tracker                          "..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:3:2:32:64:16:30:0:14:209:170:0|t  "..cDots.."...|r Open Quest Log\n"..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:16:30:209:170:0|t "..cDots.."...|r Collapse Tracker                        "..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:3:2:32:64:16:30:16:30:209:170:0|t  "..cDots.."...|r Open Achievements\n"..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:32:46:209:170:0|t "..cDots.."...|r when is tracker empty               "..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:3:2:32:64:16:30:32:46:209:170:0|t  "..cDots.."...|r Open Filters menu\n\n"..
+					"Minimize button:\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:0:14:209:170:0|t "..cDots.."...|r Expand Tracker\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:16:30:209:170:0|t "..cDots.."...|r Collapse Tracker\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:32:46:209:170:0|t "..cDots.."...|r when is tracker empty\n\n"..
+					"Other buttons:\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:16:30:0:14:209:170:0|t "..cDots.."...|r Open Quest Log\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:16:30:16:30:209:170:0|t "..cDots.."...|r Open Achievements (not in Classic Era)\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:16:30:32:46:209:170:0|t "..cDots.."...|r Open Filters menu\n\n"..
 					"Buttons |T"..mediaPath.."UI-KT-HeaderButtons:14:14:0:2:32:64:16:30:0:14:209:170:0|t and "..
 					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:0:2:32:64:16:30:16:30:209:170:0|t you can disable in Options.\n\n"..
 					"You can set "..cBold.."[key bind]|r for Minimize button.\n"..
@@ -144,12 +146,12 @@ local function SetupTutorials()
 		{	-- 4
 			image = helpPath.."help_tracker-filters",
 			text = cTitle.."Tracker Filters|r\n\n"..
-					"For open Filters menu "..cBold.."Click|r on the button |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:1:32:64:16:30:32:46:209:170:0|t.\n\n"..
+					"For open Filters menu "..cBold.."Click|r on the button |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:2:32:64:16:30:32:46:209:170:0|t.\n\n"..
 					"There are two types of filters:\n"..
 					cTitle.."Static filter|r - adds quests/achievements to tracker by criterion (e.g. \"Daily\") and then you can add / remove items by hand.\n"..
 					cTitle.."Dynamic filter|r - automatically adding quests/achievements to tracker by criterion (e.g. \"|cff00ff00Auto|r Zone\") "..
 					"and continuously changing them. This type doesn't allow add / remove items by hand."..
-					"When is some Dynamic filter active, header button is green |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:1:32:64:16:30:32:46:0:255:0|t.\n\n"..
+					"When is some Dynamic filter active, header button is green |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:2:32:64:16:30:32:46:0:255:0|t.\n\n"..
 					"For Achievements can change searched categories, it will affect the outcome of the filter.\n\n"..
 					"This menu displays other options affecting the content of the tracker.",
 			textY = 16,
@@ -164,9 +166,9 @@ local function SetupTutorials()
 			text = cTitle.."Quest Item buttons|r\n\n"..
 					"For support Quest Items you need Questie addon (see page 8). Buttons are out of the tracker, because Blizzard doesn't allow to work with the action buttons inside addons.\n\n"..
 					"|T"..helpPath.."help_quest-item-buttons_2:32:32:1:0:64:32:0:32:0:32|t "..cDots.."...|r  This tag indicates quest item in quest. The number inside is for\n"..
-					"              identification moved quest item button.\n\n"..
+					"                identification moved quest item button.\n\n"..
 					"|T"..helpPath.."help_quest-item-buttons_2:32:32:0:3:64:32:32:64:0:32|t "..cDots.."...|r  Real quest item button is moved out of the tracker to the left/right\n"..
-					"              side (by selected anchor point). The number is the same as for the tag.\n\n"..
+					"                side (by selected anchor point). The number is the same as for the tag.\n\n"..
 					cWarning.."Warning:|r\n"..
 					"In some situation during combat, actions around the quest item buttons paused and carried it up after a player is out of combat.",
 			shineTop = 3,
@@ -242,15 +244,17 @@ local function SetupTutorials()
 		},
 		{	-- 9
 			text = cTitle.."         What's NEW|r\n\n"..
-					cTitle.."Version 3.5.0|r\n"..
-					"- ADDED - Support for WoW 3.4.3\n"..
-					"- UPDATED - Deprecated functions in WoW 3.4.2\n"..
-					"- UPDATED - Addon support - Questie 9.4.9\n"..
-					"- UPDATED - Addon support - ElvUI 13.59, Tukui 20.41\n"..
-					"- UPDATED - Help - Active Patrons\n"..
-					"- UPDATED - Libs\n\n"..
+					cTitle.."Version 3.6.0|r\n"..
+					"- ADDED - support for WoW 1.15.2\n"..
+					"- CHANGED - addon support - ElvUI 13.61\n"..
+					"- CHANGED - addon support - Questie 9.5.1\n"..
+					"- FIXED (quests) - nil value of quest level\n"..
+					"- PERFORMANCE (quests) - filter - better interaction with Quest Log (expand headers)\n"..
+					"- PERFORMANCE (achievements) - filter - better selection for zone\n"..
+					"- TECH (addon) - merge Classic (3.5.0) and Classic Era (1.6.0) code\n"..
+					"\n"..
 
-					cTitle.."WoW 3.4.3 - Known issues w/o solution|r\n"..
+					cTitle.."WoW 3.4.3/1.15.2 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n\n"..
 
@@ -278,10 +282,11 @@ local function SetupTutorials()
 				ObjectiveTracker_MinimizeButton_OnClick()
 			end
 			if i == 2 then
+				local eraMod = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and 0 or 20
 				if KTF.FilterButton then
-					self[i].shineLeft = db.headerOtherButtons and -75 or -35
+					self[i].shineLeft = db.headerOtherButtons and -75 + eraMod or -35
 				else
-					self[i].shineLeft = db.headerOtherButtons and -55 or -15
+					self[i].shineLeft = db.headerOtherButtons and -55 + eraMod or -15
 				end
 			elseif i == 3 then
 				local questInfo = KT_GetQuestListInfo(1)
@@ -290,11 +295,13 @@ local function SetupTutorials()
 					if block then
 						self[i].shine = block
 					end
+					KTF.Scroll.value = 0
+					ObjectiveTracker_Update()
 				end
 			elseif i == 5 then
 				self[i].shine = KTF.Buttons
 			end
-		end,
+			end,
 		onHide = function()
 			T.TriggerTutorial("supporters", 1)
 		end
