@@ -1,4 +1,4 @@
-----------------------------------------------------------------------
+﻿----------------------------------------------------------------------
 -- 	Leatrix Maps Locale
 ----------------------------------------------------------------------
 
@@ -2084,7 +2084,7 @@ end
 
 -- deDE: German
 if GameLocale == "deDE" then
-L["(destination only)"] = "(nur Ziel)"
+	L["(destination only)"] = "(nur Ziel)"
 L["(inside Caverns of Time)"] = "(in den Höhlen der Zeit)"
 L["/ltm help - Show this information."] = "/ltm help - Informationen anzeigen."
 L["/ltm reset - Reset the panel position."] = "/ltm reset - Panelposition Zurücksetzen."

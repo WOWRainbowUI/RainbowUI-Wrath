@@ -1,6 +1,6 @@
-
+﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 3.0.172 (10th January 2024)
+	-- 	Leatrix Maps 4.0.03 (27th April 2024)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList, LeaLockList = {}, {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "3.0.172"
+	LeaMapsLC["AddonVer"] = "4.0.03"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -21,14 +21,14 @@
 	-- Check Wow version is valid
 	do
 		local gameversion, gamebuild, gamedate, gametocversion = GetBuildInfo()
-		if gametocversion and gametocversion < 30000 or gametocversion > 39999 then
-			-- Game client is not Wow Classic
+		if gametocversion and gametocversion < 40000 or gametocversion > 49999 then
+			-- Game client is not Cataclysm Classic
 			C_Timer.After(2, function()
 				print(L["LEATRIX MAPS: WRONG VERSION INSTALLED!"])
 			end)
 			return
 		end
-		if gametocversion and gametocversion == 30403 then
+		if gametocversion and gametocversion == 40400 then
 			LeaMapsLC.NewPatch = true
 		end
 	end
@@ -64,7 +64,7 @@
 		WorldMapTrackQuest:SetHitRectInsets(0, 0, 0, 0)
 		WorldMapTrackQuestText:SetText("")
 
-		-- Hide Quest Objectives checkbox (it's in the configuration panel)
+		-- Hide Quest Objectives and Show Digsites checkboxes (both are in the configuration panel)
 		WorldMapQuestShowObjectives:SetHitRectInsets(0, 0, 0, 0)
 		WorldMapQuestShowObjectives:ClearAllPoints()
 		WorldMapQuestShowObjectives.SetPoint = function() return end
@@ -215,6 +215,23 @@
 		DoShowObjectivesFunc()
 
 		----------------------------------------------------------------------
+		-- Show digsites
+		----------------------------------------------------------------------
+
+		-- Function to set objectives
+		local function DoShowDigsitesFunc()
+			if LeaMapsLC["ShowDigsites"] == "On" then
+				SetCVar("digSites", "1")
+			else
+				SetCVar("digSites", "0")
+			end
+		end
+
+		-- Set digsites when option is clicked and on startup
+		LeaMapsCB["ShowDigsites"]:HookScript("OnClick", DoShowDigsitesFunc)
+		DoShowDigsitesFunc()
+
+		----------------------------------------------------------------------
 		-- Show zone dropdown menu
 		----------------------------------------------------------------------
 
@@ -225,6 +242,7 @@
 			L["Kalimdor"] = POSTMASTER_PIPE_KALIMDOR
 			L["Outland"] = POSTMASTER_PIPE_OUTLAND
 			L["Northrend"] = POSTMASTER_PIPE_NORTHREND
+			L["The Maelstrom"] = DUNGEON_FLOOR_DRAGONSOUL6
 			L["Azeroth"] = AZEROTH
 
 			-- Create outer frame for dropdown menus
@@ -348,6 +366,34 @@
 				WorldMapFrame:SetMapID(mapNorthrendTable[LeaMapsLC["ZoneMapNorthrendMenu"]].mapid)
 			end)
 
+			-- Create The Maelstrom dropdown menu
+			LeaMapsLC["ZoneMapTheMaelstromMenu"] = 1
+
+			local mapTheMaelstromTable, mapTheMaelstromString = {}, {}
+			local zones = C_Map.GetMapChildrenInfo(948)
+			if (zones) then
+				for i, zoneInfo in ipairs(zones) do
+					if zoneInfo.mapID ~= 276 then
+						tinsert(mapTheMaelstromTable, {zonename = zoneInfo.name, mapid = zoneInfo.mapID})
+						tinsert(mapTheMaelstromString, zoneInfo.name)
+					end
+				end
+			end
+
+			table.sort(mapTheMaelstromString, function(k, v) return k < v end)
+			table.sort(mapTheMaelstromTable, function(k, v) return k.zonename < v.zonename end)
+
+			tinsert(mapTheMaelstromString, 1, L["The Maelstrom"])
+			tinsert(mapTheMaelstromTable, 1, {zonename = L["The Maelstrom"], mapid = 948})
+
+			local msdd = LeaMapsLC:CreateDropDown("ZoneMapTheMaelstromMenu", "", WorldMapFrame, 180, "TOP", -80, -35, mapTheMaelstromString, "")
+			msdd:ClearAllPoints()
+			msdd:SetPoint("TOPRIGHT", outerFrame, "TOPRIGHT", 0, 0)
+
+			LeaMapsCB["ListFrameZoneMapTheMaelstromMenu"]:HookScript("OnHide", function()
+				WorldMapFrame:SetMapID(mapTheMaelstromTable[LeaMapsLC["ZoneMapTheMaelstromMenu"]].mapid)
+			end)
+
 			-- Create continent dropdown menu
 			LeaMapsLC["ZoneMapContinentMenu"] = 1
 
@@ -360,10 +406,12 @@
 			tinsert(mapContinentTable, 3, {zonename = L["Outland"], mapid = 1945})
 			tinsert(mapContinentString, 4, L["Northrend"])
 			tinsert(mapContinentTable, 4, {zonename = L["Northrend"], mapid = 113})
-			tinsert(mapContinentString, 5, L["Azeroth"])
-			tinsert(mapContinentTable, 5, {zonename = L["Azeroth"], mapid = 947})
-			tinsert(mapContinentString, 6, L["Cosmic"])
-			tinsert(mapContinentTable, 6, {zonename = L["Cosmic"], mapid = 946})
+			tinsert(mapContinentString, 5, L["The Maelstrom"])
+			tinsert(mapContinentTable, 5, {zonename = L["The Maelstrom"], mapid = 948})
+			tinsert(mapContinentString, 6, L["Azeroth"])
+			tinsert(mapContinentTable, 6, {zonename = L["Azeroth"], mapid = 947})
+			tinsert(mapContinentString, 7, L["Cosmic"])
+			tinsert(mapContinentTable, 7, {zonename = L["Cosmic"], mapid = 946})
 
 			local cond = LeaMapsLC:CreateDropDown("ZoneMapContinentMenu", "", WorldMapFrame, 180, "TOP", -80, -35, mapContinentString, "")
 			cond:ClearAllPoints()
@@ -395,9 +443,12 @@
 					nrdd:Show()
 					WorldMapFrame:SetMapID(mapNorthrendTable[LeaMapsLC["ZoneMapNorthrendMenu"]].mapid)
 				elseif LeaMapsLC["ZoneMapContinentMenu"] == 5 then
+					msdd:Show()
+					WorldMapFrame:SetMapID(mapTheMaelstromTable[LeaMapsLC["ZoneMapTheMaelstromMenu"]].mapid)
+				elseif LeaMapsLC["ZoneMapContinentMenu"] == 6 then
 					nodd:Show()
 					WorldMapFrame:SetMapID(947)
-				elseif LeaMapsLC["ZoneMapContinentMenu"] == 6 then
+				elseif LeaMapsLC["ZoneMapContinentMenu"] == 7 then
 					nodd:Show()
 					WorldMapFrame:SetMapID(946)
 				end
@@ -407,13 +458,14 @@
 			local function SetMapControls()
 
 				-- Hide dropdown menus
-				ekdd:Hide(); kmdd:Hide(); otdd:Hide(); nodd:Hide(); nrdd:Hide(); cond:Hide()
+				ekdd:Hide(); kmdd:Hide(); otdd:Hide(); nodd:Hide(); nrdd:Hide(); msdd:Hide(); cond:Hide()
 
 				-- Hide dropdown menu list items
 				LeaMapsCB["ListFrameZoneMapEasternMenu"]:Hide()
 				LeaMapsCB["ListFrameZoneMapKalimdorMenu"]:Hide()
 				LeaMapsCB["ListFrameZoneMapOutlandMenu"]:Hide()
 				LeaMapsCB["ListFrameZoneMapNorthrendMenu"]:Hide()
+				LeaMapsCB["ListFrameZoneMapTheMaelstromMenu"]:Hide()
 				LeaMapsCB["ListFrameZoneMapContinentMenu"]:Hide()
 				LeaMapsCB["ListFrameZoneMapNoneMenu"]:Hide()
 
@@ -457,17 +509,26 @@
 					end
 				end
 
+				-- The Maelstrom
+				for k, v in pairs(mapTheMaelstromTable) do
+					if v.mapid == WorldMapFrame.mapID then
+						LeaMapsLC["ZoneMapTheMaelstromMenu"] = k
+						msdd:Show()
+						LeaMapsLC["ZoneMapContinentMenu"] = 5; cond:Show()
+						return
+					end
+				end
 				-- Azeroth
 				if WorldMapFrame.mapID == 947 then
 					nodd:Show()
-					LeaMapsLC["ZoneMapContinentMenu"] = 5; cond:Show()
+					LeaMapsLC["ZoneMapContinentMenu"] = 6; cond:Show()
 					return
 				end
 
 				-- Cosmic
 				if WorldMapFrame.mapID == 946 then
 					nodd:Show()
-					LeaMapsLC["ZoneMapContinentMenu"] = 6; cond:Show()
+					LeaMapsLC["ZoneMapContinentMenu"] = 7; cond:Show()
 					return
 				end
 
@@ -1012,14 +1073,7 @@
 				local wmapID = WorldMapFrame.mapID
 				if wmapID and wmapID == 1414 or wmapID == 1415 or wmapID == 947 or wmapID == 1945 or wmapID == 113 then
 					if self.Texture and self.Texture:GetTexture() == 136441 then
-						local a, b, c, d, e, f, g, h = self.Texture:GetTexCoord()
-						if a == 0.35546875 and b == 0.00390625 and c == 0.35546875 and d == 0.0703125 and e == 0.421875 and f == 0.00390625 and g == 0.421875 and h == 0.0703125 then
-							-- Hide town icons
-							self:Hide()
-						elseif a == 0.42578125 and b == 0.00390625 and c == 0.42578125 and d == 0.0703125 and e == 0.4921875 and f == 0.00390625 and g == 0.4921875 and h == 0.0703125 then
-							-- Hide city icons
-							self:Hide()
-						end
+						self:Hide()
 					end
 				end
 			end)
@@ -1386,82 +1440,83 @@
 			local mapTable = {
 
 				-- Eastern Kingdoms
-				--[[Alterac Mountains]]		[1416] = {minLevel = 30, 	maxLevel = 40,		minFish = "130",},
-				--[[Arathi Highlands]]		[1417] = {minLevel = 30, 	maxLevel = 40,		minFish = "130",},
-				--[[Badlands]]				[1418] = {minLevel = 35, 	maxLevel = 45,},
-				--[[Blasted Lands]]			[1419] = {minLevel = 45, 	maxLevel = 55},
-				--[[Burning Steppes]]		[1428] = {minLevel = 50, 	maxLevel = 58,		minFish = "330",},
-				--[[Deadwind Pass]]			[1430] = {minLevel = 55, 	maxLevel = 60,		minFish = "330",},
-				--[[Dun Morogh]]			[1426] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-				--[[Duskwood]]				[1431] = {minLevel = 18, 	maxLevel = 30,		minFish = "55",},
-				--[[Eastern Plaguelands]]	[1423] = {minLevel = 53, 	maxLevel = 60,		minFish = "330",},
-				--[[Elwynn Forest]]			[1429] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-				--[[Eversong Woods]]		[1941] = {minLevel = 1,		maxLevel = 10},
-				--[[Hillsbrad Foothills]]	[1424] = {minLevel = 20, 	maxLevel = 30,		minFish = "55",},
-				--[[Ironforge]]				[1455] = {minFish = 1,},
-				--[[Ghostlands]]			[1942] = {minLevel = 10,	maxLevel = 20,		minFish = "1",},
-				--[[Isle of Quel'Danas]]	[1957] = {minLevel = 70,	maxLevel = 70},
-				--[[Loch Modan]]			[1432] = {minLevel = 10,	maxLevel = 20,		minFish = "1",},
-				--[[Redridge Mountains]]	[1433] = {minLevel = 15, 	maxLevel = 25,		minFish = "55",},
-				--[[Searing Gorge]]			[1427] = {minLevel = 43, 	maxLevel = 50},
-				--[[Silverpine Forest]]		[1421] = {minLevel = 10, 	maxLevel = 20,		minFish = "1",},
-				--[[Stormwind City]]		[1453] = {minFish = 1,},
-				--[[Stranglethorn Vale]]	[1434] = {minLevel = 30, 	maxLevel = 45,		minFish = "130 (205)",},
-				--[[Swamp of Sorrows]]		[1435] = {minLevel = 35, 	maxLevel = 45,		minFish = "130",},
-				--[[The Hinterlands]]		[1425] = {minLevel = 40, 	maxLevel = 50,		minFish = "205",},
-				--[[Tirisfal Glades]]		[1420] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-				--[[Undercity]]				[1458] = {minFish = 1,},
-				--[[Westfall]]				[1436] = {minLevel = 10, 	maxLevel = 20,		minFish = "1",},
-				--[[Western Plaguelands]]	[1422] = {minLevel = 51, 	maxLevel = 58,		minFish = "205",},
-				--[[Wetlands]]				[1437] = {minLevel = 20, 	maxLevel = 30,		minFish = "55",},
+				--[[Arathi Highlands]]		[1417] = {minLevel = 25, 	maxLevel = 40,},
+				--[[Badlands]]				[1418] = {minLevel = 36, 	maxLevel = 47,},
+				--[[Blasted Lands]]			[1419] = {minLevel = 46, 	maxLevel = 55,},
+				--[[Burning Steppes]]		[1428] = {minLevel = 50, 	maxLevel = 59,},
+				--[[Deadwind Pass]]			[1430] = {minLevel = 50, 	maxLevel = 60,},
+				--[[Dun Morogh]]			[1426] = {minLevel = 1, 	maxLevel = 11,},
+				--[[Duskwood]]				[1431] = {minLevel = 10, 	maxLevel = 30,},
+				--[[Eastern Plaguelands]]	[1423] = {minLevel = 40, 	maxLevel = 59,},
+				--[[Elwynn Forest]]			[1429] = {minLevel = 1, 	maxLevel = 10,},
+				--[[Eversong Woods]]		[1941] = {minLevel = 1,		maxLevel = 10,},
+				--[[Hillsbrad Foothills]]	[1424] = {minLevel = 20, 	maxLevel = 39,},
+				--[[Ghostlands]]			[1942] = {minLevel = 10,	maxLevel = 20,},
+				--[[Isle of Quel'Danas]]	[1957] = {minLevel = 70,	maxLevel = 70,},
+				--[[Loch Modan]]			[1432] = {minLevel = 10,	maxLevel = 18,},
+				--[[Redridge Mountains]]	[1433] = {minLevel = 15, 	maxLevel = 25,},
+				--[[Searing Gorge]]			[1427] = {minLevel = 43, 	maxLevel = 56,},
+				--[[Silverpine Forest]]		[1421] = {minLevel = 10, 	maxLevel = 19,},
+				--[[Stranglethorn Vale]]	[1434] = {minLevel = 30, 	maxLevel = 50,},
+				--[[Swamp of Sorrows]]		[1435] = {minLevel = 51, 	maxLevel = 54,},
+				--[[The Hinterlands]]		[1425] = {minLevel = 33, 	maxLevel = 49,},
+				--[[Tirisfal Glades]]		[1420] = {minLevel = 1, 	maxLevel = 12,},
+				--[[Twilight Highlands]]	[241]  = {minLevel = 74, 	maxLevel = 85,},
+				--[[Westfall]]				[1436] = {minLevel = 9, 	maxLevel = 18,},
+				--[[Western Plaguelands]]	[1422] = {minLevel = 36, 	maxLevel = 57,},
+				--[[Wetlands]]				[1437] = {minLevel = 20, 	maxLevel = 30,},
 
 				-- Kalimdor
-				--[[Ashenvale]]				[1440] = {minLevel = 18, 	maxLevel = 30,		minFish = "55",},
-				--[[Azshara]]				[1447] = {minLevel = 45, 	maxLevel = 55,		minFish = "205 (330)",},
-				--[[Azuremyst Isle]]		[1943] = {minLevel = 1,		maxLevel = 10,		minFish = "1",},
-				--[[Bloodmyst Isle]]		[1950] = {minLevel = 9,		maxLevel = 19,		minFish = "1",},
-				--[[Darkshore]]				[1439] = {minLevel = 10,	maxLevel = 20,		minFish = "1",},
-				--[[Darnassus]]				[1457] = {minFish = 1,},
-				--[[Desolace]]				[1443] = {minLevel = 30, 	maxLevel = 40,		minFish = "130",},
-				--[[Durotar]]				[1411] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-				--[[Dustwallow Marsh]]		[1445] = {minLevel = 35, 	maxLevel = 45,		minFish = "130",},
-				--[[Felwood]]				[1448] = {minLevel = 48, 	maxLevel = 55,		minFish = "205",},
-				--[[Feralas]]				[1444] = {minLevel = 40, 	maxLevel = 50,		minFish = "205 (330)",},
-				--[[Moonglade]]				[1450] = {minFish = 205,},
-				--[[Mulgore]]				[1412] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-				--[[Orgrimmar]]				[1454] = {minFish = 1,},
-				--[[Silithus]]				[1451] = {minLevel = 55, 	maxLevel = 60,		minFish = "330",},
-				--[[Stonetalon Mountains]]	[1442] = {minLevel = 15, 	maxLevel = 27,		minFish = "55",},
-				--[[Tanaris]]				[1446] = {minLevel = 40, 	maxLevel = 50,		minFish = "205",},
-				--[[Teldrassil]]			[1438] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-				--[[The Barrens]]			[1413] = {minLevel = 10, 	maxLevel = 25,		minFish = "1",},
-				--[[Thousand Needles]]		[1441] = {minLevel = 25, 	maxLevel = 35,		minFish = "130",},
-				--[[Thunder Bluff]]			[1456] = {minFish = 1,},
-				--[[Un'Goro Crater]]		[1449] = {minLevel = 48, 	maxLevel = 55,		minFish = "205",},
-				--[[Winterspring]]			[1452] = {minLevel = 55, 	maxLevel = 60,		minFish = "330",},
+				--[[Ashenvale]]				[1440] = {minLevel = 19, 	maxLevel = 30,},
+				--[[Azshara]]				[1447] = {minLevel = 10, 	maxLevel = 46,},
+				--[[Azuremyst Isle]]		[1943] = {minLevel = 1,		maxLevel = 10,},
+				--[[Bloodmyst Isle]]		[1950] = {minLevel = 9,		maxLevel = 19,},
+				--[[Darkshore]]				[1439] = {minLevel = 10,	maxLevel = 20,},
+				--[[Desolace]]				[1443] = {minLevel = 30, 	maxLevel = 39,},
+				--[[Durotar]]				[1411] = {minLevel = 1, 	maxLevel = 10,},
+				--[[Dustwallow Marsh]]		[1445] = {minLevel = 35, 	maxLevel = 61,},
+				--[[Felwood]]				[1448] = {minLevel = 46, 	maxLevel = 54,},
+				--[[Feralas]]				[1444] = {minLevel = 35, 	maxLevel = 45,},
+				--[[Mulgore]]				[1412] = {minLevel = 1, 	maxLevel = 10,},
+				--[[Northern Barrens]]		[1413] = {minLevel = 10, 	maxLevel = 33,},
+				--[[Silithus]]				[1451] = {minLevel = 55, 	maxLevel = 59,},
+				--[[Southern Barrens]]		[199]  = {minLevel = 30, 	maxLevel = 35,},
+				--[[Stonetalon Mountains]]	[1442] = {minLevel = 25, 	maxLevel = 30,},
+				--[[Tanaris]]				[1446] = {minLevel = 40, 	maxLevel = 50,},
+				--[[Teldrassil]]			[1438] = {minLevel = 1, 	maxLevel = 11,},
+				--[[Thousand Needles]]		[1441] = {minLevel = 25, 	maxLevel = 45,},
+				--[[Un'Goro Crater]]		[1449] = {minLevel = 48, 	maxLevel = 55,},
+				--[[Winterspring]]			[1452] = {minLevel = 50, 	maxLevel = 60,},
 
 				-- Outland
-				--[[Blade's Edge Mntains]]	[1949] = {minLevel = 65, 	maxLevel = 70,},
-				--[[Hellfire Peninsula]]	[1944] = {minLevel = 58, 	maxLevel = 70,		minFish = "280",},
-				--[[Nagrand]]				[1951] = {minLevel = 64, 	maxLevel = 70,		minFish = "280 (380) (395)",},
-				--[[Netherstorm]]			[1953] = {minLevel = 66, 	maxLevel = 70,		minFish = "380",},
-				--[[Shadowmoon Valley]]		[1948] = {minLevel = 67, 	maxLevel = 70,		minFish = "280",},
-				--[[Terokkar Forest]]		[1952] = {minLevel = 62, 	maxLevel = 70,		minFish = "355 (405)",},
-				--[[Zangarmarsh]]			[1946] = {minLevel = 60, 	maxLevel = 63,		minFish = "305 (355)",},
+				--[[Blade's Edge Montains]]	[1949] = {minLevel = 65, 	maxLevel = 70,},
+				--[[Hellfire Peninsula]]	[1944] = {minLevel = 58, 	maxLevel = 70,},
+				--[[Nagrand]]				[1951] = {minLevel = 64, 	maxLevel = 70,},
+				--[[Netherstorm]]			[1953] = {minLevel = 66, 	maxLevel = 70,},
+				--[[Shadowmoon Valley]]		[1948] = {minLevel = 67, 	maxLevel = 70,},
+				--[[Terokkar Forest]]		[1952] = {minLevel = 62, 	maxLevel = 70,},
+				--[[Zangarmarsh]]			[1946] = {minLevel = 60, 	maxLevel = 63,},
 
 				-- Northrend
 				-- Zone levels: https://www.wowhead.com/wotlk/zones/levels-68-80
-				-- Fishing levels: https://www.wowhead.com/wotlk/guides/fishing-profession-overview#fishing-table-by-zone
-				--[[Borean Tundra]]			[114] = {minLevel = 68, 	maxLevel = 72,		minFish = "380 (475)",},
-				--[[Scolazar Basin]]		[119] = {minLevel = 75, 	maxLevel = 80,		minFish = "430 (525)",},
+				--[[Borean Tundra]]			[114] = {minLevel = 68, 	maxLevel = 72,},
+				--[[Scolazar Basin]]		[119] = {minLevel = 75, 	maxLevel = 80,},
 				--[[Icecrown]]				[118] = {minLevel = 77, 	maxLevel = 80,},
 				--[[The Storm Peaks]]		[120] = {minLevel = 77, 	maxLevel = 80,},
 				--[[Zul'Drak]]				[121] = {minLevel = 73, 	maxLevel = 77,},
-				--[[Grizzly Hills]]			[116] = {minLevel = 73, 	maxLevel = 75,		minFish = "380 (475)",},
-				--[[Howling Fjord]]			[117] = {minLevel = 68, 	maxLevel = 72,		minFish = "380 (475)",},
-				--[[Dragonblight]]			[115] = {minLevel = 71, 	maxLevel = 80,		minFish = "380 (475)",},
-				--[[Crystalsong Forest]]	[127] = {minLevel = 80, 	maxLevel = 80,		minFish = "405 (500)",},
-				--[[Wintergrasp]]			[123] = {minLevel = 80, 	maxLevel = 80,		minFish = "430 (525)",},
+				--[[Grizzly Hills]]			[116] = {minLevel = 73, 	maxLevel = 75,},
+				--[[Howling Fjord]]			[117] = {minLevel = 68, 	maxLevel = 72,},
+				--[[Dragonblight]]			[115] = {minLevel = 71, 	maxLevel = 80,},
+				--[[Crystalsong Forest]]	[127] = {minLevel = 80, 	maxLevel = 80,},
+				--[[Wintergrasp]]			[123] = {minLevel = 80, 	maxLevel = 80,},
+
+				-- Cataclysm
+				--[[Deepholm]]				[207] = {minLevel = 81, 	maxLevel = 83,},
+				--[[Kezan]]					[194] = {minLevel = 1, 		maxLevel = 6,},
+				--[[Mount Hyjal]]			[198] = {minLevel = 79, 	maxLevel = 83,},
+				--[[The Lost Isles]]		[174] = {minLevel = 6, 		maxLevel = 10,},
+				--[[Uldum]]					[249] = {minLevel = 81, 	maxLevel = 84,},
+				--[[Vashj'ir]]				[203] = {minLevel = 78, 	maxLevel = 85,},
 
 			}
 
@@ -1470,7 +1525,7 @@
 				self:ClearLabel(MAP_AREA_LABEL_TYPE.AREA_NAME)
 				local map = self.dataProvider:GetMap()
 				if map:IsCanvasMouseFocus() then
-					local name, description
+					local name
 					local mapID = map:GetMapID()
 					local normalizedCursorX, normalizedCursorY = map:GetNormalizedCursorPosition()
 					local positionMapInfo = C_Map.GetMapInfoAtPosition(mapID, normalizedCursorX, normalizedCursorY)
@@ -1478,11 +1533,10 @@
 						-- print(positionMapInfo.mapID)
 						name = positionMapInfo.name
 						-- Get level range from table
-						local playerMinLevel, playerMaxLevel, minFish
+						local playerMinLevel, playerMaxLevel
 						if mapTable[positionMapInfo.mapID] then
 							playerMinLevel = mapTable[positionMapInfo.mapID]["minLevel"]
 							playerMaxLevel = mapTable[positionMapInfo.mapID]["maxLevel"]
-							minFish = mapTable[positionMapInfo.mapID]["minFish"]
 						end
 						-- Show level range if map zone exists in table
 						if name and playerMinLevel and playerMaxLevel and playerMinLevel > 0 and playerMaxLevel > 0 then
@@ -1503,14 +1557,11 @@
 								name = name..color.." ("..playerMaxLevel..")"..FONT_COLOR_CODE_CLOSE
 							end
 						end
-						if minFish and LeaMapsLC["ShowFishingLevels"] == "On" then
-							description = L["Fishing"] .. ": " .. minFish
-						end
 					else
 						name = MapUtil.FindBestAreaNameAtMouse(mapID, normalizedCursorX, normalizedCursorY)
 					end
 					if name then
-						self:SetLabel(MAP_AREA_LABEL_TYPE.AREA_NAME, name, description)
+						self:SetLabel(MAP_AREA_LABEL_TYPE.AREA_NAME, name)
 					end
 				end
 				self:EvaluateLabels()
@@ -1540,37 +1591,6 @@
 			-- Set zone levels when option is clicked and on startup
 			LeaMapsCB["ShowZoneLevels"]:HookScript("OnClick", SetZoneLevelScript)
 			SetZoneLevelScript()
-
-			-- Create configuraton panel
-			local levelFrame = LeaMapsLC:CreatePanel("Show zone levels", "levelFrame")
-
-			-- Add controls
-			LeaMapsLC:MakeTx(levelFrame, "Settings", 16, -72)
-			LeaMapsLC:MakeCB(levelFrame, "ShowFishingLevels", "Show minimum fishing skill levels", 16, -92, false, "If checked, the minimum fishing skill levels will be shown.")
-
-			-- Back to Main Menu button click
-			levelFrame.b:HookScript("OnClick", function()
-				levelFrame:Hide()
-				LeaMapsLC["PageF"]:Show()
-			end)
-
-			-- Reset button click
-			levelFrame.r:HookScript("OnClick", function()
-				LeaMapsLC["ShowFishingLevels"] = "On"
-				levelFrame:Hide(); levelFrame:Show()
-			end)
-
-			-- Show configuration panel when configuration button is clicked
-			LeaMapsCB["ShowZoneLevelsBtn"]:HookScript("OnClick", function()
-				if IsShiftKeyDown() and IsControlKeyDown() then
-					-- Preset profile
-					LeaMapsLC["ShowFishingLevels"] = "On"
-					if levelFrame:IsShown() then levelFrame:Hide(); levelFrame:Show(); end
-				else
-					levelFrame:Show()
-					LeaMapsLC["PageF"]:Hide()
-				end
-			end)
 
 		end
 
@@ -1691,6 +1711,7 @@
 
 		do
 
+			-- Zoom in and out with mousewheel
 			WorldMapFrame.ScrollContainer:HookScript("OnMouseWheel", function(self, delta)
 				local x, y = self:GetNormalizedCursorPosition()
 				local nextZoomOutScale, nextZoomInScale = self:GetCurrentZoomRange()
@@ -1974,16 +1995,13 @@
 		-- Show points of interest (must be after zone levels)
 		----------------------------------------------------------------------
 
-		-- Dungeon levels: https://wowpedia.fandom.com/wiki/Instances_by_level?direction=next&oldid=1191334
-		-- Meeting stone levels: https://www.reddit.com/r/classicwowtbc/comments/nfbdvb/tbc_classic_summoning_stone_level_requirements/
-		-- Spirit healers: https://db.endless.gg/?npc=6491
-
 		do
 
 			-- Get table from file
 			local PinData = Leatrix_Maps["Icons"]
 
 			local LeaMix = CreateFromMixins(MapCanvasDataProviderMixin)
+			LeaMapsLC.LeaMix = LeaMix -- Used in arrow structure
 
 			function LeaMix:RefreshAllData()
 
@@ -2009,8 +2027,6 @@
 							or LeaMapsLC["ShowTravelPoints"] == "On" and playerFaction == "Horde" and (pinInfo[1] == "FlightH" or pinInfo[1] == "FlightN" or pinInfo[1] == "TravelH" or pinInfo[1] == "TravelN")
 							or LeaMapsLC["ShowTravelOpposing"] == "On" and playerFaction == "Alliance" and (pinInfo[1] == "FlightH" or pinInfo[1] == "FlightN" or pinInfo[1] == "TravelH" or pinInfo[1] == "TravelN")
 							or LeaMapsLC["ShowTravelOpposing"] == "On" and playerFaction == "Horde" and (pinInfo[1] == "FlightA" or pinInfo[1] == "FlightN" or pinInfo[1] == "TravelA" or pinInfo[1] == "TravelN")
-							or LeaMapsLC["ShowSpiritHealers"] == "On" and (pinInfo[1] == "Spirit")
-							or LeaMapsLC["ShowZoneCrossings"] == "On" and (pinInfo[1] == "Arrow")
 							then
 								local myPOI = {}
 								myPOI["position"] = CreateVector2D(pinInfo[2] / 100, pinInfo[3] / 100)
@@ -2040,34 +2056,6 @@
 									myPOI["name"] = pinInfo[4]
 								end
 								myPOI["description"] = pinInfo[5]
-
-								-- Show dungeon required level
-								if LeaMapsLC["ShowZoneLevels"] == "On" and pinInfo[9] then
-									local playerLevel = UnitLevel("player")
-									local color
-									local dungeonReqLevel = pinInfo[9]
-									if dungeonReqLevel then
-										myPOI["description"] = myPOI["description"] .." (" .. L["req"] .. ": " .. dungeonReqLevel .. ")"
-									end
-								end
-
-								-- Show meeting stone level range
-								if LeaMapsLC["ShowZoneLevels"] == "On" and pinInfo[10] and pinInfo[11] then
-									local playerLevel = UnitLevel("player")
-									local color, name
-									local dungeonMinSum, dungeonMaxSum = pinInfo[10], pinInfo[11]
-									if dungeonMinSum ~= dungeonMaxSum then
-										myPOI["description"] = myPOI["description"] .. " (" .. L["sum"] .. ": " .. dungeonMinSum .. "-" .. dungeonMaxSum .. ")"
-									else
-										myPOI["description"] = myPOI["description"] .. " (" .. L["sum"] .. ": " .. dungeonMaxSum .. ")"
-									end
-								end
-
-								-- Show zone crossings
-								if LeaMapsLC["ShowZoneCrossings"] == "On" then
-									myPOI["ZoneCrossing"] = pinInfo[13]
-								end
-
 								myPOI["atlasName"] = pinInfo[6]
 								local pin = self:GetMap():AcquirePin("LeaMapsGlobalPinTemplate", myPOI)
 								pin.Texture:SetRotation(0)
@@ -2102,12 +2090,6 @@
 									pin.Texture:SetSize(32, 32)
 									pin.HighlightTexture:SetTexCoord(0.75, 1, 0.75, 1)
 									pin.HighlightTexture:SetSize(32, 32)
-								elseif pinInfo[1] == "Spirit" then
-									pin.Texture:SetSize(20, 20)
-									pin.HighlightTexture:SetSize(20, 20)
-								elseif pinInfo[1] == "Arrow" then
-									pin.Texture:SetRotation(pinInfo[12])
-									pin.HighlightTexture:SetRotation(pinInfo[12])
 								end
 							end
 
@@ -2121,13 +2103,10 @@
 
 			function LeaMapsGlobalPinMixin:OnAcquired(myInfo)
 				BaseMapPoiPinMixin.OnAcquired(self, myInfo)
-				self.ZoneCrossing = myInfo.ZoneCrossing
 			end
 
 			function LeaMapsGlobalPinMixin:OnMouseUp(btn)
-				if btn == "LeftButton" then
-					if self.ZoneCrossing then WorldMapFrame:SetMapID(self.ZoneCrossing) end
-				elseif btn == "RightButton" then
+				if btn == "RightButton" then
 					WorldMapFrame:NavigateToParentMap()
 				end
 			end
@@ -2146,12 +2125,6 @@
 			LeaMapsLC:MakeCB(poiFrame, "ShowDungeonIcons", "Show dungeons and raids", 16, -92, false, "If checked, dungeons and raids will be shown.")
 			LeaMapsLC:MakeCB(poiFrame, "ShowTravelPoints", "Show travel points for same faction", 16, -112, false, "If checked, travel points for the same faction will be shown.|n|nThis includes flight points, boat harbors, zeppelin towers and tram stations.")
 			LeaMapsLC:MakeCB(poiFrame, "ShowTravelOpposing", "Show travel points for opposing faction", 16, -132, false, "If checked, travel points for the opposing faction will be shown.|n|nThis includes flight points, boat harbors, zeppelin towers and tram stations.")
-			LeaMapsLC:MakeCB(poiFrame, "ShowZoneCrossings", "Show zone crossings", 16, -152, false, "If checked, zone crossings will be shown.|n|nThese are clickable arrows that indicate the zone exit pathways.")
-			LeaMapsLC:MakeCB(poiFrame, "ShowSpiritHealers", "Show spirit healers", 16, -172, false, "If checked, spirit healers will be shown.")
-
-			-- Hide spirit healers option for now
-			LeaMapsLC["ShowSpiritHealers"] = "Off"
-			LeaMapsCB["ShowSpiritHealers"]:Hide()
 
 			-- Function to refresh points of interest
 			local function SetPointsOfInterest()
@@ -2163,8 +2136,6 @@
 			LeaMapsCB["ShowDungeonIcons"]:HookScript("OnClick", SetPointsOfInterest)
 			LeaMapsCB["ShowTravelPoints"]:HookScript("OnClick", SetPointsOfInterest)
 			LeaMapsCB["ShowTravelOpposing"]:HookScript("OnClick", SetPointsOfInterest)
-			LeaMapsCB["ShowSpiritHealers"]:HookScript("OnClick", SetPointsOfInterest)
-			LeaMapsCB["ShowZoneCrossings"]:HookScript("OnClick", SetPointsOfInterest)
 			LeaMapsCB["ShowZoneLevels"]:HookScript("OnClick", SetPointsOfInterest)
 
 			-- Back to Main Menu button click
@@ -2178,8 +2149,6 @@
 				LeaMapsLC["ShowDungeonIcons"] = "On"
 				LeaMapsLC["ShowTravelPoints"] = "On"
 				LeaMapsLC["ShowTravelOpposing"] = "Off"
-				LeaMapsLC["ShowSpiritHealers"] = "On"
-				LeaMapsLC["ShowZoneCrossings"] = "On"
 				SetPointsOfInterest()
 				poiFrame:Hide(); poiFrame:Show()
 			end)
@@ -2191,8 +2160,6 @@
 					LeaMapsLC["ShowDungeonIcons"] = "On"
 					LeaMapsLC["ShowTravelPoints"] = "On"
 					LeaMapsLC["ShowTravelOpposing"] = "Off"
-					LeaMapsLC["ShowSpiritHealers"] = "On"
-					LeaMapsLC["ShowZoneCrossings"] = "On"
 					SetPointsOfInterest()
 					if poiFrame:IsShown() then poiFrame:Hide(); poiFrame:Show(); end
 				else
@@ -2659,7 +2626,7 @@
 			maintitle:ClearAllPoints()
 			maintitle:SetPoint("TOP", 0, -72)
 
-			local expTitle = LeaMapsLC:MakeTx(interPanel, "Wrath of the Lich King Classic", 0, 0)
+			local expTitle = LeaMapsLC:MakeTx(interPanel, "Cataclysm Classic", 0, 0)
 			expTitle:SetFont(expTitle:GetFont(), 32)
 			expTitle:ClearAllPoints()
 			expTitle:SetPoint("TOP", 0, -152)
@@ -2770,7 +2737,7 @@
 
 		-- Set frame parameters
 		Side:Hide()
-		Side:SetSize(470, 480)
+		Side:SetSize(470, 500)
 		Side:SetClampedToScreen(true)
 		Side:SetFrameStrata("FULLSCREEN_DIALOG")
 		Side:SetFrameLevel(20)
@@ -2813,7 +2780,7 @@
 
 		-- Set textures
 		LeaMapsLC:CreateBar("FootTexture", Side, 470, 48, "BOTTOM", 0.5, 0.5, 0.5, 1.0, "Interface\\ACHIEVEMENTFRAME\\UI-GuildAchievement-Parchment-Horizontal-Desaturated.png")
-		LeaMapsLC:CreateBar("MainTexture", Side, 470, 433, "TOPRIGHT", 0.7, 0.7, 0.7, 0.7,  "Interface\\ACHIEVEMENTFRAME\\UI-GuildAchievement-Parchment-Horizontal-Desaturated.png")
+		LeaMapsLC:CreateBar("MainTexture", Side, 470, 453, "TOPRIGHT", 0.7, 0.7, 0.7, 0.7,  "Interface\\ACHIEVEMENTFRAME\\UI-GuildAchievement-Parchment-Horizontal-Desaturated.png")
 
 		-- Allow movement
 		Side:EnableMouse(true)
@@ -2979,7 +2946,6 @@
 		LeaMapsLC:LockOption("UnlockMapFrame", "UnlockMapFrameBtn", false) -- Unlock map frame
 		LeaMapsLC:LockOption("SetMapOpacity", "SetMapOpacityBtn", true) -- Set map opacity
 		LeaMapsLC:LockOption("ShowPointsOfInterest", "ShowPointsOfInterestBtn", false) -- Show points of interest
-		LeaMapsLC:LockOption("ShowZoneLevels", "ShowZoneLevelsBtn", false) -- Show zone levels
 		LeaMapsLC:LockOption("EnhanceBattleMap", "EnhanceBattleMapBtn", true) -- Enhance battlefield map
 		-- Ensure locked but enabled options remain locked
 		if LeaMapsLC["UseDefaultMap"] == "On" then
@@ -3474,6 +3440,47 @@
 					WorldMapFrame:SetMapID(tonumber(arg1))
 				end
 				return
+			elseif str == "arrow" then
+				-- Arrow structure
+				local pin, cx, cy
+				local pressed = 1
+				if not LeaMapsLC.rotatearrow then LeaMapsLC.rotatearrow = 0 end
+				hooksecurefunc(LeaMapsLC.LeaMix, "RefreshAllData", function(self)
+					if not pressed then return end
+					-- Make new pin
+					local pMapID = WorldMapFrame.mapID
+					cx, cy = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
+					if cx and cy and cx > 0 and cy > 0 then
+						cx = floor(cx * 1000 + 0.5) / 10
+						cy = floor(cy * 1000 + 0.5) / 10
+						local myPOI = {}
+						myPOI["position"] = CreateVector2D(cx / 100, cy / 100)
+						myPOI["atlasName"] = "Garr_LevelUpgradeArrow"
+						pin = self:GetMap():AcquirePin("LeaMapsGlobalPinTemplate", myPOI)
+						pin.Texture:SetRotation(LeaMapsLC.rotatearrow)
+						pin.Texture:SetSize(32, 32)
+						pin.HighlightTexture:SetSize(32, 32)
+						pin:SetFrameStrata("FULLSCREEN_DIALOG")
+					end
+					pressed = nil
+				end)
+				if not pressed then return end
+				LeaMapsLC.LeaMix:RefreshAllData()
+				pin:SetScript("OnUpdate", function()
+					if IsShiftKeyDown() then
+						LeaMapsLC.rotatearrow = LeaMapsLC.rotatearrow + 0.002
+						if LeaMapsLC.rotatearrow > 6.3 then LeaMapsLC.rotatearrow = 0 end
+						pin.Texture:SetRotation(LeaMapsLC.rotatearrow)
+					elseif IsControlKeyDown() then
+						LeaMapsLC.rotatearrow = LeaMapsLC.rotatearrow - 0.002
+						if LeaMapsLC.rotatearrow < 0 then LeaMapsLC.rotatearrow = 6.3 end
+						pin.Texture:SetRotation(LeaMapsLC.rotatearrow)
+					end
+				end)
+				pin:SetScript("OnMouseUp", function()
+					print('{"Arrow", ' .. cx .. ',', cy .. ', L["Name"], nil, arTex, nil, nil, nil, nil, nil, ' .. string.format("%.2f", LeaMapsLC.rotatearrow) .. ', 0},')
+				end)
+				return
 			elseif str == "admin" then
 				-- Preset profile (reload required)
 				LeaMapsLC["NoSaveSettings"] = true
@@ -3513,12 +3520,10 @@
 				LeaMapsDB["ShowDungeonIcons"] = "On"
 				LeaMapsDB["ShowTravelPoints"] = "On"
 				LeaMapsDB["ShowTravelOpposing"] = "Off"
-				LeaMapsDB["ShowSpiritHealers"] = "On"
-				LeaMapsDB["ShowZoneCrossings"] = "On"
 				LeaMapsDB["ShowZoneLevels"] = "On"
-				LeaMapsDB["ShowFishingLevels"] = "On"
 				LeaMapsDB["ShowCoords"] = "On"
 				LeaMapsDB["ShowObjectives"] = "On"
+				LeaMapsDB["ShowDigsites"] = "On"
 				LeaMapsDB["HideTownCityIcons"] = "On"
 
 				-- More
@@ -3543,7 +3548,7 @@
 			elseif str == "help" then
 				-- Show available commands
 				LeaMapsLC:Print("Leatrix Maps" .. "|n")
-				LeaMapsLC:Print(L["WC"] .. " " .. LeaMapsLC["AddonVer"] .. "|n|n")
+				LeaMapsLC:Print(L["CC"] .. " " .. LeaMapsLC["AddonVer"] .. "|n|n")
 				LeaMapsLC:Print('/ltm reset - Reset the panel position.')
 				LeaMapsLC:Print('/ltm wipe - Wipe all settings and reload.')
 				LeaMapsLC:Print('/ltm help - Show this information.')
@@ -3628,12 +3633,10 @@
 			LeaMapsLC:LoadVarChk("ShowDungeonIcons", "On")				-- Show dungeons and raids
 			LeaMapsLC:LoadVarChk("ShowTravelPoints", "On")				-- Show travel points for same faction
 			LeaMapsLC:LoadVarChk("ShowTravelOpposing", "Off")			-- Show travel points for opposing faction
-			LeaMapsLC:LoadVarChk("ShowSpiritHealers", "On")				-- Show spirit healers
-			LeaMapsLC:LoadVarChk("ShowZoneCrossings", "On")				-- Show zone crossings
 			LeaMapsLC:LoadVarChk("ShowZoneLevels", "On")				-- Show zone levels
-			LeaMapsLC:LoadVarChk("ShowFishingLevels", "On")				-- Show fishing levels
 			LeaMapsLC:LoadVarChk("ShowCoords", "On")					-- Show coordinates
 			LeaMapsLC:LoadVarChk("ShowObjectives", "On")				-- Show objectives
+			LeaMapsLC:LoadVarChk("ShowDigsites", "On")					-- Show digsites
 			LeaMapsLC:LoadVarChk("HideTownCityIcons", "On")				-- Hide town and city icons
 
 			-- More
@@ -3740,12 +3743,10 @@
 			LeaMapsDB["ShowDungeonIcons"] = LeaMapsLC["ShowDungeonIcons"]
 			LeaMapsDB["ShowTravelPoints"] = LeaMapsLC["ShowTravelPoints"]
 			LeaMapsDB["ShowTravelOpposing"] = LeaMapsLC["ShowTravelOpposing"]
-			LeaMapsDB["ShowSpiritHealers"] = LeaMapsLC["ShowSpiritHealers"]
-			LeaMapsDB["ShowZoneCrossings"] = LeaMapsLC["ShowZoneCrossings"]
 			LeaMapsDB["ShowZoneLevels"] = LeaMapsLC["ShowZoneLevels"]
-			LeaMapsDB["ShowFishingLevels"] = LeaMapsLC["ShowFishingLevels"]
 			LeaMapsDB["ShowCoords"] = LeaMapsLC["ShowCoords"]
 			LeaMapsDB["ShowObjectives"] = LeaMapsLC["ShowObjectives"]
+			LeaMapsDB["ShowDigsites"] = LeaMapsLC["ShowDigsites"]
 			LeaMapsDB["HideTownCityIcons"] = LeaMapsLC["HideTownCityIcons"]
 
 			-- More
@@ -3792,7 +3793,7 @@
 
 	-- Set frame parameters
 	LeaMapsLC["PageF"] = PageF
-	PageF:SetSize(470, 480)
+	PageF:SetSize(470, 500)
 	PageF:Hide()
 	PageF:SetFrameStrata("FULLSCREEN_DIALOG")
 	PageF:SetFrameLevel(20)
@@ -3816,7 +3817,7 @@
 	-- Add textures
 	local MainTexture = PageF:CreateTexture(nil, "BORDER")
 	MainTexture:SetTexture("Interface\\ACHIEVEMENTFRAME\\UI-GuildAchievement-Parchment-Horizontal-Desaturated.png")
-	MainTexture:SetSize(470, 433)
+	MainTexture:SetSize(470, 453)
 	MainTexture:SetPoint("TOPRIGHT")
 	MainTexture:SetVertexColor(0.7, 0.7, 0.7, 0.7)
 	MainTexture:SetTexCoord(0.09, 1, 0, 1)
@@ -3844,7 +3845,7 @@
 	PageF.v:SetPoint('TOPLEFT', PageF.mt, 'BOTTOMLEFT', 0, -8)
 	PageF.v:SetPoint('RIGHT', PageF, -32, 0)
 	PageF.v:SetJustifyH('LEFT'); PageF.v:SetJustifyV('TOP')
-	PageF.v:SetNonSpaceWrap(true); PageF.v:SetText(L["WC"] .. " " .. LeaMapsLC["AddonVer"])
+	PageF.v:SetNonSpaceWrap(true); PageF.v:SetText(L["CC"] .. " " .. LeaMapsLC["AddonVer"])
 
 	-- Add reload UI Button
 	local reloadb = LeaMapsLC:CreateButton("ReloadUIButton", PageF, "Reload", "BOTTOMRIGHT", -16, 10, 25, "Your UI needs to be reloaded for some of the changes to take effect.|n|nYou don't have to click the reload button immediately but you do need to click it when you are done making changes and you want the changes to take effect.")
@@ -3885,14 +3886,15 @@
 	LeaMapsLC:MakeTx(PageF, "Elements", 225, -192)
 	LeaMapsLC:MakeCB(PageF, "RevealMap", "Show unexplored areas", 225, -212, true, "If checked, unexplored areas of the map will be shown on the world map and the battlefield map.")
 	LeaMapsLC:MakeCB(PageF, "ShowPointsOfInterest", "Show points of interest", 225, -232, false, "If checked, points of interest will be shown.")
-	LeaMapsLC:MakeCB(PageF, "ShowZoneLevels", "Show zone levels", 225, -252, false, "If checked, zone, dungeon and fishing skill levels will be shown.")
+	LeaMapsLC:MakeCB(PageF, "ShowZoneLevels", "Show zone levels", 225, -252, false, "If checked, zone and dungeon levels will be shown.")
 	LeaMapsLC:MakeCB(PageF, "ShowCoords", "Show coordinates", 225, -272, false, "If checked, coordinates will be shown.")
 	LeaMapsLC:MakeCB(PageF, "ShowObjectives", "Show objectives", 225, -292, false, "If checked, quest objectives will be shown.")
-	LeaMapsLC:MakeCB(PageF, "HideTownCityIcons", "Hide town and city icons", 225, -312, true, "If checked, town and city icons will not be shown on the continent maps.")
+	LeaMapsLC:MakeCB(PageF, "ShowDigsites", "Show digsites", 225, -312, false, "If checked, archaeology digsites will be shown.")
+	LeaMapsLC:MakeCB(PageF, "HideTownCityIcons", "Hide town and city icons", 225, -332, true, "If checked, town and city icons will not be shown on the continent maps.")
 
-	LeaMapsLC:MakeTx(PageF, "More", 225, -352)
-	LeaMapsLC:MakeCB(PageF, "EnhanceBattleMap", "Enhance battlefield map", 225, -372, true, "If checked, you will be able to customise the battlefield map.")
-	LeaMapsLC:MakeCB(PageF, "ShowMinimapIcon", "Show minimap button", 225, -392, false, "If checked, the minimap button will be shown.")
+	LeaMapsLC:MakeTx(PageF, "More", 225, -372)
+	LeaMapsLC:MakeCB(PageF, "EnhanceBattleMap", "Enhance battlefield map", 225, -392, true, "If checked, you will be able to customise the battlefield map.")
+	LeaMapsLC:MakeCB(PageF, "ShowMinimapIcon", "Show minimap button", 225, -412, false, "If checked, the minimap button will be shown.")
 
 	LeaMapsLC:CfgBtn("IncreaseZoomBtn", LeaMapsCB["IncreaseZoom"])
 	LeaMapsLC:CfgBtn("RevTintBtn", LeaMapsCB["RevealMap"])
@@ -3901,7 +3903,6 @@
 	LeaMapsLC:CfgBtn("UnlockMapFrameBtn", LeaMapsCB["UnlockMapFrame"])
 	LeaMapsLC:CfgBtn("SetMapOpacityBtn", LeaMapsCB["SetMapOpacity"])
 	LeaMapsLC:CfgBtn("ShowPointsOfInterestBtn", LeaMapsCB["ShowPointsOfInterest"])
-	LeaMapsLC:CfgBtn("ShowZoneLevelsBtn", LeaMapsCB["ShowZoneLevels"])
 	LeaMapsLC:CfgBtn("EnhanceBattleMapBtn", LeaMapsCB["EnhanceBattleMap"])
 
 	-- Add reset map position button
