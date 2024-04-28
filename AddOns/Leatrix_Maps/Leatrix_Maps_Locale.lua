@@ -1,4 +1,4 @@
-----------------------------------------------------------------------
+﻿----------------------------------------------------------------------
 -- 	Leatrix Maps Locale
 ----------------------------------------------------------------------
 
@@ -1046,7 +1046,6 @@ L["Zul'Drak"] = "祖爾德拉克"
 L["Zul'Farrak"] = "祖爾法拉克"
 L["Zul'Gurub"] = "祖爾格拉布"
 
-
 -- 自行加入
 L["Mechanics"] = "調整視窗"
 L["Remove map border"] = "移除地圖邊框"
@@ -1126,6 +1125,7 @@ L["Map Size"] = "地圖大小"
 L["Drag to set the battlefield map size."] = "拖曳來設定戰場地圖的大小。"
 L["Drag to set the player arrow size."] = "拖曳來設定玩家箭頭的大小。"
 L["If checked, you will be able to scale and move the map.|n|nScale the map by dragging the scale handle in the bottom-right corner.|n|nMove the map by dragging the border and frame edges."] = "勾選時，將可以自由縮放和移動地圖。|n|n拖曳右下角可以縮放地圖的大小。|n|n拖曳框架四周的邊框來移動框架。"
+L["If checked, you will be able to scale the map by dragging the scale handle in the bottom-right corner.|n|nYou will be able to move the map by dragging any border.|n|nYou can always drag the top border to move the map regardless of this setting."] = "勾選時，拖曳最右下角可以縮放地圖大小。|n|n拖曳四周的邊框來移動地圖。|n|n不論是否有勾選，永遠都可以拖曳上方的邊框來移動地圖。"
 L["If checked, you will be able to move the frame by dragging the border."] = "勾選時，可以拖曳框架四周的邊框來移動框架。"
 L["If checked, the map will not fade while your character is moving."] = "勾選時，角色正在移動的時候地圖不會淡出。"
 L["If checked, your character will not perform the reading emote when you open the map."] = "勾選時，打開地圖的時候，角色不會做出正在閱讀的表情動作。"
@@ -1166,6 +1166,7 @@ L["Never"] = "永不"
 L["Battlegrounds"] = "戰場"
 L["Always"] = "永遠"
 L["Toggle panel"] = "顯示世界地圖增強設定"
+L["Show zone menus"] = "顯示區域選單"
 L["If checked, zone and continent dropdown menus will be shown in the map frame."] = "勾選時，地圖框架上方會顯示區域和大陸的下拉選單。"
 L["This setting is currently unavailable."] = "這個設定目前無法使用。"
 L["Valdrakken Portals"] = "沃卓肯傳送到"
@@ -1173,5 +1174,8 @@ L["Dalaran"] = "達拉然"
 L["Shadowmoon Valley"] = "影月谷"
 L["Jade Forest"] = "翠玉林"
 L["Wrath of the Lich King Classic"] = "巫妖王之怒經典版"
-L["If checked, you will be able to scale the map by dragging the scale handle in the bottom-right corner.|n|nYou will be able to move the map by dragging any border.|n|nYou can always drag the top border to move the map regardless of this setting."] = "勾選時，可以拖曳地圖視窗左下角來縮放地圖大小。|n|n拖曳地圖視窗四周的邊框可以移動地圖。|n|n不論是否有勾選此選項，拖曳地圖視窗上方邊框永遠都可以移動地圖。"
+L["If checked, zone and dungeon levels will be shown."] = "勾選時，會顯示區域和地城的等級。"
+L["If checked, quest objectives will be shown."] = "勾選時，會顯示任務目標。"
+L["Show digsites"] = "顯示挖掘場"
+L["If checked, archaeology digsites will be shown."] = "勾選時，會顯示考古學挖掘場。"
 end
