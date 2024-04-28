@@ -481,6 +481,15 @@ local function SetHooks()
 			return
 		end
 		KT:SetSize()
+
+		-- Set Quest Log tracking indicator
+		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+			if KT_GetNumQuestWatches() > 0 then
+				QuestLogTrackTracking:SetVertexColor(0, 1.0, 0)
+			else
+				QuestLogTrackTracking:SetVertexColor(1.0, 0, 0)
+			end
+		end
 	end
 
 	function DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)  -- RO
@@ -709,9 +718,11 @@ local function SetHooks()
 	hooksecurefunc(QUEST_TRACKER_MODULE, "OnBlockHeaderClick", function(self, block, mouseButton)
 		GameTooltip:Hide()
 	end)
-	hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderClick", function(self, block, mouseButton)
-		GameTooltip:Hide()
-	end)
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderClick", function(self, block, mouseButton)
+			GameTooltip:Hide()
+		end)
+	end
 
 	function KT_ObjectiveTrackerBlock_OnEnter(self)
 		self.module:OnBlockHeaderEnter(self)
@@ -860,8 +871,9 @@ local function SetHooks()
 	local bck_QUEST_TRACKER_MODULE_SetBlockHeader = QUEST_TRACKER_MODULE.SetBlockHeader
 	function QUEST_TRACKER_MODULE:SetBlockHeader(block, text, questLogIndex, isQuestComplete, questID)
 		local _, level, suggestedGroup, _, _, _, frequency, _ = GetQuestLogTitle(questLogIndex)
+		block.level = level or 0
 		if db.questsShowLevels then
-			text = KT:CreateQuestLevel(level)..text
+			text = KT:CreateQuestLevel(block.level)..text
 		end
 		block.title = text
 		if db.questsShowTags then
@@ -870,7 +882,6 @@ local function SetHooks()
 		end
 		bck_QUEST_TRACKER_MODULE_SetBlockHeader(self, block, text, questLogIndex, isQuestComplete, questID)
 		block.lineWidth = block.lineWidth or self.lineWidth - 8		-- mod default
-		block.level = level
 
 		local link, item, charges, showItemWhenComplete = GetQuestLogSpecialItemInfo(questLogIndex)
 		if item and (not isQuestComplete or showItemWhenComplete) then
@@ -999,11 +1010,13 @@ local function SetHooks()
 		end
 	end
 
-	hooksecurefunc("QuestPOI_UpdateButtonStyle", function(poiButton)
-		if poiButton.Glow then
-			poiButton.Glow:SetShown(false)
-		end
-	end)
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		hooksecurefunc("QuestPOI_UpdateButtonStyle", function(poiButton)
+			if poiButton.Glow then
+				poiButton.Glow:SetShown(false)
+			end
+		end)
+	end
 
 	local bck_UIErrorsFrame_OnEvent = UIErrorsFrame:GetScript("OnEvent")
 	UIErrorsFrame:SetScript("OnEvent", function(self, event, ...)
@@ -1164,71 +1177,73 @@ local function SetHooks()
 		KT.AddonQuestie:CreateMenu(info, block.id)
 	end
 
-	function ACHIEVEMENT_TRACKER_MODULE:OnBlockHeaderClick(block, mouseButton)  -- R
-		if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
-			local achievementLink = GetAchievementLink(block.id);
-			if ( achievementLink ) then
-				ChatEdit_InsertLink(achievementLink);
-			end
-		elseif ( mouseButton ~= "RightButton" ) then
-			MSA_CloseDropDownMenus();
-			if ( not AchievementFrame ) then
-				AchievementFrame_LoadUI();
-			end
-			if ( IsModifiedClick("QUESTWATCHTOGGLE") ) then
-				AchievementObjectiveTracker_UntrackAchievement(_, block.id);
-			elseif IsModifiedClick(db.menuWowheadURLModifier) then
-				KT:ShowPopup("achievement", block.id)
-			elseif ( not AchievementFrame:IsShown() ) then
-				AchievementFrame_ToggleAchievementFrame();
-				AchievementFrame_SelectAchievement(block.id);
-			else
-				if ( AchievementFrameAchievements.selection ~= block.id ) then
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		function ACHIEVEMENT_TRACKER_MODULE:OnBlockHeaderClick(block, mouseButton)  -- R
+			if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
+				local achievementLink = GetAchievementLink(block.id);
+				if ( achievementLink ) then
+					ChatEdit_InsertLink(achievementLink);
+				end
+			elseif ( mouseButton ~= "RightButton" ) then
+				MSA_CloseDropDownMenus();
+				if ( not AchievementFrame ) then
+					AchievementFrame_LoadUI();
+				end
+				if ( IsModifiedClick("QUESTWATCHTOGGLE") ) then
+					AchievementObjectiveTracker_UntrackAchievement(_, block.id);
+				elseif IsModifiedClick(db.menuWowheadURLModifier) then
+					KT:ShowPopup("achievement", block.id)
+				elseif ( not AchievementFrame:IsShown() ) then
+					AchievementFrame_ToggleAchievementFrame();
 					AchievementFrame_SelectAchievement(block.id);
 				else
-					AchievementFrame_ToggleAchievementFrame();
+					if ( AchievementFrameAchievements.selection ~= block.id ) then
+						AchievementFrame_SelectAchievement(block.id);
+					else
+						AchievementFrame_ToggleAchievementFrame();
+					end
 				end
+			else
+				ObjectiveTracker_ToggleDropDown(block, AchievementObjectiveTracker_OnOpenDropDown);
 			end
-		else
-			ObjectiveTracker_ToggleDropDown(block, AchievementObjectiveTracker_OnOpenDropDown);
 		end
-	end
 
-	function AchievementObjectiveTracker_OnOpenDropDown(self)  -- R
-		local block = self.activeFrame;
-		local _, achievementName, _, completed, _, _, _, _, _, icon = GetAchievementInfo(block.id);
+		function AchievementObjectiveTracker_OnOpenDropDown(self)  -- R
+			local block = self.activeFrame;
+			local _, achievementName, _, completed, _, _, _, _, _, icon = GetAchievementInfo(block.id);
 
-		local info = MSA_DropDownMenu_CreateInfo();
-		info.text = achievementName;
-		info.isTitle = 1;
-		info.notCheckable = 1;
-		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+			local info = MSA_DropDownMenu_CreateInfo();
+			info.text = achievementName;
+			info.isTitle = 1;
+			info.notCheckable = 1;
+			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
 
-		info = MSA_DropDownMenu_CreateInfo();
-		info.notCheckable = 1;
+			info = MSA_DropDownMenu_CreateInfo();
+			info.notCheckable = 1;
 
-		info.text = OBJECTIVES_VIEW_ACHIEVEMENT;
-		info.func = function (button, ...) OpenAchievementFrameToAchievement(...); end;
-		info.arg1 = block.id;
-		info.checked = false;
-		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
-
-		info.text = OBJECTIVES_STOP_TRACKING;
-		info.func = AchievementObjectiveTracker_UntrackAchievement;
-		info.arg1 = block.id;
-		info.checked = false;
-		info.disabled = (db.filterAuto[2]);
-		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
-
-		info.disabled = false;
-
-		if db.menuWowheadURL then
-			info.text = "|cff33ff99Wowhead|r URL";
-			info.func = KT.ShowPopup;
-			info.arg1 = "achievement";
-			info.arg2 = block.id;
+			info.text = OBJECTIVES_VIEW_ACHIEVEMENT;
+			info.func = function (button, ...) OpenAchievementFrameToAchievement(...); end;
+			info.arg1 = block.id;
 			info.checked = false;
 			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+
+			info.text = OBJECTIVES_STOP_TRACKING;
+			info.func = AchievementObjectiveTracker_UntrackAchievement;
+			info.arg1 = block.id;
+			info.checked = false;
+			info.disabled = (db.filterAuto[2]);
+			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+
+			info.disabled = false;
+
+			if db.menuWowheadURL then
+				info.text = "|cff33ff99Wowhead|r URL";
+				info.func = KT.ShowPopup;
+				info.arg1 = "achievement";
+				info.arg2 = block.id;
+				info.checked = false;
+				MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+			end
 		end
 	end
 end
@@ -1290,7 +1305,12 @@ function KT:SetSize()
 				width = width + 20
 			end
 			if db.headerOtherButtons then
-				width = width + 40
+				if KTF.AchievementsButton then
+					width = width + 20
+				end
+				if KTF.QuestLogButton then
+					width = width + 20
+				end
 			end
 			KTF:SetWidth(width)
 		else
@@ -1369,7 +1389,9 @@ function KT:SetBackground()
 	end
 	if db.headerOtherButtons then
 		KTF.QuestLogButton:GetNormalTexture():SetVertexColor(self.headerBtnColor.r, self.headerBtnColor.g, self.headerBtnColor.b)
-		KTF.AchievementsButton:GetNormalTexture():SetVertexColor(self.headerBtnColor.r, self.headerBtnColor.g, self.headerBtnColor.b)
+		if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+			KTF.AchievementsButton:GetNormalTexture():SetVertexColor(self.headerBtnColor.r, self.headerBtnColor.g, self.headerBtnColor.b)
+		end
 	end
 
 	if db.qiBgrBorder then
@@ -1428,6 +1450,7 @@ function KT:SetQuestsHeaderText(reset)
 end
 
 function KT:SetAchievementsHeaderText(reset)
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
 	if db.achievementsHeaderTitleAppend then
 		self:SetHeaderText(ACHIEVEMENT_TRACKER_MODULE, GetTotalAchievementPoints())
 	elseif reset then
@@ -1436,65 +1459,74 @@ function KT:SetAchievementsHeaderText(reset)
 end
 
 function KT:ToggleOtherButtons()
-	if not db.headerOtherButtons then
-		if KTF.QuestLogButton then
-			KTF.QuestLogButton:Hide()
-			KTF.AchievementsButton:Hide()
-			OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() + 40)
-		end
-		return
-	end
-	OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() - 40)
-	if KTF.QuestLogButton then
-		KTF.QuestLogButton:Show()
-		KTF.AchievementsButton:Show()
-	else
+	if db.headerOtherButtons then
 		local button
 		-- Achievements button
-		button = CreateFrame("Button", addonName.."AchievementsButton", KTF)
-		button:SetSize(16, 16)
-		button:SetPoint("TOPRIGHT", (KTF.FilterButton or KTF.MinimizeButton), "TOPLEFT", -4, 0)
-		button:SetFrameLevel(KTF:GetFrameLevel() + 10)
-		button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
-		button:GetNormalTexture():SetTexCoord(0.5, 1, 0.25, 0.5)
-		button:RegisterForClicks("AnyDown")
-		button:SetScript("OnClick", function(self, btn)
-			ToggleAchievementFrame()
-		end)
-		button:SetScript("OnEnter", function(self)
-			self:GetNormalTexture():SetVertexColor(1, 1, 1)
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(AchievementMicroButton.tooltipText, 1, 1, 1)
-			GameTooltip:Show()
-		end)
-		button:SetScript("OnLeave", function(self)
-			self:GetNormalTexture():SetVertexColor(KT.headerBtnColor.r, KT.headerBtnColor.g, KT.headerBtnColor.b)
-			GameTooltip:Hide()
-		end)
-		KTF.AchievementsButton = button
+		if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+			if KTF.AchievementsButton then
+				KTF.AchievementsButton:Show()
+			else
+				button = CreateFrame("Button", addonName.."AchievementsButton", KTF)
+				button:SetSize(16, 16)
+				button:SetPoint("TOPRIGHT", (KTF.FilterButton or KTF.MinimizeButton), "TOPLEFT", -4, 0)
+				button:SetFrameLevel(KTF:GetFrameLevel() + 10)
+				button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
+				button:GetNormalTexture():SetTexCoord(0.5, 1, 0.25, 0.5)
+				button:RegisterForClicks("AnyDown")
+				button:SetScript("OnClick", function(self, btn)
+					ToggleAchievementFrame()
+				end)
+				button:SetScript("OnEnter", function(self)
+					self:GetNormalTexture():SetVertexColor(1, 1, 1)
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:AddLine(AchievementMicroButton.tooltipText, 1, 1, 1)
+					GameTooltip:Show()
+				end)
+				button:SetScript("OnLeave", function(self)
+					self:GetNormalTexture():SetVertexColor(KT.headerBtnColor.r, KT.headerBtnColor.g, KT.headerBtnColor.b)
+					GameTooltip:Hide()
+				end)
+				KTF.AchievementsButton = button
+			end
+			OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() - 20)
+		end
 
 		-- Quest Log button
-		button = CreateFrame("Button", addonName.."QuestLogButton", KTF)
-		button:SetSize(16, 16)
-		button:SetPoint("TOPRIGHT", KTF.AchievementsButton, "TOPLEFT", -4, 0)
-		button:SetFrameLevel(KTF:GetFrameLevel() + 10)
-		button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
-		button:GetNormalTexture():SetTexCoord(0.5, 1, 0, 0.25)
-		button:RegisterForClicks("AnyDown")
-		button:SetScript("OnClick", function(self, btn)
-			ToggleQuestLog()
-		end)
-		button:SetScript("OnEnter", function(self)
-			self:GetNormalTexture():SetVertexColor(1, 1, 1)
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(QuestLogMicroButton.tooltipText, 1, 1, 1)
-			GameTooltip:Show()
-		end)
-		button:SetScript("OnLeave", function(self)
-			self:GetNormalTexture():SetVertexColor(KT.headerBtnColor.r, KT.headerBtnColor.g, KT.headerBtnColor.b)
-			GameTooltip:Hide()
-		end)
-		KTF.QuestLogButton = button
+		if KTF.QuestLogButton then
+			KTF.QuestLogButton:Show()
+		else
+			button = CreateFrame("Button", addonName.."QuestLogButton", KTF)
+			button:SetSize(16, 16)
+			button:SetPoint("TOPRIGHT", (KTF.AchievementsButton or KTF.FilterButton or KTF.MinimizeButton), "TOPLEFT", -4, 0)
+			button:SetFrameLevel(KTF:GetFrameLevel() + 10)
+			button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
+			button:GetNormalTexture():SetTexCoord(0.5, 1, 0, 0.25)
+			button:RegisterForClicks("AnyDown")
+			button:SetScript("OnClick", function(self, btn)
+				ToggleQuestLog()
+			end)
+			button:SetScript("OnEnter", function(self)
+				self:GetNormalTexture():SetVertexColor(1, 1, 1)
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				GameTooltip:AddLine(QuestLogMicroButton.tooltipText, 1, 1, 1)
+				GameTooltip:Show()
+			end)
+			button:SetScript("OnLeave", function(self)
+				self:GetNormalTexture():SetVertexColor(KT.headerBtnColor.r, KT.headerBtnColor.g, KT.headerBtnColor.b)
+				GameTooltip:Hide()
+			end)
+			KTF.QuestLogButton = button
+		end
+		OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() - 20)
+	else
+		if KTF.AchievementsButton then
+			KTF.AchievementsButton:Hide()
+			OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() + 20)
+		end
+		if KTF.QuestLogButton then
+			KTF.QuestLogButton:Hide()
+			OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() + 20)
+		end
 	end
 end
 
@@ -1644,7 +1676,9 @@ function KT:ToggleEmptyTracker(added)
 	end
 	if db.headerOtherButtons then
 		KTF.QuestLogButton:EnableMouse(mouse)
-		KTF.AchievementsButton:EnableMouse(mouse)
+		if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+			KTF.AchievementsButton:EnableMouse(mouse)
+		end
 	end
 end
 
@@ -1674,18 +1708,6 @@ function KT:UpdateHotkey()
 		SetOverrideBinding(KTF, false, db.keyBindMinimize, nil)
 		db.keyBindMinimize = ""
 	end
-end
-
-function KT:MergeTables(source, target)
-	if type(target) ~= "table" then target = {} end
-	for k, v in pairs(source) do
-		if type(v) == "table" then
-			target[k] = self:MergeTables(v, target[k])
-		elseif target[k] == nil then
-			target[k] = v
-		end
-	end
-	return target
 end
 
 StaticPopupDialogs[addonName.."_Info"] = {
@@ -1725,15 +1747,19 @@ StaticPopupDialogs[addonName.."_WowheadURL"] = {
 		elseif self.text.text_arg1 == "achievement" then
 			name = select(2, GetAchievementInfo(self.text.text_arg2))
 		end
+		local url = "https://www.wowhead.com/"
+		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+			url = url.."classic/"
+		elseif WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+			url = url.."wotlk/"
+		end
 		local lang = KT.locale:sub(1, 2)
-		if lang == "en" then
-			lang = ""
-		else
+		if lang ~= "en" then
 			if lang == "zh" then lang = "cn" end
-			lang = lang.."/"
+			url = url..lang.."/"
 		end
 		self.text:SetText(self.text:GetText().."\n|cffff7f00"..name.."|r")
-		self.editBox.text = "https://www.wowhead.com/wotlk/"..lang..self.text.text_arg1.."="..self.text.text_arg2
+		self.editBox.text = url..self.text.text_arg1.."="..self.text.text_arg2
 		self.editBox:SetText(self.editBox.text)
 		self.editBox:SetFocus()
 	end,

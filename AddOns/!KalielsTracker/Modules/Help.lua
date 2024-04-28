@@ -83,9 +83,10 @@ local function SetupTutorials()
 		imageHeight = 256,
 		{	-- 1
 			image = helpPath.."help_kaliels-tracker",
-			text = cTitle..KT.title.." (Classic)|r 取代遊戲內建的任務追蹤清單，並且加入了一些和正式版相同的功能。\n\n"..
+			text = cTitle..KT.title.." (Classic)|r replaces default tracker and adds some features from WoW Retail to WoW Classic.\n\n"..
 					"包含下面這些功能:\n"..
-					"- 追蹤任務和成就\n"..
+					"- 追蹤任務\n"..
+					"- 追蹤成就 (經典時期不包含此功能)\n"..
 					"- 更改追蹤清單位置\n"..
 					"- 根據追蹤清單位置 (方向) 展開/收起追蹤清單\n"..
 					"- 根據內容自動調整追蹤清單高度，可以限制最大高度\n"..
@@ -102,13 +103,14 @@ local function SetupTutorials()
 			image = helpPath.."help_header-buttons",
 			imageHeight = 128,
 			text = cTitle.."標題列按鈕|r\n\n"..
-					"最小化按鈕:                                其他按鈕:\n"..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:0:14:209:170:0|t "..cDots.."...|r 展開追蹤清單                    "..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:3:2:32:64:16:30:0:14:209:170:0|t  "..cDots.."...|r 開啟任務日誌\n"..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:16:30:209:170:0|t "..cDots.."...|r 收起追蹤清單                    "..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:3:2:32:64:16:30:16:30:209:170:0|t  "..cDots.."...|r 開啟成就視窗\n"..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:32:46:209:170:0|t "..cDots.."...|r 追蹤清單是空的時候          "..
-					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:3:2:32:64:16:30:32:46:209:170:0|t  "..cDots.."...|r 開啟過濾方式選單\n\n"..
+					"最小化按鈕:\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:0:14:209:170:0|t "..cDots.."...|r 展開追蹤清單\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:16:30:209:170:0|t "..cDots.."...|r 收起追蹤清單\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:0:14:32:46:209:170:0|t "..cDots.."...|r 追蹤清單是空的時候\n\n"..
+					"其他按鈕:\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:16:30:0:14:209:170:0|t "..cDots.."...|r 開啟任務日誌\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:16:30:16:30:209:170:0|t "..cDots.."...|r 開啟成就視窗 (經典時期不包含此功能)\n"..
+					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:-1:2:32:64:16:30:32:46:209:170:0|t "..cDots.."...|r 開啟過濾方式選單\n\n"..
 					"按鈕 |T"..mediaPath.."UI-KT-HeaderButtons:14:14:0:2:32:64:16:30:0:14:209:170:0|t 和 "..
 					"|T"..mediaPath.."UI-KT-HeaderButtons:14:14:0:2:32:64:16:30:16:30:209:170:0|t 可以在設定選項中停用。\n\n"..
 					"可以設定"..cBold.." [快速鍵]|r 來最小化追蹤清單。\n"..
@@ -144,12 +146,12 @@ local function SetupTutorials()
 		{	-- 4
 			image = helpPath.."help_tracker-filters",
 			text = cTitle.."任務過濾|r\n\n"..
-					"要開啟過濾方式選單請"..cBold.."點一下|r這個按鈕 |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:1:32:64:16:30:32:46:209:170:0|t.\n\n"..
+					"要開啟過濾方式選單請"..cBold.."點一下|r這個按鈕 |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:2:32:64:16:30:32:46:209:170:0|t.\n\n"..
 					"過濾方式分為兩種類型:\n"..
 					cTitle.."固定過濾|r - 依據規則 (例如 \"每日\") 將任務和成就加入到追蹤清單，然後便可以手動新增 / 移除項目。\n"..
 					cTitle.."動態過濾|r - 自動新增任務/成就依據條件 (例如 \"|cff00ff00自動|r區域\") "..
 					"會持續更新項目。這種類型不允許手動加入/移除項目。"..
-					"啟用動態過濾時，標題按鈕是綠色 |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:1:32:64:16:30:32:46:0:255:0|t.\n\n"..
+					"啟用動態過濾時，標題按鈕是綠色 |T"..mediaPath.."UI-KT-HeaderButtons:14:14:-2:2:32:64:16:30:32:46:0:255:0|t.\n\n"..
 					"更改成就的搜尋類別時，也會影響過濾的結果。\n\n"..
 					"這個選單也會顯示影響追蹤清單內容的其他選項。",
 			textY = 16,
@@ -166,7 +168,7 @@ local function SetupTutorials()
 					"|T"..helpPath.."help_quest-item-buttons_2:32:32:1:0:64:32:0:32:0:32|t "..cDots.."...|r  這個標籤代表任務中的任務物品。裡面的數字用來辨別\n"..
 					"                移動後的任務物品按鈕。\n\n"..
 					"|T"..helpPath.."help_quest-item-buttons_2:32:32:0:3:64:32:32:64:0:32|t "..cDots.."...|r  真正的任務物品按鈕已經移動到清單的左/右側\n"..
-					"               (依據所選擇的對齊畫面位置)。標籤數字仍然相同。\n\n"..
+					"                (依據所選擇的對齊畫面位置)。標籤數字仍然相同。\n\n"..
 					cWarning.."特別注意:|r\n"..
 					"在某些戰鬥中，任務物品按鈕的動作會被暫停，直到戰鬥結束後才能使用。",
 			shineTop = 3,
@@ -242,15 +244,17 @@ local function SetupTutorials()
 		},
 		{	-- 9
 			text = cTitle.."         更新資訊|r\n\n"..
-					cTitle.."版本 3.5.0|r\n"..
-					"- 新增 - 支援 WoW 3.4.3\n"..
-					"- 更新 - WoW 3.4.2 捨棄的函數\n"..
-					"- 更新 - 支援插件 - Questie 9.4.9\n"..
-					"- 更新 - 支援插件 - ElvUI 13.59, Tukui 20.41\n"..
-					"- 更新 - 說明 - Active Patrons\n"..
-					"- 更新 - 函式庫\n\n"..
+					cTitle.."版本 3.6.0|r\n"..
+					"- 新增 - 支援 WoW 1.15.2\n"..
+					"- 修改 - 支援插件 - ElvUI 13.61\n"..
+					"- 修改 - 支援插件 - Questie 9.5.1\n"..
+					"- 修正 (任務) - 任務等級的值為 nil\n"..
+					"- 效能 (任務) - 過濾 - 和任務日誌的互動性更好 (會展開標題列)\n"..
+					"- 效能 (成就) - 過濾 - 區域的選擇更佳\n"..
+					"- 技術 (插件) - 合併經典版 (3.5.0) 和經典時期 (1.6.0) 的程式碼\n"..
+					"\n"..
 
-					cTitle.."WoW 3.4.3 - 尚無解決辦法的已知問題|r\n"..
+					cTitle.."WoW 3.4.3/1.15.2 - 尚無解決辦法的已知問題|r\n"..
 					"- 戰鬥中點擊追蹤的任務或成就不會有反應。\n"..
 					"- 戰鬥中標題列的 Q 和 A 按鈕無法運作。\n\n"..
 
@@ -278,10 +282,11 @@ local function SetupTutorials()
 				ObjectiveTracker_MinimizeButton_OnClick()
 			end
 			if i == 2 then
+				local eraMod = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and 0 or 20
 				if KTF.FilterButton then
-					self[i].shineLeft = db.headerOtherButtons and -75 or -35
+					self[i].shineLeft = db.headerOtherButtons and -75 + eraMod or -35
 				else
-					self[i].shineLeft = db.headerOtherButtons and -55 or -15
+					self[i].shineLeft = db.headerOtherButtons and -55 + eraMod or -15
 				end
 			elseif i == 3 then
 				local questInfo = KT_GetQuestListInfo(1)
@@ -290,11 +295,13 @@ local function SetupTutorials()
 					if block then
 						self[i].shine = block
 					end
+					KTF.Scroll.value = 0
+					ObjectiveTracker_Update()
 				end
 			elseif i == 5 then
 				self[i].shine = KTF.Buttons
 			end
-		end,
+			end,
 		onHide = function()
 			T.TriggerTutorial("supporters", 1)
 		end
@@ -311,7 +318,7 @@ local function SetupTutorials()
 		{	-- 1
 			text = cTitle.."         成為贊助者|r\n\n"..
 					"如果你喜歡 "..KT.title.."，請在 |cfff34a54Patreon|r 贊助我。\n\n"..
-					"在 CurseForge 的插件頁面點一下  |T"..helpPath.."help_patreon:20:154:1:0:256:32:0:156:0:20|t  按鈕。\n\n"..
+					"在 CurseForge 的插件頁面點一下 |T"..helpPath.."help_patreon:20:154:1:0:256:32:0:156:0:20|t 按鈕。\n\n"..
 					"經過了 10 年的插件工作後，我啟用了 Patreon，當作是開發插件所需時間的補償。\n\n"..
 					"                                    非常感謝所有贊助者  |T"..helpPath.."help_patreon:16:16:0:0:256:32:157:173:0:16|t\n\n"..
 					cTitle.."Active Patrons|r\n"..

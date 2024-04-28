@@ -146,7 +146,7 @@ local options = {
 							order = 0.11,
 						},
 						build = {
-							name = " |cffffd100Build:|r  WotLK Classic",
+							name = " |cffffd100Build:|r  "..(WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and "WotLK Classic" or "Classic Era"),
 							type = "description",
 							width = "normal",
 							fontSize = "medium",
@@ -778,7 +778,7 @@ local options = {
 							order = 4.43,
 						},
 						headerOtherButtons = {
-							name = "顯示任務日誌和成就按鈕",
+							name = "顯示"..(WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and "任務日誌和成就按鈕" or "任務日誌按鈕"),
 							type = "toggle",
 							width = "double",
 							set = function()
@@ -1322,6 +1322,14 @@ function KT:SetupOptions()
 	self.db.RegisterCallback(self, "OnProfileChanged", "InitProfile")
 	self.db.RegisterCallback(self, "OnProfileCopied", "InitProfile")
 	self.db.RegisterCallback(self, "OnProfileReset", "InitProfile")
+
+	-- Classic Era - resets and hides some options
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+		general.sec7.args.messageAchievement = nil
+		db.messageAchievement = false
+		content.sec2 = nil
+		db.achievementsHeaderTitleAppend = false
+	end
 end
 
 SettingsPanel:HookScript("OnHide", function(self)
@@ -1401,6 +1409,7 @@ function GetModulesOptionsTable()
 			name = "|T:1:55|t|cff808080"..defaultText,
 			type = "description",
 			width = "normal",
+			fontSize = "medium",
 			order = i + 0.3,
 		}
 	end

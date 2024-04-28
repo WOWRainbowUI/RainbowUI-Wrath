@@ -64,6 +64,21 @@ function KT.IsInTable(table, item)
     return result
 end
 
+function KT.MergeTables(table1, table2)
+    for k, v in pairs(table2) do
+        if table1[k] then
+            if type(k) == "number" then
+                tinsert(table1, v)
+            elseif type(v) == "table" then
+                table1[k] = KT.MergeTables(table1[k], v)
+            end
+        else
+            table1[k] = v
+        end
+    end
+    return table1
+end
+
 function KT.PrintTable(tbl, indent)
     if not indent then indent = 0 end
     local toprint = "{\n"
@@ -135,7 +150,7 @@ function KT_GetQuestWatchInfo(questLogIndex)
     local failureTime = nil
     local timeElapsed = nil
     local questType = nil
-    return questID, level, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden
+    return questID, level or 0, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden
 end
 
 -- Map
@@ -303,60 +318,4 @@ end
 function KT.ConvertPixelsToUI(pixels, frameScale)
     local physicalScreenHeight = select(2, GetPhysicalScreenSize());
     return (pixels * 768.0)/(physicalScreenHeight * frameScale);
-end
-
--- WotLK Classic -------------------------------------------------------------------------------------------------------
-
--- TODO: Test after every WoW update
-GetSuperTrackedQuestID = function()
-    local questID = 0
-    if WorldMapFrame and WorldMapFrame:IsShown() then
-        questID = QuestMapFrame_GetFocusedQuestID()
-    end
-    return questID
-end
-
--- Classic - removed functions -----------------------------------------------------------------------------------------
-
-if not GetQuestLogSpecialItemInfo then
-    GetQuestLogSpecialItemInfo = function(questLogIndex)
-        return nil
-    end
-end
-
-if not IsQuestLogSpecialItemInRange then
-    IsQuestLogSpecialItemInRange = function(questLogIndex)
-        return nil
-    end
-end
-
-if not GetQuestLogSpecialItemCooldown then
-    GetQuestLogSpecialItemCooldown = GetActionCooldown
-end
-
-if not QuestMapQuestOptions_AbandonQuest then
-    QuestMapQuestOptions_AbandonQuest = function(questID)
-        local bckQuestLogSelection = GetQuestLogSelection()  -- backup Quest Log selection
-        local questLogIndex = GetQuestLogIndexByID(questID)
-        SelectQuestLogEntry(questLogIndex)
-        SetAbandonQuest()
-
-        local items = GetAbandonQuestItems()
-        local title = GetAbandonQuestName()
-        if items then
-            StaticPopup_Hide("ABANDON_QUEST")
-            StaticPopup_Show("ABANDON_QUEST_WITH_ITEMS", title, items)
-        else
-            StaticPopup_Hide("ABANDON_QUEST_WITH_ITEMS")
-            StaticPopup_Show("ABANDON_QUEST", title)
-        end
-
-        SelectQuestLogEntry(bckQuestLogSelection)  -- restore Quest Log selection
-    end
-end
-
-if not OpenAchievementFrameToAchievement then
-    function OpenAchievementFrameToAchievement(achievementID)
-        WatchFrame_OpenAchievementFrame(_, achievementID)
-    end
 end

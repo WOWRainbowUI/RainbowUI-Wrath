@@ -83,21 +83,25 @@ local function SetHooks()
 	end
 
 	-- Achievements
-	local bck_AchievementObjectiveTracker_UntrackAchievement = AchievementObjectiveTracker_UntrackAchievement
-	AchievementObjectiveTracker_UntrackAchievement = function(dropDownButton, achievementID)
-		if not db.filterAuto[2] then
-			bck_AchievementObjectiveTracker_UntrackAchievement(dropDownButton, achievementID)
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		local bck_AchievementObjectiveTracker_UntrackAchievement = AchievementObjectiveTracker_UntrackAchievement
+		AchievementObjectiveTracker_UntrackAchievement = function(dropDownButton, achievementID)
+			if not db.filterAuto[2] then
+				bck_AchievementObjectiveTracker_UntrackAchievement(dropDownButton, achievementID)
+			end
 		end
 	end
 
 	-- Quest Log
-	hooksecurefunc("QuestLogControlPanel_UpdateState", function()
-		if db.filterAuto[1] then
-			QuestLogFrameTrackButton:Disable()
-		else
-			QuestLogFrameTrackButton:Enable()
-		end
-	end)
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		hooksecurefunc("QuestLogControlPanel_UpdateState", function()
+			if db.filterAuto[1] then
+				QuestLogFrameTrackButton:Disable()
+			else
+				QuestLogFrameTrackButton:Enable()
+			end
+		end)
+	end
 end
 
 local function SetHooks_AchievementUI()
@@ -293,7 +297,7 @@ local function Filter_Quests(spec, idx)
 end
 
 local function Filter_Achievements(spec)
-	if not spec then return end
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or not spec then return end
 	local trackedAchievements = { GetTrackedAchievements() }
 
 	KT.stopUpdate = true
@@ -307,22 +311,35 @@ local function Filter_Achievements(spec)
 		local continentName = KT.GetCurrentMapContinent().name
 		local zoneName = GetRealZoneText() or ""
 		local categoryName = continentName
-		if KT.GetCurrentMapContinent().mapID == 619 then
-			categoryName = EXPANSION_NAME6	-- Legion
-		elseif KT.GetCurrentMapContinent().mapID == 875 then
-			categoryName = EXPANSION_NAME7	-- Battle for Azeroth
+		-- WotLK
+		if KT.GetCurrentMapContinent().mapID == 113 then
+			if zoneName == "Trial of the Crusader" then
+				zoneName = "Call of the Crusade"
+			elseif zoneName == "Icecrown Citadel" then
+				zoneName = "Fall of the Lich King"
+			end
+			categoryName = EXPANSION_NAME2
+		-- TBC
+		elseif KT.GetCurrentMapContinent().mapID == 1945 then
+			categoryName = EXPANSION_NAME1
+		-- Classic
+		elseif KT.GetCurrentMapContinent().mapID == 1414 or
+				KT.GetCurrentMapContinent().mapID == 1415 then
+			categoryName = EXPANSION_NAME0
 		end
 		local instance = KT.inInstance and 168 or nil
 		_DBG(zoneName.." ... "..KT.GetCurrentMapAreaID(), true)
 
 		-- Dungeons & Raids
-		local instanceDifficulty
+		local instanceDifficulty, instanceSize
 		if instance and db.filterAchievCat[instance] then
 			local _, type, difficulty, difficultyName = GetInstanceInfo()
-			local _, _, sufix = strfind(difficultyName, "^.* %((.*)%)$")
 			instanceDifficulty = difficultyName
-			if sufix then
-				instanceDifficulty = sufix
+			instanceSize = ""
+			if strfind(difficultyName, "^%d+.*$") then
+				local _, _, size, diff = strfind(difficultyName, "^(.*) %((.*)%)$")
+				instanceDifficulty = diff or "Normal"
+				instanceSize = strlower(size or difficultyName)
 			end
 			_DBG(type.." ... "..difficulty.." ... "..difficultyName, true)
 		end
@@ -337,46 +354,63 @@ local function Filter_Achievements(spec)
 			local category = achievCategory[i]
 			local name, parentID, _ = GetCategoryInfo(category)
 
-			if db.filterAchievCat[parentID] then
-				if (parentID == 92) or										-- General
-						(parentID == 96 and name == categoryName) or		-- Quests
-						(parentID == 97 and name == categoryName) or		-- Exploration
-						(parentID == 95 and strfind(zoneName, name)) or		-- Player vs. Player
-						(category == instance or parentID == instance) or	-- Dungeons & Raids
-						(parentID == 169) or								-- Professions
-						(parentID == 201) or								-- Reputation
-						(parentID == 155 and strfind(events, name)) then	-- World Events
+			if db.filterAchievCat[category] or db.filterAchievCat[parentID] then
+				if (category == 92) or                                     -- General
+						(category == 96) or                                -- Quests
+						(parentID == 96 and name == categoryName) or       -- Quests
+						(parentID == 97 and name == continentName) or      -- Exploration
+						(category == 95) or                                -- Player vs. Player
+						(parentID == 95 and strfind(zoneName, name)) or    -- Player vs. Player
+						(parentID == instance) or                          -- Dungeons & Raids
+						(parentID == 169) or                               -- Professions
+						(parentID == 201) or                               -- Reputation
+						(parentID == 155 and strfind(events, name)) then   -- World Events
 					local aNumItems, _ = GetCategoryNumAchievements(category)
 					for i=1, aNumItems do
 						local track = false
 						local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, i)
 						if aId and not aCompleted then
 							--_DBG(aId.." ... "..aName, true)
-							if parentID == 95 or
-									(not instance and (category == 15117 or parentID == 15117) and strfind(aName.." - "..aDescription, continentName)) then
-								track = true
-							elseif strfind(aName.." - "..aDescription, zoneName) then
-								if category == instance or parentID == instance then
-									if instanceDifficulty == "Normal" then
-										if not strfind(aName.." - "..aDescription, "[Heroic|Mythic]") then
+							local aText = aName.." - "..aDescription
+							local cNumItems = GetAchievementNumCriteria(aId)
+							local cType = -1
+							if cNumItems > 0 then
+								_, cType = GetAchievementCriteriaInfo(aId, 1)
+							end
+							if not instance then
+								if (category == 96 or parentID == 96 or parentID == 97 or category == 15117 or parentID == 15117) and
+										cType ~= CRITERIA_TYPE_ACHIEVEMENT and
+										strfind(aText, continentName) then
+									track = true
+								elseif strfind(aText, zoneName) then
+									track = true
+								elseif strfind(aDescription, " capita") then  -- capital city (TODO: de, ru strings)
+									for i=1, cNumItems do
+										local cDescription, _, cCompleted = GetAchievementCriteriaInfo(aId, i)
+										if not cCompleted and strfind(cDescription, zoneName) then
 											track = true
-										end
-									else
-										if strfind(aName.." - "..aDescription, instanceDifficulty) or
-												(strfind(aName.." - "..aDescription, "difficulty or higher")) then	-- TODO: other languages
-											track = true
+											break
 										end
 									end
-								else
-									track = true
 								end
-							elseif strfind(aDescription, " capita") then	-- capital city (TODO: de, ru strings)
-								local cNumItems = GetAchievementNumCriteria(aId)
-								for i=1, cNumItems do
-									local cDescription, _, cCompleted = GetAchievementCriteriaInfo(aId, i)
-									if not cCompleted and strfind(cDescription, zoneName) then
-										track = true
-										break
+							else
+								if parentID == 95 then
+									track = true
+								elseif parentID == instance and
+										cType ~= CRITERIA_TYPE_ACHIEVEMENT then
+									if (name == categoryName and strfind(aText, zoneName)) or
+											((strfind(name, zoneName) or strfind(aText, zoneName)) and strfind(aText, instanceSize)) then
+										if instanceDifficulty == "Normal" then
+											if not (strfind(aText, "Heroic") or
+													strfind(aText, "Mythic")) then
+												track = true
+											end
+										else
+											if strfind(aText, instanceDifficulty) or
+													(strfind(aText, "difficulty or higher")) then  -- TODO: other languages
+												track = true
+											end
+										end
 									end
 								end
 							end
@@ -520,13 +554,13 @@ local function GetInlineFactionIcon()
 end
 
 function DropDown_Initialize(self, level)
-	ExpandQuestHeader(0)
 	local numEntries, numQuests = GetNumQuestLogEntries()
 	local info = MSA_DropDownMenu_CreateInfo()
 	info.isNotRadio = true
 	info.iconAtlas = false
 
 	if level == 1 then
+		ExpandQuestHeader(0)
 		info.notCheckable = true
 
 		-- Quests
@@ -604,49 +638,51 @@ function DropDown_Initialize(self, level)
 		info.func = DropDown_Filter_AutoTrack
 		MSA_DropDownMenu_AddButton(info)
 
-		MSA_DropDownMenu_AddSeparator(info)
-
 		-- Achievements
-		info.text = TRACKER_HEADER_ACHIEVEMENTS
-		info.isTitle = true
-		MSA_DropDownMenu_AddButton(info)
+		if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+			MSA_DropDownMenu_AddSeparator(info)
 
-		info.isTitle = false
-		info.disabled = false
+			info.text = TRACKER_HEADER_ACHIEVEMENTS
+			info.isTitle = true
+			MSA_DropDownMenu_AddButton(info)
 
-		info.text = "類別"
-		info.keepShownOnClick = true
-		info.hasArrow = true
-		info.value = 3
-		info.func = nil
-		MSA_DropDownMenu_AddButton(info)
+			info.isTitle = false
+			info.disabled = false
 
-		info.keepShownOnClick = false
-		info.hasArrow = false
-		info.disabled = (db.filterAuto[2])
-		info.func = DropDown_Filter_Achievements
+			info.text = "Categories"
+			info.keepShownOnClick = true
+			info.hasArrow = true
+			info.value = 3
+			info.func = nil
+			MSA_DropDownMenu_AddButton(info)
 
-		info.text = "區域"
-		info.arg1 = "zone"
-		MSA_DropDownMenu_AddButton(info)
+			info.keepShownOnClick = false
+			info.hasArrow = false
+			info.disabled = (db.filterAuto[2])
+			info.func = DropDown_Filter_Achievements
 
-		info.text = "世界事件"
-		info.arg1 = "wevent"
-		MSA_DropDownMenu_AddButton(info)
+			info.text = "區域"
+			info.arg1 = "zone"
+			MSA_DropDownMenu_AddButton(info)
 
-		info.text = "全部取消追蹤"
-		info.disabled = (db.filterAuto[2] or GetNumTrackedAchievements() == 0)
-		info.arg1 = ""
-		MSA_DropDownMenu_AddButton(info)
+			info.text = "世界事件"
+			info.arg1 = "wevent"
+			MSA_DropDownMenu_AddButton(info)
 
-		info.text = "|cff00ff00自動|r區域"
-		info.notCheckable = false
-		info.disabled = false
-		info.arg1 = 2
-		info.arg2 = "zone"
-		info.checked = (db.filterAuto[info.arg1] == info.arg2)
-		info.func = DropDown_Filter_AutoTrack
-		MSA_DropDownMenu_AddButton(info)
+			info.text = "全部取消追蹤"
+			info.disabled = (db.filterAuto[2] or GetNumTrackedAchievements() == 0)
+			info.arg1 = ""
+			MSA_DropDownMenu_AddButton(info)
+
+			info.text = "|cff00ff00自動|r區域"
+			info.notCheckable = false
+			info.disabled = false
+			info.arg1 = 2
+			info.arg2 = "zone"
+			info.checked = (db.filterAuto[info.arg1] == info.arg2)
+			info.func = DropDown_Filter_AutoTrack
+			MSA_DropDownMenu_AddButton(info)
+		end
 	elseif level == 2 then
 		info.notCheckable = true
 
@@ -831,8 +867,9 @@ local function SetFrames()
 
 	-- Move other buttons
 	if db.headerOtherButtons then
-		local point, _, relativePoint, xOfs, yOfs = KTF.AchievementsButton:GetPoint()
-		KTF.AchievementsButton:SetPoint(point, KTF.FilterButton, relativePoint, xOfs, yOfs)
+		local button = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and KTF.AchievementsButton or KTF.QuestLogButton
+		local point, _, relativePoint, xOfs, yOfs = button:GetPoint()
+		button:SetPoint(point, KTF.FilterButton, relativePoint, xOfs, yOfs)
 	end
 end
 
@@ -845,7 +882,7 @@ function M:OnInitialize()
 	db = KT.db.profile
 	dbChar = KT.db.char
 
-    local defaults = KT:MergeTables({
+    local defaults = KT.MergeTables(KT.db.defaults, {
         profile = {
             filterAuto = {
 				nil,	-- [1] Quests
@@ -870,7 +907,7 @@ function M:OnInitialize()
 				sortCompleted = nil,
 			},
 		}
-    }, KT.db.defaults)
+    })
 	KT.db:RegisterDefaults(defaults)
 end
 
