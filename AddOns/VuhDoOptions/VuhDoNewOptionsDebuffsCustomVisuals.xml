@@ -287,11 +287,10 @@
 						<Scripts>
 							<OnLoad>
 								VUHDO_lnfSetModel(self, "VUHDO_CONFIG.CUSTOM_DEBUFF.isNoRangeFade");
-								VUHDO_lnfSetTooltip(self, "玩家超出範圍時不要淡出減益圖示。");
+								VUHDO_lnfSetTooltip(self, "Disable fading debuff icons when player is out of range");
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
-
 					<Frame name="$parentTitleLabel" inherits="VuhDoLabelFrameTemplate">
 						<Layers>
 							<Layer>
