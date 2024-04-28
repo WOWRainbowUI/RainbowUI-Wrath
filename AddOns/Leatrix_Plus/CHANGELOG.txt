@@ -1,3 +1,98 @@
+﻿4.0.01 - 27th April 2004
+- The 'Show cooldowns' option ('Interface') now supports dual spec.  Cooldown icons are saved to your class and specialisation (mirroring retail).
+- The 'Show Wowhead links' option ('Interface') now shows Cataclysm links.
+- The 'Mute game sounds' > 'Login' option now mutes the Cataclysm login screen music.
+- The web link feature now shows Cataclysm links.
+- Updated deprecated functions.
+- Fixed a Lua error with the /ltp con command (developer console).
+
+4.0.00 - 24th April 2004
+- Welcome to Cataclysm Classic.
+- Added a new option called 'Queue from friends' ('Social').  If checked, requests initiated by your party leader to join the Dungeon Finder queue will be automatically accepted if the party leader is a friend.
+- For 'Enhance dressup' ('Interface'), added new options to make the transmogrify window wider and to show a transmogrify model animation slider.  The zoom speed now affects the mount journal and the pet journal in addition to the character frame model.
+- For 'Show ready timer' ('Interface'), the timer will now show for the dungeon ready frame as well as the PvP encounter ready frame.
+- For 'Media', added Cataclysm movies and music tracks.  All music tracks in the entire library (except Various Cinematics) now use sound kits as opposed to sound files (mirroring retail).
+- The 'Show flight times' option has been removed.  There are a lot more flight points in Cataclysm Classic and you will be flying on your own mounts a lot of the time.
+- This release and future releases will only work with Cataclysm Classic (not Wrath of the Lich King Classic).
+
+3.0.191 - 19th April 2004
+- In preparation for Cataclysm Classic, the 'Show flight times' option ('Interface') has been removed.  There are a lot more flight points in Cataclysm Classic and you will be flying on your own mounts a lot of the time.
+- Cataclysm Classic Beta: For 'Enhance dressup' ('Interface'), added new options to make the transmogrify window wider and to show a transmogrify model animation slider.  The zoom speed now affects the mount journal and the pet journal in addition to the character frame model.
+- Cataclysm Classic Beta: For 'Show ready timer' ('Interface'), the timer will now show for the dungeon ready frame as well as the PvP encounter ready frame.
+
+3.0.190 - 19th April 2004
+- Cataclysm Classic Beta: Fixed 'Hide chat tabs' ('Chat') Lua error with latest build.
+- Cataclysm Classic Beta: The 'Show flight times' option ('Interface') is not available in Cataclysm Classic.  You will no longer be prompted to submit flight times.  There are a lot more flight points in Cataclysm Classic and you will be flying on your own mounts a lot of the time.
+
+3.0.189 - 16th April 2004
+- Updated for Cataclysm Classic Beta.
+- Added a new setting called 'Keep audio synced' ('System').  If checked, when you change the audio output device in your operating system, the game audio output device will change automatically.  For this to work, the game audio output device will be set to system default.
+- Added flight times.
+- Cataclysm Classic: For 'Enhance dressup' ('Interface'), you can now set the character model zoom speed.
+- Cataclysm Classic: For 'Media', added Cataclysm movies ('Movies' and 'Various' > 'Cinematics').
+
+3.0.188 - 10th April 2004
+- The addon will no longer show 'Wrong version installed' when run on Cataclysm Classic.
+- Added flight times.
+
+3.0.187 - 3rd April 2024
+- Added flight times.
+
+3.0.186 - 27th March 2024
+- Added flight times.
+
+3.0.185 - 20th March 2024
+- Added flight times.
+
+3.0.184 - 13th March 2024
+- For 'Enhance minimap' ('Interface'), the 'Combine addon buttons' setting will now sort addon buttons alphabetically.
+- Added flight times.
+
+3.0.183 - 6th March 2024
+- Added flight times.
+
+3.0.182 - 28th February 2024
+- Added flight times.
+
+3.0.181 - 22nd February 2024
+- Fixed 'Enhance professions' ('Interface').
+
+3.0.180 - 21st February 2024
+- Updated ScrollFrameTemplate for Media.
+- Updated 'Enhance quest log' ('Interface') code.
+- Added flight times.
+
+3.0.179 - 14th February 2024
+- For 'Enhanced quest log' ('Interface'), fixed an issue with showing quest level suffixes for non-English locales.
+- Added flight times.
+
+3.0.178 - 7th February 2024
+- For 'Enhance minimap' ('Interface'), updated tooltip positioning logic.  Added Wowhead Looter button.
+- For 'Recent chat window' ('Chat'), scroll speed is now based on font size.
+- Added flight times.
+
+3.0.177 - 3rd February 2024
+- The 'Enhance minimap' ('Interface') option is now able to display custom buttons correctly if Leatrix Plus is aware of them.
+- For 'Automate quests' ('Automation'), quests from Valadar Starsong and Fariel Starsong (Moonglade) will no longer be automated.
+- Added flight times.
+
+3.0.176 - 1st February 2024
+- Updated translations.
+
+3.0.175 - 31st January 2024
+- Added flight times.
+
+3.0.174 - 24th January 2024
+- Fixed ScrollFrameTemplate editbox widths.
+- Added flight times.
+
+3.0.173 - 17th January 2024
+- For 'Enhance minimap' ('Interface'), the minimum minimap scale is now 50% (was 100%).
+- For 'Hide chat buttons' ('Chat'), fixed an issue which caused a black border around chat tabs.
+- Updated ScrollFrameTemplate.
+- Added flight times.
+- Repackage following CurseForge backend issues.
+
 3.0.172 - 10th January 2024
 - Added a new command '/ltp quest wipe' which will clear the quest log.
 - Added flight times.
