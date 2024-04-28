@@ -159,6 +159,8 @@ local VUHDO_DEFAULT_PROFILES = {
 				},
 				["HEALTH_BAR"] = {
 					["turnAxis"] = true,
+					["turnAxisOvershield"] = false,
+					["turnAxisHealAbsorb"] = false,
 					["vertical"] = true,
 					["invertGrowth"] = true,
 				},
@@ -252,6 +254,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					},
 					["sort"] = 0,
 					["isReverse"] = false,
+					["isPetsLast"] = false,
 				},
 				["PANEL_COLOR"] = {
 					["BACK"] = {
@@ -341,6 +344,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					["hideIrrelevant"] = false,
 					["position"] = 4,
 					["showTotalHp"] = false,
+					["showEffectiveHp"] = false,
 					["mode"] = 3,
 					["verbose"] = false,
 				},
@@ -865,6 +869,8 @@ local VUHDO_DEFAULT_PROFILES = {
 				},
 				["HEALTH_BAR"] = {
 					["turnAxis"] = false,
+					["turnAxisOvershield"] = false,
+					["turnAxisHealAbsorb"] = false,
 					["vertical"] = false,
 					["invertGrowth"] = false,
 				},
@@ -958,6 +964,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					},
 					["sort"] = 0,
 					["isReverse"] = false,
+					["isPetsLast"] = false,
 				},
 				["TOOLTIP"] = {
 					["BACKGROUND"] = {
@@ -1074,6 +1081,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					["hideIrrelevant"] = false,
 					["position"] = 3,
 					["showTotalHp"] = false,
+					["showEffectiveHp"] = false,
 					["mode"] = 1,
 					["verbose"] = false,
 				},
@@ -1127,6 +1135,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					},
 					["sort"] = 0,
 					["isReverse"] = false,
+					["isPetsLast"] = false,
 				},
 				["TOOLTIP"] = {
 					["BACKGROUND"] = {
@@ -1243,6 +1252,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					["hideIrrelevant"] = false,
 					["position"] = 3,
 					["showTotalHp"] = false,
+					["showEffectiveHp"] = false,
 					["mode"] = 1,
 					["verbose"] = false,
 				},
@@ -1295,6 +1305,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					},
 					["sort"] = 0,
 					["isReverse"] = false,
+					["isPetsLast"] = false,
 				},
 				["TOOLTIP"] = {
 					["BACKGROUND"] = {
@@ -1411,6 +1422,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					["hideIrrelevant"] = false,
 					["position"] = 3,
 					["showTotalHp"] = false,
+					["showEffectiveHp"] = false,
 					["mode"] = 1,
 					["verbose"] = false,
 				},
@@ -1463,6 +1475,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					},
 					["sort"] = 0,
 					["isReverse"] = false,
+					["isPetsLast"] = false,
 				},
 				["TOOLTIP"] = {
 					["BACKGROUND"] = {
@@ -1579,6 +1592,7 @@ local VUHDO_DEFAULT_PROFILES = {
 					["hideIrrelevant"] = false,
 					["position"] = 3,
 					["showTotalHp"] = false,
+					["showEffectiveHp"] = false,
 					["mode"] = 1,
 					["verbose"] = false,
 				},
