@@ -1,4 +1,4 @@
-----------------------------------------------------------------------
+﻿----------------------------------------------------------------------
 -- 	Leatrix Plus Locale
 ----------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ if LeatrixGlobalDisableLocalisation then return end
 -- Locale override (enUS, zhCN, zhTW, ruRU, koKR, deDE, esMX, frFR, itIT, ptBR)
 -- GameLocale = "enUS"
 
--- zhCN: Simplified Chinese (People's Republic of China)
+-- zhCN: Simplified Chinese
 if GameLocale == "zhCN" then
 L["+"] = "+"
 L["A Donation of Mageweave"] = "捐献魔纹布"
@@ -748,7 +748,7 @@ L["Zygor addon not found."] = "你尚未安装Zygor插件。"
 
 end
 
--- zhTW: Traditional Chinese (Taiwan)
+-- zhTW: Traditional Chinese
 if GameLocale == "zhTW" then
 L["+"] = "+"
 L["A Donation of Mageweave"] = "捐獻魔紋布"
@@ -934,6 +934,7 @@ L["Drag to set the timer bar scale."] = "拖動以設置計時器框架縮放。
 L["Drag to set the tooltip scale."] = "拖動以設置工具提示的縮放比例。"
 L["Drag to set the transparency of the borders."] = "拖動以設置邊框的透明度。"
 L["Drag to set the transparency of the Leatrix Plus panel."] = "拖動以設置Leatrix Plus面板的透明度。"
+L["Drag to set the vehicle seat indicator frame scale."] = "拖曳以設定載具座位指示器框架比例。"
 L["Drag to set the widget scale."] = "拖動以設置組件大小。"
 L["Drag to size"] = "拖拉改變大小"
 L["Dragonblight"] = "龍骨荒野"
@@ -1070,6 +1071,7 @@ L["If checked, a button will be added to the character frame which will show you
 L["If checked, a cancel form button will be shown on the flight map while you are playing as a shapeshifted druid or shaman."] = "勾選後，當您玩變形的德魯伊或薩滿時，飛行地圖上會顯示一個取消變形按鈕。"
 L["If checked, a group invite will be sent to anyone who whispers you with a set keyword as long as you are ungrouped, group leader or raid assistant and not queued for a battleground.|n|nFriends who message the keyword using Battle.net will not be sent a group invite if they are appearing offline.  They need to either change their online status or use character whispers."] = "勾選後，當你未組隊或為隊長或團隊助理，並且沒有在地下城與團隊的佇列中時，任何密語你預設的關鍵字的人將會被組隊邀請。|n|n使用戰網發送關鍵字訊息的好友如果處於離線狀態，將不會收到組隊邀請。他們需要更改在線狀態或使用角色密語。"
 L["If checked, a master volume slider will be shown in the character frame."] = "勾選後，主要聲道的調整滑桿將出現在角色視窗。"
+L["If checked, a minimap button will be available.|n|nClick - Toggle options panel.|n|nSHIFT-click - Toggle music.|n|nALT-click - Toggle errors (if enabled).|n|nCTRL/SHIFT-click - Toggle windowed mode.|n|nCTRL/ALT-click - Toggle Zygor (if installed)."] = "勾選後。小地圖按鈕將可用。|n|n點擊 - 切換選項面板。|n|nSHIFT點擊 - 切換音樂。|n|nALT點擊 - 切換錯誤（如果啟用）。|n|nCTRL/SHIFT點擊 - 切換視窗模式。|n|nCTRL/ALT點擊 - 切換 Zygor（如果已安裝）。"
 L["If checked, a power bar will be shown in the player frame when you are playing a shapeshifted druid."] = "勾選後，當您玩變形的德魯伊時，玩家框架中將顯示一個能量條。"
 L["If checked, a repair summary will be shown in chat when your gear is automatically repaired."] = "勾選後，當您的裝備自動修理時，將在聊天中顯示修理總結。"
 L["If checked, a timer will be shown under the PvP encounter ready frame so that you know how long you have left to click the enter button."] = "勾選後，在 PvP 開戰準備確認框架下方將顯示一個計時器，以便您知道您可以點擊進入按鈕還有多長時間。"
@@ -1122,7 +1124,9 @@ L["If checked, macro and keybind text will not be shown on action buttons."] = "
 L["If checked, macro text will not be shown on action buttons."] = "勾選後，動作列上的巨集文字將不顯示。"
 L["If checked, mechanostriders will be quieter."] = "勾選後，機械陸行鳥會更安靜。"
 L["If checked, members of your guild will be treated as friends for all of the options on this page."] = "勾選後，對於此頁面上的所有選項，您的公會成員將被視為好友。"
+L["If checked, messages containing spell links will be blocked while you are in combat.|n|nThis is useful for blocking spell interrupt spam.|n|nThis applies to the say, party, raid, emote and yell channels."] = "勾選後，當你在戰鬥中時，包含法術連結的訊息將被阻擋。|n|n這對於施法中斷垃圾訊息非常有用。|n|n這適用於說、小隊、團隊、表情和大喊頻道。"
 L["If checked, messages containing spell links will be blocked while you are in combat.|n|nThis is useful for blocking spell interrupt spam.|n|nThis applies to the say, party, raid, instance and emote channels."] = "勾選後，當您在戰鬥中時，包含法術連結的訊息將被阻擋。|n|n這對於阻擋法術打斷刷頻訊息很有用。|n|n這適用於說、小隊、團隊、副本和表情頻道。"
+L["If checked, most error messages (such as 'Not enough rage') will not be shown.  Some important errors are excluded.|n|nIf you have the minimap button enabled, you can hold down the alt key and click it to toggle error messages without affecting this setting."] = "勾選後，大多數錯誤訊息（例如“怒氣不足”）將不會顯示。一些重要的錯誤被排除。|n|n如果您啟用了小地圖按鈕，您可以按住 alt 鍵並單擊它來切換錯誤訊息，而不會影響此設定。"
 L["If checked, netherdrakes will be quieter."] = "勾選後，幽冥龍會更安靜。"
 L["If checked, non-standard minimap buttons will be replaced with standard LibDBIcon buttons.|n|nThis will fix the problems with non-standard buttons such as not hiding automatically, not following the minimap shape and not being placed in the button frame.|n|nNote that enabling or disabling non-standard buttons may require a UI reload to take effect.|n|nMost addons already use the standard LibDBIcon library and will not be affected by this setting but a few addons still use non-standard buttons.|n|nPlease ask addon authors to use the standard LibDBIcon library for their minimap buttons then this setting won't be necessary."] = "勾選後，非標準的小地圖按鈕將被標準的 LibDBIcon 按鈕替換。|n|n這將解決非標準按鈕的問題，例如不自動隱藏、不跟隨小地圖形狀和未放置在按鈕框架中。|n|n請注意，啟用或禁用非標準按鈕可能需要重新載入UI才能生效。|n|n大多數插件已經使用標準 LibDBIcon 庫並且不會受到此設置的影響，但一些插件仍然使用非標準按鈕。|n |n請詢問插件作者為他們的小地圖按鈕使用標準的 LibDBIcon 庫，那麼這個設置就沒有必要了。"
 L["If checked, party invitations from friends will be automatically accepted unless you are queued for a battleground."] = "勾選後，除非您在尋求組隊佇列中，否則來自好友的隊伍邀請將被自動接受。"
@@ -1130,6 +1134,7 @@ L["If checked, party invitations will be blocked unless the player inviting you 
 L["If checked, quest levels will be shown."] = "勾選後，任務等級將會顯示。"
 L["If checked, quests will be selected, accepted and turned-in automatically.|n|nQuests which have a gold requirement will not be turned-in automatically."] = "勾選後，任務將被自動選擇、接受和完成。|n|n有金幣要求的任務不會自動完成。"
 L["If checked, raid chat and instance chat will both be colored blue (to match the default party chat color)."] = "勾選後，團隊和副本聊天訊息會改為藍色（與小隊一致）。"
+L["If checked, raid chat will be colored blue (to match the default party chat color)."] = "勾選後，團隊和副本聊天訊息會改為藍色（與小隊一致）。"
 L["If checked, recent chat will be restored when you reload your interface."] = "勾選後，重新載入界面時將恢復最近的聊天。"
 L["If checked, repair costs will be taken from guild funds for characters that are guilded and have permission to repair."] = "勾選後，對於已加入公會並有權維修的角色，維修費用將從公會資金中扣除。"
 L["If checked, resurrection requests will be accepted automatically."] = "勾選後，復活請求將被自動接受。"
@@ -1202,6 +1207,7 @@ L["If checked, you will be able to change the position and scale of the buffs fr
 L["If checked, you will be able to change the position and scale of the focus frame.|n|nNote that enabling this option will prevent you from using the default UI to move the focus frame."] = "勾選後，您將能夠更改焦點框架的位置和比例。|n|n請注意，啟用此選項將阻止您使用預設介面移動焦點框架。"
 L["If checked, you will be able to change the position and scale of the player frame and target frame.|n|nNote that enabling this option will prevent you from using the default UI to move the player and target frames."] = "勾選後，您將能夠更改玩家框架和目標框架的位置和比例。|n|n請注意，啟用此選項將阻止您使用預設介面來移動玩家和目標框架。"
 L["If checked, you will be able to change the position and scale of the timer bar.|n|nThe timer bar is used for showing remaining breath when underwater as well as other things."] = "勾選後，您將能夠更改計時器條的位置和大小。|n|n計時器條用於顯示水下時的剩餘呼吸以及其他內容。"
+L["If checked, you will be able to change the position and scale of the vehicle seat indicator frame."] = "勾選後，您將能夠更改載具座椅指示器框架的位置和大小。"
 L["If checked, you will be able to change the position and scale of the widget frame.|n|nThe widget frame is commonly used for showing PvP scores and tracking objectives."] = "勾選後，您將可以改變組件框架的位置與大小。|n|n此組件框架通常用於顯示PvP分數和追蹤的任務目標。"
 L["If checked, you will be able to create a viewport.  A viewport adds adjustable black borders around the game world.|n|nThe borders are placed on top of the game world but under the UI so you can place UI elements over them."] = "勾選後，你會生成一個視窗背景，這個可以在游戲界面周圍增加黑色的邊框背景。|n|n邊框的層級是處於游戲界面和插件之間，所以你仍可以放置插件元素在上面。"
 L["If checked, you will be able to customise the minimap."] = "勾選後，您將可以自定義小地圖。"
@@ -1225,6 +1231,7 @@ L["If checked, you will need to hold the override key down for quests to be auto
 L["If checked, you will no longer need to type delete when destroying a superior quality item.|n|nIn addition, item links will be shown in all item destroy confirmation windows."] = "勾選後，您在摧毀優良物品時無須再輸入delete。|n|n此外，物品連結將顯示在所有物品摧毀確認視窗中。"
 L["If checked, you will not release automatically in Alterac Valley."] = "勾選後，您將不會在奧特蘭山谷中自動釋放。"
 L["If checked, you will release automatically after you die in a battleground.|n|nYou will not release automatically if you have the ability to self-resurrect."] = "勾選後，您在戰場死亡時將會自動釋放。|n|n如果您具有自我復活的技能，則不會自動釋放。"
+L["If checked, your bags will not be opened or closed automatically when you interact with a merchant or bank."] = "勾選後，當你打開商店、銀行或者郵箱時，背包不會自動開啟或者關閉。"
 L["If checked, your chat history will increase to 4096 lines.  If unchecked, the default will be used (128 lines).|n|nEnabling this option may prevent some chat text from showing during login."] = "勾選後，你的聊天歷史記錄會增漲至4096行。如果未被勾選，會保持在預設的128行。|n|n啟用這個設置可能會在登錄時會隱藏一些聊天訊息。"
 L["If checked, your gear will be repaired automatically when you visit a suitable merchant.|n|nYou can hold the shift key down when you talk to a merchant to override this setting."] = "勾選後，當你訪問適用的商店時，裝備將自動修理。|n|n當你開啟商店時可以按下Shift鍵以無視此設置。"
 L["If checked, zone text will not be shown (eg. 'Ironforge')."] = "勾選後，區域文字不再顯示。"
@@ -1273,6 +1280,7 @@ L["Manage durability"] = "管理耐久度"
 L["Manage focus"] = "操控焦點"
 L["Manage frames"] = "管理框架面板"
 L["Manage timer"] = "管理計時條"
+L["Manage vehicle"] = "管理載具"
 L["Manage widget"] = "管理組件"
 L["Managed by Leatrix Plus"] = "由Leatrix Plus管理"
 L["Map"] = "地圖"
@@ -1368,6 +1376,7 @@ L["Play"] = "播放"
 L["Player"] = "玩家框架"
 L["Please ask the addon author to use LibDBIcon."] = "請要求插件作者使用LibDB圖示。"
 L["Power"] = "能量"
+L["Press CTRL/C to copy"] = "按下CTRL/C來複製。"
 L["Press CTRL/C to copy."] = "按下CTRL/C來複製。"
 L["Queue from friends"] = "好友佇列申請"
 L["R"] = "團隊"
@@ -1494,6 +1503,8 @@ L["Silverpine Forest"] = "銀松森林"
 L["Single Mark of Sargeras"] = "一個薩格拉斯印記"
 L["Single Sunfury Signet"] = "一個日怒徽章"
 L["Six minutes"] = "六分鐘"
+L["skill for"] = "技能 "
+L["skills for"] = "技能 "
 L["Social"] = "社交訊息"
 L["Sold junk for"] = "賣出垃圾為"
 L["sound"] = "聲音"
@@ -1590,6 +1601,8 @@ L["Top"] = "頂部"
 L["Top Center"] = "頂級中心"
 L["Tracing started."] = "追蹤已開始。"
 L["Tracing stopped."] = "追蹤已停止。"
+L["Train"] = "學習"
+L["Train All"] = "全部學習"
 L["Trains"] = "火車"
 L["Transparency"] = "透明度"
 L["Travelers"] = "旅行商人"
@@ -1660,6 +1673,7 @@ L["Zul'Gurub"] = "祖爾格拉布"
 L["Zulian, Razzashi, and Hakkari Coins"] = "祖利安、拉札希和哈卡萊硬幣"
 L["Zygor addon not found."] = "你尚未安裝Zygor插件。"
 
+
 -- 自行加入
 L["Leatrix Plus"] = "功能百寶箱"
 L["If checked, party invitations from friends or guild members will be automatically accepted unless you are queued for a battleground."] = "勾選後，會自動接受來自好友或公會成員的組隊邀請，除非你正在排戰場。"
@@ -1673,4 +1687,5 @@ L["Cannot be used with Glass"] = "此功能無法與 '聊天視窗美化' 插件
 L["Cannot be used with Easy Frames"] = "此功能無法與 '暴雪頭像' 插件一起使用"
 L["Manage vehicle"] = "管理坐騎座位"
 L["Mute custom sounds"] = "自訂音效靜音"
+L["Keep audio synced"] = "使用系統音效裝置"
 end
