@@ -41,6 +41,18 @@ local pairs = pairs;
 local type = type;
 local abs = abs;
 
+local UnitAura = UnitAura or (C_UnitAuras and
+			(function(aUnit, anIndex, aFilter)
+				local tAuraData = C_UnitAuras.GetAuraDataByIndex(aUnit, anIndex, aFilter);
+
+				if not tAuraData then
+					return nil;
+				end
+
+				return AuraUtil.UnpackAuraData(tAuraData);
+			end)
+);
+
 -- Number of seconds into the future to look for incoming heals
 -- This ensures we only include the next incoming tick of HoTs
 local VUHDO_INCOMING_HEAL_WINDOW = 4;
@@ -595,6 +607,7 @@ end
 
 --
 function VUHDO_isSpellKnown(aSpellName)
+
 	if not aSpellName then
 		return false;
 	end
@@ -604,6 +617,7 @@ function VUHDO_isSpellKnown(aSpellName)
 		or (type(aSpellName) == "number" and IsPlayerSpell(aSpellName))
 		or GetSpellBookItemInfo(aSpellName) ~= nil
 		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
+
 end
 
 
