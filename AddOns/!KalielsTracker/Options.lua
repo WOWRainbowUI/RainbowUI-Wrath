@@ -146,7 +146,7 @@ local options = {
 							order = 0.11,
 						},
 						build = {
-							name = " |cffffd100Build:|r  "..(WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and "WotLK Classic" or "Classic Era"),
+							name = " |cffffd100Build:|r  "..(WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and "Cataclysm Classic" or "Classic Era"),
 							type = "description",
 							width = "normal",
 							fontSize = "medium",

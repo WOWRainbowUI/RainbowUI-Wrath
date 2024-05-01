@@ -56,6 +56,12 @@ elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         QuestPOI_HideUnusedButtons = function() end
     end
 
+    if not GetNumAutoQuestPopUps then
+        GetNumAutoQuestPopUps = function()
+            return 0
+        end
+    end
+
     if not GetNumTrackedAchievements() then
         GetNumTrackedAchievements = function()
             return 0
@@ -82,5 +88,17 @@ if not QuestMapQuestOptions_AbandonQuest then
         end
 
         SelectQuestLogEntry(bckQuestLogSelection)  -- restore Quest Log selection
+    end
+end
+
+if not IsQuestBounty then
+    IsQuestBounty = function()
+        return false
+    end
+end
+
+if not IsQuestTask then
+    IsQuestTask = function()
+        return false
     end
 end

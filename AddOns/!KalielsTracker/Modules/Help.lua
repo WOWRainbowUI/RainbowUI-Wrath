@@ -80,6 +80,7 @@ local function SetupTutorials()
 		icon = helpPath.."KT_logo",
 		font = "Fonts\\FRIZQT__.TTF",
 		width = 552,
+		imageWidth = 512,
 		imageHeight = 256,
 		{	-- 1
 			image = helpPath.."help_kaliels-tracker",
@@ -243,18 +244,24 @@ local function SetupTutorials()
 			shineRight = 6,
 		},
 		{	-- 9
-			text = cTitle.."         What's NEW|r\n\n"..
-					cTitle.."Version 3.6.0|r\n"..
-					"- ADDED - support for WoW 1.15.2\n"..
-					"- CHANGED - addon support - ElvUI 13.61\n"..
-					"- CHANGED - addon support - Questie 9.5.1\n"..
-					"- FIXED (quests) - nil value of quest level\n"..
-					"- PERFORMANCE (quests) - filter - better interaction with Quest Log (expand headers)\n"..
-					"- PERFORMANCE (achievements) - filter - better selection for zone\n"..
-					"- TECH (addon) - merge Classic (3.5.0) and Classic Era (1.6.0) code\n"..
+			image = helpPath.."help_whats-new_logo",
+			imageWidth = 182,
+			imageHeight = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and 40 or 21,
+			imageTexCoords = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and { 0, 0.75, 0, 0.65625 } or { 0, 0.75, 0.65625, 1 },
+			imagePoint = "TOPRIGHT",
+			imageX = -20,
+			imageY = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and 9 or 16,
+			imageAbsolute = true,
+			text = "            |T"..helpPath.."help_whats-new_title:32:181:0:0:256:32:0:181:0:32|t\n\n"..
+					cTitle.."Version 4.0.0|r\n"..
+					"- ADDED - support for WoW 4.4.0\n"..
+					"- CHANGED (help) - page What's New\n"..
+					"- CHANGED - addon support - ElvUI 13.62\n"..
+					"- CHANGED - Libs\n"..
+					"- CHANGED - addon support - Questie 10.0.2\n"..
 					"\n"..
 
-					cTitle.."WoW 3.4.3/1.15.2 - Known issues w/o solution|r\n"..
+					cTitle.."WoW 4.4.0/1.15.2 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n\n"..
 

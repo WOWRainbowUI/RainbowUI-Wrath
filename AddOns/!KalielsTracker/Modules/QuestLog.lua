@@ -173,7 +173,7 @@ function M:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
 
 	-- Clear Blizzard Quest Watch List
-	for i=GetNumQuestWatches(), 1, -1 do
+	for i = GetNumQuestWatches(), 1, -1 do
 		local questIndex = GetQuestIndexForWatch(i)
 		RemoveQuestWatch(questIndex)
 	end

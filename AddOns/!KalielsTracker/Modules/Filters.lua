@@ -46,7 +46,12 @@ local instanceQuestDifficulty = {
 	[DIFFICULTY_PRIMARYRAID_MYTHIC] = { Enum.QuestTag.Raid },
 	[DIFFICULTY_PRIMARYRAID_LFR] = { Enum.QuestTag.Raid },
 }
-local factionColor = { ["Horde"] = "ff0000", ["Alliance"] = "007fff" }
+local zoneSlug = {
+	[198] = "Hyjal",     -- Mount Hyjal
+	[201] = "Vashj'ir",  -- Kelp'thar Forest
+	[204] = "Vashj'ir",  -- Abyssal Depths
+	[205] = "Vashj'ir",  -- Shimmering Expanse
+}
 
 local eventFrame
 
@@ -128,7 +133,7 @@ local function GetActiveWorldEvents()
 	local date = C_DateAndTime.GetCurrentCalendarTime()
 	C_Calendar.SetAbsMonth(date.month, date.year)
 	local numEvents = C_Calendar.GetNumDayEvents(0, date.monthDay)
-	for i=1, numEvents do
+	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(0, date.monthDay, i)
 		if event.calendarType == "HOLIDAY" then
 			local gameHour, gameMinute = GetGameTime()
@@ -170,7 +175,7 @@ local function Filter_Quests(spec, idx)
 
 	KT.stopUpdate = true
 	if KT_GetNumQuestWatches() > 0 then
-		for i=1, numEntries do
+		for i = 1, numEntries do
 			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
 			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				KT_RemoveQuestWatch(questID)
@@ -180,7 +185,7 @@ local function Filter_Quests(spec, idx)
 
 	local headerName
 	if spec == "all" then
-		for i=1, numEntries do
+		for i = 1, numEntries do
 			local title, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
 			if isHeader then
 				headerName = title
@@ -192,7 +197,7 @@ local function Filter_Quests(spec, idx)
 		end
 	elseif spec == "group" then
 		headerName = nil
-		for i=idx, numEntries do
+		for i = idx, numEntries do
 			local title, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
 			if isHeader and not headerName then
 				headerName = title
@@ -214,7 +219,7 @@ local function Filter_Quests(spec, idx)
 		local isInZone = false
 		local zoneInDesc = false
 		local isInQuestieZone = false
-		for i=1, numEntries do
+		for i = 1, numEntries do
 			local title, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty = GetQuestLogTitle(i)
 			if isHeader then
 				headerName = title
@@ -248,7 +253,7 @@ local function Filter_Quests(spec, idx)
 			end
 		end
 	elseif spec == "daily" then
-		for i=1, numEntries do
+		for i = 1, numEntries do
 			local title, _, _, isHeader, _, _, frequency, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
 			if isHeader then
 				headerName = title
@@ -259,7 +264,7 @@ local function Filter_Quests(spec, idx)
 			end
 		end
 	elseif spec == "instance" then
-		for i=1, numEntries do
+		for i = 1, numEntries do
 			local title, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
 			if isHeader then
 				headerName = title
@@ -277,7 +282,7 @@ local function Filter_Quests(spec, idx)
 			end
 		end
 	elseif spec == "complete" then
-		for i=1, numEntries do
+		for i = 1, numEntries do
 			local title, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
 			if isHeader then
 				headerName = title
@@ -296,39 +301,42 @@ local function Filter_Quests(spec, idx)
 	end
 end
 
+local function GetCategoryByZone()
+	-- Kalimdor, Eastern Kingdoms, Outland, Northrend
+	local category = KT.GetCurrentMapContinent().name
+	local mapID = KT.GetCurrentMapAreaID()
+	-- Cataclysm
+	if mapID == 198 or         -- Mount Hyjal
+			mapID == 201 or    -- Vashj'ir - Kelp'thar Forest
+			mapID == 204 or    -- Vashj'ir - Abyssal Depths
+			mapID == 205 or    -- Vashj'ir - Shimmering Expanse
+			mapID == 207 or    -- Deepholm
+			mapID == 241 or    -- Twilight Highlands
+			mapID == 245 or    -- Tol Barad
+			mapID == 249 then  -- Uldum
+		category = EXPANSION_NAME3
+	end
+	return category
+end
+
 local function Filter_Achievements(spec)
 	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or not spec then return end
 	local trackedAchievements = { GetTrackedAchievements() }
 
 	KT.stopUpdate = true
 	if GetNumTrackedAchievements() > 0 then
-		for i=1, #trackedAchievements do
+		for i = 1, #trackedAchievements do
 			RemoveTrackedAchievement(trackedAchievements[i])
 		end
 	end
 
 	if spec == "zone" then
 		local continentName = KT.GetCurrentMapContinent().name
-		local zoneName = GetRealZoneText() or ""
-		local categoryName = continentName
-		-- WotLK
-		if KT.GetCurrentMapContinent().mapID == 113 then
-			if zoneName == "Trial of the Crusader" then
-				zoneName = "Call of the Crusade"
-			elseif zoneName == "Icecrown Citadel" then
-				zoneName = "Fall of the Lich King"
-			end
-			categoryName = EXPANSION_NAME2
-		-- TBC
-		elseif KT.GetCurrentMapContinent().mapID == 1945 then
-			categoryName = EXPANSION_NAME1
-		-- Classic
-		elseif KT.GetCurrentMapContinent().mapID == 1414 or
-				KT.GetCurrentMapContinent().mapID == 1415 then
-			categoryName = EXPANSION_NAME0
-		end
+		local mapID = KT.GetCurrentMapAreaID()
+		local zoneName = zoneSlug[mapID] or KT.GetMapNameByID(mapID)
+        local categoryName = GetCategoryByZone()
 		local instance = KT.inInstance and 168 or nil
-		_DBG(zoneName.." ... "..KT.GetCurrentMapAreaID(), true)
+		_DBG(continentName.." / "..zoneName.." ... "..mapID.." ... "..categoryName, true)
 
 		-- Dungeons & Raids
 		local instanceDifficulty, instanceSize
@@ -350,7 +358,7 @@ local function Filter_Achievements(spec)
 			events = GetActiveWorldEvents()
 		end
 
-		for i=1, #achievCategory do
+		for i = 1, #achievCategory do
 			local category = achievCategory[i]
 			local name, parentID, _ = GetCategoryInfo(category)
 
@@ -358,17 +366,17 @@ local function Filter_Achievements(spec)
 				if (category == 92) or                                     -- General
 						(category == 96) or                                -- Quests
 						(parentID == 96 and name == categoryName) or       -- Quests
-						(parentID == 97 and name == continentName) or      -- Exploration
+						(parentID == 97 and name == categoryName) or       -- Exploration
 						(category == 95) or                                -- Player vs. Player
-						(parentID == 95 and strfind(zoneName, name)) or    -- Player vs. Player
+						(parentID == 95 and strfind(name, zoneName)) or    -- Player vs. Player
 						(parentID == instance) or                          -- Dungeons & Raids
 						(parentID == 169) or                               -- Professions
 						(parentID == 201) or                               -- Reputation
 						(parentID == 155 and strfind(events, name)) then   -- World Events
 					local aNumItems, _ = GetCategoryNumAchievements(category)
-					for i=1, aNumItems do
+					for j = 1, aNumItems do
 						local track = false
-						local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, i)
+						local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, j)
 						if aId and not aCompleted then
 							--_DBG(aId.." ... "..aName, true)
 							local aText = aName.." - "..aDescription
@@ -377,38 +385,38 @@ local function Filter_Achievements(spec)
 							if cNumItems > 0 then
 								_, cType = GetAchievementCriteriaInfo(aId, 1)
 							end
-							if not instance then
-								if (category == 96 or parentID == 96 or parentID == 97 or category == 15117 or parentID == 15117) and
-										cType ~= CRITERIA_TYPE_ACHIEVEMENT and
-										strfind(aText, continentName) then
-									track = true
-								elseif strfind(aText, zoneName) then
-									track = true
-								elseif strfind(aDescription, " capita") then  -- capital city (TODO: de, ru strings)
-									for i=1, cNumItems do
-										local cDescription, _, cCompleted = GetAchievementCriteriaInfo(aId, i)
-										if not cCompleted and strfind(cDescription, zoneName) then
-											track = true
-											break
+							if cType ~= CRITERIA_TYPE_ACHIEVEMENT then
+								if not instance then
+									if (category == 96 or parentID == 96 or parentID == 97 or category == 15117 or parentID == 15117) and
+											strfind(aText, continentName) then
+										track = true
+									elseif strfind(aText, zoneName) then
+										track = true
+									elseif strfind(aDescription, " capita") then  -- capital city (TODO: de, ru strings)
+										for k = 1, cNumItems do
+											local cDescription, _, cCompleted = GetAchievementCriteriaInfo(aId, k)
+											if not cCompleted and strfind(cDescription, zoneName) then
+												track = true
+												break
+											end
 										end
 									end
-								end
-							else
-								if parentID == 95 then
-									track = true
-								elseif parentID == instance and
-										cType ~= CRITERIA_TYPE_ACHIEVEMENT then
-									if (name == categoryName and strfind(aText, zoneName)) or
-											((strfind(name, zoneName) or strfind(aText, zoneName)) and strfind(aText, instanceSize)) then
-										if instanceDifficulty == "Normal" then
-											if not (strfind(aText, "Heroic") or
-													strfind(aText, "Mythic")) then
-												track = true
-											end
-										else
-											if strfind(aText, instanceDifficulty) or
-													(strfind(aText, "difficulty or higher")) then  -- TODO: other languages
-												track = true
+								else
+									if parentID == 95 then
+										track = true
+									elseif parentID == instance then
+										if (name == categoryName and strfind(aText, zoneName)) or
+												((strfind(name, zoneName) or strfind(aText, zoneName)) and strfind(aText, instanceSize)) then
+											if instanceDifficulty == "Normal" then
+												if not (strfind(aText, "Heroic") or
+														strfind(aText, "Mythic")) then
+													track = true
+												end
+											else
+												if strfind(aText, instanceDifficulty) or
+														(strfind(aText, "difficulty or higher")) then  -- TODO: other languages
+													track = true
+												end
 											end
 										end
 									end
@@ -435,15 +443,15 @@ local function Filter_Achievements(spec)
 		local events = GetActiveWorldEvents()
 		local eventName = ""
 
-		for i=1, #achievCategory do
+		for i = 1, #achievCategory do
 			local category = achievCategory[i]
 			local name, parentID, _ = GetCategoryInfo(category)
 
 			if parentID == 155 and strfind(events, name) then	-- World Events
 				eventName = eventName..(eventName ~= "" and ", " or "")..name
 				local aNumItems, _ = GetCategoryNumAchievements(category)
-				for i=1, aNumItems do
-					local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, i)
+				for j = 1, aNumItems do
+					local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, j)
 					if aId and not aCompleted then
 						AddTrackedAchievement(aId)
 					end
@@ -694,7 +702,7 @@ function DropDown_Initialize(self, level)
 				local zoneName = GetZoneText() or ""
 				local subzoneName = GetSubZoneText() or ""
 				local headerTitle, headerOnMap, headerShown
-				for i=1, numEntries do
+				for i = 1, numEntries do
 					local title, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
 					if isHeader then
 						headerTitle = title
@@ -784,7 +792,7 @@ function DropDown_Initialize(self, level)
 				end
 			end
 
-			for i=1, #achievCategory do
+			for i = 1, #achievCategory do
 				local id = achievCategory[i]
 				local name, parentID, _ = GetCategoryInfo(id)
 				if parentID == -1 and id ~= 81 then		-- Skip "Feats of Strength"

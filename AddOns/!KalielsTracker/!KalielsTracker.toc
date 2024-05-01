@@ -1,7 +1,7 @@
-## Interface: 30403
+## Interface: 40400
 ## Title: Kaliel's Tracker
-## Notes: WotLK Classic Objective Tracker
-## Version: 3.6.0
+## Notes: Cataclysm Classic Objective Tracker
+## Version: 4.0.0
 ## Author: Kaliel (Marouan Sabbagh)
 
 ## SavedVariables: KalielsTrackerDB

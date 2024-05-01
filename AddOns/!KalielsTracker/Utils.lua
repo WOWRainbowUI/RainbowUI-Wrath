@@ -124,7 +124,7 @@ function KT.QuestUtils_GetQuestZone(id)
     ExpandQuestHeader(0)
     local numEntries, _ = GetNumQuestLogEntries()
     local headerName
-    for i=1, numEntries do
+    for i = 1, numEntries do
         local title, _, _, isHeader, _, _, _, questID = GetQuestLogTitle(i)
         if isHeader then
             headerName = title
