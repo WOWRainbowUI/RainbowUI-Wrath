@@ -9,11 +9,13 @@ local _, KT = ...
 -- Constants
 if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
     KT.BLIZZARD_MODULES = {
+        "AUTO_QUEST_POPUP_TRACKER_MODULE",
         "QUEST_TRACKER_MODULE",
         "ACHIEVEMENT_TRACKER_MODULE"
     }
     KT.ALL_BLIZZARD_MODULES = {
         -- Don't change the order!
+        "AUTO_QUEST_POPUP_TRACKER_MODULE",
         "QUEST_TRACKER_MODULE",
         "ACHIEVEMENT_TRACKER_MODULE"
     }

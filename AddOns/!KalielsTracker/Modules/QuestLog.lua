@@ -62,7 +62,6 @@ local function SetHooks()
 		end
 	end
 
---[[
 	function QuestLogTitleButton_OnClick(self, button)  -- R
 		local questIndex = self:GetID() + FauxScrollFrame_GetOffset(QuestLogListScrollFrame);
 		if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
@@ -91,7 +90,6 @@ local function SetHooks()
 		QuestLog_SetSelection(questIndex)
 		QuestLog_Update();
 	end
---]]
 
 	-- QuestMapFrame.lua
 	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
@@ -175,7 +173,7 @@ function M:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
 
 	-- Clear Blizzard Quest Watch List
-	for i=GetNumQuestWatches(), 1, -1 do
+	for i = GetNumQuestWatches(), 1, -1 do
 		local questIndex = GetQuestIndexForWatch(i)
 		RemoveQuestWatch(questIndex)
 	end

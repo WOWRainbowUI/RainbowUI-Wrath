@@ -501,7 +501,7 @@ local function SetHooks()
 			text = "..."	-- fix Blizz bug
 		end
 		if not text then -- 暫時修正
-			text = ""
+			text = "..."
 		end
 		local _, _, leftText, colon, progress, numHave, numNeed, rightText = strfind(text, "(.-)(%s?:?%s?)((%d+)%s?/%s?(%d+))(.*)")
 		if progress then
@@ -974,6 +974,24 @@ local function SetHooks()
 		end
 	end)
 
+	if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+		hooksecurefunc(AUTO_QUEST_POPUP_TRACKER_MODULE, "EndLayout", function(self)
+			for i = 1, GetNumAutoQuestPopUps() do
+				local questID, popUpType = GetAutoQuestPopUp(i)
+				if not IsQuestBounty(questID) then
+					local questTitle = GetQuestLogTitle(GetQuestLogIndexByID(questID))
+					if questTitle and questTitle ~= "" then
+						local block = self:GetBlock(questID)
+						block.height = 68
+						local blockContents = block.ScrollChild
+						blockContents.QuestName:SetFont(KT.font, 14, "")
+						blockContents.BottomText:SetPoint("BOTTOM", 0, 7)
+					end
+				end
+			end
+		end)
+	end
+
 	function ObjectiveTracker_Collapse()  -- R
 		_DBG("--------------------------------")
 		_DBG("COLLAPSE")
@@ -1115,7 +1133,13 @@ local function SetHooks()
 			elseif IsModifiedClick(db.menuWowheadURLModifier) then
 				KT:ShowPopup("quest", block.id)
 			else
-				QuestObjectiveTracker_OpenQuestDetails(nil, block.id)
+				local questLogIndex = GetQuestLogIndexByID(block.id);
+				if ( IsQuestComplete(block.id) and GetQuestLogIsAutoComplete(questLogIndex) ) then
+					AutoQuestPopupTracker_RemovePopUp(block.id);
+					ShowQuestComplete(questLogIndex);
+				else
+					QuestObjectiveTracker_OpenQuestDetails(nil, block.id)
+				end
 			end
 			return;
 		else
@@ -1641,6 +1665,7 @@ end
 
 function KT:IsTrackerEmpty(noaddon)
 	local result = (KT_GetNumQuestWatches() == 0 and
+		GetNumAutoQuestPopUps() == 0 and
 		GetNumTrackedAchievements() == 0)
 	return result
 end
@@ -1752,6 +1777,8 @@ StaticPopupDialogs[addonName.."_WowheadURL"] = {
 			url = url.."classic/"
 		elseif WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
 			url = url.."wotlk/"
+		elseif WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+			url = url.."cata/"
 		end
 		local lang = KT.locale:sub(1, 2)
 		if lang ~= "en" then

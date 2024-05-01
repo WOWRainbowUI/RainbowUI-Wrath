@@ -80,6 +80,7 @@ local function SetupTutorials()
 		icon = helpPath.."KT_logo",
 		font = "Fonts\\bLEI00D.ttf",
 		width = 552,
+		imageWidth = 512,
 		imageHeight = 256,
 		{	-- 1
 			image = helpPath.."help_kaliels-tracker",
@@ -243,18 +244,24 @@ local function SetupTutorials()
 			shineRight = 6,
 		},
 		{	-- 9
-			text = cTitle.."         更新資訊|r\n\n"..
-					cTitle.."版本 3.6.0|r\n"..
-					"- 新增 - 支援 WoW 1.15.2\n"..
-					"- 修改 - 支援插件 - ElvUI 13.61\n"..
-					"- 修改 - 支援插件 - Questie 9.5.1\n"..
-					"- 修正 (任務) - 任務等級的值為 nil\n"..
-					"- 效能 (任務) - 過濾 - 和任務日誌的互動性更好 (會展開標題列)\n"..
-					"- 效能 (成就) - 過濾 - 區域的選擇更佳\n"..
-					"- 技術 (插件) - 合併經典版 (3.5.0) 和經典時期 (1.6.0) 的程式碼\n"..
+			image = helpPath.."help_whats-new_logo",
+			imageWidth = 182,
+			imageHeight = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and 40 or 21,
+			imageTexCoords = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and { 0, 0.75, 0, 0.65625 } or { 0, 0.75, 0.65625, 1 },
+			imagePoint = "TOPRIGHT",
+			imageX = -20,
+			imageY = WOW_PROJECT_ID > WOW_PROJECT_CLASSIC and 9 or 16,
+			imageAbsolute = true,
+			text = "            |T"..helpPath.."help_whats-new_title:32:181:0:0:256:32:0:181:0:32|t\n\n"..
+					cTitle.."Version 4.0.0|r\n"..
+					"- 新增 - 支援 WoW 4.4.0\n"..
+					"- 更新 (說明) - 更新資訊頁面\n"..
+					"- 更新 - 支援插件 - ElvUI 13.62\n"..
+					"- 更新 - 函式庫\n"..
+					"- 更新 - 支援插件 - Questie 10.0.2\n"..
 					"\n"..
 
-					cTitle.."WoW 3.4.3/1.15.2 - 尚無解決辦法的已知問題|r\n"..
+					cTitle.."WoW 4.4.0/1.15.2 - 尚無解決辦法的已知問題|r\n"..
 					"- 戰鬥中點擊追蹤的任務或成就不會有反應。\n"..
 					"- 戰鬥中標題列的 Q 和 A 按鈕無法運作。\n\n"..
 
