@@ -57,6 +57,7 @@ function Core:OnEnable()
     self:MovePlayerFrameBars()
     self:MoveTargetFrameBars()
     self:MoveFocusFrameBars()
+    self:MovePetFrame()
     self:MovePetFrameBars()
     self:MovePartyFrameBars()
     self:MoveBossFrameBars()
@@ -206,18 +207,23 @@ function Core:MoveFocusFrameBars()
     --self:MoveRegion(FocusFrameNumericalThreat, "CENTER", FocusFrame, "CENTER", 44, 48)
 end
 
+function Core:MovePetFrame()
+    local point, relativeTo, relativePoint, xOffset, yOffset = PetFrame:GetPoint()
+
+    if (point and db.pet.showName) then
+        PetFrame:ClearAllPoints()
+        PetFrame:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset - 5)
+    end
+end
+
 function Core:MovePetFrameBars()
     PetFrameHealthBar:SetHeight(13)
 
     self:MoveRegion(PetFrameHealthBar, "CENTER", PetFrame, "CENTER", 16, 4)
     self:MoveRegion(PetFrameManaBar, "CENTER", PetFrame, "CENTER", 16, -8)
 
-    self:MoveRegion(PetFrameHealthBar.RightText, "RIGHT", PetFrame, "TOPLEFT", 113, -23)
-    self:MoveRegion(PetFrameHealthBar.LeftText, "LEFT", PetFrame, "TOPLEFT", 46, -23)
     self:MoveRegion(PetFrameHealthBar.TextString, "CENTER", PetFrameHealthBar, "CENTER", 0, 0)
 
-    self:MoveRegion(PetFrameManaBar.RightText, "RIGHT", PetFrame, "TOPLEFT", 113, -35)
-    self:MoveRegion(PetFrameManaBar.LeftText, "LEFT", PetFrame, "TOPLEFT", 46, -35)
     self:MoveRegion(PetFrameManaBar.TextString, "CENTER", PetFrameManaBar, "CENTER", 0, 0)
 end
 

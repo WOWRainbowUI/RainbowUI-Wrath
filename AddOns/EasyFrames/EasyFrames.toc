@@ -1,5 +1,5 @@
 ## Title: Easy Frames
-## Interface: 30403
+## Interface: 40400
 ## Notes: Make your unit frames colored and glorious.
 ## Author: Usoltsev
 ## SavedVariables: EasyFramesDB

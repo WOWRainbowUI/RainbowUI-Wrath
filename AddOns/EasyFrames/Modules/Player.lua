@@ -58,7 +58,7 @@ function Player:OnEnable()
     self:ShowRestIcon(db.player.showRestIcon)
     self:ShowStatusTexture(db.player.showStatusTexture)
     self:ShowAttackBackground(db.player.showAttackBackground)
-    --self:SetAttackBackgroundOpacity(db.player.attackBackgroundOpacity)
+    self:SetAttackBackgroundOpacity(db.player.attackBackgroundOpacity)
     self:ShowGroupIndicator(db.player.showGroupIndicator)
     self:ShowRoleIcon(db.player.showRoleIcon)
     self:ShowPVPIcon(db.player.showPVPIcon)
@@ -83,7 +83,7 @@ function Player:OnProfileChanged(newDB)
     self:ShowRestIcon(db.player.showRestIcon)
     self:ShowStatusTexture(db.player.showStatusTexture)
     self:ShowAttackBackground(db.player.showAttackBackground)
-    --self:SetAttackBackgroundOpacity(db.player.attackBackgroundOpacity)
+    self:SetAttackBackgroundOpacity(db.player.attackBackgroundOpacity)
     self:ShowGroupIndicator(db.player.showGroupIndicator)
     self:ShowRoleIcon(db.player.showRoleIcon)
     self:ShowPVPIcon(db.player.showPVPIcon)
@@ -332,9 +332,9 @@ function Player:ShowAttackBackground(value)
     end
 end
 
---function Player:SetAttackBackgroundOpacity(value)
---    PlayerFrameFlash:SetAlpha(value)
---end
+function Player:SetAttackBackgroundOpacity(value)
+    PlayerFrameFlash:SetAlpha(value)
+end
 
 function Player:ShowGroupIndicator(value)
     local frame = PlayerFrameGroupIndicator
