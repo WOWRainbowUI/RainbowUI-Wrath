@@ -154,8 +154,6 @@ function Pet:SetHealthBarsFont()
     local fontStyle = db.pet.healthBarFontStyle
 
     PetFrameHealthBar.TextString:SetFont(fontFamily, fontSize, fontStyle)
-    PetFrameHealthBar.RightText:SetFont(fontFamily, fontSize, fontStyle)
-    PetFrameHealthBar.LeftText:SetFont(fontFamily, fontSize, fontStyle)
 end
 
 function Pet:SetManaBarsFont()
@@ -164,8 +162,6 @@ function Pet:SetManaBarsFont()
     local fontStyle = db.pet.manaBarFontStyle
 
     PetFrameManaBar.TextString:SetFont(fontFamily, fontSize, fontStyle)
-    PetFrameManaBar.RightText:SetFont(fontFamily, fontSize, fontStyle)
-    PetFrameManaBar.LeftText:SetFont(fontFamily, fontSize, fontStyle)
 end
 
 function Pet:ShowName(value)

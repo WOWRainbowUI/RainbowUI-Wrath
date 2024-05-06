@@ -1,5 +1,5 @@
 ## Title: Easy Frames
-## Interface: 30403
+## Interface: 40400
 ## Notes: Make your unit frames colored and glorious.
 ## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (美化調整)
 ## Notes-zhTW: Easy Frames |n|n喜歡遊戲內建的頭像推薦使用這個插件，讓內建頭像變得比較漂亮，還額外提供了許多自訂化的選項。|n|n使用方法: |r從Esc>介面>插件>頭像-美化，進行設定。

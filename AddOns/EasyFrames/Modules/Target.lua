@@ -51,7 +51,7 @@ function Target:OnEnable()
     self:ReverseDirectionLosingHP(db.target.reverseDirectionLosingHP)
 
     self:ShowAttackBackground(db.target.showAttackBackground)
-    --self:SetAttackBackgroundOpacity(db.target.attackBackgroundOpacity)
+    self:SetAttackBackgroundOpacity(db.target.attackBackgroundOpacity)
     self:ShowPVPIcon(db.target.showPVPIcon)
 
     self:SecureHook("TextStatusBar_UpdateTextStringWithValues", "UpdateTextStringWithValues")
@@ -74,7 +74,7 @@ function Target:OnProfileChanged(newDB)
     self:ReverseDirectionLosingHP(db.target.reverseDirectionLosingHP)
 
     self:ShowAttackBackground(db.target.showAttackBackground)
-    --self:SetAttackBackgroundOpacity(db.target.attackBackgroundOpacity)
+    self:SetAttackBackgroundOpacity(db.target.attackBackgroundOpacity)
     self:ShowPVPIcon(db.target.showPVPIcon)
 
     self:UpdateTextStringWithValues()
@@ -228,9 +228,9 @@ function Target:ShowAttackBackground(value)
     end
 end
 
---function Target:SetAttackBackgroundOpacity(value)
---    TargetFrameFlash:SetAlpha(value)
---end
+function Target:SetAttackBackgroundOpacity(value)
+    TargetFrameFlash:SetAlpha(value)
+end
 
 function Target:ShowPVPIcon(value)
     for _, frame in pairs({

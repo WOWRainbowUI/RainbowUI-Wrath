@@ -51,7 +51,7 @@ function Focus:OnEnable()
     self:ReverseDirectionLosingHP(db.focus.reverseDirectionLosingHP)
 
     self:ShowAttackBackground(db.focus.showAttackBackground)
-    --self:SetAttackBackgroundOpacity(db.focus.attackBackgroundOpacity)
+    self:SetAttackBackgroundOpacity(db.focus.attackBackgroundOpacity)
     self:ShowPVPIcon(db.focus.showPVPIcon)
 
     self:SecureHook("TextStatusBar_UpdateTextStringWithValues", "UpdateTextStringWithValues")
@@ -74,7 +74,7 @@ function Focus:OnProfileChanged(newDB)
     self:ReverseDirectionLosingHP(db.focus.reverseDirectionLosingHP)
 
     self:ShowAttackBackground(db.focus.showAttackBackground)
-    --self:SetAttackBackgroundOpacity(db.focus.attackBackgroundOpacity)
+    self:SetAttackBackgroundOpacity(db.focus.attackBackgroundOpacity)
     self:ShowPVPIcon(db.focus.showPVPIcon)
 
     self:UpdateTextStringWithValues()
@@ -226,9 +226,9 @@ function Focus:ShowAttackBackground(value)
     end
 end
 
---function Focus:SetAttackBackgroundOpacity(value)
---    FocusFrameFlash:SetAlpha(value)
---end
+function Focus:SetAttackBackgroundOpacity(value)
+    FocusFrameFlash:SetAlpha(value)
+end
 
 function Focus:ShowPVPIcon(value)
     for _, frame in pairs({
