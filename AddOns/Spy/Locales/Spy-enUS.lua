@@ -44,7 +44,7 @@ If enabled, this button will be located on the enemy players target frame. Click
 L["GeneralSettings"] = "General Settings"
 L["GeneralSettingsDescription"] = [[
 Options for when Spy is Enabled or Disabled.
-]] 
+]]
 L["EnableSpy"] = "Enable Spy"
 L["EnableSpyDescription"] = "Enables or disables Spy."
 L["EnabledInBattlegrounds"] = "Enable Spy in battlegrounds"
@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "Sanctum of the Sages"
 L["Rustbolt"] = "Rustbolt"
 L["Oribos"] = "Oribos"
 L["Valdrakken"] = "Valdrakken"
+L["The Roasted Ram"] = "The Roasted Ram"
 
 -- Display
 L["DisplayOptions"] = "Display"
@@ -302,10 +303,10 @@ L["HonorKills"] = "Honor Kills"
 L["PvPDeaths"] = "PvP Deaths"
 
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3aWarning! The wrong version of Spy is installed. This version is for Wrath of the Lich King - Classic."
+L["VersionCheck"] = "|cffc41e3aWarning! The wrong version of Spy is installed. This version is for World of Warcraft - Cataclysm Classic."
 L["SpyEnabled"] = "|cff9933ffSpy addon enabled."
 L["SpyDisabled"] = "|cff9933ffSpy addon disabled. Type |cffffffff/spy show|cff9933ff to enable."
-L["UpgradeAvailable"] = "|cff9933ffA new version of Spy is available. It can be downloaded from:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
+L["UpgradeAvailable"] = "|cff9933ffA new version of Spy is available. It can be downloaded from:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm"
 L["AlertStealthTitle"] = "Stealth player detected!"
 L["AlertKOSTitle"] = "Kill On Sight player detected!"
 L["AlertKOSGuildTitle"] = "Kill On Sight player guild detected!"

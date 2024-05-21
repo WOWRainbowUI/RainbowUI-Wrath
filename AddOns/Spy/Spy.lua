@@ -7,7 +7,7 @@ local fonts = SM:List("font")
 local _
 
 Spy = LibStub("AceAddon-3.0"):NewAddon("Spy", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceTimer-3.0")
-Spy.Version = "3.1.7"
+Spy.Version = "4.0.1"
 Spy.DatabaseVersion = "1.1"
 Spy.Signature = "[Spy]"
 Spy.ButtonLimit = 15
@@ -163,8 +163,8 @@ Spy.options = {
 						["Shattrath City"] = L["Shattrath City"],
 						["Area 52"] = L["Area 52"],
 						["Dalaran"] = L["Dalaran"],
---						["Dalaran (Northrend)"] = L["Dalaran (Northrend)"],
---						["Bogpaddle"] = L["Bogpaddle"],
+						["Bogpaddle"] = L["Bogpaddle"],
+--						["Dalaran (Northrend)"] = L["Dalaran (Northrend)"],						
 --						["The Vindicaar"] = L["The Vindicaar"],
 --						["Krasus' Landing"] = L["Krasus' Landing"],
 --						["The Violet Gate"] = L["The Violet Gate"],
@@ -172,6 +172,7 @@ Spy.options = {
 --						["Rustbolt"] = L["Rustbolt"],
 --						["Oribos"] = L["Oribos"],
 --						["Valdrakken"] = L["Valdrakken"],
+--						["The Roasted Ram"] = L["The Roasted Ram"],
 					},
 				},
 				ShowOnDetection = {
@@ -764,7 +765,7 @@ Spy.options = {
 								["Night Elf"] = L["Night Elf"],
 								["Gnome"] = L["Gnome"],
 								["Draenei"] = L["Draenei"],
---								["Worgen"] = L["Worgen"],
+								["Worgen"] = L["Worgen"],
 --								["Pandaren"] = L["Pandaren"],
 --								["Lightforged Draenei"] = L["Lightforged Draenei"],
 --								["Void Elf"] = L["Void Elf"],
@@ -780,7 +781,7 @@ Spy.options = {
 								["Troll"] = L["Troll"],
 								["Undead"] = L["Undead"],
 								["Blood Elf"] = L["Blood Elf"],
---								["Goblin"] = L["Goblin"],
+								["Goblin"] = L["Goblin"],
 --								["Pandaren"] = L["Pandaren"],
 --								["Highmountain Tauren"] = L["Highmountain Tauren"],
 --								["Nightborne"] = L["Nightborne"],
@@ -1445,8 +1446,8 @@ local Default_Profile = {
 			["Shattrath City"] = false,
 			["Area 52"] = false,
 			["Dalaran"] = false,
+			["Bogpaddle"] = false,
 --			["Dalaran (Northrend)"] = false,
---			["Bogpaddle"] = false,
 --			["The Vindicaar"] = false,
 --			["Krasus' Landing"] = false,
 --			["The Violet Gate"] = false,
@@ -1454,6 +1455,7 @@ local Default_Profile = {
 --			["Rustbolt"] = false,
 --			["Oribos"] = false,
 --			["Valdrakken"] = false,
+--			["The Roasted Ram"] = false,
 		},
 	},
 }
@@ -1801,8 +1803,8 @@ function Spy:OnInitialize()
 		["Gnome"] = true,
 		["BloodElf"] = true,
 		["Draenei"] = true,
---		["Goblin"] = true,
---		["Worgen"] = true,
+		["Goblin"] = true,
+		["Worgen"] = true,
 --		["Pandaren"] = true,
 --		["HighmountainTauren"] = true,
 --		["LightforgedDraenei"] = true,
@@ -1854,7 +1856,7 @@ function Spy:OnInitialize()
 	Spy:ClampToScreen(Spy.db.profile.ClampToScreen)	
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", Spy.FilterNotInParty)
 	Spy.WoWBuildInfo = select(4, GetBuildInfo())
-	if Spy.WoWBuildInfo < 30000 or Spy.WoWBuildInfo > 40000 then
+	if Spy.WoWBuildInfo < 40000 or Spy.WoWBuildInfo > 50000 then
 		DEFAULT_CHAT_FRAME:AddMessage(L["VersionCheck"])
 	end
 end
@@ -1868,6 +1870,8 @@ function Spy:ChannelNoticeEvent(_, chStatus, _, _, Channel)
 		if InFilteredZone then
 			Spy.EnabledInZone = false
 		end
+							
+	 
 							
 	 
 --		if (zone == L["Silithus"] and (subZone == L["Hall of Ancient Paths"] or L["Sanctum of the Sages"]) or zone == L["Chamber of Heart"]) then
