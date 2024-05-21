@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "贤者圣殿"
 L["Rustbolt"] = "锈栓镇"
 L["Oribos"] = "奥利波斯"
 L["Valdrakken"] = "瓦德拉肯"
+L["The Roasted Ram"] = "到脆烤山羊"
  
 -- Display
 L["DisplayOptions"] = "显示"
@@ -302,10 +303,10 @@ L["HonorKills"] = "荣誉击杀"
 L["PvPDeaths"] = "PvP 死亡"
  
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3a警告！ 安装了错误的Spy版本。 此版本适用于 Wrath of the Lich King - Classic。"
+L["VersionCheck"] = "|cffc41e3a警告！ 安装了错误的Spy版本。 此版本适用于 World of Warcraft - Cataclysm Classic。"
 L["SpyEnabled"] = "|cff9933ffSpy 侦测敌方玩家插件已启动。"
 L["SpyDisabled"] = "|cff9933ffSpy 侦测敌方玩家插件已关闭。 输入 |cffffffff/spy show|cff9933ff 启动插件。"
-L["UpgradeAvailable"] = "|cff9933ff新版Spy 侦测敌方玩家 已有新的版本。 可以从这里下载新版本：\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
+L["UpgradeAvailable"] = "|cff9933ff新版Spy 侦测敌方玩家 已有新的版本。 可以从这里下载新版本：\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm"
 L["AlertStealthTitle"] = "侦测到潜行敌人！"
 L["AlertKOSTitle"] = "侦测到KOS敌对玩家！"
 L["AlertKOSGuildTitle"] = "侦测到KOS敌对公会！"

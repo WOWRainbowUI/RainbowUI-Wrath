@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "Святилище жрецов"
 L["Rustbolt"] = "Ржавый болт"
 L["Oribos"] = "Орибос"
 L["Valdrakken"] = "Вальдраккен"
+L["The Roasted Ram"] = "Жареный барашек"
 
 -- Display
 L["DisplayOptions"] = "дисплей"
@@ -302,10 +303,10 @@ L["HonorKills"] = "Почетные убийства"
 L["PvPDeaths"] = "Смерти в PvP"
 
 -- Output messages
-L["VersionCheck"] = "|cffc41e3aПредупреждение! Неправильная версия Spy установлена. Эта версия предназначена для Wrath of the Lich King - Classic."
+L["VersionCheck"] = "|cffc41e3aПредупреждение! Неправильная версия Spy установлена. Эта версия предназначена для World of Warcraft - Cataclysm Classic."
 L["SpyEnabled"] = "|cff9933ffSpy аддон включен."
 L["SpyDisabled"] = "|cff9933ffSpy аддон отключен. Напишите |cffffffff/spy show|cff9933ff  для включения."
-L["UpgradeAvailable"] = "|cff9933ffA Новая версия Spy доступна для скачивания. Вы можете загрузить её тут:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
+L["UpgradeAvailable"] = "|cff9933ffA Новая версия Spy доступна для скачивания. Вы можете загрузить её тут:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm"
 L["AlertStealthTitle"] = "Обнаружен игрок в невидимости!"
 L["AlertKOSTitle"] = "Обнаружен враг из списка Kill On Sight!"
 L["AlertKOSGuildTitle"] = "Обнаружен враг из гильдии в списке Kill On Sight!"

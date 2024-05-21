@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "Santuario dei Saggi"
 L["Rustbolt"] = "Bullonaccio"
 L["Oribos"] = "Oribos"
 L["Valdrakken"] = "Valdrakken"
+L["The Roasted Ram"] = "Montone Arrosto"
 
 -- Display
 L["DisplayOptions"] = "Display"
@@ -301,10 +302,10 @@ L["HonorKills"] = "Honor Kills"
 L["PvPDeaths"] = "PvP Deaths"
 
 -- Output messages
-L["VersionCheck"] = "|cffc41e3aAvvertimento! È installata la versione errata di Spy. Questa versione è per Wrath of the Lich King - Classic."
+L["VersionCheck"] = "|cffc41e3aAvvertimento! È installata la versione errata di Spy. Questa versione è per World of Warcraft - Cataclysm Classic."
 L["SpyEnabled"] = "|cff9933ffSpy addon enabled."
 L["SpyDisabled"] = "|cff9933ffSpy addon disabled. Type |cffffffff/spy show|cff9933ff to enable."
-L["UpgradeAvailable"] = "|cff9933ffA new version of Spy is available. It can be downloaded from:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
+L["UpgradeAvailable"] = "|cff9933ffA new version of Spy is available. It can be downloaded from:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm"
 L["AlertStealthTitle"] = "Stealth player detected!"
 L["AlertKOSTitle"] = "Kill On Sight player detected!"
 L["AlertKOSGuildTitle"] = "Kill On Sight player guild detected!"

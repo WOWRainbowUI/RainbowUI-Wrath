@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "Das Sanktum der Weisen"
 L["Rustbolt"] = "Rostbolzen"
 L["Oribos"] = "Oribos"
 L["Valdrakken"] = "Valdrakken"
+L["The Roasted Ram"] = "Gerösteten Geißbock"
 
 -- Display
 L["DisplayOptions"] = "Anzeigen"
@@ -302,10 +303,10 @@ L["HonorKills"] = "Ehrenvolle Siege"
 L["PvPDeaths"] = "PvP Tode"
 
 --Ausgabemeldungen
-L["VersionCheck"] = "|cffc41e3aWarnung! Die falsche Version von Spy ist installiert. Diese Version ist für Wrath of the Lich King - Classic."
+L["VersionCheck"] = "|cffc41e3aWarnung! Die falsche Version von Spy ist installiert. Diese Version ist für World of Warcraft - Cataclysm Classic."
 L["SpyEnabled"] = "|cff9933ffSpy-Addon aktiviert."
 L["SpyDisabled"] = "|cff9933ffSpy-Addon deaktiviert. Tippen Sie |cffffffff/spy show|cff9933ff um es zu aktivieren."
-L["UpgradeAvailable"] = "|cff9933ffEine neue Version von Spy ist verfügbar. Es kann von: \n| cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk heruntergeladen werden."
+L["UpgradeAvailable"] = "|cff9933ffEine neue Version von Spy ist verfügbar. Es kann von: \n| cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm heruntergeladen werden."
 L["AlertStealthTitle"] = "Getarnte Spieler erkannt!"
 L["AlertKOSTitle"] = "Sofort zu tötenden Spieler erkannt!"
 L["AlertKOSGuildTitle"] = "Gilde eines Sofort zu tötenden Spielers erkannt!"

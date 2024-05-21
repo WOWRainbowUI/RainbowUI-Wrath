@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "賢者聖所"
 L["Rustbolt"] = "锈栓镇"
 L["Oribos"] = "奥利波斯"
 L["Valdrakken"] = "瓦德拉肯"
+L["The Roasted Ram"] = "到脆烤山羊"
 
 -- Display
 L["DisplayOptions"] = "顯示"
@@ -302,10 +303,10 @@ L["HonorKills"] = "榮譽擊殺"
 L["PvPDeaths"] = "PvP 死亡"
 
 -- Output messages
-L["VersionCheck"] = "|cffc41e3a警告！ 安裝了錯誤的Spy版本。 此版本適用於 Wrath of the Lich King - Classic。"
+L["VersionCheck"] = "|cffc41e3a警告！ 安裝了錯誤的Spy版本。 此版本適用於 World of Warcraft - Cataclysm Classic。"
 L["SpyEnabled"] = "|cff9933ff偵測敵方玩家插件已啟用。"
 L["SpyDisabled"] = "|cff9933ff偵測敵方玩家插件已停用，輸入 |cffffffff/spy show|cff9933ff 來啟用。"
-L["UpgradeAvailable"] = "|cff9933ff偵測敵方玩家插件已有新版本，可以到這裡下載：\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
+L["UpgradeAvailable"] = "|cff9933ff偵測敵方玩家插件已有新版本，可以到這裡下載：\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm"
 L["AlertStealthTitle"] = "偵測到隱形玩家!"
 L["AlertKOSTitle"] = "偵測到即殺玩家!"
 L["AlertKOSGuildTitle"] = "偵測到公會即殺玩家!"

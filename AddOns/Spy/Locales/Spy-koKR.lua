@@ -78,6 +78,7 @@ L["Sanctum of the Sages"] = "현자의 성소"
 L["Rustbolt"] = "녹슨나사"
 L["Oribos"] = "오리보스"
 L["Valdrakken"] = "발드라켄"
+L["The Roasted Ram"] = "양꼬치 주점"
 
 -- Display
 L["DisplayOptions"] = "디스플레이"
@@ -302,10 +303,10 @@ L["HonorKills"] = "명예 킬"
 L["PvPDeaths"] = "PvP 죽음"
 
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3a경고! 잘못된 Spy 버전이 설치되었습니다. 이 버전은 Wrath of the Lich King - Classic 용입니다."
+L["VersionCheck"] = "|cffc41e3a경고! 잘못된 Spy 버전이 설치되었습니다. 이 버전은 World of Warcraft - Cataclysm Classic 용입니다."
 L["SpyEnabled"] = "|cff9933ffSpy 애드온이 활성화되었습니다.."
 L["SpyDisabled"] = "|cff9933ffSpy 애드온이 비활성화되었습니다. |cffffffff/spy show|cff9933ff 을 입력해 활성화 시키십시오."
-L["UpgradeAvailable"] = "|cff9933ffA Spy의 새로운 버전을 사용할 수 있습니다. 다운로드 주소:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
+L["UpgradeAvailable"] = "|cff9933ffA Spy의 새로운 버전을 사용할 수 있습니다. 다운로드 주소:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-cataclysm"
 L["AlertStealthTitle"] = "은신한 적이 탐지되었습니다!"
 L["AlertKOSTitle"] = "살생부 명단의 적이 탐지되었습니다!"
 L["AlertKOSGuildTitle"] = "살생부 명단의 적 길드가 탐지되었습니다!"
